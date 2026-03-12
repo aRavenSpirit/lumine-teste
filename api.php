@@ -7,7 +7,7 @@ header("Access-Control-Allow-Headers: Content-Type");
 
 $host = "localhost";
 $user = "root";
-$pass = "";
+$pass = "Home@spSENAI2025!";
 $db   = "luminebd";
 
 $conn = new mysqli($host, $user, $pass, $db);
@@ -60,8 +60,7 @@ switch ($method) {
 
         echo json_encode($dados);
 
-        break;
-
+    break;
 
     case 'POST':
 
@@ -69,7 +68,7 @@ switch ($method) {
 
         $nome = $conn->real_escape_string($data['nome']);
         $email = $conn->real_escape_string($data['email']);
-        $senha = $conn->real_escape_string($data['senha']);
+        $senha = password_hash($data['senha'], PASSWORD_DEFAULT);
         $escolaridade = intval($data['escolaridade_id']);
 
         $sql = "
@@ -89,8 +88,7 @@ switch ($method) {
 
         }
 
-        break;
-
+    break;
 
     case 'PUT':
 
@@ -119,8 +117,7 @@ switch ($method) {
 
         }
 
-        break;
-
+    break;
 
     case 'DELETE':
 
@@ -140,7 +137,8 @@ switch ($method) {
 
         }
 
-        break;
+    break;
+
 }
 
 $conn->close();

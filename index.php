@@ -24,6 +24,10 @@
     <input type="password" id="senha">
     <br><br>
 
+    Confirmar Senha:
+    <input type="password" id="confirmar_senha">
+    <br><br>
+
     Escolaridade:
     <select id="escolaridade">
         <option value="">Selecione...</option>
@@ -86,11 +90,23 @@ function salvar() {
 
     const id = document.getElementById("id").value;
 
+    const senha = document.getElementById("senha").value;
+    const confirmar = document.getElementById("confirmar_senha").value;
+
+    if (!id) {
+
+        if (senha !== confirmar) {
+            alert("As senhas não coincidem!");
+            return;
+        }
+
+    }
+
     const dados = {
 
         nome: document.getElementById("nome").value,
         email: document.getElementById("email").value,
-        senha: document.getElementById("senha").value,
+        senha: senha,
         escolaridade_id: document.getElementById("escolaridade").value
 
     };
@@ -213,6 +229,7 @@ function limpar() {
     document.getElementById("nome").value = "";
     document.getElementById("email").value = "";
     document.getElementById("senha").value = "";
+    document.getElementById("confirmar_senha").value = "";
     document.getElementById("escolaridade").selectedIndex = 0;
 
 }
@@ -221,3 +238,4 @@ function limpar() {
 
 </body>
 </html>
+

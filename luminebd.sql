@@ -1,23 +1,11 @@
 create database luminebd;
 use luminebd;
 
-create table usuario(
-    id int primary key auto_increment,
-    nome varchar(255),
-    email varchar (255) not null unique,
-    senha varchar(255),
-    escolaridade_id int,
-    foreign key (escolaridade_id) references escolaridade (id_escolaridade),
-    criacao date
-);
-
 create table escolaridade (
 
     id_escolaridade int primary key auto_increment,
     nome_escolaridade varchar(100)
 );
-
-select nome_escolaridade from escolaridade where usuario.escolaridade_id = escolaridade.id_escolaridade;
 
 insert into escolaridade (nome_escolaridade) values 
 ('Ensino médio completo'),
@@ -33,6 +21,16 @@ insert into escolaridade (nome_escolaridade) values
 ('1º ANO (ENSINO MÉDIO)'),
 ('2º ANO (ENSINO MÉDIO)'),
 ('3º ANO (ENSINO MÉDIO)');
+
+create table usuario(
+    id int primary key auto_increment,
+    nome varchar(255),
+    email varchar (255) not null unique,
+    senha varchar(255),
+    escolaridade_id int,
+    foreign key (escolaridade_id) references escolaridade (id_escolaridade),
+    criacao date
+);
 
 create table materia(
     id int primary key auto_increment,
@@ -94,3 +92,4 @@ create table tentativas(
     tempo time
 );
 
+select nome_escolaridade from escolaridade where usuario.escolaridade_id = escolaridade.id_escolaridade;
