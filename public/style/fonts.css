@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #ffffff;
+}         
+
+
+@font-face {
+    font-family: 'gliker';
+    src: url('fonts/gliker/gliker-regular.woff2') format('woff2'),
+         url('fonts/gliker/gliker-regular.woff') format('woff'),
+         url('fonts/gliker/gliker-regular.ttf') format('truetype'),
+         url('fonts/gliker/gliker-regular.eot');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Open_Sans';
+    src: url('fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype'),
+         url('fonts/Open_Sans/static/OpenSans-Bold.ttf') format('bold truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.gliker {
+    font-family: 'gliker';
+    font-size: 50px;
+}
+
+.Open_Sans {
+    font-family: 'Open_Sans';
+}

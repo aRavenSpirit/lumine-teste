@@ -8,6 +8,8 @@
 
 <body>
 
+    <h1>ESSA É A BRANCH DO LUCAS. TESTE</h1>
+
     <h2>Cadastro de Usuário</h2>
 
     <input type="hidden" id="id">
@@ -33,9 +35,11 @@
         <option value="">Selecione...</option>
     </select>
     <br><br>
+    <a href="cadastro.html">Cadastro teste</a>
 
     <button onclick="salvar()">Salvar</button>
     <button onclick="listar()">Listar</button>
+
 
     <h2>Lista de Usuários</h2>
 
@@ -57,7 +61,7 @@
 
 <script>
 
-const api = "api.php";
+const api = "../config/api.php";
 
 window.onload = function () {
     carregarEscolaridades();

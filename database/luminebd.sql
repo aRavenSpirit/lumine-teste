@@ -29,7 +29,8 @@ create table usuario(
     senha varchar(255),
     escolaridade_id int,
     foreign key (escolaridade_id) references escolaridade (id_escolaridade),
-    criacao date
+    criacao date,
+    foto_perfil varchar(255)
 );
 
 create table materia(
