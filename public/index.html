@@ -7,8 +7,41 @@
     <link rel="stylesheet" href="./style/index.css">
 </head>
 <body>
+    <!-- Barra de navegação -->
+    <nav class="menu">
+        <h2>LUMINE</h2> <!-- Título do site -->
+        <div class="hamburger" onclick="toggleMenu()">☰</div> <!-- Ícone de menu hambúrguer -->
+        <ul>
+            <li><a href="#">Sobre nós</a></li>
+            <li><a href="#">Novidades</a></li>
+            <li><a href="#">Todos os quizzes</a></li>
+            <li><a href="#">Acessar</a></li>
+        </ul>
+    </nav>
+    
+    <!-- Menu móvel (exibido apenas em telas pequenas) -->
+    <div class="mobile-menu" id="mobileMenu">
+        <a href="#">Sobre nós</a>
+        <a href="#">Novidades</a>
+        <a href="#">Todos os quizzes</a>
+        <a href="#">Acessar</a>
+    </div>
+
     Lumine - Teste de cadastro e login com PHP e MySQL
     <a href="cadastro.html">Cadastrar</a>
     <a href="login.html">Login</a>
+
+
+    <script>
+        // Função para alternar a visibilidade do menu móvel
+        function toggleMenu() {
+            var menu = document.getElementById("mobileMenu"); // Obtém o elemento do menu móvel
+            if (menu.style.display === "flex") { // Verifica se o menu está visível
+                menu.style.display = "none"; // Oculta o menu
+            } else {
+                menu.style.display = "flex"; // Exibe o menu como um flex container
+            }
+        }
+    </script>
 </body>
 </html>
