@@ -1,0 +1,129 @@
+@font-face {
+    font-family: 'Open_Sans';
+    src: url('fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    background-color: #e3f0fe;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Open_Sans', sans-serif;
+    margin: 0;
+}
+
+.area-icone {
+    position: absolute;
+    top: 15px;     
+    right: 15px;    
+}
+
+.icone-site {
+    width: 75px;   
+    height: auto;
+}
+
+.container-cadastro {
+    position: relative; 
+    padding-top: 50px;  
+    background-color: #ffffff;
+    width: 45%;
+    border-radius: 30px;
+    border: 4px solid #1595c4;
+    padding: 40px;
+    box-sizing: border-box;
+}
+
+.titulo-cad {
+    margin: 0 0 20px 0;
+}
+
+.titulo-cad::after {
+    content: '';
+    display: block;
+    width: 180px;
+    height: 4px;
+    background-color: #a3e1ff;
+    border-radius: 2px;
+    margin-top: 5px;
+}
+
+.conteudo-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.blocos-cad {
+    display: flex;
+    flex-direction: column;
+    width: 340px;
+    gap: 25px;
+}
+
+input,
+select {
+    background-color: #a3e1ff;
+    padding: 12px;
+    border-radius: 100px;
+    box-shadow: 6px 6px 0px #1595c4;
+    border: 2px solid #495861;
+    font-size: 1rem;
+    outline: none;
+}
+
+input::placeholder {
+    color: rgb(90, 89, 89);
+}
+
+select {
+    color: rgb(90, 89, 89);
+}
+
+.link-login {
+    margin-top: 10px;
+    font-size: 0.9rem;
+    color: #0749da;
+    text-decoration: underline;
+}
+
+.area-botao {
+    display: flex;
+    justify-content: center;
+    margin-top: 40px;
+}
+
+.botao-cadastrar {
+    background-color: #a3e1ff;
+    padding: 12px 50px;
+    border-radius: 100px;
+    box-shadow: 6px 6px 0px #1595c4;
+    border: 3px solid #495861;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.botao-cadastrar:hover {
+    background-color: #8bd8ff;
+}
+
+.botao-cadastrar:active {
+    box-shadow: 2px 2px 0px #1595c4;
+    transform: translate(3px, 3px);
+}
+
+@media (max-width: 900px) {
+    .container-cadastro {
+        width: 90%;
+    }
+
+    .blocos-cad {
+        width: 100%;
+    }
+}

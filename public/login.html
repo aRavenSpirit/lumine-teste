@@ -4,22 +4,32 @@
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
+    <link rel="stylesheet" href="./style/login.css">
 </head>
 
 <body>
+    <div class="container-login">
 
-    <h2>Login</h2>
+        <div class="area-icone">
+            <img src="img/LUMINE.png" alt="Logo" class="icone-site">
+        </div>
 
-    Email:
-    <input type="email" id="email"><br><br>
+        <h1 class="titulo-log">Login</h1>
+        <div class="conteudo-form">
+            <div class="blocos-log">
 
-    Senha:
-    <input type="password" id="senha"><br><br>
+                <input type="email" name="email" placeholder="Digite seu email" id="email" required>
 
-    <button onclick="login()">Entrar</button>
+                <input type="password" name="senha" placeholder="Digite sua senha" id="senha" required>
 
-    <p>Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+            </div>
+            <div class="area-botao">
+            <button onclick="login()" class="botao-login" >Entrar</button>
+            </div>
+        </div>
 
+        <p>Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+    </div>
     <script>
 
         function login(){

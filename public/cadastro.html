@@ -4,36 +4,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Cadastro</title>
+    <link rel="stylesheet" href="./style/cadastro.css">
 </head>
 
 <body>
+    <div class="container-cadastro">
 
-    <h2>Criar Conta</h2>
+        <div class="area-icone">
+            <img src="./img/LUMINE.png" alt="Logo" class="icone-site">
+        </div>
 
-    <input type="hidden" id="id">
-    
-    Nome:
-    <input type="text" id="nome"><br><br>
+        <h1 class="titulo-cad">Cadastre-se</h1>
 
-    Email:
-    <input type="email" id="email"><br><br>
+        <div class="conteudo-form">
+            <div class="blocos-cad">
+                <input type="hidden" id="id">
+                
+                <input type="text" name="nome_usuario" placeholder="Crie um nome de usuário" id="nome" required>
 
-    Senha:
-    <input type="password" id="senha"><br><br>
+                <input type="email" name="email" placeholder="Digite seu email" id="email" required>
+           
+                <input type="password" name="senha" placeholder="Digite sua senha" id="senha" required>
+                
+                <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
 
-    Confirmar senha:
-    <input type="password" id="confirmar"><br><br>
+                <select id="escolaridade">
+                    <option value="">Escolaridade</option>
+                </select>
+            </div>
 
-    Escolaridade:
-    <select id="escolaridade">
-        <option value="">Selecione...</option>
-    </select>
-    <br><br>
+            <p>Já tem conta? <a href="login.html">Login</a></p>
+            <a href="admin.php">Admin teste</a>
 
-    <button onclick="cadastrar()">Cadastrar</button>
 
-    <p>Já tem conta? <a href="login.html">Login</a></p>
-    <a href="admin.php">Admin teste</a>
+            <div class="area-botao">
+            <button onclick="cadastrar()" class="botao-cadastrar" >Cadastrar</button>
+            </div>
+        </div>
+    </div>
 
     <script>
         const api = "../config/api.php";
@@ -85,7 +93,7 @@
             })
             .then(r=>r.json())
             .then(d=>{
-                alert(d.mensagem);
+                
                 window.location="login.html";
             });
 

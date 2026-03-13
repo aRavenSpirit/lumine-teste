@@ -1,0 +1,6 @@
+body {
+    background: url('../img/background-index.jpg');
+    background-size: cover;
+    width: 100vw;
+    overflow: hidden;
+}
