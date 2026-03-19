@@ -209,9 +209,16 @@ create table quizzes(
     foreign key (id_conteudo) references conteudo (id)
 );
 
+create table tipos_perguntas(
+    id int primary key auto_increment,
+    nome_tipo
+)
+
 create table perguntas(
     id int primary key auto_increment,
     id_quiz int,
+    id_tipo,
+    foreign key (id_tipo) references tipos_perguntas (id)
     foreign key (id_quiz) references quizzes (id),
      descricao varchar(255)
 );
