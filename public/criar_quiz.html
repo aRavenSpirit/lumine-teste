@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Criar Quiz</title>
+</head>
+
+<body>
+
+    <h2>Criar Quiz</h2>
+
+    Nome:
+    <input type="text" id="nome">
+    <br><br>
+
+    Dificuldade:
+    <input type="number" id="dificuldade">
+    <br><br>
+
+    Matéria:
+    <select id="materia" onchange="carregarConteudos()">
+        <option value="">Selecione...</option>
+    </select>
+
+    <br><br>
+
+    Conteúdo:
+    <select id="conteudo">
+        <option value="">Selecione...</option>
+    </select>
+
+    <br><br>
+
+    <button onclick="addPergunta()">+ Pergunta</button>
+
+    <div id="perguntas"></div>
+
+    <br>
+    <button onclick="salvarQuiz()">Salvar Quiz</button>
+
+    <script>
+
+        const api = "../config/criar_quiz.php";
+
+        let perguntas = [];
+
+        window.onload = function () {
+            carregarMaterias();
+        }
+
+        function carregarMaterias() {
+
+            fetch(api + "?tipo=materia")
+                .then(r => r.json())
+                .then(dados => {
+
+                    let select = document.getElementById("materia");
+
+                    dados.forEach(m => {
+                        select.innerHTML += `
+                            <option value="${m.id}">
+                                ${m.nome_materia}
+                            </option>
+                        `;
+                    });  
+
+                });
+
+        }
+
+        function carregarConteudos() {
+
+            let materia_id = document.getElementById("materia").value;
+
+            let select = document.getElementById("conteudo");
+            select.innerHTML = "<option>Carregando...</option>";
+
+            fetch(api + "?tipo=conteudo&id_materia=" + materia_id)
+                .then(r => r.json())
+                .then(dados => {
+
+                    select.innerHTML = "<option value=''>Selecione...</option>";
+
+                    dados.forEach(c => {
+                        select.innerHTML += `
+                            <option value="${c.id}">
+                                ${c.nome}
+                            </option>
+                        `;
+                    });
+
+                });
+
+        }
+
+        function addPergunta() {
+
+            perguntas.push({
+                descricao: "",
+                respostas: []
+            });
+
+            render();
+        }
+
+        function addResposta(pIndex) {
+
+            perguntas[pIndex].respostas.push({
+                descricao: "",
+                certo: false
+            });
+
+            render();
+        }
+
+        function updatePergunta(i, valor) {
+            perguntas[i].descricao = valor;
+        }
+
+        function updateResposta(i, j, valor) {
+            perguntas[i].respostas[j].descricao = valor;
+        }
+
+        function updateCorreta(i, j, valor) {
+
+            // garante apenas 1 correta
+            perguntas[i].respostas.forEach(r => r.certo = false);
+
+            perguntas[i].respostas[j].certo = valor;
+
+            render();
+        }
+
+        function render() {
+
+            let html = "";
+
+            perguntas.forEach((p, i) => {
+
+                html += `
+                    <div style="border:1px solid #000; padding:10px; margin:10px">
+
+                        Pergunta:
+                        <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
+
+                        <br><br>
+
+                        <button onclick="addResposta(${i})">+ Resposta</button>
+
+                        <ul>
+                `;
+
+                p.respostas.forEach((r, j) => {
+
+                    html += `
+                        <li>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            
+                            Correta?
+                            <input 
+                                type="checkbox"
+                                onchange="updateCorreta(${i}, ${j}, this.checked)"
+                                ${r.certo ? "checked" : ""}
+                            >
+                        </li>
+                    `;
+
+                });
+
+                html += `
+                        </ul>
+                    </div>
+                `;
+            });
+
+            document.getElementById("perguntas").innerHTML = html;
+        }
+
+        function salvarQuiz() {
+
+            fetch(api + "?tipo=quiz_completo", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    nome: document.getElementById("nome").value,
+                    dificuldade: document.getElementById("dificuldade").value,
+                    id_conteudo: document.getElementById("conteudo").value,
+                    perguntas: perguntas
+                })
+            })
+                .then(r => r.json())
+                .then(d => {
+                    alert(d.mensagem);
+                });
+
+        }
+
+    </script>
+
+</body>
+
+</html>
