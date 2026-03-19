@@ -202,6 +202,7 @@ body {
     margin-bottom: 20px;
     /* Adiciona uma leve sombra para destacar no fundo branco se necessário */
     filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.1));
+    cursor: default;
 }
 
 /* Cores individuais por letra */
