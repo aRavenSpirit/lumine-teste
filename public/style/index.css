@@ -11,8 +11,19 @@ body {
     overflow: hidden;
 }
 
+.area-icone {
+    position: absolute;
+    top: 15px;     
+    right: 15px;    
+}
+
+.icone-site {
+    width: 75px;   
+    height: auto;
+}
+
+
 .menu {
-    background-color: #333;
     padding: 10px 20px;
     display: flex;
     justify-content: space-between;
@@ -24,7 +35,6 @@ body {
 .menu h2 {
     margin: 0;
     font-size: 20px;
-    white-space: nowrap;
 }
 
 .menu ul {
@@ -53,7 +63,6 @@ body {
 .mobile-menu {
     display: none;
     flex-direction: column;
-    background-color: #333;
     position: absolute;
     top: 50px;
     left: 0;
@@ -66,7 +75,6 @@ body {
     color: white;
     padding: 15px;
     text-decoration: none;
-    border-bottom: 1px solid #444;
     display: block;
 }
 
@@ -87,4 +95,9 @@ body {
 /* Classe auxiliar para o JavaScript abrir o menu */
 .mobile-menu.active {
     display: flex;
+}
+
+.menu-logo{
+    width: 300px;
+    background-color: transparent;
 }

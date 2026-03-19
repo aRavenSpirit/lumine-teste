@@ -4,20 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumine</title>
-    <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="style/index.css">
 </head>
 <body>
     <!-- Barra de navegação -->
     <nav class="menu">
-        <h2>LUMINE</h2> <!-- Título do site -->
-        <div class="hamburger" onclick="toggleMenu()">☰</div> <!-- Ícone de menu hambúrguer -->
-        <ul>
-            <li><a href="#">Sobre nós</a></li>
-            <li><a href="#">Novidades</a></li>
-            <li><a href="#">Todos os quizzes</a></li>
-            <li><a href="#">Acessar</a></li>
-        </ul>
-    </nav>
+    <div class="menu-logo"><h2>Img</h2></div>
+    <div class="hamburger" onclick="toggleMenu()">☰</div>
+    
+    <ul>
+        <li class="menu-sobre"><a href="#">Sobre nós</a></li>
+        <li class="menu-novidades"><a href="#">Novidades</a></li>
+        <li class="menu-todos"><a href="#">Todos os quizzes</a></li>
+        <li class="menu-acessar"><a href="login.html" class="btn-acessar">Acessar</a></li>
+    </ul>
+</nav>
     
     <!-- Menu móvel (exibido apenas em telas pequenas) -->
     <div class="mobile-menu" id="mobileMenu">
