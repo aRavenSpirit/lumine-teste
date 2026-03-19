@@ -4,45 +4,55 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumine</title>
-    <link rel="stylesheet" href="style/index.css">
+    <link rel="stylesheet" href="./style/index.css">
+    
 </head>
 <body>
-    <!-- Barra de navegação -->
-    <nav class="menu">
-    <div class="menu-logo"><h2>Img</h2></div>
-    <div class="hamburger" onclick="toggleMenu()">☰</div>
-    
-    <ul>
-        <li class="menu-sobre"><a href="#">Sobre nós</a></li>
-        <li class="menu-novidades"><a href="#">Novidades</a></li>
-        <li class="menu-todos"><a href="#">Todos os quizzes</a></li>
-        <li class="menu-acessar"><a href="login.html" class="btn-acessar">Acessar</a></li>
-    </ul>
-</nav>
-    
-    <!-- Menu móvel (exibido apenas em telas pequenas) -->
+
+    <nav class="navbar">
+        <div class="logo-section">
+            <img src="./img/LUMINE.png" alt="Lumine" class="logo-img">
+        </div>
+        
+        <ul class="nav-links">
+            <li class="item-sobre"><a href="#">Sobre nós</a></li>
+            <li class="item-novidades"><a href="#">Novidades</a></li>
+            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            </li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
     <div class="mobile-menu" id="mobileMenu">
-        <a href="#">Sobre nós</a>
-        <a href="#">Novidades</a>
-        <a href="#">Todos os quizzes</a>
-        <a href="#">Acessar</a>
+        <div class="item-sobre-mob"><a href="#">Sobre nós</a></div>
+        <div class="item-novidades-mob"><a href="#">Novidades</a></div>
+        <div class="item-quizzes-mob"><a href="#">Todos os quizzes</a></div>
+        <div class="item-acessar-mob"><a href="login.html">Acessar</a></div>
     </div>
 
-    Lumine - Teste de cadastro e login com PHP e MySQL
-    <a href="cadastro.html">Cadastrar</a>
-    <a href="login.html">Login</a>
-
+    <main class="hero">
+        <div class="hero-content">
+            <h1 class="letras-lumine">
+                <span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span>
+            </h1>
+            <p class="subtitle">NA LUMINE, VOCÊ DESAFIA A SUA MENTE.</p>
+            <p class="subtitle">CONHEÇA AGORA, O <span class="melhor-subtitulo">MELHOR</span> SITE DE QUIZZES!</p>
+        </div>
+    </main>
 
     <script>
-        // Função para alternar a visibilidade do menu móvel
         function toggleMenu() {
-            var menu = document.getElementById("mobileMenu"); // Obtém o elemento do menu móvel
-            if (menu.style.display === "flex") { // Verifica se o menu está visível
-                menu.style.display = "none"; // Oculta o menu
-            } else {
-                menu.style.display = "flex"; // Exibe o menu como um flex container
-            }
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("active");
         }
+        // Adiciona um "ouvinte" para o evento de redimensionar a tela
+        window.addEventListener('resize', function() {
+        // Recarrega a página atual
+        window.location.reload();
+    });
     </script>
 </body>
 </html>

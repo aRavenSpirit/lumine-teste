@@ -1,3 +1,33 @@
+@font-face {
+    font-family: 'gliker';
+    src: url('../fonts/gliker/gliker-regular.woff2') format('woff2'),
+         url('../fonts/gliker/gliker-regular.woff') format('woff'),
+         url('../fonts/gliker/gliker-regular.ttf') format('truetype'),
+         url('../fonts/gliker/gliker-regular.eot');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Open_Sans';
+    src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype'),
+         url('../fonts/Open_Sans/static/OpenSans-Bold.ttf') format('bold truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.gliker {
+    font-family: 'gliker';
+    font-size: 50px;
+}
+
+.Open_Sans {
+    font-family: 'Open_Sans';
+}
+
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -5,99 +35,206 @@
 }
 
 body {
-    background: url('../img/background-index.jpg');
-    background-size: cover;
-    width: 100vw;
-    overflow: hidden;
+    background: linear-gradient( to left, #d1def2a4, #d1def2a4), url('../img/background-index.jpg') no-repeat center center fixed;
+    backdrop-filter: blur(1.6px);
+    background-size: cover;  
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-color: #f0f8ff;
+    font-family: 'Open_Sans', sans-serif; /* Aplica a fonte Open_Sans */
 }
 
-.area-icone {
-    position: absolute;
-    top: 15px;     
-    right: 15px;    
-}
-
-.icone-site {
-    width: 75px;   
-    height: auto;
-}
-
-
-.menu {
-    padding: 10px 20px;
+/* --- BARRA DE NAVEGAÇÃO --- */
+.navbar {
     display: flex;
-    justify-content: space-between;
+    height: 80px;
+    width: 100%;
+    align-items: stretch;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.logo-section {
+    flex: 1;
+    backdrop-filter: blur(3px);
+    display: flex;
     align-items: center;
-    color: white;
-    position: relative;
+    justify-content: center;
+    min-width: 0;
 }
 
-.menu h2 {
-    margin: 0;
-    font-size: 20px;
+.logo-img {
+    height: 95%;
+    max-width: 90%;
+    object-fit: contain;
 }
 
-.menu ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
+.nav-links {
     display: flex;
+    flex: 4;
+    list-style: none;
 }
 
-.menu ul li {
-    padding: 10px;
+.nav-links li {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 0;
 }
 
-.menu ul li a {
-    color: white;
+.nav-links li a {
     text-decoration: none;
+    color: #1a1a1a;
+    font-weight: 700;
+    font-size: clamp(17px, 1.1vw, 18px);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 0 10px;
+    transition: background 0.2s;
 }
 
+/* Cores dos Blocos do Menu */
+.item-sobre { background-color: #00bf63; }
+.item-novidades { background-color: #0cc0df; }
+.item-quizzes { background-color: #ffbd59; }
+.item-acessar { background-color: #ff5757; }
+
+.nav-links li a:hover {
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.btn-acessar {
+    display: flex;
+    background-color: white !important;
+    border-radius: 50px;
+    margin: 15px;
+    height: 45px !important;
+    border: 2px solid #333;
+    color: #333 !important;
+    max-width: 180px;
+    transition: 0.3s ease;
+}
+
+.btn-acessar:hover {
+    transform: scale(1.05);
+}
+
+/* --- MENU MOBILE --- */
 .hamburger {
     display: none;
-    font-size: 24px;
+    font-size: 30px;
     cursor: pointer;
-    user-select: none;
+    background: #d1def2;
+    color: black;
+    width: 80px;
+    align-items: center;
+    justify-content: center;
 }
 
 .mobile-menu {
     display: none;
     flex-direction: column;
-    position: absolute;
-    top: 50px;
-    left: 0;
     width: 100%;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    position: absolute;
+    top: 80px;
+    left: 0;
+    z-index: 100;
 }
+
+.mobile-menu.active { display: flex; }
 
 .mobile-menu a {
-    color: white;
-    padding: 15px;
+    padding: 20px;
     text-decoration: none;
-    display: block;
+    color: #333;
+    font-weight: bold;
 }
 
-@media screen and (max-width: 768px) {
-    .menu ul {
-        display: none;
-    }
-
-    .hamburger {
-        display: block;
-    }
-
-    .menu {
-        padding: 10px 15px;
-    }
+/* Cores dos Blocos do Menu mobile */
+.item-sobre-mob { 
+    background-color: #00bf63; 
+    padding: 12px;
+    text-align: center;
+}
+.item-novidades-mob { 
+    background-color: #0cc0df; 
+    padding: 12px;
+    text-align: center;
+}
+.item-quizzes-mob { 
+    background-color: #ffbd59; 
+    padding: 12px;
+    text-align: center;
+}
+.item-acessar-mob { 
+    background-color: #ff5757; 
+    padding: 12px;
+    text-align: center;
 }
 
-/* Classe auxiliar para o JavaScript abrir o menu */
-.mobile-menu.active {
+/* --- CONTEÚDO CENTRAL (LUMINE) AJUSTADO --- */
+.hero {
     display: flex;
+    flex-direction: column; /* Garante que o conteúdo flua de cima para baixo */
+    align-items: center;    /* Mantém centralizado na horizontal */
+    justify-content: flex-start; /* Alinha o conteúdo no topo do container */
+    height: calc(100vh - 80px);
+    padding: 20px;
+    
+    /* Ajuste este valor para subir ou descer mais o título */
+    padding-top: 10vh; 
 }
 
-.menu-logo{
-    width: 300px;
-    background-color: transparent;
+.hero-content {
+    text-align: center;
+}
+
+.letras-lumine {
+    font-family: 'gliker', sans-serif; /* Aplica a fonte Gliker */
+    font-size: clamp(50px, 8vw, 120px);
+    font-weight: 900;
+    letter-spacing: 10px;
+    margin-bottom: 20px;
+    /* Adiciona uma leve sombra para destacar no fundo branco se necessário */
+    filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.1));
+}
+
+/* Cores individuais por letra */
+.L { color: #00bf63; }
+.U { color: #0cc0df; }
+.M { color: #5170ff; }
+.I { color: #cb6ce6; }
+.N { color: #ff5757; }
+.E { color: #ffbd59; }
+
+.subtitle {
+    font-size: clamp(1.5em, 1.5vw, 24px);
+    color: #333;
+    margin-bottom: 10px;
+    font-weight: 500;
+}
+
+.melhor-subtitulo {
+    font-weight: bold;
+}
+
+.debug-footer {
+    margin-top: 50px;
+    font-size: 14px;
+    color: #666;
+}
+
+.debug-footer a { color: #33bcff; text-decoration: none; font-weight: bold; }
+
+/* --- AJUSTES DE TELA --- */
+@media screen and (max-width: 580px) {
+    .nav-links { display: none; }
+    .hamburger { display: flex; }
+    .navbar { justify-content: space-between; }
+    .logo-section { flex: none; width: 150px; }
 }

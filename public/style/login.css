@@ -1,31 +1,42 @@
+/* --- FONTES --- */
 @font-face {
     font-family: 'Open_Sans';
-    src: url('fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+    src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+}
+
+/* --- RESET E ESTRUTURA --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     background-color: #e3f0fe;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Centralizado no PC */
     min-height: 100vh;
     font-family: 'Open_Sans', sans-serif;
-    margin: 0;
+    padding: 20px;
 }
 
+/* --- CONTAINER LOGIN --- */
 .container-login {
     position: relative; 
     background-color: #ffffff;
-    width: 45%;
+    width: 100%;
+    max-width: 480px; /* Um pouco mais estreito que o cadastro para ficar elegante */
     border-radius: 30px;
     border: 4px solid #1595c4;
     padding: 60px 40px 40px 40px; 
-    box-sizing: border-box;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
 }
 
+/* --- ÍCONE --- */
 .area-icone {
     position: absolute;
     top: 25px;      
@@ -34,25 +45,29 @@ body {
 }
 
 .icone-site {
-    width: 75px;    
+    width: 70px;    
     height: auto;
     display: block;
 }
 
+/* --- TÍTULO --- */
 .titulo-log {
-    margin: 0 0 20px 0;
+    margin: 0 0 25px 0;
+    font-size: 2rem;
+    color: #333;
 }
 
 .titulo-log::after {
     content: '';
     display: block;
-    width: 90px;
-    height: 4px;
+    width: 80px;
+    height: 5px;
     background-color: #a3e1ff;
-    border-radius: 2px;
+    border-radius: 10px;
     margin-top: 5px;
 }
 
+/* --- FORMULÁRIO --- */
 .conteudo-form {
     display: flex;
     flex-direction: column;
@@ -61,26 +76,41 @@ body {
 .blocos-log {
     display: flex;
     flex-direction: column;
-    width: 100%; /* Mudei para 100% para respeitar o padding do container */
-    max-width: 340px; /* Limita o tamanho mas mantém responsivo */
+    width: 100%;
     gap: 25px;
 }
 
-input,
-select {
+input {
     background-color: #a3e1ff;
-    padding: 12px;
+    padding: 14px 20px;
     border-radius: 100px;
     box-shadow: 6px 6px 0px #1595c4;
     border: 2px solid #495861;
     font-size: 1rem;
     outline: none;
+    transition: all 0.2s ease-in-out;
+}
+
+input:focus {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px #1595c4;
+    background-color: #bce8ff;
 }
 
 input::placeholder {
-    color: rgb(90, 89, 89);
+    color: #555;
 }
 
+.link-cad {
+    margin-top: 5px;
+    margin-left: 10px;
+    font-size: 0.9rem;
+    color: #0749da;
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+/* --- BOTÃO ENTRAR --- */
 .area-botao {
     display: flex;
     justify-content: center;
@@ -89,7 +119,7 @@ input::placeholder {
 
 .botao-login {
     background-color: #a3e1ff;
-    padding: 12px 50px;
+    padding: 14px 60px;
     border-radius: 100px;
     box-shadow: 6px 6px 0px #1595c4;
     border: 3px solid #495861;
@@ -102,19 +132,65 @@ input::placeholder {
 
 .botao-login:hover {
     background-color: #8bd8ff;
+    transform: scale(1.05);
 }
 
 .botao-login:active {
     box-shadow: 2px 2px 0px #1595c4;
-    transform: translate(3px, 3px);
+    transform: translate(4px, 4px);
 }
 
-@media (max-width: 900px) {
-    .container-login { /* Corrigido de .container-cadastro para .container-login */
-        width: 90%;
+/* --- 📱 RESPONSIVIDADE UNIVERSAL --- */
+
+@media screen and (max-width: 768px) {
+    body {
+        align-items: flex-start; /* Evita ficar "perdido" no meio de telas altas como o XR */
+        padding-top: 10vh;
     }
 
-    .blocos-log {
-        width: 100%;
+    .container-login {
+        width: 92%;
+        padding: 40px 25px;
+    }
+
+    .area-icone {
+        position: relative;
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .icone-site {
+        width: 65px;
+    }
+
+    .titulo-log {
+        text-align: center;
+    }
+
+    .titulo-log::after {
+        margin: 5px auto;
+    }
+
+    .link-cad {
+        text-align: center;
+        margin-left: 0;
+        display: block;
+    }
+
+    .botao-login {
+        width: 100%; /* Botão cheio no mobile */
+    }
+}
+
+/* Ecrãs minúsculos */
+@media screen and (max-width: 360px) {
+    .container-login {
+        padding: 30px 15px;
+    }
+    input {
+        padding: 12px 15px;
     }
 }

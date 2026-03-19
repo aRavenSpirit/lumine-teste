@@ -1,25 +1,46 @@
+/* --- FONTES --- */
 @font-face {
     font-family: 'Open_Sans';
-    src: url('fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+    src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
+}
+
+/* --- RESET E ESTRUTURA BASE --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
     background-color: #e3f0fe;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; /* Centraliza no PC */
     min-height: 100vh;
     font-family: 'Open_Sans', sans-serif;
-    margin: 0;
+    padding: 20px;
 }
 
+/* --- CONTAINER PRINCIPAL --- */
+.container-cadastro {
+    position: relative; 
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 550px; /* Limite de largura para computadores */
+    border-radius: 30px;
+    border: 4px solid #1595c4;
+    padding: 50px 40px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+
+/* --- ÍCONE (LOGOTIPO) --- */
 .area-icone {
     position: absolute;
-    top: 15px;     
-    right: 15px;    
+    top: 20px;     
+    right: 25px;    
 }
 
 .icone-site {
@@ -27,31 +48,24 @@ body {
     height: auto;
 }
 
-.container-cadastro {
-    position: relative; 
-    padding-top: 50px;  
-    background-color: #ffffff;
-    width: 45%;
-    border-radius: 30px;
-    border: 4px solid #1595c4;
-    padding: 40px;
-    box-sizing: border-box;
-}
-
+/* --- TÍTULO --- */
 .titulo-cad {
-    margin: 0 0 20px 0;
+    margin: 0 0 30px 0;
+    font-size: 2.2rem;
+    color: #333;
 }
 
 .titulo-cad::after {
     content: '';
     display: block;
-    width: 180px;
-    height: 4px;
+    width: 120px;
+    height: 5px;
     background-color: #a3e1ff;
-    border-radius: 2px;
-    margin-top: 5px;
+    border-radius: 10px;
+    margin-top: 8px;
 }
 
+/* --- FORMULÁRIO --- */
 .conteudo-form {
     display: flex;
     flex-direction: column;
@@ -60,36 +74,39 @@ body {
 .blocos-cad {
     display: flex;
     flex-direction: column;
-    width: 340px;
-    gap: 25px;
+    width: 100%;
+    gap: 22px;
 }
 
-input,
-select {
+input, select {
     background-color: #a3e1ff;
-    padding: 12px;
+    padding: 15px 20px;
     border-radius: 100px;
     box-shadow: 6px 6px 0px #1595c4;
     border: 2px solid #495861;
     font-size: 1rem;
     outline: none;
+    transition: all 0.2s ease-in-out;
+    width: 100%;
 }
 
-input::placeholder {
-    color: rgb(90, 89, 89);
-}
-
-select {
-    color: rgb(90, 89, 89);
+/* Efeito ao clicar no campo (Focus) */
+input:focus, select:focus {
+    transform: translateY(-3px);
+    box-shadow: 8px 8px 0px #1595c4;
+    background-color: #bce8ff;
 }
 
 .link-login {
-    margin-top: 10px;
+    margin-top: 5px;
+    margin-left: 15px;
     font-size: 0.9rem;
     color: #0749da;
     text-decoration: underline;
+    font-weight: 600;
 }
 
+/* --- BOTÃO CADASTRAR --- */
 .area-botao {
     display: flex;
     justify-content: center;
@@ -98,12 +115,12 @@ select {
 
 .botao-cadastrar {
     background-color: #a3e1ff;
-    padding: 12px 50px;
+    padding: 16px 60px;
     border-radius: 100px;
     box-shadow: 6px 6px 0px #1595c4;
     border: 3px solid #495861;
-    font-size: 1.3rem;
-    font-weight: bold;
+    font-size: 1.2rem;
+    font-weight: 900;
     color: black;
     cursor: pointer;
     transition: all 0.2s ease;
@@ -111,19 +128,75 @@ select {
 
 .botao-cadastrar:hover {
     background-color: #8bd8ff;
+    transform: scale(1.05);
 }
 
 .botao-cadastrar:active {
     box-shadow: 2px 2px 0px #1595c4;
-    transform: translate(3px, 3px);
+    transform: translate(4px, 4px);
 }
 
-@media (max-width: 900px) {
-    .container-cadastro {
-        width: 90%;
+/* --- 📱 RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
+
+@media screen and (max-width: 768px) {
+    body {
+        align-items: flex-start; /* Alinha no topo para não sumir no iPhone XR */
+        padding-top: 40px;
     }
 
-    .blocos-cad {
-        width: 100%;
+    .container-cadastro {
+        width: 92%; /* Quase toda a largura da tela */
+        padding: 40px 25px;
+    }
+
+    .area-icone {
+        position: relative; /* Ícone vai para cima do título centralizado */
+        top: 0;
+        right: 0;
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .icone-site {
+        width: 65px;
+    }
+
+    .titulo-cad {
+        text-align: center;
+        font-size: 1.8rem;
+    }
+
+    .titulo-cad::after {
+        margin: 8px auto; /* Centraliza a barrinha azul */
+    }
+
+    .link-login {
+        text-align: center;
+        margin-left: 0;
+        display: block;
+    }
+
+    .botao-cadastrar {
+        width: 100%; /* Botão grande fácil de clicar no telemóvel */
+        padding: 15px;
+    }
+}
+
+/* Ajuste para ecrãs muito pequenos (ex: iPhone SE) */
+@media screen and (max-width: 370px) {
+    .container-cadastro {
+        padding: 30px 15px;
+    }
+    
+    .titulo-cad {
+        font-size: 1.5rem;
+    }
+}
+
+/* Ajuste para quando o telemóvel está deitado (Landscape) */
+@media screen and (max-height: 500px) {
+    body {
+        align-items: flex-start;
     }
 }
