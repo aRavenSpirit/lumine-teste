@@ -15,7 +15,8 @@
 }
 
 body {
-    background-color: #e3f0fe;
+    background: linear-gradient( to left, rgb(227, 240, 254, 0.65), rgb(227, 240, 254, 0.65)), url('../img/background-index.jpg');
+    background-size: 3500px;
     display: flex;
     justify-content: center;
     align-items: center; 
