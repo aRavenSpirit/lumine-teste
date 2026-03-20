@@ -48,10 +48,20 @@
             const menu = document.getElementById("mobileMenu");
             menu.classList.toggle("active");
         }
-        window.addEventListener('resize', function() {
-        // Recarrega a página atual
-        window.location.reload();
-    });
+        function toggleMenu() {
+    const menu = document.getElementById("mobileMenu");
+    menu.classList.toggle("active");
+}
+
+    window.addEventListener('resize', function() {
+    const menu = document.getElementById("mobileMenu");
+    
+    if (window.innerWidth > 580) {
+        if (menu.classList.contains("active")) {
+            menu.classList.remove("active");
+        }
+    }
+});
     </script>
 </body>
 </html>
