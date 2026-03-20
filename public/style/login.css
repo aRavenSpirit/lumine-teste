@@ -29,7 +29,7 @@ body {
     position: relative; 
     background-color: #ffffff;
     width: 100%;
-    max-width: 480px; /* Um pouco mais estreito que o cadastro para ficar elegante */
+    max-width: 480px; 
     border-radius: 30px;
     border: 4px solid #1595c4;
     padding: 60px 40px 40px 40px; 
@@ -140,11 +140,11 @@ input::placeholder {
     transform: translate(4px, 4px);
 }
 
-/* --- 📱 RESPONSIVIDADE UNIVERSAL --- */
+/* ---  RESPONSIVIDADE UNIVERSAL --- */
 
 @media screen and (max-width: 768px) {
     body {
-        align-items: flex-start; /* Evita ficar "perdido" no meio de telas altas como o XR */
+        align-items: flex-start; 
         padding-top: 10vh;
     }
 
@@ -181,11 +181,11 @@ input::placeholder {
     }
 
     .botao-login {
-        width: 100%; /* Botão cheio no mobile */
+        width: 100%; 
     }
 }
 
-/* Ecrãs minúsculos */
+/* Para mobile */
 @media screen and (max-width: 360px) {
     .container-login {
         padding: 30px 15px;

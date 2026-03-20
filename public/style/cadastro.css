@@ -18,7 +18,7 @@ body {
     background-color: #e3f0fe;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centraliza no PC */
+    align-items: center; 
     min-height: 100vh;
     font-family: 'Open_Sans', sans-serif;
     padding: 20px;
@@ -29,7 +29,7 @@ body {
     position: relative; 
     background-color: #ffffff;
     width: 100%;
-    max-width: 550px; /* Limite de largura para computadores */
+    max-width: 550px; 
     border-radius: 30px;
     border: 4px solid #1595c4;
     padding: 50px 40px;
@@ -136,21 +136,21 @@ input:focus, select:focus {
     transform: translate(4px, 4px);
 }
 
-/* --- 📱 RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
+/* --- RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
 
 @media screen and (max-width: 768px) {
     body {
-        align-items: flex-start; /* Alinha no topo para não sumir no iPhone XR */
+        align-items: flex-start; 
         padding-top: 40px;
     }
 
     .container-cadastro {
-        width: 92%; /* Quase toda a largura da tela */
+        width: 92%; 
         padding: 40px 25px;
     }
 
     .area-icone {
-        position: relative; /* Ícone vai para cima do título centralizado */
+        position: relative; 
         top: 0;
         right: 0;
         display: flex;
@@ -168,7 +168,7 @@ input:focus, select:focus {
     }
 
     .titulo-cad::after {
-        margin: 8px auto; /* Centraliza a barrinha azul */
+        margin: 8px auto; 
     }
 
     .link-login {
@@ -178,12 +178,12 @@ input:focus, select:focus {
     }
 
     .botao-cadastrar {
-        width: 100%; /* Botão grande fácil de clicar no telemóvel */
+        width: 100%; 
         padding: 15px;
     }
 }
 
-/* Ajuste para ecrãs muito pequenos (ex: iPhone SE) */
+/* Ajuste para mobile */
 @media screen and (max-width: 370px) {
     .container-cadastro {
         padding: 30px 15px;
@@ -194,7 +194,7 @@ input:focus, select:focus {
     }
 }
 
-/* Ajuste para quando o telemóvel está deitado (Landscape) */
+/* Ajuste para quando está na horizontal */
 @media screen and (max-height: 500px) {
     body {
         align-items: flex-start;

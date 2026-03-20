@@ -41,7 +41,7 @@ body {
     min-height: 100vh;
     overflow-x: hidden;
     background-color: #f0f8ff;
-    font-family: 'Open_Sans', sans-serif; /* Aplica a fonte Open_Sans */
+    font-family: 'Open_Sans', sans-serif; 
 }
 
 /* --- BARRA DE NAVEGAÇÃO --- */
@@ -180,13 +180,11 @@ body {
 /* --- CONTEÚDO CENTRAL (LUMINE) AJUSTADO --- */
 .hero {
     display: flex;
-    flex-direction: column; /* Garante que o conteúdo flua de cima para baixo */
-    align-items: center;    /* Mantém centralizado na horizontal */
-    justify-content: flex-start; /* Alinha o conteúdo no topo do container */
+    flex-direction: column;
+    align-items: center;    
+    justify-content: flex-start;
     height: calc(100vh - 80px);
     padding: 20px;
-    
-    /* Ajuste este valor para subir ou descer mais o título */
     padding-top: 10vh; 
 }
 
@@ -195,12 +193,11 @@ body {
 }
 
 .letras-lumine {
-    font-family: 'gliker', sans-serif; /* Aplica a fonte Gliker */
+    font-family: 'gliker', sans-serif; 
     font-size: clamp(50px, 8vw, 120px);
     font-weight: 900;
     letter-spacing: 10px;
     margin-bottom: 20px;
-    /* Adiciona uma leve sombra para destacar no fundo branco se necessário */
     filter: drop-shadow(2px 4px 0px rgba(0,0,0,0.1));
     cursor: default;
 }
