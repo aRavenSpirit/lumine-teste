@@ -212,7 +212,7 @@ create table quizzes(
 create table tipos_perguntas(
     id int primary key auto_increment,
     nome_tipo varchar (255)
-)
+);
 
 create table perguntas(
     id int primary key auto_increment,
