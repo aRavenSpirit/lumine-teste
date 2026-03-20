@@ -136,6 +136,23 @@ input:focus, select:focus {
     transform: translate(4px, 4px);
 }
 
+.texto-cadastro {
+    margin-top: 30px; /* Ajuste o valor conforme desejar */
+    text-align: center; /* Centraliza o texto */
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.texto-cadastro a {
+    color: #0749da;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.texto-cadastro a:hover {
+    text-decoration: underline;
+}
+
 /* --- RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
 
 @media screen and (max-width: 768px) {
