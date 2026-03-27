@@ -27,6 +27,24 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'tipos_perguntas') {
 
 
 // =========================
+// DIFICULDADE
+// =========================
+if (isset($_GET['tipo']) && $_GET['tipo'] == 'dificuldade') {
+
+    $result = $conn->query("SELECT * FROM dificuldade");
+
+    $dados = [];
+
+    while ($row = $result->fetch_assoc()) {
+        $dados[] = $row;
+    }
+
+    echo json_encode($dados);
+    exit;
+}
+
+
+// =========================
 // MATÉRIA
 // =========================
 if (isset($_GET['tipo']) && $_GET['tipo'] == 'materia') {
@@ -52,7 +70,8 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'conteudo') {
     $id = intval($_GET['id_materia']);
 
     $result = $conn->query("
-        SELECT * FROM conteudo
+        SELECT * 
+        FROM conteudo
         WHERE id_materia = $id
     ");
 
@@ -86,20 +105,19 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
     }
 
     $nome = $conn->real_escape_string($data['nome']);
-    $dificuldade = intval($data['dificuldade']);
+    $id_dificuldade = intval($data['dificuldade']);
     $id_conteudo = intval($data['id_conteudo']);
 
-    // cria quiz
+    // ✅ CORREÇÃO AQUI (id_dificuldade)
     $conn->query("
-        INSERT INTO quizzes (nome, dificuldade, id_conteudo)
-        VALUES ('$nome', $dificuldade, $id_conteudo)
+        INSERT INTO quizzes (nome, id_dificuldade, id_conteudo)
+        VALUES ('$nome', $id_dificuldade, $id_conteudo)
     ");
 
     $quiz_id = $conn->insert_id;
 
     foreach ($data['perguntas'] as $p) {
 
-        // valida pergunta
         if (empty($p['descricao']) || empty($p['tipo'])) {
             echo json_encode(["erro" => "Pergunta inválida"]);
             exit;
@@ -108,7 +126,6 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
         $desc = $conn->real_escape_string($p['descricao']);
         $id_tipo = intval($p['tipo']);
 
-        // cria pergunta
         $conn->query("
             INSERT INTO perguntas (descricao, id_quiz, id_tipo)
             VALUES ('$desc', $quiz_id, $id_tipo)

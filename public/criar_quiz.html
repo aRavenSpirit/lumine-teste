@@ -18,7 +18,9 @@
     <br><br>
 
     Dificuldade:
-    <input type="number" id="dificuldade">
+    <select id="dificuldade">
+        <option value="">Selecione...</option>
+    </select>
     <br><br>
 
     Matéria:
@@ -52,6 +54,30 @@
         window.onload = function () {
             carregarMaterias();
             carregarTipos();
+            carregarDificuldades(); // ✅ NOVO
+        }
+
+        // =========================
+        // NOVO: DIFICULDADE
+        // =========================
+        function carregarDificuldades() {
+
+            fetch(api + "?tipo=dificuldade")
+                .then(r => r.json())
+                .then(dados => {
+
+                    let select = document.getElementById("dificuldade");
+
+                    dados.forEach(d => {
+                        select.innerHTML += `
+                            <option value="${d.id}">
+                                ${d.dificuldade}
+                            </option>
+                        `;
+                    });
+
+                });
+
         }
 
         function carregarTipos() {
