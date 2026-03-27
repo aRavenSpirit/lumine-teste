@@ -214,6 +214,16 @@ create table tipos_perguntas(
     nome_tipo varchar (255)
 );
 
+-- ADIÇÃO DE TIPOS DE PERGUNTAS --
+
+    INSERT INTO tipos_perguntas (id, nome_tipo) VALUES
+        (1, 'Multipla escolha (1 correta)'),
+        (2, 'Texto'),
+        (3, 'Verdadeiro/Falso'),
+        (4, 'Multipla escolha (várias corretas)'),
+        (5, 'Ordenar itens'),
+        (6, 'Arrastar e soltar');
+
 create table perguntas(
     id int primary key auto_increment,
     id_quiz int,
