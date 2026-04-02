@@ -201,11 +201,24 @@ create table conteudo(
         ('Jogos e Brincadeiras', 11),
         ('Regras dos Esportes', 11);
         
+
+create table dificuldade (
+    id int primary key auto_increment,
+    dificuldade varchar(30)
+)
+
+-- ADIÇÃO DE DIFICULDADES --
+    INSERT INTO dificuldade (id, dificuldade) VALUES
+        (1, 'Fácil'),
+        (2, 'Intermediária'),
+        (3, 'Difícil');
+
 create table quizzes(
     id int primary key auto_increment,
     nome varchar(255),
-    dificuldade int,
+    id_dificuldade int,
     id_conteudo int,
+    foreign key (id_dificuldade) references dificuldade (id),
     foreign key (id_conteudo) references conteudo (id)
 );
 
@@ -224,14 +237,13 @@ create table tipos_perguntas(
         (5, 'Ordenar itens'),
         (6, 'Arrastar e soltar');
 
-
 create table perguntas(
     id int primary key auto_increment,
     id_quiz int,
     id_tipo int,
     foreign key (id_tipo) references tipos_perguntas (id),
     foreign key (id_quiz) references quizzes (id),
-     descricao varchar(255)
+    descricao varchar(255)
 );
 
 create table respostas(
