@@ -8,7 +8,9 @@
 </head>
 
 <body>
+
     <a href="index.html">Voltar para pagina principal</a>
+
     <h2>Criar Quiz</h2>
 
     Nome:
@@ -16,7 +18,9 @@
     <br><br>
 
     Dificuldade:
-    <input type="number" id="dificuldade">
+    <select id="dificuldade">
+        <option value="">Selecione...</option>
+    </select>
     <br><br>
 
     Matéria:
@@ -45,9 +49,43 @@
         const api = "../config/criar_quiz.php";
 
         let perguntas = [];
+        let tipos = [];
 
         window.onload = function () {
             carregarMaterias();
+            carregarTipos();
+            carregarDificuldades(); // ✅ NOVO
+        }
+
+        // =========================
+        // NOVO: DIFICULDADE
+        // =========================
+        function carregarDificuldades() {
+
+            fetch(api + "?tipo=dificuldade")
+                .then(r => r.json())
+                .then(dados => {
+
+                    let select = document.getElementById("dificuldade");
+
+                    dados.forEach(d => {
+                        select.innerHTML += `
+                            <option value="${d.id}">
+                                ${d.dificuldade}
+                            </option>
+                        `;
+                    });
+
+                });
+
+        }
+
+        function carregarTipos() {
+            fetch(api + "?tipo=tipos_perguntas")
+                .then(r => r.json())
+                .then(dados => {
+                    tipos = dados;
+                });
         }
 
         function carregarMaterias() {
@@ -64,7 +102,7 @@
                                 ${m.nome_materia}
                             </option>
                         `;
-                    });  
+                    });
 
                 });
 
@@ -99,15 +137,21 @@
 
             perguntas.push({
                 descricao: "",
+                tipo: "",
                 respostas: []
             });
 
             render();
         }
 
-        function addResposta(pIndex) {
+        function removerPergunta(i) {
+            perguntas.splice(i, 1);
+            render();
+        }
 
-            perguntas[pIndex].respostas.push({
+        function addResposta(i) {
+
+            perguntas[i].respostas.push({
                 descricao: "",
                 certo: false
             });
@@ -115,22 +159,49 @@
             render();
         }
 
+        function removerResposta(i, j) {
+            perguntas[i].respostas.splice(j, 1);
+            render();
+        }
+
         function updatePergunta(i, valor) {
             perguntas[i].descricao = valor;
+        }
+
+        function updateTipo(i, tipo) {
+
+            perguntas[i].tipo = tipo;
+            perguntas[i].respostas = [];
+
+            render();
         }
 
         function updateResposta(i, j, valor) {
             perguntas[i].respostas[j].descricao = valor;
         }
 
-        function updateCorreta(i, j, valor) {
+        function updateCorreta(i, j) {
 
-            // garante apenas 1 correta
             perguntas[i].respostas.forEach(r => r.certo = false);
-
-            perguntas[i].respostas[j].certo = valor;
+            perguntas[i].respostas[j].certo = true;
 
             render();
+        }
+
+        function marcarMultipla(i, j, valor) {
+            perguntas[i].respostas[j].certo = valor;
+        }
+
+        function setTexto(i, valor) {
+            perguntas[i].resposta_texto = valor;
+        }
+
+        function setVF(i, valor) {
+            perguntas[i].vf = valor;
+        }
+
+        function setOrdem(i, j, valor) {
+            perguntas[i].respostas[j].ordem = valor;
         }
 
         function render() {
@@ -140,39 +211,130 @@
             perguntas.forEach((p, i) => {
 
                 html += `
-                    <div style="border:1px solid #000; padding:10px; margin:10px">
+                <div style="border:1px solid #000; padding:10px; margin:10px">
 
-                        Pergunta:
-                        <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
+                    <button onclick="removerPergunta(${i})">Remover</button>
 
-                        <br><br>
+                    <br><br>
 
-                        <button onclick="addResposta(${i})">+ Resposta</button>
+                    Pergunta:
+                    <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
 
-                        <ul>
+                    <br><br>
+
+                    Tipo:
+                    <select onchange="updateTipo(${i}, this.value)">
+                        <option value="">Selecione...</option>
                 `;
 
-                p.respostas.forEach((r, j) => {
-
+                tipos.forEach(t => {
                     html += `
-                        <li>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                            
-                            Correta?
-                            <input 
-                                type="checkbox"
-                                onchange="updateCorreta(${i}, ${j}, this.checked)"
-                                ${r.certo ? "checked" : ""}
-                            >
-                        </li>
+                        <option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>
+                            ${t.nome_tipo}
+                        </option>
                     `;
-
                 });
 
-                html += `
-                        </ul>
-                    </div>
-                `;
+                html += `</select><br><br>`;
+
+                if (p.tipo == 1) {
+
+                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
+
+                    p.respostas.forEach((r, j) => {
+
+                        html += `
+                        <li>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            <input type="radio" name="correta_${i}"
+                                onchange="updateCorreta(${i}, ${j})"
+                                ${r.certo ? "checked" : ""}>
+                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
+                        </li>
+                        `;
+                    });
+
+                    html += `</ul>`;
+                }
+
+                if (p.tipo == 2) {
+
+                    html += `
+                        Resposta:
+                        <input onchange="setTexto(${i}, this.value)" value="${p.resposta_texto ?? ""}">
+                    `;
+                }
+
+                if (p.tipo == 3) {
+
+                    html += `
+                        <label>
+                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, true)">
+                            Verdadeiro
+                        </label>
+
+                        <label>
+                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, false)">
+                            Falso
+                        </label>
+                    `;
+                }
+
+                if (p.tipo == 4) {
+
+                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
+
+                    p.respostas.forEach((r, j) => {
+
+                        html += `
+                        <li>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            <input type="checkbox"
+                                onchange="marcarMultipla(${i}, ${j}, this.checked)"
+                                ${r.certo ? "checked" : ""}>
+                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
+                        </li>
+                        `;
+                    });
+
+                    html += `</ul>`;
+                }
+
+                if (p.tipo == 5) {
+
+                    html += `<button onclick="addResposta(${i})">+ Item</button><ul>`;
+
+                    p.respostas.forEach((r, j) => {
+
+                        html += `
+                        <li>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            Ordem:
+                            <input type="number" onchange="setOrdem(${i}, ${j}, this.value)">
+                        </li>
+                        `;
+                    });
+
+                    html += `</ul>`;
+                }
+
+                if (p.tipo == 6) {
+
+                    html += `<button onclick="addResposta(${i})">+ Item</button><ul>`;
+
+                    p.respostas.forEach((r, j) => {
+
+                        html += `
+                        <li draggable="true">
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                        </li>
+                        `;
+                    });
+
+                    html += `</ul>`;
+                }
+
+                html += `</div>`;
             });
 
             document.getElementById("perguntas").innerHTML = html;
@@ -180,23 +342,49 @@
 
         function salvarQuiz() {
 
+            let nome = document.getElementById("nome").value.trim();
+            let dificuldade = document.getElementById("dificuldade").value;
+            let conteudo = document.getElementById("conteudo").value;
+
+            if (!nome) return alert("Informe o nome");
+            if (!dificuldade) return alert("Informe a dificuldade");
+            if (!conteudo) return alert("Selecione o conteúdo");
+            if (perguntas.length === 0) return alert("Adicione perguntas");
+
+            for (let i = 0; i < perguntas.length; i++) {
+
+                let p = perguntas[i];
+
+                if (!p.descricao) return alert(`Pergunta ${i + 1} vazia`);
+                if (!p.tipo) return alert(`Selecione tipo da pergunta ${i + 1}`);
+
+                if (p.tipo == 1) {
+
+                    if (p.respostas.length < 2) return alert(`Pergunta ${i + 1} precisa de 2 respostas`);
+
+                    let corretas = p.respostas.filter(r => r.certo);
+                    if (corretas.length !== 1) return alert(`Pergunta ${i + 1} precisa de 1 correta`);
+                }
+
+                if (p.tipo == 2 && !p.resposta_texto)
+                    return alert(`Pergunta ${i + 1} precisa resposta`);
+
+                if (p.tipo == 3 && p.vf === undefined)
+                    return alert(`Pergunta ${i + 1} precisa VF`);
+            }
+
             fetch(api + "?tipo=quiz_completo", {
                 method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
+                headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    nome: document.getElementById("nome").value,
-                    dificuldade: document.getElementById("dificuldade").value,
-                    id_conteudo: document.getElementById("conteudo").value,
-                    perguntas: perguntas
+                    nome,
+                    dificuldade,
+                    id_conteudo: conteudo,
+                    perguntas
                 })
             })
                 .then(r => r.json())
-                .then(d => {
-                    alert(d.mensagem);
-                });
-
+                .then(d => alert(d.mensagem || d.erro));
         }
 
     </script>
