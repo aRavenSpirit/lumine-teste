@@ -6,6 +6,9 @@
     <title>Login</title>
     <link rel="stylesheet" href="./style/login.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+<div id="mensagem"></div>
 </head>
 
 <body>
@@ -30,8 +33,57 @@
         </div>
 
         <p class="texto-cadastro">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
+
+        <div class="divisor">
+            <span>ou</span>
+        </div>
+
+        <div id="g_id_onload"
+            data-client_id="369242179296-3p1mokk6kksdhtcgl7puf7cjbj8e70kr.apps.googleusercontent.com"
+            data-context="signin"
+            data-ux_mode="popup"
+            data-callback="handleCredentialResponse"
+            data-auto_prompt="false">
+        </div>
+
+        <div class="g_id_signin"
+            data-type="standard"
+            data-shape="rectangular"
+            data-theme="outline"
+            data-text="signin_with"
+            data-size="large"
+            data-logo_alignment="left"
+            data-width="100%"> 
+        </div>
+
     </div>
     <script>
+
+         // 3. ADICIONADO: Função que lida com a resposta do Google
+        function handleCredentialResponse(response) {
+            let elementoMensagem = document.getElementById('mensagem');
+            elementoMensagem.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando com Google...';
+
+            fetch("../config/login_google.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ token: response.credential })
+            })
+            .then(r => r.json())
+            .then(d => {
+                if (d.status) {
+                    elementoMensagem.style.color = "green";
+                    elementoMensagem.innerHTML = "Sucesso! Entrando...";
+                    window.location = "perfil.php";
+                } else {
+                    elementoMensagem.style.color = "#ff3636";
+                    elementoMensagem.innerHTML = "Erro Google: " + d.erro;
+                }
+            })
+            .catch(err => {
+                elementoMensagem.innerHTML = "Erro ao conectar com o servidor.";
+            });
+        }
 
         function login(){
 
