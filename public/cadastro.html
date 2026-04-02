@@ -25,7 +25,10 @@
 
                 <input type="email" name="email" placeholder="Digite seu email" id="email" required>
            
-                <input type="password" name="senha" placeholder="Digite sua senha" id="senha" required>
+                <div class="container-senha">
+                    <input type="password" name="senha" placeholder="Digite sua senha" id="senha" onfocus="MostrarMensagem()" onblur="EsconderMensagem()" required>
+                </div>
+                <p id="mensagem"></p>
                 
                 <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
 
@@ -45,6 +48,16 @@
     </div>
 
     <script>
+        function MostrarMensagem(){
+            let elementoMensagem = document.getElementById("mensagem");
+            elementoMensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres.";
+        }
+
+        function EsconderMensagem(){
+            let elementoMensagem = document.getElementById("mensagem");
+            elementoMensagem.innerHTML = "";
+        }
+
         const api = "../config/api.php";
 
         window.onload = function () {
@@ -74,6 +87,13 @@
         function cadastrar(){
             let senha = document.getElementById("senha").value;
             let confirmar = document.getElementById("confirmar").value;
+            let elementoMensagem = document.getElementById("mensagem");
+
+            if(senha.length < 6){
+                elementoMensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres.";
+                elementoMensagem.style.color = "#ff3636";
+                return;
+            }
 
             if(senha !== confirmar){
                 alert("Senhas diferentes");
@@ -95,7 +115,15 @@
             .then(r=>r.json())
             .then(d=>{
                 
-                window.location="login.html";
+                alert("Conta Criada! Redirecionando...");
+                
+                setTimeout(() => {
+                    window.location="login.html";
+                }, 2000);
+            })
+            .catch(err => {
+                console.error("Erro na requisição:", err);
+                resultadoFinal.innerHTML = "Erro ao conectar com o servidor.";
             });
 
         }

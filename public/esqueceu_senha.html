@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recuperar Senha</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        *{
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+
+        main{
+            display: flex;
+            flex-direction: row; /* Lado a lado por padrão */
+            font-family: Arial, Helvetica, sans-serif;
+            overflow: hidden;
+            min-height: 100vh; /* Garante que ocupe a tela inteira verticalmente */
+            width: 100vw;
+        }
+
+        .secao2{
+            background-size: 3500px;
+            display: flex;
+            justify-content: center;
+            align-items: center; /* Centralizado no PC */
+            min-height: 100vh;
+            font-family: 'Open_Sans', sans-serif;
+            padding: 20px;
+            background: linear-gradient( to left, rgb(227, 240, 254, 0.65), rgb(227, 240, 254, 0.65)), url('img/background-index.jpg');
+        }
+
+        .container-secao2{
+            position: relative; 
+            background-color: #ffffff;
+            width: 100%;
+            max-width: 480px; 
+            border-radius: 30px;
+            border: 4px solid #1595c4;
+            padding: 60px 40px 40px 40px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+        }
+
+        .titulo{
+             color: #333;
+        }
+
+        .titulo::after {
+            content: '';
+            display: block;
+            width: 260px;
+            height: 5px;
+            background-color: #a3e1ff;
+            border-radius: 10px;
+            margin-top: 8px;
+        }
+
+        .instrucao{
+            text-align: center; 
+            margin-top: 45px; 
+            color: #333;
+        }
+
+
+        .icone-site {
+            width: 75px;   
+            height: auto;
+        }
+
+        form{
+            display: flex;
+            flex-direction: column;
+            margin-top: 40px;
+            padding: 5px;
+            color: #333;
+        }
+
+        label{
+            display: block;  
+        }
+
+
+
+        /* Container que agrupa o ícone e o seu input */
+        .input-box {
+            display: flex;
+            align-items: center;
+            background-color: white;
+            margin-bottom: 10px;
+            border: 1px solid #bdbdbd;
+            border-radius: 4px; /* Arredondado leve igual da imagem */
+            padding-left: 10px;  /* Espaço do ícone em relação à borda esquerda */
+            height: 40px;       /* Altura padrão de inputs modernos */
+            box-shadow: inset 0 1px 2px rgba(0,0,0,0.1); /* Sombra interna suave */
+        }
+
+        /* Estilo do ícone */
+        .input-box i {
+            color: #333;
+            font-size: 16px;
+        }
+
+        /* O SEU input original estilizado para sumir com as bordas dele */
+        .input-box input {
+            border: none;       /* Remove a borda original do seu input */
+            outline: none;      /* Remove o contorno azul ao clicar */
+            background: transparent;
+            padding: 10px 20px;
+            width: 100%;        /* Faz o input ocupar o resto da barra */
+            height: 100%;
+            font-family: inherit;
+            color: #333;
+            margin-left: 10px;
+        }
+
+        /* Efeito quando você clica para digitar (opcional, mas recomendado) */
+        .input-box:focus-within {
+            border-color: #999;
+        }
+
+        .enviar{
+            background-color: #a3e1ff;
+            padding: 10px 55px;
+            border-radius: 100px;
+            box-shadow: 6px 6px 0px #1595c4;
+            border: 3px solid #495861;
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: black;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 20px;
+        }
+
+        .enviar:hover{
+            background-color: #8bd8ff;
+            transform: scale(1.05);
+        }
+
+        
+    </style>
+</head>
+<body>
+    <main>
+        <section class="secao2" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
+            <div class="container-secao2">
+                <h1 class="titulo">Recuperar Senha</h1>
+                <p class="instrucao">
+                    Insira seu e-mail cadastrado para receber as instruções de recuperação.
+                </p>
+                
+                <form id="formRecuperar">
+                    <label for="email">Email:</label>
+                    <div class="input-box">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="Insira seu email" required>
+                    </div>
+            
+                    <p id="mensagem"></p>
+            
+                    <button class="enviar" type="button" onclick="enviarSolicitacao()">Enviar Link</button>
+                    
+                    <div style="text-align: center; margin-top: 20px;">
+                        <a href="login.html" style="text-decoration: none; color: #333;">Voltar para o Login</a>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <script>
+function enviarSolicitacao() {
+    let msg = document.getElementById('mensagem');
+    let emailInput = document.getElementById('email').value;
+
+    if(!emailInput) {
+        msg.innerHTML = "Por favor, preencha o campo de e-mail.";
+        msg.style.color = "#ff3636";
+        return;
+    }
+
+    msg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+    msg.style.color = "white";
+
+    fetch("../config/solicitar_reset.php", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+        },
+        body: "email=" + encodeURIComponent(emailInput)
+    })
+    .then(async r => {
+        const text = await r.text();
+        // LOG para depuração: se travar, olhe o Console (F12) para ver o que o PHP mandou
+        console.log("Resposta bruta do servidor:", text);
+        
+        try {
+            return JSON.parse(text);
+        } catch (jsonError) {
+            // Isso captura o erro de "Fatal Error" ou "Warning" que o PHP possa ter enviado
+            throw new Error("O servidor retornou um erro de texto em vez de JSON. Verifique o console.");
+        }
+    })
+    .then(d => {
+        if (d.status) {
+            msg.innerHTML = '<i class="fas fa-check-circle"></i> Link enviado! Verifique seu e-mail.';
+            msg.style.color = "#00ff00"; // Um verde mais visível no fundo escuro
+        } else {
+            msg.innerHTML = '<i class="fas fa-times-circle"></i> ' + d.msg;
+            msg.style.color = "#ff3636";
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        msg.innerHTML = "Erro ao conectar com o servidor: " + err.message;
+        msg.style.color = "#ff3636";
+    });
+}
+</script>
+</body>
+</html>

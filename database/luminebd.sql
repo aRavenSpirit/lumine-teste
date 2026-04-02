@@ -269,3 +269,12 @@ create table tentativas(
     select nome_escolaridade from escolaridade where usuario.escolaridade_id = escolaridade.id_escolaridade;
     select * from materia;
     select * from conteudo;
+
+
+
+    CREATE TABLE recuperacao_senha (
+    id int AUTO_INCREMENT primary key,
+    email varchar(255) NOT NULL,
+    token varchar(255) NOT NULL,
+    expira_em DATETIME NOT NULL
+);
