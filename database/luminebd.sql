@@ -205,7 +205,7 @@ create table conteudo(
 create table dificuldade (
     id int primary key auto_increment,
     dificuldade varchar(30)
-)
+);
 
 -- ADIÇÃO DE DIFICULDADES --
     INSERT INTO dificuldade (id, dificuldade) VALUES
