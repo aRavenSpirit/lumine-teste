@@ -30,7 +30,7 @@ create table usuario(
     escolaridade_id int,
     foreign key (escolaridade_id) references escolaridade (id_escolaridade),
     criacao date,
-    foto_perfil varchar(255)
+    foto_perfil longtext default null
 );
 
 create table materia(
@@ -265,6 +265,50 @@ create table tentativas(
     tempo time
 );
 
+create table configuracoes (
+    id int primary key auto_increment,
+    id_usuario int,
+    foreign key (id_usuario) referencer usuario (id),
+    tema_escuro TINYINT default 0, -- 0: claro, 1: escuro
+    tamanho_fonte TINYINT default 2, -- 1: pequena, 2: média, 3: grande
+    cores_materia json default (json_object(
+        -- cores do background
+        'bg_claro', '#FFFFFF',
+        'bg_escuro', '#121212',
+
+        -- cores das matérias
+        'matematica', '#3498db',
+        'portugues', '#e74c3c',
+        'historia', '#f1c40f',
+        'geografia', '#2ecc71',
+        'biologia', '#27ae60',
+        'fisica', '#8e44ad',
+        'quimica', '#d35400',
+        'ingles', '#2980b9',
+        'artes', '#e67e22',
+        'filosofia', '#7f8c8d',
+        'sociologia', '#16a085',
+        'educacao_fisica', '#c0392b',
+        'literatura', '#9b59b6'
+    )),
+)
+
+-- Exemplo caso o usuário quiser alterar a cor do fundo
+UPDATE configuracoes 
+SET tema_escuro = 1 
+WHERE id_usuario = 1;
+
+-- Exemplo caso o usuário quiser alterar a fonte
+UPDATE configuracoes 
+SET tamanho_fonte = 3 
+WHERE id_usuario = 1;
+
+-- Exemplo caso o usuário quiser alterar a cor das matérias
+UPDATE configuracoes 
+SET cores_materias = JSON_SET(cores_materias, '$.matematica', '#6200ee') 
+WHERE usuario_id = 101;
+
+
 -- TESTES
     select nome_escolaridade from escolaridade where usuario.escolaridade_id = escolaridade.id_escolaridade;
     select * from materia;
@@ -278,3 +322,5 @@ create table tentativas(
     token varchar(255) NOT NULL,
     expira_em DATETIME NOT NULL
 );
+
+
