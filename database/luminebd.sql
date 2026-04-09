@@ -35,7 +35,8 @@ create table usuario(
 
 create table materia(
     id int primary key auto_increment,
-    nome_materia varchar(255)
+    nome_materia varchar(255),
+    imagem_materia longtext default null
 );
 
 insert into materia (nome_materia) values 
@@ -56,6 +57,7 @@ create table conteudo(
     id int primary key auto_increment,
     nome varchar(255),
     id_materia int,
+    imagem_conteudo longtext default null,
     foreign key (id_materia) references materia (id)
 );
 
@@ -218,6 +220,7 @@ create table quizzes(
     nome varchar(255),
     id_dificuldade int,
     id_conteudo int,
+    imagem_quiz longtext default null,
     foreign key (id_dificuldade) references dificuldade (id),
     foreign key (id_conteudo) references conteudo (id)
 );
@@ -241,6 +244,7 @@ create table perguntas(
     id int primary key auto_increment,
     id_quiz int,
     id_tipo int,
+    imagem_perguntas longtext default null,
     foreign key (id_tipo) references tipos_perguntas (id),
     foreign key (id_quiz) references quizzes (id),
     descricao varchar(255)
@@ -268,45 +272,45 @@ create table tentativas(
 create table configuracoes (
     id int primary key auto_increment,
     id_usuario int,
-    foreign key (id_usuario) referencer usuario (id),
     tema_escuro TINYINT default 0, -- 0: claro, 1: escuro
     tamanho_fonte TINYINT default 2, -- 1: pequena, 2: média, 3: grande
-    cores_materia json default (json_object(
+    cores_materias (
         -- cores do background
         'bg_claro', '#FFFFFF',
         'bg_escuro', '#121212',
 
         -- cores das matérias
-        'matematica', '#3498db',
-        'portugues', '#e74c3c',
-        'historia', '#f1c40f',
-        'geografia', '#2ecc71',
-        'biologia', '#27ae60',
-        'fisica', '#8e44ad',
-        'quimica', '#d35400',
-        'ingles', '#2980b9',
-        'artes', '#e67e22',
+        'ciencias', 'rgb(96, 255, 165)'
+        'historia', '#9e0ff1',
+        'geografia', '#f3caa4',
         'filosofia', '#7f8c8d',
-        'sociologia', '#16a085',
-        'educacao_fisica', '#c0392b',
-        'literatura', '#9b59b6'
-    )),
+        'fisica', '#0becec',
+        'quimica', '#0e00d3',
+        'biologia', '#0ddd64',
+        'sociologia', '#000000',
+        'matematica', '#db9334',
+        'portugues', '#3c80e7',
+        'educacao_fisica', '#fffb00',
+        'artes', '#e6224d',
+        'ingles', '#e27bd4',
+    ),
+    foreign key (id_usuario) references usuario (id),
 )
 
 -- Exemplo caso o usuário quiser alterar a cor do fundo
-UPDATE configuracoes 
-SET tema_escuro = 1 
-WHERE id_usuario = 1;
+    UPDATE configuracoes 
+    SET tema_escuro = 1 
+    WHERE id_usuario = 1;
 
 -- Exemplo caso o usuário quiser alterar a fonte
-UPDATE configuracoes 
-SET tamanho_fonte = 3 
-WHERE id_usuario = 1;
+    UPDATE configuracoes 
+    SET tamanho_fonte = 3 
+    WHERE id_usuario = 1;
 
 -- Exemplo caso o usuário quiser alterar a cor das matérias
-UPDATE configuracoes 
-SET cores_materias = JSON_SET(cores_materias, '$.matematica', '#6200ee') 
-WHERE usuario_id = 101;
+    UPDATE configuracoes 
+    SET cores_materias = JSON_SET(cores_materias, '$.matematica', '#6200ee') 
+    WHERE usuario_id = 101;
 
 
 -- TESTES
@@ -322,5 +326,3 @@ WHERE usuario_id = 101;
     token varchar(255) NOT NULL,
     expira_em DATETIME NOT NULL
 );
-
-
