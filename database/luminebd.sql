@@ -49,7 +49,9 @@ insert into materia (nome_materia) values
 ('Biologia'),
 ('Inglês'),
 ('Artes'),
-('Educação Física');
+('Educação Física'),
+('Filosofia'),
+('Sociologia');
 
 
 create table conteudo(
