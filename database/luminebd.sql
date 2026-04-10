@@ -272,29 +272,29 @@ create table tentativas(
 create table configuracoes (
     id int primary key auto_increment,
     id_usuario int,
+    foreign key (id_usuario) references usuario (id),
     tema_escuro TINYINT default 0, -- 0: claro, 1: escuro
     tamanho_fonte TINYINT default 2, -- 1: pequena, 2: média, 3: grande
-    cores_materias (
+    cores_materia json default (json_object(
         -- cores do background
         'bg_claro', '#FFFFFF',
         'bg_escuro', '#121212',
 
         -- cores das matérias
-        'ciencias', 'rgb(96, 255, 165)'
-        'historia', '#9e0ff1',
-        'geografia', '#f3caa4',
+        'matematica', '#3498db',
+        'portugues', '#e74c3c',
+        'historia', '#f1c40f',
+        'geografia', '#2ecc71',
+        'biologia', '#27ae60',
+        'fisica', '#8e44ad',
+        'quimica', '#d35400',
+        'ingles', '#2980b9',
+        'artes', '#e67e22',
         'filosofia', '#7f8c8d',
-        'fisica', '#0becec',
-        'quimica', '#0e00d3',
-        'biologia', '#0ddd64',
-        'sociologia', '#000000',
-        'matematica', '#db9334',
-        'portugues', '#3c80e7',
-        'educacao_fisica', '#fffb00',
-        'artes', '#e6224d',
-        'ingles', '#e27bd4',
-    ),
-    foreign key (id_usuario) references usuario (id),
+        'sociologia', '#16a085',
+        'educacao_fisica', '#c0392b',
+        'literatura', '#9b59b6'
+    ))
 )
 
 -- Exemplo caso o usuário quiser alterar a cor do fundo
