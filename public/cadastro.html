@@ -25,14 +25,16 @@
                 <input type="text" name="nome_usuario" placeholder="Crie um nome de usuário" id="nome" required>
 
                 <input type="email" name="email" placeholder="Digite seu email" id="email" required>
+
                 <select id="escolaridade">
                     <option value="">Escolaridade</option>
                 </select>
+
                 <div class="container-senha">
-                    
                     <input type="password" name="senha" placeholder="Digite sua senha" id="senha" onfocus="MostrarMensagem()" onblur="EsconderMensagem()" required>
-                    <i onclick="toggleSenha()"  class="fas fa-eye olho-senha"></i>
+                    <i onclick="toggleSenha()" class="fas fa-eye olho-senha"></i>
                 </div>
+
                 <p id="mensagem"></p>
                 
                 <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
@@ -41,9 +43,8 @@
             <p class="texto-cadastro">Já tem conta? <a href="login.html">Login</a></p>
             <a href="admin.php">Admin teste</a>
 
-
             <div class="area-botao">
-            <button onclick="cadastrar()" class="botao-cadastrar" >Cadastrar</button>
+                <button onclick="cadastrar()" class="botao-cadastrar">Cadastrar</button>
             </div>
         </div>
     </div>
@@ -66,29 +67,36 @@
         }
 
         function carregarEscolaridades() {
-        fetch(api + "?tipo=escolaridade")
-            .then(r => r.json())
-            .then(dados => {
+            fetch(api + "?tipo=escolaridade")
+                .then(r => r.json())
+                .then(dados => {
 
-                let select = document.getElementById("escolaridade");
+                    let select = document.getElementById("escolaridade");
 
-                dados.forEach(e => {
-
-                    select.innerHTML += `
-                        <option value="${e.id_escolaridade}">
-                            ${e.nome_escolaridade}
-                        </option>
-                    `;
-
+                    dados.forEach(e => {
+                        select.innerHTML += `
+                            <option value="${e.id_escolaridade}">
+                                ${e.nome_escolaridade}
+                            </option>
+                        `;
+                    });
                 });
+        }
 
-            });
-
-    }
         function cadastrar(){
+
+            let nome = document.getElementById("nome").value.trim();
+            let email = document.getElementById("email").value.trim();
             let senha = document.getElementById("senha").value;
             let confirmar = document.getElementById("confirmar").value;
+            let escolaridade = document.getElementById("escolaridade").value;
+
             let elementoMensagem = document.getElementById("mensagem");
+
+            // ✅ VALIDAÇÕES ADICIONADAS
+            if(!nome) return alert("Nome é obrigatório");
+            if(!email) return alert("Email é obrigatório");
+            if(!escolaridade) return alert("Selecione a escolaridade");
 
             if(senha.length < 6){
                 elementoMensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres.";
@@ -107,15 +115,20 @@
                     "Content-Type":"application/json"
                 },
                 body:JSON.stringify({
-                    nome:document.getElementById("nome").value,
-                    email:document.getElementById("email").value,
-                    senha:senha,
-                    escolaridade_id:document.getElementById("escolaridade").value
+                    nome: nome,
+                    email: email,
+                    senha: senha,
+                    escolaridade_id: escolaridade
                 })
             })
             .then(r=>r.json())
             .then(d=>{
                 
+                if(d.erro){
+                    alert(d.erro);
+                    return;
+                }
+
                 alert("Conta Criada! Redirecionando...");
                 
                 setTimeout(() => {
@@ -124,9 +137,8 @@
             })
             .catch(err => {
                 console.error("Erro na requisição:", err);
-                resultadoFinal.innerHTML = "Erro ao conectar com o servidor.";
+                alert("Erro ao conectar com o servidor.");
             });
-
         }
 
         function toggleSenha() {
