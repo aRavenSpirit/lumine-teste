@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="./style/cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
+
+    <style>
+        .erro {
+            color: #ff3636;
+            font-size: 0.85rem;
+            margin-left: 10px;
+        }
+    </style>
 </head>
 
 <body>
@@ -23,12 +31,15 @@
                 <input type="hidden" id="id">
                 
                 <input type="text" name="nome_usuario" placeholder="Crie um nome de usuário" id="nome" required>
+                <small id="erro_nome" class="erro"></small>
 
                 <input type="email" name="email" placeholder="Digite seu email" id="email" required>
+                <small id="erro_email" class="erro"></small>
 
                 <select id="escolaridade">
                     <option value="">Escolaridade</option>
                 </select>
+                <small id="erro_escolaridade" class="erro"></small>
 
                 <div class="container-senha">
                     <input type="password" name="senha" placeholder="Digite sua senha" id="senha" onfocus="MostrarMensagem()" onblur="EsconderMensagem()" required>
@@ -36,8 +47,10 @@
                 </div>
 
                 <p id="mensagem"></p>
+                <small id="erro_senha" class="erro"></small>
                 
                 <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
+                <small id="erro_confirmar" class="erro"></small>
             </div>
 
             <p class="texto-cadastro">Já tem conta? <a href="login.html">Login</a></p>
@@ -83,7 +96,13 @@
                 });
         }
 
+        function limparErros(){
+            document.querySelectorAll(".erro").forEach(e => e.innerText = "");
+        }
+
         function cadastrar(){
+
+            limparErros();
 
             let nome = document.getElementById("nome").value.trim();
             let email = document.getElementById("email").value.trim();
@@ -91,23 +110,34 @@
             let confirmar = document.getElementById("confirmar").value;
             let escolaridade = document.getElementById("escolaridade").value;
 
-            let elementoMensagem = document.getElementById("mensagem");
+            let erro = false;
 
-            // ✅ VALIDAÇÕES ADICIONADAS
-            if(!nome) return alert("Nome é obrigatório");
-            if(!email) return alert("Email é obrigatório");
-            if(!escolaridade) return alert("Selecione a escolaridade");
+            if(!nome){
+                document.getElementById("erro_nome").innerText = "Nome é obrigatório";
+                erro = true;
+            }
+
+            if(!email){
+                document.getElementById("erro_email").innerText = "Email é obrigatório";
+                erro = true;
+            }
+
+            if(!escolaridade){
+                document.getElementById("erro_escolaridade").innerText = "Selecione a escolaridade";
+                erro = true;
+            }
 
             if(senha.length < 6){
-                elementoMensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres.";
-                elementoMensagem.style.color = "#ff3636";
-                return;
+                document.getElementById("erro_senha").innerText = "Mínimo 6 caracteres";
+                erro = true;
             }
 
             if(senha !== confirmar){
-                alert("Senhas diferentes");
-                return;
+                document.getElementById("erro_confirmar").innerText = "Senhas diferentes";
+                erro = true;
             }
+
+            if(erro) return;
 
             fetch("../config/cadastrar.php",{
                 method:"POST",
@@ -125,11 +155,12 @@
             .then(d=>{
                 
                 if(d.erro){
-                    alert(d.erro);
+                    document.getElementById("erro_email").innerText = d.erro;
                     return;
                 }
 
-                alert("Conta Criada! Redirecionando...");
+                document.getElementById("mensagem").innerText = "Conta criada com sucesso!";
+                document.getElementById("mensagem").style.color = "green";
                 
                 setTimeout(() => {
                     window.location="login.html";
@@ -137,7 +168,8 @@
             })
             .catch(err => {
                 console.error("Erro na requisição:", err);
-                alert("Erro ao conectar com o servidor.");
+                document.getElementById("mensagem").innerText = "Erro ao conectar com o servidor.";
+                document.getElementById("mensagem").style.color = "red";
             });
         }
 

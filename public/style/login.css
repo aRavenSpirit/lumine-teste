@@ -141,6 +141,13 @@ input::placeholder {
     transform: translate(4px, 4px);
 }
 
+
+#mensagem {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
 /* ---  RESPONSIVIDADE UNIVERSAL --- */
 
 @media screen and (max-width: 768px) {

@@ -7,28 +7,24 @@
     <link rel="stylesheet" href="./style/login.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-
-<div id="mensagem"></div>
 </head>
 
 <body>
     <div class="container-login">
-
         <div class="area-icone">
             <a href="index.html"><img src="img/LUMINE.png" alt="Logo" class="icone-site"></a>
         </div>
 
         <h1 class="titulo-log">Login</h1>
-        <div class="conteudo-form">
+        <div class="conteudo-form"> 
             <div class="blocos-log">
 
                 <input type="email" name="email" placeholder="Digite seu email" id="email" required>
-
                 <input type="password" name="senha" placeholder="Digite sua senha" id="senha" required>
-
+                <div id="mensagem"></div>
             </div>
             <div class="area-botao">
-            <button onclick="login()" class="botao-login" >Entrar</button>
+                <button onclick="login()" class="botao-login">Entrar</button>
             </div>
         </div>
 
@@ -57,12 +53,14 @@
         </div>
 
     </div>
+
     <script>
 
-         // 3. ADICIONADO: Função que lida com a resposta do Google
         function handleCredentialResponse(response) {
             let elementoMensagem = document.getElementById('mensagem');
-            elementoMensagem.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Autenticando com Google...';
+
+            elementoMensagem.style.color = "#333";
+            elementoMensagem.innerHTML = "Autenticando com Google...";
 
             fetch("../config/login_google.php", {
                 method: "POST",
@@ -80,33 +78,60 @@
                     elementoMensagem.innerHTML = "Erro Google: " + d.erro;
                 }
             })
-            .catch(err => {
+            .catch(() => {
+                elementoMensagem.style.color = "#ff3636";
                 elementoMensagem.innerHTML = "Erro ao conectar com o servidor.";
             });
         }
 
         function login(){
 
-        fetch("../config/login.php",{
-            method:"POST",
-            headers:{
-                "Content-Type":"application/json"
-            },
-            body:JSON.stringify({
-                email:document.getElementById("email").value,
-                senha:document.getElementById("senha").value
+            let email = document.getElementById("email").value.trim();
+            let senha = document.getElementById("senha").value;
+            let msg = document.getElementById("mensagem");
+
+            msg.innerHTML = "";
+
+            // ✅ validação
+            if(!email){
+                msg.style.color = "#ff3636";
+                msg.innerHTML = "Informe o email";
+                return;
+            }
+
+            if(!senha){
+                msg.style.color = "#ff3636";
+                msg.innerHTML = "Informe a senha";
+                return;
+            }
+
+            fetch("../config/login.php",{
+                method:"POST",
+                headers:{
+                    "Content-Type":"application/json"
+                },
+                body:JSON.stringify({
+                    email: email,
+                    senha: senha
+                })
             })
-        })
-        .then(r=>r.json())
-        .then(d=>{
+            .then(r=>r.json())
+            .then(d=>{
 
-        if(d.status){
-            window.location="perfil.php";
-        }else{
-            alert("Login inválido");
-        }
+                if(d.status){
+                    msg.style.color = "green";
+                    msg.innerHTML = "Login realizado com sucesso!";
+                    window.location="home.html";
+                }else{
+                    msg.style.color = "#ff3636";
+                    msg.innerHTML = "Email ou senha inválidos";
+                }
 
-        });
+            })
+            .catch(() => {
+                msg.style.color = "#ff3636";
+                msg.innerHTML = "Erro ao conectar com o servidor.";
+            });
 
         }
 
