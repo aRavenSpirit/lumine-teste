@@ -19,7 +19,7 @@
 </header>
 
 <div class="sidebar">
-    <img src="img/LUMINE.png" width="100px">
+    <a href="index.html"><img src="img/LUMINE.png" width="100px"></a>
     <nav id="menuMaterias"></nav>
 </div>
 
@@ -112,8 +112,8 @@ function openModal(idMateria) {
 
             dados.forEach(c => {
                 html += `
-                    <div class="conteudo-item">
-                        <div class="conteudo-titulo" onclick="toggleQuizzes(${c.id}, this)">
+                    <div class="conteudo-item"  onclick="toggleQuizzes(${c.id}, this)">
+                        <div class="conteudo-titulo">
                             ${c.nome}
                         </div>
                         <div id="quiz_${c.id}" class="quiz-container"></div>

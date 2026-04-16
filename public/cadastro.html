@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <title>Cadastro</title>
     <link rel="stylesheet" href="./style/cadastro.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
 </head>
 
@@ -24,17 +25,17 @@
                 <input type="text" name="nome_usuario" placeholder="Crie um nome de usuário" id="nome" required>
 
                 <input type="email" name="email" placeholder="Digite seu email" id="email" required>
-           
+                <select id="escolaridade">
+                    <option value="">Escolaridade</option>
+                </select>
                 <div class="container-senha">
+                    
                     <input type="password" name="senha" placeholder="Digite sua senha" id="senha" onfocus="MostrarMensagem()" onblur="EsconderMensagem()" required>
+                    <i onclick="toggleSenha()"  class="fas fa-eye olho-senha"></i>
                 </div>
                 <p id="mensagem"></p>
                 
                 <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
-
-                <select id="escolaridade">
-                    <option value="">Escolaridade</option>
-                </select>
             </div>
 
             <p class="texto-cadastro">Já tem conta? <a href="login.html">Login</a></p>
@@ -126,6 +127,16 @@
                 resultadoFinal.innerHTML = "Erro ao conectar com o servidor.";
             });
 
+        }
+
+        function toggleSenha() {
+            const input = document.getElementById("senha");
+
+            if (input.type === "password") {
+                input.type = "text";
+            } else {
+                input.type = "password";
+            }
         }
 
     </script>

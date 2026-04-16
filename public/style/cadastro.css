@@ -154,6 +154,60 @@ input:focus, select:focus {
     text-decoration: underline;
 }
 
+.container-senha {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    position: relative; 
+    width: 100%; 
+}
+
+.container-senha input {
+    margin-bottom: 0; 
+    padding: 15px;
+    padding-right: 45px; 
+    width: 100%;
+    box-sizing: border-box; 
+}
+
+.olho-senha, .toggle-senha {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    user-select: none;
+    display: flex;
+    align-items: center;
+}
+
+#mensagem {
+    font-size: 0.9rem;
+}
+
+/* Tooltip container */
+.tooltip {
+  position: relative;
+  display: inline-block;
+  border-bottom: 1px dotted black; /* Add dots under the hoverable text */
+  cursor: pointer;
+}
+
+/* Tooltip text */
+.tooltiptext {
+  visibility: hidden; /* Hidden by default */
+  width: 130px;
+  background-color: black;
+  color: #ffffff;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1; /* Ensure tooltip is displayed above content */
+}
+
+
 /* --- RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
 
 @media screen and (max-width: 768px) {

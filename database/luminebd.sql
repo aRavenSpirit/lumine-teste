@@ -24,10 +24,10 @@ insert into escolaridade (nome_escolaridade) values
 
 create table usuario(
     id int primary key auto_increment,
-    nome varchar(255),
+    nome varchar(255) not null,
     email varchar (255) not null unique,
     senha varchar(255),
-    escolaridade_id int,
+    escolaridade_id int not null,
     foreign key (escolaridade_id) references escolaridade (id_escolaridade),
     criacao date,
     foto_perfil longtext default null
@@ -295,7 +295,7 @@ create table configuracoes (
         'educacao_fisica', '#c0392b',
         'literatura', '#9b59b6'
     ))
-)
+);
 
 -- Exemplo caso o usuário quiser alterar a cor do fundo
     UPDATE configuracoes 
