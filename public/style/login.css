@@ -59,7 +59,7 @@ body {
 .titulo-log::after {
     content: '';
     display: block;
-    width: 90px;
+    width: 120px;
     height: 6px;
     background-color: #a3e1ff;
     border-radius: 10px;

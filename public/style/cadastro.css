@@ -60,7 +60,7 @@ body {
 .titulo-cad::after {
     content: '';
     display: block;
-    width: 90px;
+    width: 265px;
     height: 6px;
     background-color: #a3e1ff;
     border-radius: 10px;
