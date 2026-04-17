@@ -15,7 +15,7 @@
 }
 
 body {
-    background: linear-gradient( to left, rgb(227, 240, 254, 0.65), rgb(227, 240, 254, 0.65)), url('../img/background-index.jpg');
+    background: linear-gradient(to left, rgba(227, 240, 254, 0.65), rgba(227, 240, 254, 0.65)), url('../img/background-index.jpg');
     background-size: 3500px;
     display: flex;
     justify-content: center;
@@ -31,244 +31,155 @@ body {
     background-color: #ffffff;
     width: 100%;
     max-width: 550px; 
-    border-radius: 30px;
-    border: 4px solid #1595c4;
-    padding: 50px 40px;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    border-radius: 40px; /* Igual ao login */
+    border: 3px solid #1595c4;
+    padding: 50px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
 /* --- ÍCONE (LOGOTIPO) --- */
 .area-icone {
     position: absolute;
-    top: 20px;     
-    right: 25px;    
+    top: 15px;      
+    right: 15px;    
 }
 
 .icone-site {
-    width: 75px;   
+    width: 90px;   
     height: auto;
 }
 
 /* --- TÍTULO --- */
 .titulo-cad {
-    margin: 0 0 30px 0;
-    font-size: 2.2rem;
-    color: #333;
+    margin-bottom: 40px;
+    font-size: 3rem;
+    color: #000;
+    font-weight: 800;
 }
 
 .titulo-cad::after {
     content: '';
     display: block;
-    width: 120px;
-    height: 5px;
+    width: 90px;
+    height: 6px;
     background-color: #a3e1ff;
     border-radius: 10px;
-    margin-top: 8px;
+    margin-top: -5px;
 }
 
 /* --- FORMULÁRIO --- */
-.conteudo-form {
-    display: flex;
-    flex-direction: column;
-}
-
 .blocos-cad {
     display: flex;
     flex-direction: column;
     width: 100%;
-    gap: 22px;
+    gap: 20px;
 }
 
 input, select {
     background-color: #a3e1ff;
-    padding: 15px 20px;
-    border-radius: 100px;
-    box-shadow: 6px 6px 0px #1595c4;
-    border: 2px solid #495861;
-    font-size: 1rem;
+    padding: 18px 25px;
+    border-radius: 50px;
+    border: 3px solid #3b4d58;
+    box-shadow: 0px 6px 0px #1595c4;
+    font-size: 1.1rem;
+    font-weight: 600;
     outline: none;
-    transition: all 0.2s ease-in-out;
+    transition: 0.2s;
     width: 100%;
 }
 
-/* Efeito ao clicar no campo (Focus) */
 input:focus, select:focus {
-    transform: translateY(-3px);
-    box-shadow: 8px 8px 0px #1595c4;
-    background-color: #bce8ff;
+    transform: translateY(2px);
+    box-shadow: 0px 3px 0px #1595c4;
 }
 
-.link-login {
-    margin-top: 5px;
-    margin-left: 15px;
-    font-size: 0.9rem;
-    color: #0749da;
-    text-decoration: underline;
-    font-weight: 600;
-}
-
-/* --- BOTÃO CADASTRAR --- */
-.area-botao {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
-}
-
-.botao-cadastrar {
-    background-color: #a3e1ff;
-    padding: 16px 60px;
-    border-radius: 100px;
-    box-shadow: 6px 6px 0px #1595c4;
-    border: 3px solid #495861;
-    font-size: 1.2rem;
-    font-weight: 900;
-    color: black;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.botao-cadastrar:hover {
-    background-color: #8bd8ff;
-    transform: scale(1.05);
-}
-
-.botao-cadastrar:active {
-    box-shadow: 2px 2px 0px #1595c4;
-    transform: translate(4px, 4px);
-}
-
-.texto-cadastro {
-    margin-top: 30px; /* Ajuste o valor conforme desejar */
-    text-align: center; /* Centraliza o texto */
-    font-size: 0.95rem;
-    color: #555;
-}
-
-.texto-cadastro a {
-    color: #0749da;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.texto-cadastro a:hover {
-    text-decoration: underline;
-}
-
+/* --- CONTAINER SENHA --- */
 .container-senha {
-    display: flex;
-    align-items: center;
-    margin-bottom: 10px;
     position: relative; 
     width: 100%; 
 }
 
-.container-senha input {
-    margin-bottom: 0; 
-    padding: 15px;
-    padding-right: 45px; 
-    width: 100%;
-    box-sizing: border-box; 
-}
-
-.olho-senha, .toggle-senha {
+.olho-senha {
     position: absolute;
-    right: 15px;
+    right: 20px;
     top: 50%;
     transform: translateY(-50%);
     cursor: pointer;
-    font-size: 18px;
-    user-select: none;
-    display: flex;
-    align-items: center;
+    font-size: 1.2rem;
+    color: #3b4d58;
+    z-index: 5;
 }
 
+/* --- MENSAGENS E ALERTAS (IDENTICO AO LOGIN) --- */
 #mensagem {
-    font-size: 0.9rem;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
 }
 
-/* Tooltip container */
-.tooltip {
-  position: relative;
-  display: inline-block;
-  border-bottom: 1px dotted black; /* Add dots under the hoverable text */
-  cursor: pointer;
+.caixa-erro {
+    max-height: 120px !important;
+    opacity: 1 !important;
+    margin: 10px 0 !important;
+    border: 3px solid #ff6b6b;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ff6b6b;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: #fff;
 }
 
-/* Tooltip text */
-.tooltiptext {
-  visibility: hidden; /* Hidden by default */
-  width: 130px;
-  background-color: black;
-  color: #ffffff;
-  text-align: center;
-  padding: 5px 0;
-  border-radius: 6px;
-  position: absolute;
-  z-index: 1; /* Ensure tooltip is displayed above content */
+/* --- BOTÃO CADASTRAR --- */
+.area-botao {
+    margin-top: 20px;
 }
 
-
-/* --- RESPONSIVIDADE UNIVERSAL (MOBILE) --- */
-
-@media screen and (max-width: 768px) {
-    body {
-        align-items: flex-start; 
-        padding-top: 40px;
-    }
-
-    .container-cadastro {
-        width: 92%; 
-        padding: 40px 25px;
-    }
-
-    .area-icone {
-        position: relative; 
-        top: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .icone-site {
-        width: 65px;
-    }
-
-    .titulo-cad {
-        text-align: center;
-        font-size: 1.8rem;
-    }
-
-    .titulo-cad::after {
-        margin: 8px auto; 
-    }
-
-    .link-login {
-        text-align: center;
-        margin-left: 0;
-        display: block;
-    }
-
-    .botao-cadastrar {
-        width: 100%; 
-        padding: 15px;
-    }
+.botao-cadastrar {
+    width: 220px;
+    background-color: #a3e1ff;
+    padding: 15px 0;
+    border-radius: 50px;
+    border: 3px solid #3b4d58;
+    box-shadow: 0px 6px 0px #1595c4;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #000;
+    cursor: pointer;
+    transition: 0.2s;
+    display: block;
+    margin: 0 auto;
 }
 
-/* Ajuste para mobile */
-@media screen and (max-width: 370px) {
-    .container-cadastro {
-        padding: 30px 15px;
-    }
-    
-    .titulo-cad {
-        font-size: 1.5rem;
-    }
+.botao-cadastrar:hover { background-color: #89d4f8; }
+.botao-cadastrar:active {
+    transform: translateY(4px);
+    box-shadow: 0px 2px 0px #1595c4;
 }
 
-/* Ajuste para quando está na horizontal */
-@media screen and (max-height: 500px) {
-    body {
-        align-items: flex-start;
-    }
+.texto-cadastro {
+    margin-top: 25px;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
+}
+
+.texto-cadastro a {
+    color: #0749da;
+    text-decoration: underline;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media screen and (max-width: 600px) {
+    .container-cadastro { padding: 40px 25px; width: 95%; }
+    .area-icone { position: relative; top: 0; right: 0; margin-bottom: 20px; display: flex; justify-content: center; }
+    .titulo-cad { text-align: center; font-size: 2.2rem; }
+    .titulo-cad::after { margin: 0 auto; }
 }

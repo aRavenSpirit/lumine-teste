@@ -1,25 +1,15 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Cadastro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro - LUMINE</title>
     <link rel="stylesheet" href="./style/cadastro.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
-
-    <style>
-        .erro {
-            color: #ff3636;
-            font-size: 0.85rem;
-            margin-left: 10px;
-        }
-    </style>
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
 </head>
-
 <body>
     <div class="container-cadastro">
-
         <div class="area-icone">
             <a href="index.html"><img src="./img/LUMINE.png" alt="Logo" class="icone-site"></a>
         </div>
@@ -30,31 +20,25 @@
             <div class="blocos-cad">
                 <input type="hidden" id="id">
                 
-                <input type="text" name="nome_usuario" placeholder="Crie um nome de usuário" id="nome" required>
-                <small id="erro_nome" class="erro"></small>
+                <input type="text" id="nome" placeholder="Nome de usuário" required>
 
-                <input type="email" name="email" placeholder="Digite seu email" id="email" required>
-                <small id="erro_email" class="erro"></small>
+                <input type="email" id="email" placeholder="Seu melhor email" required>
 
                 <select id="escolaridade">
                     <option value="">Escolaridade</option>
                 </select>
-                <small id="erro_escolaridade" class="erro"></small>
 
                 <div class="container-senha">
-                    <input type="password" name="senha" placeholder="Digite sua senha" id="senha" onfocus="MostrarMensagem()" onblur="EsconderMensagem()" required>
+                    <input type="password" id="senha" placeholder="Crie uma senha" required>
                     <i onclick="toggleSenha()" class="fas fa-eye olho-senha"></i>
                 </div>
-
-                <p id="mensagem"></p>
-                <small id="erro_senha" class="erro"></small>
                 
-                <input type="password" name="confirmar_senha" placeholder="Digite novamente a senha" id="confirmar" required>
-                <small id="erro_confirmar" class="erro"></small>
+                <input type="password" id="confirmar" placeholder="Confirme a senha" required>
+
+                <div id="mensagem"></div>
             </div>
 
             <p class="texto-cadastro">Já tem conta? <a href="login.html">Login</a></p>
-            <a href="admin.php">Admin teste</a>
 
             <div class="area-botao">
                 <button onclick="cadastrar()" class="botao-cadastrar">Cadastrar</button>
@@ -63,87 +47,69 @@
     </div>
 
     <script>
-        function MostrarMensagem(){
-            let elementoMensagem = document.getElementById("mensagem");
-            elementoMensagem.innerHTML = "A senha deve ter pelo menos 6 caracteres.";
-        }
-
-        function EsconderMensagem(){
-            let elementoMensagem = document.getElementById("mensagem");
-            elementoMensagem.innerHTML = "";
-        }
-
         const api = "../config/api.php";
 
         window.onload = function () {
             carregarEscolaridades();
         }
 
+        // Faz a mensagem sumir ao digitar em qualquer campo
+        const campos = document.querySelectorAll('input, select');
+        campos.forEach(campo => {
+            campo.addEventListener('input', () => {
+                const msg = document.getElementById("mensagem");
+                msg.className = ""; 
+                setTimeout(() => {
+                    if(!msg.classList.contains('caixa-erro')) {
+                        msg.innerHTML = "";
+                    }
+                }, 400);
+            });
+        });
+
         function carregarEscolaridades() {
             fetch(api + "?tipo=escolaridade")
                 .then(r => r.json())
                 .then(dados => {
-
                     let select = document.getElementById("escolaridade");
-
                     dados.forEach(e => {
-                        select.innerHTML += `
-                            <option value="${e.id_escolaridade}">
-                                ${e.nome_escolaridade}
-                            </option>
-                        `;
+                        select.innerHTML += `<option value="${e.id_escolaridade}">${e.nome_escolaridade}</option>`;
                     });
                 });
         }
 
-        function limparErros(){
-            document.querySelectorAll(".erro").forEach(e => e.innerText = "");
+        function exibirErro(texto) {
+            const msg = document.getElementById("mensagem");
+            msg.innerHTML = texto;
+            msg.className = "caixa-erro";
         }
 
         function cadastrar(){
-
-            limparErros();
-
             let nome = document.getElementById("nome").value.trim();
             let email = document.getElementById("email").value.trim();
             let senha = document.getElementById("senha").value;
             let confirmar = document.getElementById("confirmar").value;
             let escolaridade = document.getElementById("escolaridade").value;
 
-            let erro = false;
-
-            if(!nome){
-                document.getElementById("erro_nome").innerText = "Nome é obrigatório";
-                erro = true;
-            }
-
-            if(!email){
-                document.getElementById("erro_email").innerText = "Email é obrigatório";
-                erro = true;
-            }
-
-            if(!escolaridade){
-                document.getElementById("erro_escolaridade").innerText = "Selecione a escolaridade";
-                erro = true;
+            // Validações básicas antes do fetch
+            if(!nome || !email || !escolaridade || !senha || !confirmar){
+                exibirErro("Preencha todos os campos!");
+                return;
             }
 
             if(senha.length < 6){
-                document.getElementById("erro_senha").innerText = "Mínimo 6 caracteres";
-                erro = true;
+                exibirErro("A senha deve ter no mínimo 6 caracteres.");
+                return;
             }
 
             if(senha !== confirmar){
-                document.getElementById("erro_confirmar").innerText = "Senhas diferentes";
-                erro = true;
+                exibirErro("As senhas não coincidem!");
+                return;
             }
-
-            if(erro) return;
 
             fetch("../config/cadastrar.php",{
                 method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
+                headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({
                     nome: nome,
                     email: email,
@@ -153,37 +119,40 @@
             })
             .then(r=>r.json())
             .then(d=>{
-                
                 if(d.erro){
-                    document.getElementById("erro_email").innerText = d.erro;
+                    exibirErro(d.erro);
+                    // Limpa campos sensíveis em caso de erro
+                    document.getElementById("senha").value = "";
+                    document.getElementById("confirmar").value = "";
                     return;
                 }
 
-                document.getElementById("mensagem").innerText = "Conta criada com sucesso!";
-                document.getElementById("mensagem").style.color = "green";
+                const msg = document.getElementById("mensagem");
+                msg.innerHTML = "Conta criada com sucesso!";
+                msg.className = "caixa-erro"; 
+                msg.style.color = "green";
+                msg.style.borderColor = "green";
                 
                 setTimeout(() => {
                     window.location="login.html";
                 }, 2000);
             })
             .catch(err => {
-                console.error("Erro na requisição:", err);
-                document.getElementById("mensagem").innerText = "Erro ao conectar com o servidor.";
-                document.getElementById("mensagem").style.color = "red";
+                exibirErro("Erro ao conectar com o servidor.");
             });
         }
 
         function toggleSenha() {
             const input = document.getElementById("senha");
-
+            const icone = document.querySelector(".olho-senha");
             if (input.type === "password") {
                 input.type = "text";
+                icone.classList.replace("fa-eye", "fa-eye-slash");
             } else {
                 input.type = "password";
+                icone.classList.replace("fa-eye-slash", "fa-eye");
             }
         }
-
     </script>
 </body>
-
 </html>
