@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumine</title>
     <link rel="stylesheet" href="./style/index.css">
-    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -45,20 +45,62 @@
     </main>
     
     <section class="secao-apresentacao1">
-    <div class="container-text1">
-        <h1>CANSADO DO COMUM?</h1>
-        <p>Desafie seus limites na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span>. Entre no jogo, teste sua rapidez e prove que você está pronto para <span class="texto-negrito">DOMINAR</span> qualquer assunto!"</p>
-    </div>
+        <div class="container-text1">
+            <h1>CANSADO DO COMUM?</h1>
+            <p>Desafie seus limites na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span>. Entre no jogo, teste sua rapidez e prove que você está pronto para <span class="texto-negrito">DOMINAR</span> qualquer assunto!"</p>
+        </div>
 
-    <div class="container-animacao">
+        <div class="container-animacao">
         </div>
     </section>
 
     <section class="secao-apresentacao2">
-        <div class="filter-slide">
-            <div class="container-slide">
-
+        <div class="testimonial-slider">
+            <div class="testimonial-track">
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 1">
+                    <div class="texto-hover">🚀 <strong>Quiz de Lógica</strong><br>Teste sua mente com desafios matemáticos e de raciocínio rápido!</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 2">
+                    <div class="texto-hover">🌍 <strong>Geografia Express</strong><br>Você realmente conhece o mundo? Prove seus conhecimentos aqui.</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 3">
+                    <div class="texto-hover">🎮 <strong>Mundo Gamer</strong><br>Dos clássicos aos atuais. Um quiz feito para jogadores reais.</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 4">
+                    <div class="texto-hover">🎬 <strong>Cinema & TV</strong><br>Luz, câmera, ação! Será que você acerta todas sobre Hollywood?</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 1">
+                    <div class="texto-hover">🚀 <strong>Quiz de Lógica</strong><br>Teste sua mente com desafios matemáticos e de raciocínio rápido!</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 2">
+                    <div class="texto-hover">🌍 <strong>Geografia Express</strong><br>Você realmente conhece o mundo? Prove seus conhecimentos aqui.</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 3">
+                    <div class="texto-hover">🎮 <strong>Mundo Gamer</strong><br>Dos clássicos aos atuais. Um quiz feito para jogadores reais.</div>
+                </div>
+                <div class="testimonial-card quiz-preview">
+                    <img src="./img/image_57bae8.png" alt="Quiz 4">
+                    <div class="texto-hover">🎬 <strong>Cinema & TV</strong><br>Luz, câmera, ação! Será que você acerta todas sobre Hollywood?</div>
+                </div>
             </div>
+        </div>
+    </section>
+
+    <section class="secao-apresentacao3">
+
+        <div class="container-animacao">
+        </div>
+
+        <div class="container-text3">
+            <h1>CANSADO DO COMUM?</h1>
+            <p>Desafie seus limites na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span>. Entre no jogo, teste sua rapidez e prove que você está pronto para <span class="texto-negrito">DOMINAR</span> qualquer assunto!"</p>
         </div>
     </section>
 
@@ -92,20 +134,15 @@
             const menu = document.getElementById("mobileMenu");
             menu.classList.toggle("active");
         }
-        function toggleMenu() {
-    const menu = document.getElementById("mobileMenu");
-    menu.classList.toggle("active");
-}
 
-    window.addEventListener('resize', function() {
-    const menu = document.getElementById("mobileMenu");
-    
-    if (window.innerWidth > 580) {
-        if (menu.classList.contains("active")) {
-            menu.classList.remove("active");
-        }
-    }
-});
+        window.addEventListener('resize', function() {
+            const menu = document.getElementById("mobileMenu");
+            if (window.innerWidth > 580) {
+                if (menu.classList.contains("active")) {
+                    menu.classList.remove("active");
+                }
+            }
+        });
     </script>
 </body>
 </html>
