@@ -196,8 +196,8 @@ body {
 
 .melhor-subtitulo { font-weight: bold; }
 
-/* --- ESTRUTURA BASE DAS SEÇÕES 1 E 3 --- */
-.secao-apresentacao1, .secao-apresentacao3 {
+/* --- ESTRUTURA BASE DAS SEÇÕES 1, 3 E 4 --- */
+.secao-apresentacao1, .secao-apresentacao3, .secao-apresentacao4 {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -211,19 +211,19 @@ body {
     z-index: 10;
 }
 
-.container-text1, .container-text3 {
+.container-text1, .container-text3, .container-text4 {
     flex: 1;
     max-width: 520px;
     text-align: justify;
 }
 
-.container-text1 h1, .container-text3 h1 {
+.container-text1 h1, .container-text3 h1, .container-text4 h1 {
     font-size: clamp(1.2rem, 3vw, 1.5rem);
     margin-bottom: 20px;
     text-align: center;
 }
 
-.container-text1 p, .container-text3 p {
+.container-text1 p, .container-text3 p, .container-text4 p {
     font-size: clamp(1rem, 2.5vw, 1.5rem);
     line-height: 1.6;
 }
@@ -373,28 +373,42 @@ footer {
 
 .footer-section p:hover { color: #1595C4; }
 
-/* --- RESPONSIVIDADE E INVERSÃO DA SEÇÃO 3 --- */
+/* --- RESPONSIVIDADE E LÓGICA DE ORDEM --- */
 
-/* No Desktop: Seção 1 (Imagem, Texto) | Seção 3 (Texto, Imagem) */
+/* MODO DESKTOP (Telas grandes) */
 @media screen and (min-width: 1025px) {
-    .secao-apresentacao1 { flex-direction: row; }
-    .secao-apresentacao3 { flex-direction: row; }
+    .secao-apresentacao1 { flex-direction: row; } /* Imagem Esquerda, Texto Direita */
+    
+    /* SEÇÃO 3 INVERTIDA NO DESKTOP: Imagem Direita, Texto Esquerda */
+    .secao-apresentacao3 { flex-direction: row-reverse; } 
+    
+    .secao-apresentacao4 { flex-direction: row; } /* Imagem Esquerda, Texto Direita */
 }
 
-/* No Tablet e Mobile: */
+/* MODO MOBILE E TABLET (Telas menores) */
 @media screen and (max-width: 1024px) {
-    /* Seção 1: Texto sobe, Imagem desce */
+    /* Seção 1: Texto em cima, Imagem embaixo */
     .secao-apresentacao1 { 
         flex-direction: column-reverse; 
     }
     
-    /* Seção 3: Texto sobe, Imagem desce (oposto da Seção 1 desktop) */
+    /* Seção 3: Texto em cima, Imagem embaixo (A row-reverse do desktop é anulada aqui) */
     .secao-apresentacao3 { 
         flex-direction: column; 
     }
 
-    .container-text1, .container-text3 {
+    /* Seção 4: Texto em cima, Imagem embaixo */
+    .secao-apresentacao4 { 
+        flex-direction: column; 
+    }
+
+    .container-text1, .container-text3, .container-text4 {
         max-width: 100%;
+        text-align: center;
+    }
+
+    .container-text1 h1, .container-text3 h1, .container-text4 h1 {
+        text-align: center;
     }
 }
 

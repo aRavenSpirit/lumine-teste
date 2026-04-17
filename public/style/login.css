@@ -7,7 +7,7 @@
     font-display: swap;
 }
 
-/* --- RESET E ESTRUTURA --- */
+/* --- RESET --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -15,207 +15,226 @@
 }
 
 body {
-    background: linear-gradient( to left, rgb(227, 240, 254, 0.65), rgb(227, 240, 254, 0.65)), url('../img/background-index.jpg');
+    background: linear-gradient(to left, rgba(227, 240, 254, 0.65), rgba(227, 240, 254, 0.65)), url('../img/background-index.jpg');
     background-size: 3500px;
     display: flex;
     justify-content: center;
-    align-items: center; /* Centralizado no PC */
+    align-items: center;
     min-height: 100vh;
     font-family: 'Open_Sans', sans-serif;
     padding: 20px;
 }
 
-/* --- CONTAINER LOGIN --- */
+/* --- CONTAINER PRINCIPAL --- */
 .container-login {
     position: relative; 
     background-color: #ffffff;
     width: 100%;
-    max-width: 480px; 
-    border-radius: 30px;
-    border: 4px solid #1595c4;
-    padding: 60px 40px 40px 40px; 
-    box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+    max-width: 550px; 
+    border-radius: 40px;
+    border: 3px solid #1595c4;
+    padding: 50px; 
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
-/* --- ÍCONE --- */
+/* --- ÍCONE SUPERIOR --- */
 .area-icone {
     position: absolute;
-    top: 25px;      
-    right: 25px;    
-    z-index: 10;    
+    top: 15px;      
+    right: 15px;    
 }
 
 .icone-site {
-    width: 70px;    
+    width: 90px;    
     height: auto;
-    display: block;
 }
 
-/* --- TÍTULO --- */
 .titulo-log {
-    margin: 0 0 25px 0;
-    font-size: 2rem;
-    color: #333;
+    margin-bottom: 40px;
+    font-size: 3rem;
+    color: #000;
+    font-weight: 800;
 }
 
 .titulo-log::after {
     content: '';
     display: block;
-    width: 80px;
-    height: 5px;
+    width: 90px;
+    height: 6px;
     background-color: #a3e1ff;
     border-radius: 10px;
-    margin-top: 5px;
+    margin-top: -5px;
 }
 
-/* --- FORMULÁRIO --- */
-.conteudo-form {
-    display: flex;
-    flex-direction: column;
-}
-
+/* --- ESTILO DOS INPUTS --- */
 .blocos-log {
     display: flex;
     flex-direction: column;
-    width: 100%;
-    gap: 25px;
+    gap: 20px;
 }
 
-input {
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+input[type="email"], input[type="password"] {
     background-color: #a3e1ff;
-    padding: 14px 20px;
-    border-radius: 100px;
-    box-shadow: 6px 6px 0px #1595c4;
-    border: 2px solid #495861;
-    font-size: 1rem;
+    padding: 18px 25px;
+    border-radius: 50px;
+    border: 3px solid #3b4d58;
+    box-shadow: 0px 6px 0px #1595c4;
+    font-size: 1.2rem;
+    font-weight: 600;
     outline: none;
-    transition: all 0.2s ease-in-out;
+    transition: 0.2s;
 }
 
 input:focus {
-    transform: translateY(-3px);
-    box-shadow: 8px 8px 0px #1595c4;
-    background-color: #bce8ff;
+    transform: translateY(2px);
+    box-shadow: 0px 3px 0px #1595c4;
 }
 
-input::placeholder {
-    color: #555;
-}
-
-.link-cad {
-    margin-top: 5px;
-    margin-left: 10px;
+.esqueceu-senha {
     font-size: 0.9rem;
     color: #0749da;
     text-decoration: underline;
+    margin-top: 8px;
+    margin-left: 20px;
     font-weight: 600;
+}
+
+/* --- CHECKBOX --- */
+.area-extra {
+    margin: 10px 0 0px 10px;
+}
+
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    gap: 12px;
+}
+
+.checkbox-container input {
+    display: none;
+}
+
+.checkmark {
+    width: 28px;
+    height: 28px;
+    background-color: #a3e1ff;
+    border: 3px solid #3b4d58;
+    border-radius: 8px;
+    position: relative;
+}
+
+.checkbox-container input:checked ~ .checkmark {
+    background-color: #1595c4;
+}
+
+/* --- MENSAGENS E ALERTAS (COM EFEITO DE RECOLHER) --- */
+#mensagem {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    
+    /* Estado inicial: sem altura e invisível */
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+    
+    /* Transição agradável para altura, margem e opacidade */
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+
+/* Quando houver erro: expande e mostra */
+.caixa-erro {
+    max-height: 100px !important; /* Permite a expansão */
+    opacity: 1 !important;
+    margin: 15px 0 !important;
+    
+    border: 3px solid #ff6b6b;
+    border-radius: 20px;
+    padding: 10px 25px;
+    color: #ff6b6b;
+    font-weight: 800;
+    font-size: 1.2rem;
+    background-color: #fff;
 }
 
 /* --- BOTÃO ENTRAR --- */
 .area-botao {
-    display: flex;
-    justify-content: center;
-    margin-top: 40px;
+    margin-top: 10px;
 }
 
 .botao-login {
+    width: 200px;
     background-color: #a3e1ff;
-    padding: 14px 60px;
-    border-radius: 100px;
-    box-shadow: 6px 6px 0px #1595c4;
-    border: 3px solid #495861;
-    font-size: 1.3rem;
-    font-weight: bold;
-    color: black;
+    padding: 15px 0;
+    border-radius: 50px;
+    border: 3px solid #3b4d58;
+    box-shadow: 0px 6px 0px #1595c4;
+    font-size: 1.4rem;
+    font-weight: 900;
+    color: #000;
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: 0.2s;
+    display: block;
+    margin: 0 auto;
 }
 
 .botao-login:hover {
-    background-color: #8bd8ff;
-    transform: scale(1.05);
+    background-color: #89d4f8;
 }
 
 .botao-login:active {
-    box-shadow: 2px 2px 0px #1595c4;
-    transform: translate(4px, 4px);
+    transform: translateY(4px);
+    box-shadow: 0px 2px 0px #1595c4;
 }
 
-
-#mensagem {
+/* --- DIVISOR E RODAPÉ --- */
+.divisor {
     text-align: center;
-    margin-top: 15px;
-    font-size: 0.9rem;
+    border-bottom: 2px solid #ddd;
+    line-height: 0.1em;
+    margin: 40px 0 30px;
+}
+
+.divisor span {
+    background: #fff;
+    padding: 0 15px;
+    color: #888;
     font-weight: 600;
 }
-/* ---  RESPONSIVIDADE UNIVERSAL --- */
 
-@media screen and (max-width: 768px) {
-    body {
-        align-items: flex-start; 
-        padding-top: 10vh;
-    }
-
-    .container-login {
-        width: 92%;
-        padding: 40px 25px;
-    }
-
-    .area-icone {
-        position: relative;
-        top: 0;
-        right: 0;
-        display: flex;
-        justify-content: center;
-        margin-bottom: 20px;
-    }
-
-    .icone-site {
-        width: 65px;
-    }
-
-    .titulo-log {
-        text-align: center;
-    }
-
-    .titulo-log::after {
-        margin: 5px auto;
-    }
-
-    .link-cad {
-        text-align: center;
-        margin-left: 0;
-        display: block;
-    }
-
-    .botao-login {
-        width: 100%; 
-    }
+.area-google {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
 }
 
 .texto-cadastro {
-    margin-top: 30px; /* Ajuste o valor conforme desejar */
-    text-align: center; /* Centraliza o texto */
-    font-size: 0.95rem;
-    color: #555;
+    text-align: center;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #333;
 }
 
 .texto-cadastro a {
     color: #0749da;
-    text-decoration: none;
-    font-weight: 600;
-}
-
-.texto-cadastro a:hover {
     text-decoration: underline;
 }
 
-/* Para mobile */
-@media screen and (max-width: 360px) {
-    .container-login {
-        padding: 30px 15px;
-    }
-    input {
-        padding: 12px 15px;
-    }
+/* --- RESPONSIVIDADE --- */
+@media screen and (max-width: 600px) {
+    .container-login { padding: 40px 25px; width: 95%; }
+    .area-icone { position: relative; top: 0; right: 0; margin-bottom: 20px; display: flex; justify-content: center; }
+    .titulo-log { text-align: center; font-size: 2.2rem; }
+    .titulo-log::after { margin: 0 auto; }
 }

@@ -1,14 +1,13 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - LUMINE</title>
     <link rel="stylesheet" href="./style/login.css">
-    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="img/LUMINE-5con.ico">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
-
 <body>
     <div class="container-login">
         <div class="area-icone">
@@ -16,52 +15,77 @@
         </div>
 
         <h1 class="titulo-log">Login</h1>
+        
         <div class="conteudo-form"> 
             <div class="blocos-log">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" id="email" required>
+                </div>
+                
+                <div class="input-group">
+                    <input type="password" name="senha" placeholder="Senha" id="senha" required>
+                    <a href="#" class="esqueceu-senha">Esqueceu a senha?</a>
+                </div>
 
-                <input type="email" name="email" placeholder="Digite seu email" id="email" required>
-                <input type="password" name="senha" placeholder="Digite sua senha" id="senha" required>
+                <div class="area-extra">
+                    <label class="checkbox-container">
+                        <input type="checkbox" id="salvar-senha">
+                        <span class="checkmark"></span>
+                        Salvar senha
+                    </label>
+                </div>
+
                 <div id="mensagem"></div>
             </div>
+
             <div class="area-botao">
                 <button onclick="login()" class="botao-login">Entrar</button>
             </div>
         </div>
 
-        <p class="texto-cadastro">Não tem conta? <a href="cadastro.html">Cadastre-se</a></p>
-
         <div class="divisor">
-            <span>ou</span>
+            <span>ou entre com</span>
         </div>
 
-        <div id="g_id_onload"
-            data-client_id="369242179296-3p1mokk6kksdhtcgl7puf7cjbj8e70kr.apps.googleusercontent.com"
-            data-context="signin"
-            data-ux_mode="popup"
-            data-callback="handleCredentialResponse"
-            data-auto_prompt="false">
+        <div class="area-google">
+            <div id="g_id_onload"
+                data-client_id="369242179296-3p1mokk6kksdhtcgl7puf7cjbj8e70kr.apps.googleusercontent.com"
+                data-context="signin"
+                data-ux_mode="popup"
+                data-callback="handleCredentialResponse"
+                data-auto_prompt="false">
+            </div>
+            <div class="g_id_signin" data-type="standard" data-shape="pill" data-theme="outline" data-size="large" data-width="100%"></div>
         </div>
 
-        <div class="g_id_signin"
-            data-type="standard"
-            data-shape="rectangular"
-            data-theme="outline"
-            data-text="signin_with"
-            data-size="large"
-            data-logo_alignment="left"
-            data-width="100%"> 
-        </div>
-
+        <p class="texto-cadastro">Ainda não tem cadastro? <a href="cadastro.html">Cadastre-se</a></p>
     </div>
 
     <script>
+        // Função para sumir o erro e recolher o espaço ao digitar
+        const inputs = document.querySelectorAll('#email, #senha');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                const msg = document.getElementById("mensagem");
+                // Ao remover a classe, o CSS faz o efeito de recolher automaticamente
+                msg.className = ""; 
+                // Limpa o texto após a animação de saída
+                setTimeout(() => {
+                    if(!msg.classList.contains('caixa-erro')) {
+                        msg.innerHTML = "";
+                    }
+                }, 400);
+            });
+        });
+
+        function exibirErro(texto) {
+            const msg = document.getElementById("mensagem");
+            msg.innerHTML = texto;
+            msg.className = "caixa-erro"; // Ativa o estilo e a expansão do espaço
+        }
 
         function handleCredentialResponse(response) {
-            let elementoMensagem = document.getElementById('mensagem');
-
-            elementoMensagem.style.color = "#333";
-            elementoMensagem.innerHTML = "Autenticando com Google...";
-
+            exibirErro("Autenticando...");
             fetch("../config/login_google.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -69,73 +93,41 @@
             })
             .then(r => r.json())
             .then(d => {
+                if (d.status) window.location = "perfil.php";
+                else exibirErro("Erro Google: " + d.erro);
+            })
+            .catch(() => exibirErro("Erro ao conectar com servidor."));
+        }
+
+        function login() {
+            const emailField = document.getElementById("email");
+            const senhaField = document.getElementById("senha");
+            const email = emailField.value.trim();
+            const senha = senhaField.value;
+
+            if (!email || !senha) {
+                exibirErro("Preencha todos os campos");
+                return;
+            }
+
+            fetch("../config/login.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email: email, senha: senha })
+            })
+            .then(r => r.json())
+            .then(d => {
                 if (d.status) {
-                    elementoMensagem.style.color = "green";
-                    elementoMensagem.innerHTML = "Sucesso! Entrando...";
-                    window.location = "perfil.php";
+                    window.location = "home.html";
                 } else {
-                    elementoMensagem.style.color = "#ff3636";
-                    elementoMensagem.innerHTML = "Erro Google: " + d.erro;
+                    exibirErro("Email ou senha inválidos");
+                    // Limpa os campos conforme solicitado
+                    emailField.value = "";
+                    senhaField.value = "";
                 }
             })
-            .catch(() => {
-                elementoMensagem.style.color = "#ff3636";
-                elementoMensagem.innerHTML = "Erro ao conectar com o servidor.";
-            });
+            .catch(() => exibirErro("Erro ao conectar com o servidor."));
         }
-
-        function login(){
-
-            let email = document.getElementById("email").value.trim();
-            let senha = document.getElementById("senha").value;
-            let msg = document.getElementById("mensagem");
-
-            msg.innerHTML = "";
-
-            // ✅ validação
-            if(!email){
-                msg.style.color = "#ff3636";
-                msg.innerHTML = "Informe o email";
-                return;
-            }
-
-            if(!senha){
-                msg.style.color = "#ff3636";
-                msg.innerHTML = "Informe a senha";
-                return;
-            }
-
-            fetch("../config/login.php",{
-                method:"POST",
-                headers:{
-                    "Content-Type":"application/json"
-                },
-                body:JSON.stringify({
-                    email: email,
-                    senha: senha
-                })
-            })
-            .then(r=>r.json())
-            .then(d=>{
-
-                if(d.status){
-                    msg.style.color = "green";
-                    msg.innerHTML = "Login realizado com sucesso!";
-                    window.location="home.html";
-                }else{
-                    msg.style.color = "#ff3636";
-                    msg.innerHTML = "Email ou senha inválidos";
-                }
-
-            })
-            .catch(() => {
-                msg.style.color = "#ff3636";
-                msg.innerHTML = "Erro ao conectar com o servidor.";
-            });
-
-        }
-
     </script>
-
 </body>
 </html>
