@@ -3,7 +3,7 @@ const quizId = params.get('id');
 
 let dadosQuiz = null;
 let indicePergunta = 0;
-let respostasUsuario = {}; // { id_pergunta: valor_da_resposta }
+let respostasUsuario = {}; 
 
 async function carregarQuiz() {
     if (!quizId) return alert("Quiz não encontrado!");
@@ -12,14 +12,14 @@ async function carregarQuiz() {
         const response = await fetch(`../config/quiz.php?tipo=detalhes_quiz&id=${quizId}`);
         dadosQuiz = await response.json();
         
-        // Preenche o cabeçalho
+        // Preenchimento do Cabeçalho - Ajustado para bater com o PHP
         document.getElementById('quiz-titulo').innerText = dadosQuiz.nome;
         document.getElementById('quiz-materia').innerText = dadosQuiz.nome_materia;
         document.getElementById('quiz-conteudo').innerText = dadosQuiz.conteudo;
 
         renderizarPergunta();
     } catch (error) {
-        console.error("Erro ao carregar:", error);
+        console.error("Erro ao carregar quiz:", error);
     }
 }
 
@@ -53,30 +53,9 @@ function renderizarPergunta() {
 
         case 3: // Verdadeiro ou Falso
             html += `
-                <button class="${valorSalvo === 'Verdadeiro' ? 'ativo' : ''}" 
-                        onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()">V</button>
-                <button class="${valorSalvo === 'Falso' ? 'ativo' : ''}" 
-                        onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()">F</button>`;
-            break;
-
-        case 4: // Múltipla Escolha com Imagem (Assume que a descrição da resposta tem a URL)
-            p.respostas.forEach(resp => {
-                html += `
-                    <div onclick="salvarResposta(${p.id}, ${resp.id}); renderizarPergunta()" 
-                         style="border: ${valorSalvo == resp.id ? '2px solid blue' : '1px solid gray'}">
-                        <img src="${resp.descricao}" style="width:100px;">
-                    </div>`;
-            });
-            break;
-
-        case 5: // Ordenação (Lógica simples de lista)
-        case 6: // Arrastar (Drag & Drop)
-            html += `<p>Arraste os itens para a ordem correta:</p><ul id="sortable">`;
-            const itens = p.respostas; // Aqui implementaríamos uma lib de drag ou HTML5 Drag API
-            itens.forEach(resp => {
-                html += `<li draggable="true">${resp.descricao}</li>`;
-            });
-            html += `</ul>`;
+                <button onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()">V</button>
+                <button onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()">F</button>
+                <p>Selecionado: ${valorSalvo}</p>`;
             break;
     }
 
@@ -107,14 +86,6 @@ function atualizarControles() {
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
     document.getElementById('btn-proximo').style.display = final ? 'none' : 'inline';
     document.getElementById('btn-finalizar').style.display = final ? 'inline' : 'none';
-}
-
-async function finalizarQuiz() {
-    if(!confirm("Deseja finalizar o quiz?")) return;
-    
-    // Aqui enviaremos para um novo arquivo PHP: processar_resultado.php
-    console.log("Respostas do usuário:", respostasUsuario);
-    alert("Quiz finalizado! Veja o console para os dados.");
 }
 
 carregarQuiz();
