@@ -390,13 +390,13 @@ main {
 /* --- FOOTER --- */
 footer {
     width: 100%;
-    background-color: #ffffff;
+    background-color: #e3f0fe;
     padding: 60px 10%;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     gap: 40px;
-    border-top: 1px solid #eee;
+    border-top: 2px solid #1595C4;
 }
 
 .footer-section { flex: 1 1 200px; }
@@ -544,7 +544,31 @@ footer {
     
     footer {
         flex-direction: column;
+        align-items: center; /* Centraliza as seções no meio da tela */
         text-align: center;
+        gap: 50px;
     }
-    .footer-section p { justify-content: center; }
+
+    .footer-section {
+        flex: none;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* Alinha o conteúdo da seção ao centro */
+    }
+
+    .footer-section div, 
+    .footer-section h3 {
+        width: 100%;
+    }
+
+    /* O segredo está aqui: centralizamos o "bloco" de itens, 
+       mas os itens dentro do bloco ficam alinhados à esquerda (ícone com ícone) */
+    .footer-section p {
+        width: fit-content;      /* Ocupa apenas o espaço necessário */
+        margin-left: auto;       /* Margens automáticas nas laterais */
+        margin-right: auto;      /* fazem o item centralizar mantendo o alinhamento interno */
+        justify-content: flex-start;
+        min-width: 140px;        /* Define uma largura mínima para que os ícones fiquem um sob o outro */
+    }
 }
