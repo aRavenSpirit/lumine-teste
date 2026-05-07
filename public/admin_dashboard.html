@@ -7,16 +7,24 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="./style/admin_dashboard.css">
     <style>
-        /* Estilos para as tabelas dos modais */
+        /* Estilos para Feedback na Interface */
+        .status-msg { padding: 10px; margin-bottom: 10px; border-radius: 4px; display: none; font-weight: bold; text-align: center; }
+        .status-success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        /* Estilos da Tabela */
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; color: #333; }
         .admin-table th, .admin-table td { border: 1px solid #ddd; padding: 10px; text-align: left; }
         .admin-table th { background-color: #1595c4; color: white; position: sticky; top: 0; }
-        .admin-table tr:nth-child(even) { background-color: #f9f9f9; }
+        
         .btn-excluir { background: #ff4d4d; color: white; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; font-weight: bold; }
         .btn-editar { background: #ffce56; color: #333; border: none; padding: 6px 12px; cursor: pointer; border-radius: 4px; margin-right: 5px; font-weight: bold; }
-        .btn-excluir:hover { background: #cc0000; }
-        .modal-content { width: 90% !important; max-width: 1000px !important; border-radius: 15px; }
-        #modal-corpo { max-height: 450px; overflow-y: auto; margin-top: 15px; border: 1px solid #eee; }
+        
+        .modal-content { width: 90% !important; max-width: 1000px !important; border-radius: 15px; background: white; padding: 25px; }
+        #modal-corpo { max-height: 450px; overflow-y: auto; margin-top: 15px; }
+
+        /* Overlay do Modal */
+        #modal { display:none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center; }
     </style>
 </head>
 <body>
@@ -49,18 +57,17 @@
     </div>
 
     <div class="charts-container">
-        <div class="chart-box">
-            <canvas id="chartEscolaridade"></canvas>
-        </div>
-        <div class="chart-box">
-            <canvas id="chartCadastros"></canvas>
-        </div>
+        <div class="chart-box"><canvas id="chartEscolaridade"></canvas></div>
+        <div class="chart-box"><canvas id="chartCadastros"></canvas></div>
     </div>
 </div>
 
-<div id="modal" style="display:none; position: fixed; z-index: 999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.6); justify-content: center; align-items: center;">
-    <div class="modal-content" style="background: white; padding: 25px; position: relative;">
+<div id="modal">
+    <div class="modal-content">
         <h2 id="modal-titulo"></h2>
+        
+        <div id="status-feedback" class="status-msg"></div>
+
         <div id="modal-corpo"></div>
         <br>
         <button onclick="fecharModal()" style="padding: 10px 20px; cursor: pointer;">Fechar Janela</button>
@@ -69,62 +76,52 @@
 
 <script>
     let detalhesModais = {};
-    let chart1 = null; // Referências globais para os gráficos
+    let chart1 = null;
     let chart2 = null;
 
     async function carregarDados() {
         try {
             const res = await fetch('../config/admin_data.php');
-            if (!res.ok) throw new Error("Erro ao carregar PHP");
             const dados = await res.json();
-
             detalhesModais = dados.detalhes;
 
-            // Preenche os cards
             document.getElementById('total-usuarios').innerText = dados.cards.usuarios || 0;
             document.getElementById('total-quizzes').innerText = dados.cards.quizzes || 0;
             document.getElementById('total-avaliacoes').innerText = dados.cards.avaliacoes || 0;
 
-            // Destruir gráficos existentes para evitar o erro de "Canvas is already in use"
             if (chart1) chart1.destroy();
             if (chart2) chart2.destroy();
 
-            // Gráfico de Escolaridade
             const ctx1 = document.getElementById('chartEscolaridade').getContext('2d');
             chart1 = new Chart(ctx1, {
                 type: 'bar',
                 data: {
                     labels: dados.graficoEscolaridade.labels || [],
-                    datasets: [{
-                        label: 'Alunos por Escolaridade',
-                        data: dados.graficoEscolaridade.valores || [],
-                        backgroundColor: '#1595c4'
-                    }]
+                    datasets: [{ label: 'Alunos por Escolaridade', data: dados.graficoEscolaridade.valores || [], backgroundColor: '#1595c4' }]
                 },
                 options: { responsive: true, maintainAspectRatio: false }
             });
 
-            // Gráfico de Pizza (Dias da Semana)
             const ctx2 = document.getElementById('chartCadastros').getContext('2d');
             chart2 = new Chart(ctx2, {
                 type: 'pie',
                 data: {
                     labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
-                    datasets: [{
-                        data: dados.graficoSemana || [0,0,0,0,0,0,0],
-                        backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#2ecc71', '#e67e22', '#95a5a6']
-                    }]
+                    datasets: [{ data: dados.graficoSemana || [0,0,0,0,0,0,0], backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#2ecc71', '#e67e22', '#95a5a6'] }]
                 },
-                options: { 
-                    responsive: true, 
-                    maintainAspectRatio: false,
-                    plugins: { title: { display: true, text: 'Cadastros por Dia da Semana' } }
-                }
+                options: { responsive: true, maintainAspectRatio: false }
             });
+        } catch (error) { console.error("Erro:", error); }
+    }
 
-        } catch (error) {
-            console.error("Erro ao processar dados:", error);
-        }
+    function mostrarFeedback(msg, tipo) {
+        const div = document.getElementById('status-feedback');
+        div.innerText = msg;
+        div.className = `status-msg status-${tipo}`;
+        div.style.display = 'block';
+        
+        // Esconde após 3 segundos
+        setTimeout(() => { div.style.display = 'none'; }, 3000);
     }
 
     function abrirModal(tipo) {
@@ -137,65 +134,72 @@
 
         if (tipo === 'usuários') {
             html = `<table class="admin-table">
-                <thead><tr><th>ID</th><th>Nome</th><th>Email</th><th>Escolaridade</th><th>Ações</th></tr></thead>
+                <thead><tr><th>ID</th><th>Nome</th><th>Email</th><th>Ações</th></tr></thead>
                 <tbody>`;
             dados.forEach(u => {
-                html += `<tr>
-                    <td>${u.id}</td><td>${u.nome}</td><td>${u.email}</td><td>${u.nome_escolaridade || '-'}</td>
-                    <td><button class="btn-excluir" onclick="excluirItem('usuario', ${u.id})">Excluir</button></td>
+                html += `<tr id="row-user-${u.id}">
+                    <td>${u.id}</td><td>${u.nome}</td><td>${u.email}</td>
+                    <td><button class="btn-excluir" onclick="confirmarExclusao('usuario', ${u.id})">Excluir</button></td>
                 </tr>`;
             });
             html += `</tbody></table>`;
         } 
         else if (tipo === 'quizzes') {
             html = `<table class="admin-table">
-                <thead><tr><th>Quiz</th><th>Matéria</th><th>Conteúdo</th><th>Ações</th></tr></thead>
+                <thead><tr><th>Quiz</th><th>Matéria</th><th>Ações</th></tr></thead>
                 <tbody>`;
             dados.forEach(q => {
-                html += `<tr>
-                    <td>${q.nome_quiz}</td><td>${q.nome_materia}</td><td>${q.nome_conteudo}</td>
+                html += `<tr id="row-quiz-${q.id}">
+                    <td>${q.nome_quiz}</td><td>${q.nome_materia}</td>
                     <td>
-                        <button class="btn-editar" onclick="alert('Edição disponível em breve!')">Editar</button>
-                        <button class="btn-excluir" onclick="excluirItem('quiz', ${q.id})">Excluir</button>
+                        <button class="btn-editar" onclick="mostrarFeedback('Função em desenvolvimento', 'success')">Editar</button>
+                        <button class="btn-excluir" onclick="confirmarExclusao('quiz', ${q.id})">Excluir</button>
                     </td>
                 </tr>`;
             });
             html += `</tbody></table>`;
-        } else {
-            html = "<p style='padding:20px;'>Nenhuma avaliação registrada ainda.</p>";
         }
 
-        corpo.innerHTML = html || "<p style='padding:20px;'>Nenhum registro encontrado.</p>";
+        corpo.innerHTML = html || "<p>Nenhum registro.</p>";
         document.getElementById('modal').style.display = 'flex';
     }
 
-    async function excluirItem(tipo, id) {
-        if (!confirm(`Deseja realmente excluir este ${tipo}? Esta ação não pode ser desfeita.`)) return;
+    // INTERAÇÃO NA INTERFACE: Substitui o window.confirm
+    function confirmarExclusao(tipo, id) {
+        const div = document.getElementById('status-feedback');
+        div.innerHTML = `Tem certeza? 
+            <button onclick="executarExclusao('${tipo}', ${id})" style="background:red; color:white; border:none; padding:3px 10px; cursor:pointer; margin-left:10px;">Sim, excluir</button> 
+            <button onclick="document.getElementById('status-feedback').style.display='none'" style="background:#666; color:white; border:none; padding:3px 10px; cursor:pointer;">Cancelar</button>`;
+        div.className = "status-msg status-error";
+        div.style.display = "block";
+    }
 
+    async function executarExclusao(tipo, id) {
         try {
-            // Chamada para o seu novo arquivo renomeado
             const response = await fetch(`../config/excluir_adm.php?tipo=${tipo}&id=${id}`);
-            
-            if (!response.ok) throw new Error("Falha na comunicação com o servidor");
-
             const resultado = await response.json();
 
             if (resultado.status) {
-                alert("Registro removido com sucesso!");
-                fecharModal();
-                carregarDados(); // Atualiza tudo (cards e gráficos) sem refresh
+                mostrarFeedback(`${tipo.charAt(0).toUpperCase() + tipo.slice(1)} removido com sucesso!`, "success");
+                
+                // Remove a linha da tabela visualmente sem fechar o modal
+                const row = document.getElementById(`row-${tipo === 'usuario' ? 'user' : 'quiz'}-${id}`);
+                if(row) row.style.display = 'none';
+
+                carregarDados(); // Atualiza cards e gráficos ao fundo
             } else {
-                alert("Erro ao excluir: " + (resultado.erro || "Erro desconhecido"));
+                mostrarFeedback("Erro: " + resultado.erro, "error");
             }
         } catch (error) {
-            console.error("Erro na exclusão:", error);
-            alert("Erro de conexão. Verifique se o arquivo excluir_adm.php está na pasta config.");
+            mostrarFeedback("Erro de conexão com o servidor.", "error");
         }
     }
 
-    function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+    function fecharModal() { 
+        document.getElementById('modal').style.display = 'none'; 
+        document.getElementById('status-feedback').style.display = 'none';
+    }
     
-    // Inicia o carregamento
     carregarDados();
 </script>
 
