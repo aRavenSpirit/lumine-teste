@@ -93,7 +93,7 @@
             })
             .then(r => r.json())
             .then(d => {
-                if (d.status) window.location = "perfil.php";
+                if (d.status) window.location = "home.html";
                 else exibirErro("Erro Google: " + d.erro);
             })
             .catch(() => exibirErro("Erro ao conectar com servidor."));
