@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Painel do Administrador - LUMINE</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="./style/admin_dashboard.css">
+</head>
+<body>
+
+<header>
+    <h2>LUMINE Admin</h2>
+    <div class="nav-btns">
+        <button onclick="location.href='home.html'">Início</button>
+        <button onclick="location.href='criar_quiz.html'" style="background: #a3e1ff;">+ Novo Quiz</button>
+    </div>
+</header>
+
+<div class="dashboard">
+    <div class="cards-container">
+        <div class="card">
+            <h3>Usuários</h3>
+            <div class="numero" id="total-usuarios">0</div>
+            <button onclick="abrirModal('usuários')">Saiba mais</button>
+        </div>
+        <div class="card">
+            <h3>Quizzes</h3>
+            <div class="numero" id="total-quizzes">0</div>
+            <button onclick="abrirModal('quizzes')">Saiba mais</button>
+        </div>
+        <div class="card">
+            <h3>Avaliações</h3>
+            <div class="numero" id="total-avaliacoes">0</div>
+            <button onclick="abrirModal('avaliacoes')">Saiba mais</button>
+        </div>
+    </div>
+
+    <div class="charts-container">
+        <div class="chart-box">
+            <canvas id="chartEscolaridade"></canvas>
+        </div>
+        <div class="chart-box">
+            <canvas id="chartCadastros"></canvas>
+        </div>
+    </div>
+</div>
+
+<div id="modal">
+    <div class="modal-content">
+        <h2 id="modal-titulo"></h2>
+        <div id="modal-corpo"></div>
+        <br>
+        <button onclick="fecharModal()">Fechar</button>
+    </div>
+</div>
+
+<script>
+    async function carregarDados() {
+        const res = await fetch('../config/admin_data.php');
+        const dados = await res.json();
+
+        // Preenche os cards
+        document.getElementById('total-usuarios').innerText = dados.cards.usuarios;
+        document.getElementById('total-quizzes').innerText = dados.cards.quizzes;
+        document.getElementById('total-avaliacoes').innerText = dados.cards.avaliacoes;
+
+        // Gráfico de Escolaridade (Barras)
+        new Chart(document.getElementById('chartEscolaridade'), {
+            type: 'bar',
+            data: {
+                labels: dados.graficoEscolaridade.labels,
+                datasets: [{
+                    label: 'Usuários por Escolaridade',
+                    data: dados.graficoEscolaridade.valores,
+                    backgroundColor: '#1595c4'
+                }]
+            }
+        });
+
+        // Gráfico de Cadastros (Pizza)
+        new Chart(document.getElementById('chartCadastros'), {
+            type: 'pie',
+            data: {
+                labels: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+                datasets: [{
+                    data: dados.graficoSemana,
+                    backgroundColor: ['#ff6384', '#36a2eb', '#cc65fe', '#ffce56', '#2ecc71', '#e67e22', '#95a5a6']
+                }]
+            },
+            options: { plugins: { title: { display: true, text: 'Cadastros por dia da semana' } } }
+        });
+    }
+
+    function abrirModal(tipo) {
+        document.getElementById('modal-titulo').innerText = "Detalhes de " + tipo;
+        document.getElementById('modal-corpo').innerText = "Aqui apareceria a lista detalhada de " + tipo + "...";
+        document.getElementById('modal').style.display = 'flex';
+    }
+
+    function fecharModal() { document.getElementById('modal').style.display = 'none'; }
+
+    carregarDados();
+</script>
+
+</body>
+</html>
