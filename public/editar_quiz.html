@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Quiz - LUMINE</title>
+</head>
+<body>
+
+    <a href="admin_dashboard.html">Voltar ao Painel</a>
+    <h2>Editar Quiz</h2>
+
+    <div id="dados-quiz">
+        <p><strong>Nome Atual:</strong> <span id="label-nome"></span> <button onclick="mostrarEdit('quiz-nome')">Alterar</button></p>
+        <div id="edit-quiz-nome" style="display:none">
+            <input type="text" id="input-nome">
+        </div>
+
+        <p><strong>Dificuldade Atual:</strong> <span id="label-dificuldade"></span> <button onclick="mostrarEdit('quiz-dif')">Alterar</button></p>
+        <div id="edit-quiz-dif" style="display:none">
+            <select id="select-dificuldade"></select>
+        </div>
+
+        <p><strong>Matéria/Conteúdo Atual:</strong> <span id="label-conteudo"></span> <button onclick="mostrarEdit('quiz-cont')">Alterar</button></p>
+        <div id="edit-quiz-cont" style="display:none">
+            <select id="select-materia" onchange="carregarConteudos()"></select>
+            <select id="select-conteudo"></select>
+        </div>
+    </div>
+
+    <hr>
+    <h3>Perguntas do Quiz</h3>
+    <div id="perguntas-container"></div>
+    
+    <br>
+    <button onclick="addPergunta()">+ Adicionar Nova Pergunta</button>
+    <br><br>
+    <hr>
+    <button onclick="salvarAlteracoes()" style="padding: 10px; background-color: #28a745; color: white;">SALVAR ALTERAÇÕES NO QUIZ</button>
+
+    <script>
+        const api = "../config/criar_quiz.php"; // Reutilizando sua API de tipos/materias
+        const apiEdit = "../config/editar_quiz_data.php"; // Nova API para buscar e salvar dados
+        
+        const urlParams = new URLSearchParams(window.location.search);
+        const quizId = urlParams.get('id');
+
+        let perguntas = [];
+        let tipos = [];
+
+        window.onload = async function () {
+            await carregarTipos();
+            await carregarListasIniciais();
+            if (quizId) carregarDadosDoQuiz();
+        }
+
+        function mostrarEdit(id) {
+            let el = document.getElementById('edit-' + id);
+            el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        // --- CARREGAMENTO DE DADOS ---
+
+        async function carregarTipos() {
+            const r = await fetch(api + "?tipo=tipos_perguntas");
+            tipos = await r.json();
+        }
+
+        async function carregarListasIniciais() {
+            // Carrega matérias e dificuldades para os selects de edição
+            const rMat = await fetch(api + "?tipo=materia");
+            const materias = await rMat.json();
+            let selMat = document.getElementById("select-materia");
+            materias.forEach(m => selMat.innerHTML += `<option value="${m.id}">${m.nome_materia}</option>`);
+
+            const rDif = await fetch(api + "?tipo=dificuldade");
+            const difs = await rDif.json();
+            let selDif = document.getElementById("select-dificuldade");
+            difs.forEach(d => selDif.innerHTML += `<option value="${d.id}">${d.dificuldade}</option>`);
+        }
+
+        async function carregarConteudos() {
+            let matId = document.getElementById("select-materia").value;
+            const r = await fetch(api + "?tipo=conteudo&id_materia=" + matId);
+            const dados = await r.json();
+            let selCont = document.getElementById("select-conteudo");
+            selCont.innerHTML = "";
+            dados.forEach(c => selCont.innerHTML += `<option value="${c.id}">${c.nome}</option>`);
+        }
+
+        async function carregarDadosDoQuiz() {
+            const r = await fetch(`../config/get_quiz_detalhes.php?id=${quizId}`);
+            const data = await r.json();
+
+            document.getElementById('label-nome').innerText = data.nome;
+            document.getElementById('label-dificuldade').innerText = data.nome_dificuldade;
+            document.getElementById('label-conteudo').innerText = data.nome_materia + " / " + data.nome_conteudo;
+
+            // Mapeia os dados vindos do banco para o formato do seu array 'perguntas'
+            perguntas = data.perguntas.map(p => ({
+                id: p.id, // ID importante para saber que já existe no banco
+                descricao: p.descricao,
+                tipo: p.id_tipo,
+                respostas: p.respostas.map(r => ({
+                    id: r.id,
+                    descricao: r.descricao,
+                    certo: r.certo == 1 || r.certo === true,
+                    ordem: r.certo // no seu banco, ordem é guardada no campo 'certo' para tipos 5 e 6
+                })),
+                // Ajustes para tipos específicos
+                resposta_texto: p.id_tipo == 2 ? p.respostas[0].descricao : "",
+                vf: p.id_tipo == 3 ? (p.respostas[0].descricao === 'Verdadeiro') : undefined
+            }));
+
+            render();
+        }
+
+        // --- LÓGICA DAS PERGUNTAS (REUTILIZADA DO SEU CÓDIGO) ---
+
+        function addPergunta() {
+            perguntas.push({ descricao: "", tipo: "", respostas: [] });
+            render();
+        }
+
+        function removerPergunta(i) {
+            if(confirm("Deseja remover esta pergunta?")) {
+                perguntas.splice(i, 1);
+                render();
+            }
+        }
+
+        function updateTipo(i, tipo) {
+            perguntas[i].tipo = tipo;
+            perguntas[i].respostas = [];
+            render();
+        }
+
+        // ... (Funções updatePergunta, addResposta, updateResposta, updateCorreta, etc, são idênticas às suas)
+        function updatePergunta(i, v) { perguntas[i].descricao = v; }
+        function addResposta(i) { perguntas[i].respostas.push({ descricao: "", certo: false }); render(); }
+        function updateResposta(i, j, v) { perguntas[i].respostas[j].descricao = v; }
+        function updateCorreta(i, j) { 
+            perguntas[i].respostas.forEach(r => r.certo = false);
+            perguntas[i].respostas[j].certo = true;
+            render();
+        }
+        function setVF(i, v) { perguntas[i].vf = v; }
+        function setTexto(i, v) { perguntas[i].resposta_texto = v; }
+
+        function render() {
+            let html = "";
+            perguntas.forEach((p, i) => {
+                html += `<div style="border:1px solid #ccc; padding:15px; margin:10px 0;">
+                    <button onclick="removerPergunta(${i})">Excluir Pergunta</button> <br>
+                    Pergunta: <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
+                    Tipo: <select onchange="updateTipo(${i}, this.value)">
+                        <option value="">Selecione...</option>
+                        ${tipos.map(t => `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`).join('')}
+                    </select><br><br>`;
+
+                // Lógica de renderização por tipo (Igual à sua)
+                if (p.tipo == 1 || p.tipo == 4) {
+                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
+                    p.respostas.forEach((r, j) => {
+                        html += `<li>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="correta_${i}" 
+                                onchange="${p.tipo == 1 ? `updateCorreta(${i}, ${j})` : `perguntas[${i}].respostas[${j}].certo = this.checked`}"
+                                ${r.certo ? "checked" : ""}>
+                        </li>`;
+                    });
+                    html += `</ul>`;
+                }
+                else if (p.tipo == 2) {
+                    html += `Resposta Texto: <input onchange="setTexto(${i}, this.value)" value="${p.resposta_texto || ''}">`;
+                }
+                else if (p.tipo == 3) {
+                    html += `
+                        <label><input type="radio" name="vf_${i}" onchange="setVF(${i}, true)" ${p.vf === true ? "checked" : ""}> Verdadeiro</label>
+                        <label><input type="radio" name="vf_${i}" onchange="setVF(${i}, false)" ${p.vf === false ? "checked" : ""}> Falso</label>`;
+                }
+                // ... (Pode-se adicionar os tipos 5 e 6 seguindo o mesmo padrão)
+
+                html += `</div>`;
+            });
+            document.getElementById("perguntas-container").innerHTML = html;
+        }
+
+        async function salvarAlteracoes() {
+            const dadosParaEnviar = {
+                id_quiz: quizId,
+                nome: document.getElementById('input-nome').value || document.getElementById('label-nome').innerText,
+                id_dificuldade: document.getElementById('select-dificuldade').value,
+                id_conteudo: document.getElementById('select-conteudo').value,
+                perguntas: perguntas
+            };
+
+            const r = await fetch("../config/atualizar_quiz.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(dadosParaEnviar)
+            });
+            const res = await r.json();
+            alert(res.mensagem || res.erro);
+            if(res.status) location.reload();
+        }
+    </script>
+</body>
+</html>

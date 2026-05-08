@@ -197,7 +197,7 @@
                     <td align="center">${q.total_perguntas}</td>
                     <td align="center"><span class="tag-dificuldade ${cl}">${q.nome_dificuldade}</span></td>
                     <td>
-                        <button class="btn-editar" onclick="mostrarFeedback('Em breve...', 'success')">Editar</button>
+                        <button class="btn-editar" onclick="location.href='editar_quiz.html?id=${q.id}'">Editar</button>
                         <button class="btn-excluir" onclick="confirmarExclusao('quiz', ${q.id})">Excluir</button>
                     </td>
                 </tr>`;
