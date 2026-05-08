@@ -262,9 +262,9 @@ body {
 /* Container que envolve o GIF */
 .container-animacao {
     flex: 1;
-    max-width: 600px; /* Mantém o limite de largura que você já tinha */
+    max-width: 400px;
     width: 100%;
-    height: auto;     /* Deixa a altura livre para se ajustar ao GIF */
+    height: auto;
     min-height: 200px; 
     
     background-color: #01ff51; /* Sua cor de destaque */
@@ -276,14 +276,18 @@ body {
     align-items: center;
 }
 
-/* A classe específica do seu GIF */
-.gif-interno {
-    width: 100%;      /* Faz o GIF ocupar a largura do container */
-    height: auto;     /* Garante que a altura mude proporcionalmente (sem esticar) */
-    max-width: 100%;  /* Segurança para não transbordar */
+/* Ajustado para a tag video */
+.video-interno {
+    width: 100%;      /* Ocupa a largura do container */
+    height: auto;     /* Mantém a proporção */
+    max-width: 100%;
     display: block;
     
-    /* Garante que o GIF apareça inteiro mesmo se o container tiver tamanho fixo */
+    /* Remove qualquer borda ou contorno padrão de players de vídeo */
+    outline: none;
+    border: none;
+
+    /* Garante que o vídeo preencha o espaço sem distorcer */
     object-fit: contain; 
 }
 
