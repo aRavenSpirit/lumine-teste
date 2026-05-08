@@ -297,6 +297,13 @@ create table configuracoes (
     ))
 );
 
+    CREATE TABLE recuperacao_senha (
+    id int AUTO_INCREMENT primary key,
+    email varchar(255) NOT NULL,
+    token varchar(255) NOT NULL,
+    expira_em DATETIME NOT NULL
+);
+
 -- Exemplo caso o usuário quiser alterar a cor do fundo
     UPDATE configuracoes 
     SET tema_escuro = 1 
@@ -317,12 +324,3 @@ create table configuracoes (
     select nome_escolaridade from escolaridade where usuario.escolaridade_id = escolaridade.id_escolaridade;
     select * from materia;
     select * from conteudo;
-
-
-
-    CREATE TABLE recuperacao_senha (
-    id int AUTO_INCREMENT primary key,
-    email varchar(255) NOT NULL,
-    token varchar(255) NOT NULL,
-    expira_em DATETIME NOT NULL
-);
