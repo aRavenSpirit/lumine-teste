@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Resolvendo Quiz - Lumine</title>
+</head>
+<body>
+
+    <header id="quiz-header">
+        <h1 id="quiz-titulo">Carregando...</h1>
+        <p>Matéria: <span id="quiz-materia">-</span> | Conteúdo: <span id="quiz-conteudo">-</span></p>
+        <div id="cronometro">Tempo: 00:00</div>
+    </header>
+
+    <hr>
+
+    <main id="quiz-container">
+        <div id="pergunta-atual">
+            </div>
+    </main>
+
+    <footer id="quiz-controls">
+        <button id="btn-voltar" onclick="perguntaAnterior()" style="display:none;">Anterior</button>
+        <span id="progresso">Pergunta 1 de X</span>
+        <button id="btn-proximo" onclick="proximaPergunta()">Próximo</button>
+        <button id="btn-finalizar" onclick="finalizarQuiz()" style="display:none;">Finalizar e Ver Resultado</button>
+    </footer>
+
+    <script src="js/resolucao_quiz.js"></script>
+</body>
+</html>
