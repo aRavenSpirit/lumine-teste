@@ -109,10 +109,55 @@ function atualizarControles() {
     document.getElementById('btn-finalizar').style.display = final ? 'inline' : 'none';
 }
 
-function finalizarQuiz() {
+async function finalizarQuiz() {
     clearInterval(intervaloCronometro); // Para o tempo
-    alert(`Quiz Finalizado! Tempo total: ${document.getElementById('cronometro').innerText}`);
-    console.log("Respostas:", respostasUsuario);
+
+    let acertos = 0;
+    const totalQuestoes = dadosQuiz.perguntas.length;
+
+    // Lógica de correção
+    dadosQuiz.perguntas.forEach(p => {
+        const respostaUser = respostasUsuario[p.id];
+        const tipo = parseInt(p.id_tipo);
+
+        if (tipo === 1 || tipo === 3) { // Múltipla escolha (1) ou V/F (3)
+            // No banco, a resposta correta tem o campo 'certo' == 1
+            const correta = p.respostas.find(r => r.certo == 1);
+            if (correta && respostaUser == correta.id) acertos++;
+        } 
+        else if (tipo === 2) { // Texto
+            const correta = p.respostas[0]; // A primeira resposta cadastrada
+            if (correta && respostaUser?.trim().toLowerCase() === correta.descricao.toLowerCase()) acertos++;
+        }
+        // ... adicione as lógicas de tipo 4, 5 e 6 conforme implementar o front
+    });
+
+    // Enviar para o Banco de Dados
+    const dadosParaSalvar = {
+        id_quiz: quizId,
+        acertos: acertos,
+        total: totalQuestoes,
+        segundos: segundos // Variável global do cronômetro
+    };
+
+    try {
+        const response = await fetch('../config/salvar_tentativa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosParaSalvar)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.sucesso) {
+            alert(`Quiz Finalizado!\nAcertos: ${acertos}/${totalQuestoes}\nTempo: ${document.getElementById('cronometro').innerText}`);
+            window.location.href = `resultado.php?id_tentativa=${resultado.id_tentativa}`;
+        } else {
+            alert("Erro ao salvar resultado: " + resultado.erro);
+        }
+    } catch (error) {
+        console.error("Erro na comunicação:", error);
+    }
 }
 
 carregarQuiz();
