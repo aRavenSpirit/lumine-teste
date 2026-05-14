@@ -1,3 +1,8 @@
+<?php
+    include_once("../config/session.php");
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 

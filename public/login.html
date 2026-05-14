@@ -93,7 +93,7 @@
             })
             .then(r => r.json())
             .then(d => {
-                if (d.status) window.location = "home.html";
+                if (d.status) window.location = "home.php";
                 else exibirErro("Erro Google: " + d.erro);
             })
             .catch(() => exibirErro("Erro ao conectar com servidor."));
@@ -118,7 +118,7 @@
             .then(r => r.json())
             .then(d => {
                 if (d.status) {
-                    window.location = "home.html";
+                    window.location = "home.php";
                 } else {
                     exibirErro("Email ou senha inválidos");
                     // Limpa os campos conforme solicitado
