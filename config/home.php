@@ -1,8 +1,8 @@
 <?php
 
-header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8"); // Define o tipo de conteúdo como JSON
 
-require __DIR__ . "/conexao.php";
+require __DIR__ . "/conexao.php"; // Inclui a conexão com o banco de dados
 session_start();
 
 // =========================
