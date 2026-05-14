@@ -78,6 +78,22 @@ function renderizarPergunta() {
                 <button onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()">F</button>
                 <p>Selecionado: ${valorSalvo}</p>`;
             break;
+        case 4: // Múltipla Escolha (Várias Corretas)
+            // Buscamos o array de respostas já marcadas ou criamos um vazio
+            const selecionadas = respostasUsuario[p.id] || [];
+            
+            p.respostas.forEach(resp => {
+                // Verifica se o ID desta resposta está no array de selecionadas
+                const checked = selecionadas.includes(resp.id.toString()) ? 'checked' : '';
+                
+                html += `
+                    <label style="display: block; margin-bottom: 8px;">
+                        <input type="checkbox" value="${resp.id}" ${checked} 
+                            onchange="salvarRespostaMultipla(${p.id}, this.value, this.checked)">
+                        ${resp.descricao}
+                    </label>`;
+            });
+            break;
     }
 
     container.innerHTML = html;
@@ -109,10 +125,87 @@ function atualizarControles() {
     document.getElementById('btn-finalizar').style.display = final ? 'inline' : 'none';
 }
 
-function finalizarQuiz() {
+async function finalizarQuiz() {
     clearInterval(intervaloCronometro); // Para o tempo
-    alert(`Quiz Finalizado! Tempo total: ${document.getElementById('cronometro').innerText}`);
-    console.log("Respostas:", respostasUsuario);
+
+    let acertos = 0;
+    const totalQuestoes = dadosQuiz.perguntas.length;
+
+    // Lógica de correção
+    dadosQuiz.perguntas.forEach(p => {
+        const respostaUser = respostasUsuario[p.id];
+        const tipo = parseInt(p.id_tipo);
+
+        if (tipo === 1 || tipo === 3) { // Múltipla escolha (1) ou V/F (3)
+            // No banco, a resposta correta tem o campo 'certo' == 1
+            const correta = p.respostas.find(r => r.certo == 1);
+            if (correta && respostaUser == correta.id) acertos++;
+        } 
+        else if (tipo === 2) { // Texto
+            const correta = p.respostas[0]; // A primeira resposta cadastrada
+            if (correta && respostaUser?.trim().toLowerCase() === correta.descricao.toLowerCase()) acertos++;
+        }
+        // Dentro do loop de correção no finalizarQuiz()
+        else if (tipo === 4) {
+            const respostasUser = respostasUsuario[p.id] || []; // Array de IDs marcados
+            const IDsCorretos = p.respostas
+                .filter(r => r.certo == 1)
+                .map(r => r.id.toString());
+
+            // Verifica se o tamanho é igual e se todos os IDs batem
+            const acertouTudo = respostasUser.length === IDsCorretos.length && 
+                                IDsCorretos.every(id => respostasUser.includes(id));
+
+            if (acertouTudo) acertos++;
+}
+        // ... adicione as lógicas de tipo 4, 5 e 6 conforme implementar o front
+    });
+
+    // Enviar para o Banco de Dados
+    const dadosParaSalvar = {
+        id_quiz: quizId,
+        acertos: acertos,
+        total: totalQuestoes,
+        segundos: segundos // Variável global do cronômetro
+    };
+
+    try {
+        const response = await fetch('../config/salvar_tentativa.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(dadosParaSalvar)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.sucesso) {
+            alert(`Quiz Finalizado!\nAcertos: ${acertos}/${totalQuestoes}\nTempo: ${document.getElementById('cronometro').innerText}`);
+            window.location.href = `resultado.php?id_tentativa=${resultado.id_tentativa}`;
+        } else {
+            alert("Erro ao salvar resultado: " + resultado.erro);
+        }
+    } catch (error) {
+        console.error("Erro na comunicação:", error);
+    }
+}
+
+function salvarRespostaMultipla(perguntaId, valor, marcado) {
+    // Inicializa como array se for a primeira vez marcando essa pergunta
+    if (!respostasUsuario[perguntaId]) {
+        respostasUsuario[perguntaId] = [];
+    }
+
+    if (marcado) {
+        // Adiciona ao array se não estiver lá
+        if (!respostasUsuario[perguntaId].includes(valor)) {
+            respostasUsuario[perguntaId].push(valor);
+        }
+    } else {
+        // Remove do array se o usuário desmarcar
+        respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
+    }
+    
+    console.log(`Resposta da pergunta ${perguntaId}:`, respostasUsuario[perguntaId]);
 }
 
 carregarQuiz();
