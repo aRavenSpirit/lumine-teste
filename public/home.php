@@ -35,15 +35,16 @@
 </aside>
 
 <div class="mobile-menu" id="mobileMenu">
-    <div class="mobile-menu-content">
-        <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
+    <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
+    
+    <div class="mobile-menu-scroll">
         <nav class="nav-links-mobile">
             <li><a href="#">Sobre nós</a></li>
             <li><a href="novidades.html">Novidades</a></li>
             <li><a href="#">Todos os quizzes</a></li>
             <li><a href="perfil.html">Perfil</a></li>
         </nav>
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 20px 0;">
+        <hr>
         <div id="menuMateriasMobile">
             </div>
     </div>
@@ -155,9 +156,17 @@ function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const main = document.getElementById('mainContainer');
     const mobileMenu = document.getElementById('mobileMenu');
+    const body = document.body;
     
     if (window.innerWidth <= 900) {
         mobileMenu.classList.toggle('active');
+        
+        // TRAVA O SCROLL DO FUNDO NO MOBILE
+        if (mobileMenu.classList.contains('active')) {
+            body.classList.add('no-scroll');
+        } else {
+            body.classList.remove('no-scroll');
+        }
     } else {
         const isClosing = sidebar.classList.contains('open');
         
@@ -187,6 +196,7 @@ window.addEventListener('resize', () => {
     sidebar.classList.remove('open');
     main.classList.remove('sidebar-open');
     mobileMenu.classList.remove('active');
+    document.body.classList.remove('no-scroll'); // Garante que o scroll volte ao redimensionar
 });
 
 window.onload = () => {
@@ -238,6 +248,8 @@ function carregarMaterias() {
 
 function openModal(idMateria) {
     document.getElementById('mobileMenu').classList.remove('active');
+    document.body.classList.remove('no-scroll'); // Libera o scroll se o modal for aberto pelo mobile
+    
     const modal = document.getElementById('meuModal');
     const corpo = document.getElementById('corpoModal');
     modal.style.display = "block";
@@ -330,24 +342,24 @@ function hideBanner() {
 const sidebarEl = document.getElementById('sidebar');
 let scrollTimeout;
 
-sidebarEl.addEventListener('scroll', () => {
-    sidebarEl.classList.add('scrolling');
-    clearTimeout(scrollTimeout);
+if (sidebarEl) {
+    sidebarEl.addEventListener('scroll', () => {
+        sidebarEl.classList.add('scrolling');
+        clearTimeout(scrollTimeout);
 
-    scrollTimeout = setTimeout(() => {
-        // Só remove se o mouse não estiver em cima da sidebar
-        if (!sidebarEl.matches(':hover')) {
+        scrollTimeout = setTimeout(() => {
+            if (!sidebarEl.matches(':hover')) {
+                sidebarEl.classList.remove('scrolling');
+            }
+        }, 1200); 
+    });
+
+    sidebarEl.addEventListener('mouseleave', () => {
+        scrollTimeout = setTimeout(() => {
             sidebarEl.classList.remove('scrolling');
-        }
-    }, 1200); 
-});
-
-sidebarEl.addEventListener('mouseleave', () => {
-    // Se o mouse sair, esperamos um pouco e removemos a classe
-    scrollTimeout = setTimeout(() => {
-        sidebarEl.classList.remove('scrolling');
-    }, 500);
-});
+        }, 500);
+    });
+}
 </script>
 
 </body>

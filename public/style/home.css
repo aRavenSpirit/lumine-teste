@@ -481,6 +481,12 @@ footer {
 .footer-section p:hover { color: #1595C4; }
 .footer-section p i { color: #1595C4; width: 20px; }
 
+/* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
+body.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
 /* --- MENU MOBILE --- */
 .mobile-menu {
     position: fixed;
@@ -489,111 +495,132 @@ footer {
     width: 100%;
     height: 100%;
     z-index: 5000;
-    background: linear-gradient(to bottom, rgba(227, 240, 254, 0.95), rgba(227, 240, 254, 0.95)), 
+    /* Fundo mais escuro para destacar o conteúdo e a imagem */
+    background: linear-gradient(to bottom, rgb(227, 240, 254, 1), rgba(21, 149, 196, 0.8)), 
                 url('../img/background-index.jpg') no-repeat center center;
     background-size: cover;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1);
     display: flex;
     flex-direction: column;
-    overflow: hidden; /* Mantém o container fixo */
+    overflow: hidden;
 }
 
 .mobile-menu.active {
     left: 0;
 }
 
-/* ÁREA INTERNA COM SCROLL LUMINE */
+/* ÁREA INTERNA COM SCROLL */
 .mobile-menu-scroll {
     flex: 1;
-    padding: 80px 40px;
-    overflow-y: auto; /* Ativa o scroll apenas aqui dentro */
+    padding: 90px 30px 40px 30px;
+    overflow-y: auto;
     overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
 }
 
-/* Customização Scrollbar Mobile (Lumine Style) */
+/* Customização Scrollbar (Lumine Style) */
 .mobile-menu-scroll::-webkit-scrollbar {
-    width: 8px;
+    width: 5px;
 }
-
-.mobile-menu-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
 .mobile-menu-scroll::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df);
+    background: #fff;
     border-radius: 10px;
-    border: 2px solid rgba(227, 240, 254, 1);
 }
 
+/* BOTÃO FECHAR */
 .mobile-menu-close {
     position: absolute;
     top: 25px;
-    right: 30px;
-    font-size: 40px;
-    cursor: pointer;
+    right: 25px;
+    width: 45px;
+    height: 45px;
+    background: rgb(21, 149, 196, 0.2);;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
     color: #1595C4;
+    cursor: pointer;
     z-index: 5001;
+    transition: all 0.3s ease;
+    border: 1px solid rgb(21, 149, 196, 1);;
 }
 
+.mobile-menu-close:active {
+    transform: scale(0.9);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* OS 4 ITENS PRINCIPAIS */
 .nav-links-mobile { 
     list-style: none; 
     width: 100%;
+    margin-bottom: 20px;
 }
 
 .nav-links-mobile li { 
-    margin-bottom: 15px; 
+    margin-bottom: 12px; 
 }
 
-/* HOVER NOS ITENS PRINCIPAIS */
 .nav-links-mobile a { 
     text-decoration: none; 
-    color: #333; 
-    font-size: 28px;
+    color: rgb(21, 149, 196); 
+    font-size: 26px;
     font-weight: 800;
+    font-family: 'gliker', sans-serif;
     display: block; 
-    padding: 10px 15px;
-    border-radius: 12px;
+    padding: 12px 20px;
+    border-radius: 15px;
     transition: all 0.3s ease;
+    border: 1px solid transparent;
 }
 
-.nav-links-mobile a:hover {
-    background: rgba(21, 149, 196, 0.1);
-    color: #1595C4;
+/* HOVER DOS ITENS PRINCIPAIS (Azul Lumine) */
+.nav-links-mobile a:hover,
+.nav-links-mobile a:active {
+    background: #1595C4;
+    color: #fff;
     transform: translateX(10px);
+    box-shadow: 0 10px 20px rgba(21, 149, 196, 0.4);
 }
 
+/* DIVISOR */
+.mobile-menu hr {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 25px 0;
+}
+
+/* LISTA DE MATÉRIAS (Cards Modernos) */
 #menuMateriasMobile {
     width: 100%;
     display: flex;
     flex-direction: column;
-    margin-top: 10px;
+    gap: 10px;
 }
 
-/* HOVER NAS MATÉRIAS (MENU MATERIAS MOBILE) */
 #menuMateriasMobile a {
     display: block;
-    padding: 15px 15px;
+    padding: 16px 20px;
     text-decoration: none;
-    color: #1595C4;
-    font-size: 20px;
-    font-weight: 700;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-    border-radius: 10px;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
     transition: all 0.3s ease;
 }
 
-#menuMateriasMobile a:hover {
-    background: rgba(255, 255, 255, 0.5);
-    padding-left: 25px;
-}
-
-.mobile-menu hr {
-    width: 100%;
-    border: 0;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    margin: 20px 0;
+#menuMateriasMobile a:hover,
+#menuMateriasMobile a:active {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 30px;
+    border-color: rgba(255, 255, 255, 0.4);
 }
 
 /* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
