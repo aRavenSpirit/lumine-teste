@@ -177,8 +177,9 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById("mobileMenu");
-            menu.classList.toggle("active");
-        }
+ // Ao adicionar/remover 'active', o CSS executa o translateY
+                menu.classList.toggle("active");
+            }
         window.addEventListener('resize', function() {
             const menu = document.getElementById("mobileMenu");
             if (window.innerWidth > 580) {

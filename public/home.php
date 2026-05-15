@@ -120,10 +120,14 @@
 
 <div id="meuModal" class="modal">
     <div class="modal-content">
-        <span onclick="fecharModal()" class="modal-close">&times;</span>
-        <h2>Conteúdos</h2>
+        <div class="modal-header">
+            <h2>Conteúdos</h2>
+            <span onclick="fecharModal()" class="modal-close">&times;</span>
+        </div>
         <hr>
-        <div id="corpoModal"></div>
+        <div class="modal-body">
+            <div id="corpoModal"></div>
+        </div>
     </div>
 </div>
 
