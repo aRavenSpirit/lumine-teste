@@ -28,7 +28,6 @@
     if (isset($_GET['tipo']) && $_GET['tipo'] == 'detalhes_quiz') {
         $id_quiz = intval($_GET['id']);
 
-        // ALTERAÇÃO AQUI: c.nome AS conteudo (para o JS encontrar)
         $sql_quiz = "SELECT q.*, m.nome_materia, c.nome as conteudo 
                      FROM quizzes q 
                      JOIN conteudo c ON q.id_conteudo = c.id 
@@ -45,21 +44,22 @@
             $perguntas = [];
             while ($p = $res_perguntas->fetch_assoc()) {
                 $id_p = $p['id'];
-                $sql_resp = "SELECT id, descricao, certo FROM respostas WHERE id_pergunta = $id_p";
+                // ALTERADO: Adicionado "ordem" no SELECT
+                $sql_resp = "SELECT id, descricao, certo, ordem FROM respostas WHERE id_pergunta = $id_p";
                 $res_resp = $conn->query($sql_resp);
                 
                 $respostas = [];
                 while ($r = $res_resp->fetch_assoc()) {
                     $respostas[] = $r;
                 }
-                
                 $p['respostas'] = $respostas;
                 $perguntas[] = $p;
             }
             $dados['perguntas'] = $perguntas;
+            echo json_encode($dados);
+        } else {
+            echo json_encode(["erro" => "Quiz não encontrado"]);
         }
-
-        echo json_encode($dados);
         exit;
     }
 ?>

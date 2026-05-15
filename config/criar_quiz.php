@@ -209,26 +209,13 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
         // ORDENAR / DRAG
         // =========================
         if ($id_tipo == 5 || $id_tipo == 6) {
-
-            if (empty($p['respostas'])) {
-                echo json_encode(["erro" => "Itens obrigatórios"]);
-                exit;
-            }
-
-            $ordem = 1;
-
+            $posicao = 1; // Contador para a ordem
             foreach ($p['respostas'] as $r) {
-
                 if (empty($r['descricao'])) continue;
-
                 $descItem = $conn->real_escape_string($r['descricao']);
-
-                $conn->query("
-                    INSERT INTO respostas (descricao, certo, id_pergunta)
-                    VALUES ('$descItem', $ordem, $pergunta_id)
-                ");
-
-                $ordem++;
+                // AQUI: Salva a descrição e a ordem correta (1, 2, 3...)
+                $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem) VALUES ('$descItem', 1, $pergunta_id, $posicao)");
+                $posicao++;
             }
         }
     }
