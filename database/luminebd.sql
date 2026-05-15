@@ -250,12 +250,13 @@ create table perguntas(
     descricao varchar(255)
 );
 
-create table respostas(
-    id int primary key auto_increment,
-    id_pergunta int,
-    foreign key (id_pergunta) references perguntas (id),
-	descricao varchar(255),
-    certo boolean
+CREATE TABLE respostas (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_pergunta INT,
+    descricao VARCHAR(255),
+    certo BOOLEAN,
+    ordem INT DEFAULT 0, -- Campo crucial para ordenação e arrastar/soltar
+    FOREIGN KEY (id_pergunta) REFERENCES perguntas(id)
 );
 
 create table tentativas(

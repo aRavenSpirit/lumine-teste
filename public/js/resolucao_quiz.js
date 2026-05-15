@@ -21,25 +21,19 @@ async function carregarQuiz() {
         document.getElementById('quiz-conteudo').innerText = dadosQuiz.conteudo;
 
         renderizarPergunta();
-        iniciarCronometro(); // <--- Liga o relógio aqui
+        iniciarCronometro();
     } catch (error) {
         console.error("Erro ao carregar quiz:", error);
     }
 }
 
 function iniciarCronometro() {
-    // Garante que não existam dois cronômetros rodando
     clearInterval(intervaloCronometro); 
-    
     intervaloCronometro = setInterval(() => {
         segundos++;
         const min = Math.floor(segundos / 60);
         const seg = segundos % 60;
-        
-        // Formata para 00:00
-        const tempoFormatado = 
-            `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
-        
+        const tempoFormatado = `${min.toString().padStart(2, '0')}:${seg.toString().padStart(2, '0')}`;
         document.getElementById('cronometro').innerText = `Tempo: ${tempoFormatado}`;
     }, 1000);
 }
@@ -51,41 +45,40 @@ function renderizarPergunta() {
     document.getElementById('progresso').innerText = `Pergunta ${indicePergunta + 1} de ${dadosQuiz.perguntas.length}`;
 
     let html = `<h3>${p.descricao}</h3>`;
-    const valorSalvo = respostasUsuario[p.id] || "";
+    const valorSalvo = respostasUsuario[p.id];
 
     switch (parseInt(p.id_tipo)) {
-        case 1: // Múltipla Escolha
+        case 1: // Múltipla Escolha (Uma correta)
             p.respostas.forEach(resp => {
                 const checked = valorSalvo == resp.id ? 'checked' : '';
                 html += `
-                    <label>
+                    <label style="display: block; margin-bottom: 5px;">
                         <input type="radio" name="p_${p.id}" value="${resp.id}" ${checked} 
                                onchange="salvarResposta(${p.id}, this.value)">
                         ${resp.descricao}
-                    </label><br>`;
+                    </label>`;
             });
             break;
 
-        case 2: // Resposta Curta
-            html += `<input type="text" value="${valorSalvo}" 
+        case 2: // Resposta Curta (Texto)
+            html += `<input type="text" value="${valorSalvo || ''}" 
                             oninput="salvarResposta(${p.id}, this.value)" 
-                            placeholder="Sua resposta...">`;
+                            placeholder="Sua resposta..." style="padding: 8px; width: 80%;">`;
             break;
 
         case 3: // Verdadeiro ou Falso
             html += `
-                <button onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()">V</button>
-                <button onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()">F</button>
-                <p>Selecionado: ${valorSalvo}</p>`;
+                <div style="margin-top: 10px;">
+                    <button onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()" style="padding: 10px 20px;">V</button>
+                    <button onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()" style="padding: 10px 20px;">F</button>
+                </div>
+                <p>Selecionado: <strong>${valorSalvo || 'Nenhum'}</strong></p>`;
             break;
+
         case 4: // Múltipla Escolha (Várias Corretas)
-            // Buscamos o array de respostas já marcadas ou criamos um vazio
             const selecionadas = respostasUsuario[p.id] || [];
-            
             p.respostas.forEach(resp => {
-                // Verifica se o ID desta resposta está no array de selecionadas
                 const checked = selecionadas.includes(resp.id.toString()) ? 'checked' : '';
-                
                 html += `
                     <label style="display: block; margin-bottom: 8px;">
                         <input type="checkbox" value="${resp.id}" ${checked} 
@@ -94,15 +87,85 @@ function renderizarPergunta() {
                     </label>`;
             });
             break;
+
+        case 5: // Ordenação Manual (Input numérico)
+            html += `<p><small>Digite a ordem correta para cada item (1, 2, 3...):</small></p>`;
+            p.respostas.forEach(resp => {
+                const ordemDigitada = (respostasUsuario[p.id] && respostasUsuario[p.id][resp.id]) || "";
+                html += `
+                    <div style="margin-bottom: 8px;">
+                        <input type="number" style="width: 50px; padding: 5px;" 
+                               oninput="salvarOrdemManual(${p.id}, ${resp.id}, this.value)" 
+                               value="${ordemDigitada}">
+                        <span>${resp.descricao}</span>
+                    </div>`;
+            });
+            break;
+
+        case 6: // Arrastar e Soltar (Ordenação Visual)
+            html += `<p><small>Arraste os itens para a ordem correta:</small></p>`;
+            if (!respostasUsuario[p.id]) {
+                respostasUsuario[p.id] = p.respostas.map(r => r.id);
+            }
+            
+            html += `<ul id="sortable-list" style="list-style: none; padding: 0;">`;
+            respostasUsuario[p.id].forEach((idResp, index) => {
+                const respObj = p.respostas.find(r => r.id == idResp);
+                html += `
+                    <li draggable="true" 
+                        ondragstart="dragStartExec(${index})" 
+                        ondragover="event.preventDefault()" 
+                        ondrop="dropExec(${p.id}, ${index})"
+                        style="border: 1px solid #ccc; padding: 12px; margin-bottom: 8px; cursor: move; background: #fefefe; border-radius: 4px; user-select: none;">
+                        ☰ ${respObj.descricao}
+                    </li>`;
+            });
+            html += `</ul>`;
+            break;
     }
 
     container.innerHTML = html;
     atualizarControles();
 }
 
+// --- Funções de Gravação de Respostas ---
+
 function salvarResposta(perguntaId, valor) {
     respostasUsuario[perguntaId] = valor;
 }
+
+function salvarRespostaMultipla(perguntaId, valor, marcado) {
+    if (!respostasUsuario[perguntaId]) respostasUsuario[perguntaId] = [];
+    if (marcado) {
+        if (!respostasUsuario[perguntaId].includes(valor)) {
+            respostasUsuario[perguntaId].push(valor);
+        }
+    } else {
+        respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
+    }
+}
+
+function salvarOrdemManual(perguntaId, respostaId, valor) {
+    if (!respostasUsuario[perguntaId]) respostasUsuario[perguntaId] = {};
+    respostasUsuario[perguntaId][respostaId] = valor;
+}
+
+// --- Funções Drag and Drop (Tipo 6) ---
+
+let dragIdxExec = null;
+function dragStartExec(index) {
+    dragIdxExec = index;
+}
+
+function dropExec(perguntaId, targetIndex) {
+    let lista = respostasUsuario[perguntaId];
+    if (!lista) return;
+    const itemMovido = lista.splice(dragIdxExec, 1)[0];
+    lista.splice(targetIndex, 0, itemMovido);
+    renderizarPergunta();
+}
+
+// --- Navegação ---
 
 function proximaPergunta() {
     if (indicePergunta < dadosQuiz.perguntas.length - 1) {
@@ -120,53 +183,54 @@ function perguntaAnterior() {
 
 function atualizarControles() {
     document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
-    const final = indicePergunta === dadosQuiz.perguntas.length - 1;
+    const final = (indicePergunta === dadosQuiz.perguntas.length - 1);
     document.getElementById('btn-proximo').style.display = final ? 'none' : 'inline';
     document.getElementById('btn-finalizar').style.display = final ? 'inline' : 'none';
 }
 
+// --- Finalização e Correção ---
+
 async function finalizarQuiz() {
-    clearInterval(intervaloCronometro); // Para o tempo
+    clearInterval(intervaloCronometro);
 
     let acertos = 0;
     const totalQuestoes = dadosQuiz.perguntas.length;
 
-    // Lógica de correção
     dadosQuiz.perguntas.forEach(p => {
-        const respostaUser = respostasUsuario[p.id];
+        const respUser = respostasUsuario[p.id];
         const tipo = parseInt(p.id_tipo);
 
-        if (tipo === 1 || tipo === 3) { // Múltipla escolha (1) ou V/F (3)
-            // No banco, a resposta correta tem o campo 'certo' == 1
+        if (tipo === 1 || tipo === 3) { // Escolha Única ou V/F
             const correta = p.respostas.find(r => r.certo == 1);
-            if (correta && respostaUser == correta.id) acertos++;
+            if (correta && (respUser == correta.id || respUser == correta.descricao)) acertos++;
         } 
-        else if (tipo === 2) { // Texto
-            const correta = p.respostas[0]; // A primeira resposta cadastrada
-            if (correta && respostaUser?.trim().toLowerCase() === correta.descricao.toLowerCase()) acertos++;
+        else if (tipo === 2) { // Texto Curto
+            const correta = p.respostas[0];
+            if (correta && respUser?.trim().toLowerCase() === correta.descricao.toLowerCase()) acertos++;
         }
-        // Dentro do loop de correção no finalizarQuiz()
-        else if (tipo === 4) {
-            const respostasUser = respostasUsuario[p.id] || []; // Array de IDs marcados
-            const IDsCorretos = p.respostas
-                .filter(r => r.certo == 1)
-                .map(r => r.id.toString());
-
-            // Verifica se o tamanho é igual e se todos os IDs batem
-            const acertouTudo = respostasUser.length === IDsCorretos.length && 
-                                IDsCorretos.every(id => respostasUser.includes(id));
-
+        else if (tipo === 4) { // Múltipla Escolha
+            const selUser = respUser || [];
+            const idsCorretos = p.respostas.filter(r => r.certo == 1).map(r => r.id.toString());
+            const acertouTudo = selUser.length === idsCorretos.length && idsCorretos.every(id => selUser.includes(id));
             if (acertouTudo) acertos++;
-}
-        // ... adicione as lógicas de tipo 4, 5 e 6 conforme implementar o front
+        }
+        else if (tipo === 5) { // Ordenação Manual
+            const ordUser = respUser || {};
+            const acertou = p.respostas.every(r => ordUser[r.id] == r.ordem);
+            if (acertou && p.respostas.length > 0) acertos++;
+        }
+        else if (tipo === 6) { // Arrastar e Soltar
+            const listaUser = respUser || [];
+            const ordemCorretaIds = [...p.respostas].sort((a, b) => a.ordem - b.ordem).map(r => r.id);
+            if (JSON.stringify(listaUser) === JSON.stringify(ordemCorretaIds)) acertos++;
+        }
     });
 
-    // Enviar para o Banco de Dados
     const dadosParaSalvar = {
         id_quiz: quizId,
         acertos: acertos,
         total: totalQuestoes,
-        segundos: segundos // Variável global do cronômetro
+        segundos: segundos 
     };
 
     try {
@@ -179,33 +243,16 @@ async function finalizarQuiz() {
         const resultado = await response.json();
 
         if (resultado.sucesso) {
-            alert(`Quiz Finalizado!\nAcertos: ${acertos}/${totalQuestoes}\nTempo: ${document.getElementById('cronometro').innerText}`);
+            alert(`Quiz Finalizado!\nAcertos: ${acertos}/${totalQuestoes}`);
             window.location.href = `resultado.php?id_tentativa=${resultado.id_tentativa}`;
         } else {
             alert("Erro ao salvar resultado: " + resultado.erro);
         }
     } catch (error) {
         console.error("Erro na comunicação:", error);
+        alert("Erro ao conectar com o servidor.");
     }
 }
 
-function salvarRespostaMultipla(perguntaId, valor, marcado) {
-    // Inicializa como array se for a primeira vez marcando essa pergunta
-    if (!respostasUsuario[perguntaId]) {
-        respostasUsuario[perguntaId] = [];
-    }
-
-    if (marcado) {
-        // Adiciona ao array se não estiver lá
-        if (!respostasUsuario[perguntaId].includes(valor)) {
-            respostasUsuario[perguntaId].push(valor);
-        }
-    } else {
-        // Remove do array se o usuário desmarcar
-        respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
-    }
-    
-    console.log(`Resposta da pergunta ${perguntaId}:`, respostasUsuario[perguntaId]);
-}
-
+// Iniciar aplicação
 carregarQuiz();

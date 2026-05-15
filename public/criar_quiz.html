@@ -201,7 +201,7 @@
         }
 
         function setOrdem(i, j, valor) {
-            perguntas[i].respostas[j].ordem = valor;
+            perguntas[i].respostas[j].ordem = parseInt(valor);
         }
 
         function render() {
@@ -301,36 +301,32 @@
                 }
 
                 if (p.tipo == 5) {
-
                     html += `<button onclick="addResposta(${i})">+ Item</button><ul>`;
-
                     p.respostas.forEach((r, j) => {
-
                         html += `
                         <li>
                             <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
                             Ordem:
-                            <input type="number" onchange="setOrdem(${i}, ${j}, this.value)">
-                        </li>
-                        `;
+                            <input type="number" onchange="setOrdem(${i}, ${j}, this.value)" value="${r.ordem ?? ''}">
+                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
+                        </li>`;
                     });
-
                     html += `</ul>`;
                 }
 
                 if (p.tipo == 6) {
-
-                    html += `<button onclick="addResposta(${i})">+ Item</button><ul>`;
-
+                    html += `<button onclick="addResposta(${i})">+ Item</button><ul style="list-style:none">`;
                     p.respostas.forEach((r, j) => {
-
                         html += `
-                        <li draggable="true">
+                        <li draggable="true" 
+                            ondragstart="dragStart(${i}, ${j})" 
+                            ondragover="allowDrop(event)" 
+                            ondrop="drop(${i}, ${j})"
+                            style="padding:5px; border:1px dashed #ccc; margin-bottom:5px; cursor:move">
                             <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                        </li>
-                        `;
+                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
+                        </li>`;
                     });
-
                     html += `</ul>`;
                 }
 
@@ -340,8 +336,26 @@
             document.getElementById("perguntas").innerHTML = html;
         }
 
-        function salvarQuiz() {
+        //DRAG DROP
 
+        let dragSourceIndex = null;
+
+        function dragStart(i, j) {
+            dragSourceIndex = j;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drop(i, targetIndex) {
+            // Remove o item da posição antiga e insere na nova
+            const movido = perguntas[i].respostas.splice(dragSourceIndex, 1)[0];
+            perguntas[i].respostas.splice(targetIndex, 0, movido);
+            render();
+        }
+
+        function salvarQuiz() {
             let nome = document.getElementById("nome").value.trim();
             let dificuldade = document.getElementById("dificuldade").value;
             let conteudo = document.getElementById("conteudo").value;
@@ -351,28 +365,46 @@
             if (!conteudo) return alert("Selecione o conteúdo");
             if (perguntas.length === 0) return alert("Adicione perguntas");
 
+            // O loop deve envolver TODAS as validações de cada pergunta
             for (let i = 0; i < perguntas.length; i++) {
-
                 let p = perguntas[i];
 
                 if (!p.descricao) return alert(`Pergunta ${i + 1} vazia`);
                 if (!p.tipo) return alert(`Selecione tipo da pergunta ${i + 1}`);
 
+                // Validação Tipo 1 (Múltipla Escolha)
                 if (p.tipo == 1) {
-
                     if (p.respostas.length < 2) return alert(`Pergunta ${i + 1} precisa de 2 respostas`);
-
                     let corretas = p.respostas.filter(r => r.certo);
                     if (corretas.length !== 1) return alert(`Pergunta ${i + 1} precisa de 1 correta`);
                 }
 
+                // Validação Tipo 2 (Texto)
                 if (p.tipo == 2 && !p.resposta_texto)
                     return alert(`Pergunta ${i + 1} precisa resposta`);
 
+                // Validação Tipo 3 (V ou F)
                 if (p.tipo == 3 && p.vf === undefined)
                     return alert(`Pergunta ${i + 1} precisa VF`);
+
+                // Validação para Ordenação (5) e Arrastar (6) ✅ AGORA DENTRO DO LOOP
+                if (p.tipo == 5 || p.tipo == 6) {
+                    if (p.respostas.length < 2) 
+                        return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
+                    
+                    if (p.tipo == 5) {
+                        let faltaOrdem = p.respostas.some(r => r.ordem === undefined || isNaN(r.ordem));
+                        if (faltaOrdem) return alert(`Defina a numeração da ordem para todos os itens da pergunta ${i + 1}`);
+                    }
+
+                    // Para o tipo 6, vamos garantir que a ordem seja a posição atual do array
+                    if (p.tipo == 6) {
+                        p.respostas.forEach((r, idx) => r.ordem = idx + 1);
+                    }
+                }
             }
 
+            // Envio para a API
             fetch(api + "?tipo=quiz_completo", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -383,8 +415,12 @@
                     perguntas
                 })
             })
-                .then(r => r.json())
-                .then(d => alert(d.mensagem || d.erro));
+            .then(r => r.json())
+            .then(d => {
+                if (d.erro) alert("Erro: " + d.erro);
+                else alert(d.mensagem || "Quiz salvo com sucesso!");
+            })
+            .catch(err => alert("Erro ao conectar com o servidor"));
         }
 
     </script>
