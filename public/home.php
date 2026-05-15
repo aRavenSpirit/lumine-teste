@@ -316,6 +316,23 @@ function hideBanner() {
     const banner = document.getElementById("cookieBanner");
     banner.classList.remove("show");
 }
+
+// Lógica para mostrar o scroll apenas quando estiver rolando
+const sidebarEl = document.getElementById('sidebar');
+let scrollTimeout;
+
+sidebarEl.addEventListener('scroll', () => {
+    // Adiciona a classe que torna o scroll visível
+    sidebarEl.classList.add('scrolling');
+
+    // Limpa o timer para a barra não sumir enquanto você ainda está rodando
+    clearTimeout(scrollTimeout);
+
+    // Esconde a barra novamente após 1 segundo de inatividade
+    scrollTimeout = setTimeout(() => {
+        sidebarEl.classList.remove('scrolling');
+    }, 1000);
+});
 </script>
 
 </body>

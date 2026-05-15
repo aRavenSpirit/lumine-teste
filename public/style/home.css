@@ -48,13 +48,49 @@ body {
     border-right: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    
+    /* Esconde o scroll quando fechada */
+    overflow: hidden; 
 }
 
+/* ATIVA SCROLL APENAS QUANDO ABERTA */
 .sidebar.open {
     width: 250px; 
+    overflow-y: auto; 
+    overflow-x: hidden;
 }
 
+/* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE - APARECE APENAS AO ROLAR) --- */
+
+/* 1. Base da Scrollbar */
+.sidebar.open::-webkit-scrollbar {
+    width: 10px;
+}
+
+.sidebar.open::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* 2. O "Polegar" (Thumb) - TOTALMENTE TRANSPARENTE POR PADRÃO */
+.sidebar.open::-webkit-scrollbar-thumb {
+    background: transparent; 
+    border-radius: 10px;
+    border: 3px solid transparent; 
+    transition: background 0.3s ease;
+}
+
+/* 3. SÓ APARECE QUANDO O JAVASCRIPT ADICIONAR A CLASSE 'scrolling' */
+.sidebar.open.scrolling::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
+    border: 3px solid rgba(227, 240, 254, 0.9); 
+}
+
+/* Se o mouse estiver em cima da barra enquanto ela aparece, fica verde */
+.sidebar.open.scrolling::-webkit-scrollbar-thumb:hover {
+    background: #00bf63; 
+}
+
+/* --- RESTANTE DO CÓDIGO (Header, Nav, etc) --- */
 .sidebar-header {
     width: 100%;
     display: flex;
@@ -310,6 +346,7 @@ main {
 }
 
 /* --- MODAL --- */
+
 .modal { 
     display: none; 
     position: fixed; 
@@ -323,38 +360,57 @@ main {
 .modal-content { 
     background: #fff; 
     margin: 5vh auto; 
-    padding: 30px; 
+    padding: 0; /* Removido padding para a barra de scroll encostar na direita */
     width: 90%; 
     max-width: 700px; 
     border-radius: 25px; 
     position: relative;
     box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-    
-    /* MUDANÇA AQUI: Limitamos a altura e colocamos o scroll interno */
-    max-height: 85vh; 
-    overflow-y: auto; 
-    overflow-x: hidden;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column; /* Alinha header e body verticalmente */
+    overflow: hidden; /* Garante que o conteúdo não saia das bordas arredondadas */
 }
 
-.modal-content h2 {
+/* Novo estilo para manter o topo fixo */
+.modal-header {
+    padding: 25px 30px 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
     font-family: 'gliker', sans-serif;
     color: #1595C4;
-    margin-bottom: 20px;
+    margin: 0;
 }
 
 .modal-close { 
-    /* MUDANÇA AQUI: 'absolute' para ele ficar fixo no topo do modal */
-    position: absolute; 
-    right: 20px; 
-    top: 20px; 
     font-size: 32px; 
     cursor: pointer; 
     color: #bbb;
     transition: color 0.3s;
-    z-index: 10;
 }
 
 .modal-close:hover { color: #ff5757; }
+
+/* A mágica acontece aqui: só o corpo tem scroll */
+.modal-body {
+    padding: 10px 30px 30px 30px;
+    overflow-y: auto;
+    flex-grow: 1;
+}
+
+/* Scrollbar fina para não tapar o conteúdo */
+.modal-body::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-body::-webkit-scrollbar-thumb {
+    background: #1595C4;
+    border-radius: 10px;
+}
 
 .conteudo-item {
     background: #f0f7ff;
@@ -434,21 +490,42 @@ footer {
     width: 100%;
     height: 100%;
     z-index: 5000;
-    background: linear-gradient(to bottom, rgba(227, 240, 254, 0.87), rgba(227, 240, 254, 0.87)), 
+    background: linear-gradient(to bottom, rgba(227, 240, 254, 0.95), rgba(227, 240, 254, 0.95)), 
                 url('../img/background-index.jpg') no-repeat center center;
     background-size: cover;
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    padding: 80px 40px;
-    overflow-y: auto;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    overflow: hidden; /* Mantém o container fixo */
 }
 
 .mobile-menu.active {
     left: 0;
+}
+
+/* ÁREA INTERNA COM SCROLL LUMINE */
+.mobile-menu-scroll {
+    flex: 1;
+    padding: 80px 40px;
+    overflow-y: auto; /* Ativa o scroll apenas aqui dentro */
+    overflow-x: hidden;
+}
+
+/* Customização Scrollbar Mobile (Lumine Style) */
+.mobile-menu-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.mobile-menu-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.mobile-menu-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df);
+    border-radius: 10px;
+    border: 2px solid rgba(227, 240, 254, 1);
 }
 
 .mobile-menu-close {
@@ -458,6 +535,7 @@ footer {
     font-size: 40px;
     cursor: pointer;
     color: #1595C4;
+    z-index: 5001;
 }
 
 .nav-links-mobile { 
@@ -466,15 +544,25 @@ footer {
 }
 
 .nav-links-mobile li { 
-    margin-bottom: 25px; 
+    margin-bottom: 15px; 
 }
 
+/* HOVER NOS ITENS PRINCIPAIS */
 .nav-links-mobile a { 
     text-decoration: none; 
     color: #333; 
     font-size: 28px;
     font-weight: 800;
     display: block; 
+    padding: 10px 15px;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+.nav-links-mobile a:hover {
+    background: rgba(21, 149, 196, 0.1);
+    color: #1595C4;
+    transform: translateX(10px);
 }
 
 #menuMateriasMobile {
@@ -484,14 +572,22 @@ footer {
     margin-top: 10px;
 }
 
+/* HOVER NAS MATÉRIAS (MENU MATERIAS MOBILE) */
 #menuMateriasMobile a {
     display: block;
-    padding: 15px 0;
+    padding: 15px 15px;
     text-decoration: none;
     color: #1595C4;
     font-size: 20px;
     font-weight: 700;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+#menuMateriasMobile a:hover {
+    background: rgba(255, 255, 255, 0.5);
+    padding-left: 25px;
 }
 
 .mobile-menu hr {
@@ -499,6 +595,11 @@ footer {
     border: 0;
     border-top: 1px solid rgba(0,0,0,0.1);
     margin: 20px 0;
+}
+
+/* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
+body.no-scroll {
+    overflow: hidden;
 }
 
 /* --- ANIMAÇÕES --- */
