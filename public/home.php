@@ -159,8 +159,23 @@ function toggleSidebar() {
     if (window.innerWidth <= 900) {
         mobileMenu.classList.toggle('active');
     } else {
-        sidebar.classList.toggle('open');
-        main.classList.toggle('sidebar-open');
+        const isClosing = sidebar.classList.contains('open');
+        
+        if (isClosing) {
+            // FORÇA O SCROLL PARA O TOPO IMEDIATAMENTE
+            sidebar.scrollTo({ top: 0, behavior: 'instant' });
+            
+            // Pequeno truque: remove o overflow para não ver o conteúdo subindo
+            sidebar.style.overflowY = "hidden";
+            
+            sidebar.classList.remove('open');
+            main.classList.remove('sidebar-open');
+        } else {
+            sidebar.classList.add('open');
+            main.classList.add('sidebar-open');
+            // Restaura o overflow quando abre
+            sidebar.style.overflowY = "auto";
+        }
     }
 }
 
@@ -286,12 +301,9 @@ window.onclick = function(event) {
     }
 }
 
-
-
-// mostrar cookie banner ao carregar
+// Cookie Banner
 window.addEventListener("load", () => {
     const banner = document.getElementById("cookieBanner");
-
     if (!localStorage.getItem("cookiesChoice")) {
         setTimeout(() => {
             banner.classList.add("show");
@@ -299,39 +311,42 @@ window.addEventListener("load", () => {
     }
 });
 
-// aceitar
 function acceptCookies() {
     localStorage.setItem("cookiesChoice", "accepted");
     hideBanner();
 }
 
-// recusar
 function declineCookies() {
     localStorage.setItem("cookiesChoice", "declined");
     hideBanner();
 }
 
-// esconder
 function hideBanner() {
     const banner = document.getElementById("cookieBanner");
     banner.classList.remove("show");
 }
 
-// Lógica para mostrar o scroll apenas quando estiver rolando
+// --- Lógica Refinada da Sidebar (Scroll + Hover) ---
 const sidebarEl = document.getElementById('sidebar');
 let scrollTimeout;
 
 sidebarEl.addEventListener('scroll', () => {
-    // Adiciona a classe que torna o scroll visível
     sidebarEl.classList.add('scrolling');
-
-    // Limpa o timer para a barra não sumir enquanto você ainda está rodando
     clearTimeout(scrollTimeout);
 
-    // Esconde a barra novamente após 1 segundo de inatividade
+    scrollTimeout = setTimeout(() => {
+        // Só remove se o mouse não estiver em cima da sidebar
+        if (!sidebarEl.matches(':hover')) {
+            sidebarEl.classList.remove('scrolling');
+        }
+    }, 1200); 
+});
+
+sidebarEl.addEventListener('mouseleave', () => {
+    // Se o mouse sair, esperamos um pouco e removemos a classe
     scrollTimeout = setTimeout(() => {
         sidebarEl.classList.remove('scrolling');
-    }, 1000);
+    }, 500);
 });
 </script>
 

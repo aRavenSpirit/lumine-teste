@@ -49,20 +49,18 @@ body {
     display: flex;
     flex-direction: column;
     
-    /* Esconde o scroll quando fechada */
-    overflow: hidden; 
+    /* Importante: Impede que o conteúdo "vaze" ao fechar */
+    overflow-x: hidden; 
+    overflow-y: hidden;
 }
 
 /* ATIVA SCROLL APENAS QUANDO ABERTA */
 .sidebar.open {
     width: 250px; 
     overflow-y: auto; 
-    overflow-x: hidden;
 }
 
-/* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE - APARECE APENAS AO ROLAR) --- */
-
-/* 1. Base da Scrollbar */
+/* --- CUSTOMIZAÇÃO DA SCROLLBAR --- */
 .sidebar.open::-webkit-scrollbar {
     width: 10px;
 }
@@ -71,7 +69,6 @@ body {
     background: transparent;
 }
 
-/* 2. O "Polegar" (Thumb) - TOTALMENTE TRANSPARENTE POR PADRÃO */
 .sidebar.open::-webkit-scrollbar-thumb {
     background: transparent; 
     border-radius: 10px;
@@ -79,25 +76,27 @@ body {
     transition: background 0.3s ease;
 }
 
-/* 3. SÓ APARECE QUANDO O JAVASCRIPT ADICIONAR A CLASSE 'scrolling' */
-.sidebar.open.scrolling::-webkit-scrollbar-thumb {
+.sidebar.open.scrolling::-webkit-scrollbar-thumb,
+.sidebar.open:hover::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #1595C4, #0cc0df); 
     border: 3px solid rgba(227, 240, 254, 0.9); 
 }
 
-/* Se o mouse estiver em cima da barra enquanto ela aparece, fica verde */
-.sidebar.open.scrolling::-webkit-scrollbar-thumb:hover {
-    background: #00bf63; 
+.sidebar.open.scrolling::-webkit-scrollbar-thumb:hover,
+.sidebar.open:hover::-webkit-scrollbar-thumb:hover {
+    background: #0043af; 
 }
 
-/* --- RESTANTE DO CÓDIGO (Header, Nav, etc) --- */
+/* --- HEADER (LOGO E HAMBURGUER) --- */
 .sidebar-header {
     width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
     padding-top: 15px; 
-    transition: padding 0.4s ease, gap 0.4s ease;
+    transition: padding 0.4s ease;
+    /* Impede que o header mude de tamanho ou suma ao fechar */
+    flex-shrink: 0; 
 }
 
 .sidebar.open .sidebar-header {
@@ -138,11 +137,11 @@ body {
     align-items: center;
     justify-content: center;
     width: 100%;
-    transition: all 0.4s ease;
+    transition: color 0.4s ease; 
 }
 
 .sidebar.open .menu-trigger {
-    transform: translateY(-10px);
+    transform: none; 
     color: #333;
 }
 
