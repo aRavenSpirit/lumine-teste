@@ -44,8 +44,8 @@
             $perguntas = [];
             while ($p = $res_perguntas->fetch_assoc()) {
                 $id_p = $p['id'];
-                // ALTERADO: Adicionado "ordem" no SELECT
-                $sql_resp = "SELECT id, descricao, certo, ordem FROM respostas WHERE id_pergunta = $id_p";
+                // Dentro do quiz.php, na parte do detalhes_quiz:
+                $sql_resp = "SELECT id, descricao, certo, ordem, texto_alvo FROM respostas WHERE id_pergunta = $id_p";
                 $res_resp = $conn->query($sql_resp);
                 
                 $respostas = [];

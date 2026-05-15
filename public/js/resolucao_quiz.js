@@ -109,31 +109,43 @@ function renderizarPergunta() {
         case 6: // Arrastar e Soltar (Estilo Atividade 1)
             html += `<p><small>Arraste os itens para os campos correspondentes:</small></p>`;
             
-            // Itens Disponíveis
-            html += `<div id="itens-disponiveis" style="display:flex; gap:10px; margin-bottom:20px; padding:10px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
+            // 1. Itens que o aluno vai arrastar
+            html += `<div id="itens-disponiveis" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding:15px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
             p.respostas.forEach(resp => {
                 const jaAlocado = Object.values(respostasUsuario[p.id] || {}).includes(resp.id.toString());
                 if (!jaAlocado) {
-                    html += `<div id="drag_${resp.id}" draggable="true" ondragstart="drag(event)" style="padding:8px; background:white; border:1px solid #333; cursor:move;">${resp.descricao}</div>`;
+                    html += `<div id="drag_${resp.id}" draggable="true" ondragstart="drag(event)" style="padding:10px; background:white; border:1px solid #333; cursor:move; border-radius:4px;">${resp.descricao}</div>`;
                 }
             });
             html += `</div>`;
 
-            // Áreas de Destino (Alvos)
-            html += `<div id="caixas-destino" style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">`;
-            const totalAlvos = p.respostas.length;
-            for (let i = 1; i <= totalAlvos; i++) {
-                const idRespostaSolta = (respostasUsuario[p.id] && respostasUsuario[p.id][i]);
-                const descResposta = idRespostaSolta ? p.respostas.find(r => r.id == idRespostaSolta).descricao : `Solte o item ${i} aqui`;
+            // 2. Caixas de destino (Alvos)
+            html += `<div id="caixas-destino" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">`;
+            
+            // IMPORTANTE: Aqui usamos os dados reais das respostas vindas do banco
+            p.respostas.forEach((respOriginal, index) => {
+                const posicaoAlvo = index + 1; // Ordem da caixa
+                const idRespostaSolta = (respostasUsuario[p.id] && respostasUsuario[p.id][posicaoAlvo]);
+                
+                // Se o aluno soltou algo, mostra a descrição do item. 
+                // SE NÃO, mostra o "texto_alvo" (ex: Lê um número decimal)
+                let conteudoCaixa;
+                if (idRespostaSolta) {
+                    const itemSolto = p.respostas.find(r => r.id == idRespostaSolta);
+                    conteudoCaixa = `<strong>${itemSolto.descricao}</strong>`;
+                } else {
+                    // Aqui pegamos o texto que você digitou no Criar Quiz!
+                    conteudoCaixa = respOriginal.texto_alvo || `Arraste o item correspondente aqui`;
+                }
                 
                 html += `
-                    <div class="box-target" ondragover="event.preventDefault()" ondrop="drop(event, ${p.id}, ${i})" 
-                         style="border:2px dashed #888; padding:15px; text-align:center; background:${idRespostaSolta ? '#e0f7fa' : '#fff'}">
-                        ${descResposta}
+                    <div class="box-target" ondragover="event.preventDefault()" ondrop="drop(event, ${p.id}, ${posicaoAlvo})" 
+                         style="border:2px dashed #888; padding:20px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center; background:${idRespostaSolta ? '#d1f2eb' : '#fff'}; border-radius:8px;">
+                        ${conteudoCaixa}
                     </div>`;
-            }
+            });
             html += `</div>`;
-            html += `<button onclick="limparDrag(${p.id})" style="margin-top:10px;">Reiniciar Ordenação</button>`;
+            html += `<button onclick="limparDrag(${p.id})" style="margin-top:15px; padding:5px 10px; cursor:pointer;">Limpar Tudo</button>`;
             break;
     }
 
@@ -224,11 +236,19 @@ async function finalizarQuiz() {
             const idsCorretos = p.respostas.filter(r => r.certo == 1).map(r => r.id.toString());
             if (rUser.length === idsCorretos.length && idsCorretos.every(id => rUser.includes(id))) acertos++;
         }
+        
         else if (tipo === 5) {
             const rUser = respostaUser || {};
-            const acertou = p.respostas.every(r => rUser[r.id] == r.ordem);
-            if (acertou && p.respostas.length > 0) acertos++;
+            const acertou = p.respostas.every(r => {
+                const respostaUsuario = parseInt(rUser[r.id]);
+                const ordemCorreta = parseInt(r.ordem);
+                return respostaUsuario === ordemCorreta;
+            });
+            if (acertou && p.respostas.length > 0) {
+                acertos++;
+            }
         }
+
         else if (tipo === 6) {
             const rUser = respostaUser || {};
             let acertouTudo = true;

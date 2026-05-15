@@ -256,7 +256,8 @@ CREATE TABLE respostas (
     descricao VARCHAR(255),
     certo BOOLEAN,
     ordem INT DEFAULT 0, -- Campo crucial para ordenação e arrastar/soltar
-    FOREIGN KEY (id_pergunta) REFERENCES perguntas(id)
+    FOREIGN KEY (id_pergunta) REFERENCES perguntas(id),
+    texto_alvo VARCHAR(255) DEFAULT NULL
 );
 
 create table tentativas(

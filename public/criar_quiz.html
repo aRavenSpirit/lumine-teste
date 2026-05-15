@@ -168,6 +168,10 @@
             perguntas[i].descricao = valor;
         }
 
+        function updateTextoAlvo(i, j, valor) {
+            perguntas[i].respostas[j].texto_alvo = valor;
+        }
+        
         function updateTipo(i, tipo) {
 
             perguntas[i].tipo = tipo;
@@ -205,23 +209,16 @@
         }
 
         function render() {
-
             let html = "";
 
             perguntas.forEach((p, i) => {
-
                 html += `
                 <div style="border:1px solid #000; padding:10px; margin:10px">
-
                     <button onclick="removerPergunta(${i})">Remover</button>
-
                     <br><br>
-
                     Pergunta:
                     <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
-
                     <br><br>
-
                     Tipo:
                     <select onchange="updateTipo(${i}, this.value)">
                         <option value="">Selecione...</option>
@@ -238,11 +235,8 @@
                 html += `</select><br><br>`;
 
                 if (p.tipo == 1) {
-
                     html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
-
                     p.respostas.forEach((r, j) => {
-
                         html += `
                         <li>
                             <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
@@ -253,12 +247,10 @@
                         </li>
                         `;
                     });
-
                     html += `</ul>`;
                 }
 
                 if (p.tipo == 2) {
-
                     html += `
                         Resposta:
                         <input onchange="setTexto(${i}, this.value)" value="${p.resposta_texto ?? ""}">
@@ -266,26 +258,21 @@
                 }
 
                 if (p.tipo == 3) {
-
                     html += `
                         <label>
-                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, true)">
+                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, true)" ${p.vf === true ? "checked" : ""}>
                             Verdadeiro
                         </label>
-
                         <label>
-                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, false)">
+                            <input type="radio" name="vf_${i}" onchange="setVF(${i}, false)" ${p.vf === false ? "checked" : ""}>
                             Falso
                         </label>
                     `;
                 }
 
                 if (p.tipo == 4) {
-
                     html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
-
                     p.respostas.forEach((r, j) => {
-
                         html += `
                         <li>
                             <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
@@ -296,7 +283,6 @@
                         </li>
                         `;
                     });
-
                     html += `</ul>`;
                 }
 
@@ -314,16 +300,19 @@
                     html += `</ul>`;
                 }
 
+                // --- BLOCO DO TIPO 6 ATUALIZADO PARA "CAIXAS" ---
                 if (p.tipo == 6) {
-                    html += `<button onclick="addResposta(${i})">+ Item</button><ul style="list-style:none">`;
+                    html += `<button onclick="addResposta(${i})">+ Adicionar Par (Caixa e Resposta)</button><ul style="list-style:none">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li draggable="true" 
-                            ondragstart="dragStart(${i}, ${j})" 
-                            ondragover="allowDrop(event)" 
-                            ondrop="drop(${i}, ${j})"
-                            style="padding:5px; border:1px dashed #ccc; margin-bottom:5px; cursor:move">
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                        <li style="padding:10px; border:1px dashed #ccc; margin-bottom:10px; background:#f9f9f9">
+                            <strong>Par ${j+1}:</strong><br>
+                            <small>Texto na Caixa (Alvo):</small><br>
+                            <input onchange="updateTextoAlvo(${i}, ${j}, this.value)" value="${r.texto_alvo ?? ''}" placeholder="Ex: Capital da França" style="width:70%"><br>
+                            
+                            <small>Item para Arrastar (Resposta):</small><br>
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: Paris" style="width:70%">
+                            
                             <button onclick="removerResposta(${i}, ${j})">Remover</button>
                         </li>`;
                     });
@@ -335,7 +324,6 @@
 
             document.getElementById("perguntas").innerHTML = html;
         }
-
         //DRAG DROP
 
         let dragSourceIndex = null;

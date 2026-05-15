@@ -206,18 +206,44 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
         }
 
         // =========================
-        // ORDENAR / DRAG
-        // =========================
-        if ($id_tipo == 5 || $id_tipo == 6) {
-            $posicao = 1; // Contador para a ordem
-            foreach ($p['respostas'] as $r) {
-                if (empty($r['descricao'])) continue;
-                $descItem = $conn->real_escape_string($r['descricao']);
-                // AQUI: Salva a descrição e a ordem correta (1, 2, 3...)
-                $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem) VALUES ('$descItem', 1, $pergunta_id, $posicao)");
-                $posicao++;
-            }
+// ORDENAR / DRAG
+// =========================
+if ($id_tipo == 5 || $id_tipo == 6) {
+
+    $posicao = 1;
+
+    foreach ($p['respostas'] as $r) {
+
+        if (empty($r['descricao'])) continue;
+
+        $descItem = $conn->real_escape_string($r['descricao']);
+
+        // Se for Drag and Drop, salva o texto do alvo
+        $textoAlvo = '';
+
+        if ($id_tipo == 6 && isset($r['texto_alvo'])) {
+            $textoAlvo = $conn->real_escape_string($r['texto_alvo']);
         }
+
+        $conn->query("
+            INSERT INTO respostas (
+                descricao,
+                certo,
+                id_pergunta,
+                ordem,
+                texto_alvo
+            ) VALUES (
+                '$descItem',
+                1,
+                $pergunta_id,
+                $posicao,
+                '$textoAlvo'
+            )
+        ");
+
+        $posicao++;
+    }
+}
     }
 
     echo json_encode(["mensagem" => "Quiz criado com sucesso"]);
