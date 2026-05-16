@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumine - Dúvidas</title>
+    <link rel="stylesheet" href="./style/index.css">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos específicos para a funcionalidade de Accordion (Dúvidas) */
+        .main-container {
+            padding-top: 120px; /* Espaço para não ficar embaixo da navbar fixa */
+            padding-bottom: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 80vh;
+        }
+
+        .duvidas-title {
+            font-family: 'gliker', sans-serif;
+            font-size: 50px;
+            color: #1595C4;
+            margin-bottom: 40px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+
+        .accordion {
+            width: 90%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 25px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-header {
+            width: 100%;
+            padding: 25px;
+            background: none;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            text-align: left;
+            transition: 0.3s;
+        }
+
+        .accordion-header h3 {
+            font-family: 'gliker', sans-serif;
+            font-size: 20px;
+            color: #333;
+            margin: 0;
+        }
+
+        .accordion-header i {
+            color: #00bf63;
+            font-size: 20px;
+            transition: 0.4s;
+        }
+
+        .accordion-header.active i {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .accordion-content p {
+            padding: 0 25px 25px 25px;
+            font-family: 'Open_Sans', sans-serif;
+            color: #555;
+            line-height: 1.6;
+            font-size: 17px;
+        }
+
+        @media (max-width: 580px) {
+            .duvidas-title { font-size: 35px; }
+            .main-container { padding-top: 100px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR IDENTICA À ORIGINAL -->
+    <nav class="navbar">
+        <div class="logo-section">
+            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+        </div>
+        
+        <ul class="nav-links">
+            <li class="item-sobre"><a href="index.html">Sobre nós</a></li>
+            <li class="item-novidades"><a href="#">Novidades</a></li>
+            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            </li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="item-sobre"><a href="index.html">Sobre nós</a></div>
+        <div class="item-novidades"><a href="#">Novidades</a></div>
+        <div class="item-quizzes"><a href="#">Todos os quizzes</a></div>
+        <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
+    </div>
+
+    <main class="main-container">
+        <h1 class="duvidas-title">Dúvidas Frequentes</h1>
+
+        <div class="accordion">
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>Como funcionam os quizzes?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Nossos quizzes são dinâmicos e focados no seu aprendizado. Você escolhe a matéria, responde as questões e recebe o resultado na hora!</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>A plataforma é gratuita?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Sim! A Lumine tem como objetivo democratizar o ensino através da gamificação, oferecendo quizzes interativos para todos os estudantes.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>Como salvo meu progresso?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Basta criar uma conta clicando em "Acessar". Assim, todos os seus resultados e badges ficarão salvos no seu perfil.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Função do Menu Mobile original
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("active");
+        }
+
+        // Lógica do Accordion
+        document.querySelectorAll('.accordion-header').forEach(button => {
+            button.addEventListener('click', () => {
+                const content = button.nextElementSibling;
+                
+                button.classList.toggle('active');
+
+                if (button.classList.contains('active')) {
+                    content.style.maxHeight = content.scrollHeight + "px";
+                } else {
+                    content.style.maxHeight = 0;
+                }
+
+                // Opcional: Fechar outros ao abrir um novo
+                document.querySelectorAll('.accordion-header').forEach(other => {
+                    if (other !== button) {
+                        other.classList.remove('active');
+                        other.nextElementSibling.style.maxHeight = 0;
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumine - Sobre Nós</title>
+    <link rel="stylesheet" href="./style/index.css">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .main-container {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 80vh;
+            padding-left: 20px;
+            padding-right: 20px;
+        }
+
+        .content-card {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 30px;
+            padding: 50px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .title-sobre {
+            font-family: 'gliker', sans-serif;
+            font-size: 50px;
+            color: #1595C4;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+        }
+
+        .text-sobre {
+            font-family: 'Open_Sans', sans-serif;
+            color: #333;
+            line-height: 1.8;
+            font-size: 19px;
+            text-align: justify;
+        }
+
+        .highlight-box {
+            margin-top: 40px;
+            padding: 30px;
+            background: #e3f2fd;
+            border-left: 8px solid #00bf63;
+            border-radius: 15px;
+            font-style: italic;
+            font-family: 'Open_Sans', sans-serif;
+            color: #444;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+            width: 100%;
+        }
+
+        .stat-item {
+            background: white;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .stat-item i {
+            font-size: 30px;
+            margin-bottom: 10px;
+        }
+
+        .stat-item h4 {
+            font-family: 'gliker', sans-serif;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 580px) {
+            .title-sobre { font-size: 35px; }
+            .content-card { padding: 30px 20px; }
+            .text-sobre { font-size: 17px; }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="logo-section">
+            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+        </div>
+        
+        <ul class="nav-links">
+            <li class="item-sobre"><a href="index.html">Início</a></li>
+            <li class="item-novidades"><a href="#">Novidades</a></li>
+            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            </li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="item-sobre"><a href="index.html">Início</a></div>
+        <div class="item-novidades"><a href="#">Novidades</a></div>
+        <div class="item-quizzes"><a href="#">Todos os quizzes</a></div>
+        <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
+    </div>
+
+    <main class="main-container">
+        <div class="content-card">
+            <h1 class="title-sobre">Conheça a Lumine</h1>
+            
+            <div class="text-sobre">
+                <p>Na <strong>LUMINE</strong>, acreditamos que o conhecimento não precisa de ser uma tarefa árdua, mas sim um desafio estimulante. Somos uma plataforma focada em transformar a educação através da interatividade e da gamificação.</p>
+                <p>O nosso objetivo é oferecer conteúdos de qualidade para todas as matérias, desde as Ciências Exatas até às Humanidades, proporcionando uma experiência onde cada estudante pode testar a sua rapidez, superar limites e dominar qualquer assunto de forma leve e divertida.</p>
+            </div>
+
+            <div class="highlight-box">
+                "Desafie a sua mente no melhor site de quizzes interativos. Entre no jogo e prove que está pronto!"
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fa-solid fa-bolt" style="color: #ffbd59;"></i>
+                    <h4>Dinâmico</h4>
+                    <p>Quizzes rápidos e diretos.</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-graduation-cap" style="color: #0cc0df;"></i>
+                    <h4>Educativo</h4>
+                    <p>Focado na sua evolução.</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-trophy" style="color: #00bf63;"></i>
+                    <h4>Interativo</h4>
+                    <p>Aprenda jogando.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("active");
+        }
+    </script>
+</body>
+</html>

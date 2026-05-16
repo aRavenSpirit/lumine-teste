@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <title>Editar Quiz - LUMINE</title>
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
+    <style>
+        /* CSS básico apenas para organização visual */
+        .pergunta-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #f9f9f9; border-radius: 8px; }
+        .edit-section { background: #eee; padding: 10px; margin-top: 5px; border-radius: 4px; }
+        .tipo6-par { margin-bottom: 10px; padding: 10px; border: 1px dashed #999; background: #fff; }
+        button { cursor: pointer; margin: 5px; }
+    </style>
 </head>
 <body>
 
@@ -12,18 +19,20 @@
 
     <div id="dados-quiz">
         <p><strong>Nome Atual:</strong> <span id="label-nome"></span> <button onclick="mostrarEdit('quiz-nome')">Alterar</button></p>
-        <div id="edit-quiz-nome" style="display:none">
-            <input type="text" id="input-nome">
+        <div id="edit-quiz-nome" style="display:none" class="edit-section">
+            <input type="text" id="input-nome" style="width: 300px;">
         </div>
 
         <p><strong>Dificuldade Atual:</strong> <span id="label-dificuldade"></span> <button onclick="mostrarEdit('quiz-dif')">Alterar</button></p>
-        <div id="edit-quiz-dif" style="display:none">
+        <div id="edit-quiz-dif" style="display:none" class="edit-section">
             <select id="select-dificuldade"></select>
         </div>
 
         <p><strong>Matéria/Conteúdo Atual:</strong> <span id="label-conteudo"></span> <button onclick="mostrarEdit('quiz-cont')">Alterar</button></p>
-        <div id="edit-quiz-cont" style="display:none">
+        <div id="edit-quiz-cont" style="display:none" class="edit-section">
+            <label>Matéria:</label>
             <select id="select-materia" onchange="carregarConteudos()"></select>
+            <label>Conteúdo:</label>
             <select id="select-conteudo"></select>
         </div>
     </div>
@@ -36,22 +45,26 @@
     <button onclick="addPergunta()">+ Adicionar Nova Pergunta</button>
     <br><br>
     <hr>
-    <button onclick="salvarAlteracoes()" style="padding: 10px; background-color: #28a745; color: white;">SALVAR ALTERAÇÕES NO QUIZ</button>
+    <button onclick="salvarAlteracoes()" style="padding: 15px; background-color: #28a745; color: white; font-weight: bold; width: 100%;">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
 
     <script>
-        const api = "../config/criar_quiz.php"; // Reutilizando sua API de tipos/materias
-        const apiEdit = "../config/editar_quiz_data.php"; // Nova API para buscar e salvar dados
-        
+        const api = "../config/criar_quiz.php"; 
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get('id');
 
         let perguntas = [];
         let tipos = [];
 
+        // Inicialização controlada
         window.onload = async function () {
+            if (!quizId) return alert("ID do quiz não encontrado!");
+            
+            // 1. Carrega as listas globais primeiro (AWAIT é crucial aqui)
             await carregarTipos();
             await carregarListasIniciais();
-            if (quizId) carregarDadosDoQuiz();
+            
+            // 2. Só depois de carregar matérias/dificuldades é que carregamos os dados do quiz
+            await carregarDadosDoQuiz();
         }
 
         function mostrarEdit(id) {
@@ -59,150 +72,193 @@
             el.style.display = el.style.display === 'none' ? 'block' : 'none';
         }
 
-        // --- CARREGAMENTO DE DADOS ---
-
         async function carregarTipos() {
             const r = await fetch(api + "?tipo=tipos_perguntas");
             tipos = await r.json();
         }
 
         async function carregarListasIniciais() {
-            // Carrega matérias e dificuldades para os selects de edição
+            // Matérias
             const rMat = await fetch(api + "?tipo=materia");
             const materias = await rMat.json();
             let selMat = document.getElementById("select-materia");
+            selMat.innerHTML = '<option value="">Selecione a Matéria</option>';
             materias.forEach(m => selMat.innerHTML += `<option value="${m.id}">${m.nome_materia}</option>`);
 
+            // Dificuldades
             const rDif = await fetch(api + "?tipo=dificuldade");
             const difs = await rDif.json();
             let selDif = document.getElementById("select-dificuldade");
+            selDif.innerHTML = '<option value="">Selecione...</option>';
             difs.forEach(d => selDif.innerHTML += `<option value="${d.id}">${d.dificuldade}</option>`);
         }
 
-        async function carregarConteudos() {
+        async function carregarConteudos(targetConteudoId = null) {
             let matId = document.getElementById("select-materia").value;
+            if (!matId) return;
+
             const r = await fetch(api + "?tipo=conteudo&id_materia=" + matId);
             const dados = await r.json();
             let selCont = document.getElementById("select-conteudo");
-            selCont.innerHTML = "";
-            dados.forEach(c => selCont.innerHTML += `<option value="${c.id}">${c.nome}</option>`);
+            selCont.innerHTML = '<option value="">Selecione o Conteúdo</option>';
+            
+            dados.forEach(c => {
+                const selected = (targetConteudoId && c.id == targetConteudoId) ? "selected" : "";
+                selCont.innerHTML += `<option value="${c.id}" ${selected}>${c.nome}</option>`;
+            });
         }
 
         async function carregarDadosDoQuiz() {
-            const r = await fetch(`../config/get_quiz_detalhes.php?id=${quizId}`);
+            const r = await fetch(`../config/quiz.php?tipo=detalhes_quiz&id=${quizId}`);
             const data = await r.json();
 
+            // Preenche Labels
             document.getElementById('label-nome').innerText = data.nome;
-            document.getElementById('label-dificuldade').innerText = data.nome_dificuldade;
-            document.getElementById('label-conteudo').innerText = data.nome_materia + " / " + data.nome_conteudo;
+            document.getElementById('label-dificuldade').innerText = data.dificuldade;
+            document.getElementById('label-conteudo').innerText = data.nome_materia + " / " + data.conteudo;
+            
+            // Preenche Inputs de edição (Sincronização correta)
+            document.getElementById('input-nome').value = data.nome;
+            document.getElementById('select-dificuldade').value = data.id_dificuldade;
+            document.getElementById('select-materia').value = data.id_materia;
+            
+            // Carrega conteúdos daquela matéria e já seleciona o atual
+            await carregarConteudos(data.id_conteudo);
 
-            // Mapeia os dados vindos do banco para o formato do seu array 'perguntas'
+            // Mapeia perguntas para o estado local
             perguntas = data.perguntas.map(p => ({
-                id: p.id, // ID importante para saber que já existe no banco
+                id: p.id,
                 descricao: p.descricao,
                 tipo: p.id_tipo,
                 respostas: p.respostas.map(r => ({
                     id: r.id,
                     descricao: r.descricao,
-                    certo: r.certo == 1 || r.certo === true,
-                    ordem: r.certo // no seu banco, ordem é guardada no campo 'certo' para tipos 5 e 6
+                    certo: r.certo == 1,
+                    ordem: r.ordem,
+                    texto_alvo: r.texto_alvo || ""
                 })),
-                // Ajustes para tipos específicos
-                resposta_texto: p.id_tipo == 2 ? p.respostas[0].descricao : "",
-                vf: p.id_tipo == 3 ? (p.respostas[0].descricao === 'Verdadeiro') : undefined
+                resposta_texto: p.id_tipo == 2 ? (p.respostas[0]?.descricao || "") : "",
+                vf: p.id_tipo == 3 ? (p.respostas[0]?.descricao === 'Verdadeiro') : undefined
             }));
 
             render();
         }
 
-        // --- LÓGICA DAS PERGUNTAS (REUTILIZADA DO SEU CÓDIGO) ---
+        function render() {
+            let container = document.getElementById("perguntas-container");
+            container.innerHTML = "";
+
+            perguntas.forEach((p, i) => {
+                let div = document.createElement("div");
+                div.className = "pergunta-card";
+                
+                let html = `
+                    <button onclick="removerPergunta(${i})" style="float:right; color:red">Remover Pergunta</button>
+                    <strong>Pergunta ${i + 1}</strong><br><br>
+                    Descrição: <input style="width:60%" oninput="perguntas[${i}].descricao = this.value" value="${p.descricao}"><br><br>
+                    Tipo: <select onchange="updateTipo(${i}, this.value)">
+                        <option value="">Selecione...</option>
+                        ${tipos.map(t => `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`).join('')}
+                    </select><br><br>
+                `;
+
+                // Renderização dinâmica por tipo
+                if (p.tipo == 1 || p.tipo == 4) {
+                    html += `<button onclick="addResposta(${i})">+ Adicionar Opção</button><ul>`;
+                    p.respostas.forEach((r, j) => {
+                        html += `<li>
+                            <input oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}">
+                            Correta? <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="c_${i}" 
+                                onchange="setCorreta(${i}, ${j}, this)" ${r.certo ? "checked" : ""}>
+                        </li>`;
+                    });
+                    html += `</ul>`;
+                } 
+                else if (p.tipo == 2) {
+                    html += `Resposta correta (Texto): <input oninput="perguntas[${i}].resposta_texto = this.value" value="${p.resposta_texto}">`;
+                } 
+                else if (p.tipo == 3) {
+                    html += `
+                        <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = true" ${p.vf === true ? "checked" : ""}> Verdadeiro</label>
+                        <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = false" ${p.vf === false ? "checked" : ""}> Falso</label>
+                    `;
+                }
+                else if (p.tipo == 6) {
+                    html += `<button onclick="addResposta(${i})">+ Adicionar Par Arrastável</button><br><br>`;
+                    p.respostas.forEach((r, j) => {
+                        html += `
+                        <div class="tipo6-par">
+                            <small>Texto fixo na Caixa (Alvo):</small><br>
+                            <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].texto_alvo = this.value" value="${r.texto_alvo}" placeholder="Ex: Lê um decimal"><br>
+                            <small>Texto para Arrastar (Resposta):</small><br>
+                            <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Ex: scanf">
+                            <button onclick="removerResposta(${i}, ${j})" style="color:red">X</button>
+                        </div>`;
+                    });
+                }
+
+                div.innerHTML = html;
+                container.appendChild(div);
+            });
+        }
+
+        // Funções auxiliares
+        function updateTipo(i, tipoId) {
+            perguntas[i].tipo = tipoId;
+            perguntas[i].respostas = [];
+            render();
+        }
+
+        function addResposta(i) {
+            perguntas[i].respostas.push({ descricao: "", certo: false, texto_alvo: "" });
+            render();
+        }
+
+        function removerResposta(i, j) {
+            perguntas[i].respostas.splice(j, 1);
+            render();
+        }
+
+        function removerPergunta(i) {
+            if(confirm("Deseja apagar esta pergunta?")) {
+                perguntas.splice(i, 1);
+                render();
+            }
+        }
+
+        function setCorreta(i, j, input) {
+            if (perguntas[i].tipo == 1) {
+                perguntas[i].respostas.forEach(r => r.certo = false);
+            }
+            perguntas[i].respostas[j].certo = input.checked;
+        }
 
         function addPergunta() {
             perguntas.push({ descricao: "", tipo: "", respostas: [] });
             render();
         }
 
-        function removerPergunta(i) {
-            if(confirm("Deseja remover esta pergunta?")) {
-                perguntas.splice(i, 1);
-                render();
-            }
-        }
-
-        function updateTipo(i, tipo) {
-            perguntas[i].tipo = tipo;
-            perguntas[i].respostas = [];
-            render();
-        }
-
-        // ... (Funções updatePergunta, addResposta, updateResposta, updateCorreta, etc, são idênticas às suas)
-        function updatePergunta(i, v) { perguntas[i].descricao = v; }
-        function addResposta(i) { perguntas[i].respostas.push({ descricao: "", certo: false }); render(); }
-        function updateResposta(i, j, v) { perguntas[i].respostas[j].descricao = v; }
-        function updateCorreta(i, j) { 
-            perguntas[i].respostas.forEach(r => r.certo = false);
-            perguntas[i].respostas[j].certo = true;
-            render();
-        }
-        function setVF(i, v) { perguntas[i].vf = v; }
-        function setTexto(i, v) { perguntas[i].resposta_texto = v; }
-
-        function render() {
-            let html = "";
-            perguntas.forEach((p, i) => {
-                html += `<div style="border:1px solid #ccc; padding:15px; margin:10px 0;">
-                    <button onclick="removerPergunta(${i})">Excluir Pergunta</button> <br>
-                    Pergunta: <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
-                    Tipo: <select onchange="updateTipo(${i}, this.value)">
-                        <option value="">Selecione...</option>
-                        ${tipos.map(t => `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`).join('')}
-                    </select><br><br>`;
-
-                // Lógica de renderização por tipo (Igual à sua)
-                if (p.tipo == 1 || p.tipo == 4) {
-                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
-                    p.respostas.forEach((r, j) => {
-                        html += `<li>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                            <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="correta_${i}" 
-                                onchange="${p.tipo == 1 ? `updateCorreta(${i}, ${j})` : `perguntas[${i}].respostas[${j}].certo = this.checked`}"
-                                ${r.certo ? "checked" : ""}>
-                        </li>`;
-                    });
-                    html += `</ul>`;
-                }
-                else if (p.tipo == 2) {
-                    html += `Resposta Texto: <input onchange="setTexto(${i}, this.value)" value="${p.resposta_texto || ''}">`;
-                }
-                else if (p.tipo == 3) {
-                    html += `
-                        <label><input type="radio" name="vf_${i}" onchange="setVF(${i}, true)" ${p.vf === true ? "checked" : ""}> Verdadeiro</label>
-                        <label><input type="radio" name="vf_${i}" onchange="setVF(${i}, false)" ${p.vf === false ? "checked" : ""}> Falso</label>`;
-                }
-                // ... (Pode-se adicionar os tipos 5 e 6 seguindo o mesmo padrão)
-
-                html += `</div>`;
-            });
-            document.getElementById("perguntas-container").innerHTML = html;
-        }
-
         async function salvarAlteracoes() {
-            const dadosParaEnviar = {
+            const payload = {
                 id_quiz: quizId,
-                nome: document.getElementById('input-nome').value || document.getElementById('label-nome').innerText,
+                nome: document.getElementById('input-nome').value,
                 id_dificuldade: document.getElementById('select-dificuldade').value,
                 id_conteudo: document.getElementById('select-conteudo').value,
                 perguntas: perguntas
             };
 
-            const r = await fetch("../config/atualizar_quiz.php", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(dadosParaEnviar)
-            });
-            const res = await r.json();
-            alert(res.mensagem || res.erro);
-            if(res.status) location.reload();
+            try {
+                const response = await fetch("../config/atualizar_quiz.php", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const res = await response.json();
+                alert(res.mensagem || res.erro);
+                if (res.status) window.location.reload();
+            } catch (e) {
+                alert("Erro ao conectar com o servidor.");
+            }
         }
     </script>
 </body>

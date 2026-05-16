@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumine - Privacidade</title>
+    <link rel="stylesheet" href="./style/index.css">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { padding-top: 100px; }
+        .main-container { display: flex; justify-content: center; padding: 40px 20px; }
+        .legal-card { 
+            width: 100%; max-width: 850px; 
+            background: rgba(255, 255, 255, 0.9); 
+            border-radius: 35px; padding: 45px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+        .title { 
+            font-family: 'gliker', sans-serif; 
+            color: #cb6ce6; font-size: 35px; 
+            margin-bottom: 25px; text-transform: uppercase; 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        .content { font-family: 'Open_Sans', sans-serif; color: #444; line-height: 1.8; font-size: 17px; }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="logo-section">
+            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+        </div>
+        
+        <ul class="nav-links">
+            <li class="item-sobre"><a href="index.html">Início</a></li>
+            <li class="item-novidades"><a href="#">Novidades</a></li>
+            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            </li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <main class="main-container">
+        <div class="legal-card">
+            <h2 class="title"><i class="fa-solid fa-lock"></i> Privacidade</h2>
+            <div class="content">
+                <p>Seus dados estão seguros. Usamos apenas o necessário para salvar seu progresso nos quizzes.</p>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

@@ -280,3 +280,15 @@ async function finalizarQuiz() {
 }
 
 carregarQuiz();
+
+
+// Monitora quando o usuário tenta sair ou recarregar a página
+window.addEventListener('beforeunload', function (e) {
+    // Cancela o evento (padrão exigido por navegadores modernos)
+    e.preventDefault();
+    
+    // Configura a mensagem de confirmação
+    // Nota: A maioria dos navegadores modernos ignora o texto personalizado 
+    // e exibe uma mensagem padrão do sistema por segurança.
+    e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
+});

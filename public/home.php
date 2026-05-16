@@ -98,23 +98,23 @@
     <footer>
         <div class="footer-section">
             <h3>GERAL</h3>
-            <p><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></p>
-            <p><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></p>
-            <p><i class="fa-solid fa-users"></i> <span>EQUIPE</span></p>
-            <p><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></p>
+            <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></a>
+            <a href="duvidas.html"><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></a>
+            <a href="equipe.html"><i class="fa-solid fa-users"></i> <span>EQUIPE</span></a>
+            <a href="contato.html"><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></a>
         </div>
         <div class="footer-section">
             <h3>TERMOS E PRIVACIDADE</h3>
-            <p><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></p>
-            <p><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></p>
-            <p><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></p>
+            <a href="normas.html"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
+            <a href="termos.html"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
+            <a href="privacidade.html"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
         </div>
         <div class="footer-section">
             <h3>REDES SOCIAIS</h3>
-            <p><i class="fa-brands fa-instagram"></i> <span>INSTAGRAM</span></p>
-            <p><i class="fa-brands fa-youtube"></i> <span>YOUTUBE</span></p>
-            <p><i class="fa-brands fa-tiktok"></i> <span>TIKTOK</span></p>
-            <p><i class="fa-brands fa-facebook"></i> <span>FACEBOOK</span></p>
+            <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i> <span>INSTAGRAM</span></a>
+            <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i> <span>YOUTUBE</span></a>
+            <a href="https://tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i> <span>TIKTOK</span></a>
+            <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i> <span>FACEBOOK</span></a>
         </div>
     </footer>
 </div>
@@ -128,6 +128,7 @@
         <hr>
         <div class="modal-body">
             <div id="corpoModal"></div>
+            <button onclick="confirmarEntrada()">Entrar no Quiz</button>
         </div>
     </div>
 </div>
@@ -144,7 +145,7 @@
             <button class="btn-decline" onclick="declineCookies()">Recusar</button>
         </div>
         <nav>
-            <a href="#">Política de Privacidade</a> 
+            <a href="privacidade.html">Política de Privacidade</a> 
         </nav>
     </div>
 </div>
@@ -290,7 +291,7 @@ function toggleQuizzes(idConteudo, el) {
             } else {
                 quizzes.forEach(q => {
                     box.innerHTML += `
-                        <a href="quiz.html?id=${q.id}" class="quiz-card-link">
+                        <a href="quiz.html?id=${q.id}" class="quiz-card-link" onclick="return confirmarEntrada();">
                             <div class="quiz-card">
                                 <h4>${q.nome}</h4>
                             </div>
@@ -336,6 +337,19 @@ function declineCookies() {
 function hideBanner() {
     const banner = document.getElementById("cookieBanner");
     banner.classList.remove("show");
+}
+
+function confirmarLogout() {
+    if (confirm("Tem certeza que deseja sair?")) {
+        window.location.href = "../config/logout.php";
+    }
+}
+
+function confirmarEntrada() {
+    if (confirm("Deseja entrar no quiz?")) {
+        return true;
+    }
+    return false;
 }
 
 // --- Lógica Refinada da Sidebar (Scroll + Hover) ---
