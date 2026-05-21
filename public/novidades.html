@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Novidades - Lumine</title>
-    <link rel="stylesheet" href="./style/home.css">
+    <link rel="stylesheet" href="style/home.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -123,23 +123,6 @@
         <h2>Conteúdos</h2>
         <hr>
         <div id="corpoModal"></div>
-    </div>
-</div>
-
-<div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-content">
-        <h3>Aceita Cookies?</h3>
-        <p>
-            Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política.
-        </p>
-
-        <div class="cookie-buttons">
-            <button class="btn-accept" onclick="acceptCookies()">Aceitar</button>
-            <button class="btn-decline" onclick="declineCookies()">Recusar</button>
-        </div>
-        <nav>
-            <a href="#">Política de Privacidade</a> 
-        </nav>
     </div>
 </div>
 
@@ -281,36 +264,6 @@ window.onclick = function(event) {
     }
 }
 
-
-
-// mostrar cookie banner ao carregar
-window.addEventListener("load", () => {
-    const banner = document.getElementById("cookieBanner");
-
-    if (!localStorage.getItem("cookiesChoice")) {
-        setTimeout(() => {
-            banner.classList.add("show");
-        }, 1000);
-    }
-});
-
-// aceitar
-function acceptCookies() {
-    localStorage.setItem("cookiesChoice", "accepted");
-    hideBanner();
-}
-
-// recusar
-function declineCookies() {
-    localStorage.setItem("cookiesChoice", "declined");
-    hideBanner();
-}
-
-// esconder
-function hideBanner() {
-    const banner = document.getElementById("cookieBanner");
-    banner.classList.remove("show");
-}
 
 function filtrarMaterias() {
     // 1. Pega o que o usuário digitou
