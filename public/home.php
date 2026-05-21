@@ -145,22 +145,18 @@
     </div>
 </div>
 
-<div class="cookie-banner" id="cookieBanner">
-    <div class="cookie-content">
-        <h3>Aceita Cookies?</h3>
-        <p>
-            Usamos cookies para melhorar sua experiência. Ao continuar, você concorda com nossa política.
-        </p>
-
+<?php 
+    // Lógica Real: O Banner SÓ EXISTE no HTML se o cookie NÃO estiver definido
+    if (!isset($_COOKIE['user_consent'])): 
+    ?>
+    <div id="cookieBanner">
+        <span>🍪 Este site utiliza cookies para garantir a melhor experiência.</span>
         <div class="cookie-buttons">
-            <button class="btn-accept" onclick="acceptCookies()">Aceitar</button>
-            <button class="btn-decline" onclick="declineCookies()">Recusar</button>
+            <button class="btn-ok" onclick="acceptCookies('accept')">Aceitar e Continuar</button>
+            <button class="btn-no" onclick="declineCookies('decline')">Recusar</button>
         </div>
-        <nav>
-            <a href="privacidade.html">Política de Privacidade</a> 
-        </nav>
     </div>
-</div>
+<?php endif; ?>
 
 <script>
 const api = "../config/home.php";
@@ -336,19 +332,37 @@ window.addEventListener("load", () => {
     }
 });
 
-function acceptCookies() {
-    localStorage.setItem("cookiesChoice", "accepted");
-    hideBanner();
+// Ajuste a função de aceitar
+async function acceptCookies(choice) {
+    try {
+        // ADICIONE o caminho correto: ../config/
+        const response = await fetch(`../config/set-cookie.php?action=${choice}`);
+        
+        // Verifique se a resposta é OK antes de tentar ler o JSON
+        if (!response.ok) throw new Error('Erro ao encontrar o arquivo PHP');
+        
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            // Remova o localStorage se não for mais usar
+            localStorage.setItem("cookiesChoice", "accepted"); 
+            window.location.reload();
+        }
+    } catch (error) {
+        console.error("Erro no Aceitar:", error);
+    }
 }
 
-function declineCookies() {
-    localStorage.setItem("cookiesChoice", "declined");
-    hideBanner();
-}
-
-function hideBanner() {
-    const banner = document.getElementById("cookieBanner");
-    banner.classList.remove("show");
+// Ajuste a função de recusar (garanta que o nome seja igual ao chamado no HTML)
+async function declineCookies(choice) {
+    try {
+        const response = await fetch(`../config/set-cookie.php?action=${choice}`);
+        // Mesmo que recuse, damos reload para limpar o banner via PHP
+        localStorage.setItem("cookiesChoice", "declined");
+        window.location.reload();
+    } catch (error) {
+        console.error("Erro no Recusar:", error);
+    }
 }
 
 function confirmarLogout() {
