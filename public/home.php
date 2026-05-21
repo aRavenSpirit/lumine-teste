@@ -62,6 +62,7 @@
             <li class="item-sobre"><a href="#">Sobre nós</a></li>
             <li class="item-novidades"><a href="novidades.html">Novidades</a></li>
             <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <a href="../config/logout.php">Sair</a>
             <li class="item-perfil">
                 <a href="perfil.html" class="perfil-link">
                     <span>Perfil</span>
