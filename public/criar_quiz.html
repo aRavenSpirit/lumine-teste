@@ -54,20 +54,14 @@
         window.onload = function () {
             carregarMaterias();
             carregarTipos();
-            carregarDificuldades(); // ✅ NOVO
+            carregarDificuldades(); 
         }
 
-        // =========================
-        // NOVO: DIFICULDADE
-        // =========================
         function carregarDificuldades() {
-
             fetch(api + "?tipo=dificuldade")
                 .then(r => r.json())
                 .then(dados => {
-
                     let select = document.getElementById("dificuldade");
-
                     dados.forEach(d => {
                         select.innerHTML += `
                             <option value="${d.id}">
@@ -75,9 +69,7 @@
                             </option>
                         `;
                     });
-
                 });
-
         }
 
         function carregarTipos() {
@@ -89,13 +81,10 @@
         }
 
         function carregarMaterias() {
-
             fetch(api + "?tipo=materia")
                 .then(r => r.json())
                 .then(dados => {
-
                     let select = document.getElementById("materia");
-
                     dados.forEach(m => {
                         select.innerHTML += `
                             <option value="${m.id}">
@@ -103,24 +92,18 @@
                             </option>
                         `;
                     });
-
                 });
-
         }
 
         function carregarConteudos() {
-
             let materia_id = document.getElementById("materia").value;
-
             let select = document.getElementById("conteudo");
             select.innerHTML = "<option>Carregando...</option>";
 
             fetch(api + "?tipo=conteudo&id_materia=" + materia_id)
                 .then(r => r.json())
                 .then(dados => {
-
                     select.innerHTML = "<option value=''>Selecione...</option>";
-
                     dados.forEach(c => {
                         select.innerHTML += `
                             <option value="${c.id}">
@@ -128,19 +111,15 @@
                             </option>
                         `;
                     });
-
                 });
-
         }
 
         function addPergunta() {
-
             perguntas.push({
                 descricao: "",
                 tipo: "",
                 respostas: []
             });
-
             render();
         }
 
@@ -150,12 +129,10 @@
         }
 
         function addResposta(i) {
-
             perguntas[i].respostas.push({
                 descricao: "",
                 certo: false
             });
-
             render();
         }
 
@@ -173,10 +150,8 @@
         }
         
         function updateTipo(i, tipo) {
-
             perguntas[i].tipo = tipo;
             perguntas[i].respostas = [];
-
             render();
         }
 
@@ -185,10 +160,8 @@
         }
 
         function updateCorreta(i, j) {
-
             perguntas[i].respostas.forEach(r => r.certo = false);
             perguntas[i].respostas[j].certo = true;
-
             render();
         }
 
@@ -286,21 +259,21 @@
                     html += `</ul>`;
                 }
 
+                // REFORMULADO: Tipo 5 Estilo Duolingo (Sem input de número, ordenação por inserção visual)
                 if (p.tipo == 5) {
-                    html += `<button onclick="addResposta(${i})">+ Item</button><ul>`;
+                    html += `<button onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
+                    html += `<p style="margin: 5px 0;"><small><em>Escreva os itens rigorosamente na ordem correta (de cima para baixo):</em></small></p>`;
+                    html += `<ol style="margin-top:5px;">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                            Ordem:
-                            <input type="number" onchange="setOrdem(${i}, ${j}, this.value)" value="${r.ordem ?? ''}">
+                        <li style="margin-bottom: 5px;">
+                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: item da posição ${j+1}" style="width: 250px;">
                             <button onclick="removerResposta(${i}, ${j})">Remover</button>
                         </li>`;
                     });
-                    html += `</ul>`;
+                    html += `</ol>`;
                 }
 
-                // --- BLOCO DO TIPO 6 ATUALIZADO PARA "CAIXAS" ---
                 if (p.tipo == 6) {
                     html += `<button onclick="addResposta(${i})">+ Adicionar Par (Caixa e Resposta)</button><ul style="list-style:none">`;
                     p.respostas.forEach((r, j) => {
@@ -324,7 +297,6 @@
 
             document.getElementById("perguntas").innerHTML = html;
         }
-        //DRAG DROP
 
         let dragSourceIndex = null;
 
@@ -337,7 +309,6 @@
         }
 
         function drop(i, targetIndex) {
-            // Remove o item da posição antiga e insere na nova
             const movido = perguntas[i].respostas.splice(dragSourceIndex, 1)[0];
             perguntas[i].respostas.splice(targetIndex, 0, movido);
             render();
@@ -345,60 +316,48 @@
 
         function salvarQuiz() {
             let nome = document.getElementById("nome").value.trim();
-            let dificuldade = document.getElementById("dificuldade").value;
+            let difficulty = document.getElementById("dificuldade").value;
             let conteudo = document.getElementById("conteudo").value;
 
             if (!nome) return alert("Informe o nome");
-            if (!dificuldade) return alert("Informe a dificuldade");
+            if (!difficulty) return alert("Informe a dificuldade");
             if (!conteudo) return alert("Selecione o conteúdo");
             if (perguntas.length === 0) return alert("Adicione perguntas");
 
-            // O loop deve envolver TODAS as validações de cada pergunta
             for (let i = 0; i < perguntas.length; i++) {
                 let p = perguntas[i];
 
                 if (!p.descricao) return alert(`Pergunta ${i + 1} vazia`);
                 if (!p.tipo) return alert(`Selecione tipo da pergunta ${i + 1}`);
 
-                // Validação Tipo 1 (Múltipla Escolha)
                 if (p.tipo == 1) {
                     if (p.respostas.length < 2) return alert(`Pergunta ${i + 1} precisa de 2 respostas`);
                     let corretas = p.respostas.filter(r => r.certo);
                     if (corretas.length !== 1) return alert(`Pergunta ${i + 1} precisa de 1 correta`);
                 }
 
-                // Validação Tipo 2 (Texto)
                 if (p.tipo == 2 && !p.resposta_texto)
                     return alert(`Pergunta ${i + 1} precisa resposta`);
 
-                // Validação Tipo 3 (V ou F)
                 if (p.tipo == 3 && p.vf === undefined)
                     return alert(`Pergunta ${i + 1} precisa VF`);
 
-                // Validação para Ordenação (5) e Arrastar (6) ✅ AGORA DENTRO DO LOOP
+                // REFORMULADO: Validação unificada para os tipos 5 e 6
                 if (p.tipo == 5 || p.tipo == 6) {
                     if (p.respostas.length < 2) 
                         return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
                     
-                    if (p.tipo == 5) {
-                        let faltaOrdem = p.respostas.some(r => r.ordem === undefined || isNaN(r.ordem));
-                        if (faltaOrdem) return alert(`Defina a numeração da ordem para todos os itens da pergunta ${i + 1}`);
-                    }
-
-                    // Para o tipo 6, vamos garantir que a ordem seja a posição atual do array
-                    if (p.tipo == 6) {
-                        p.respostas.forEach((r, idx) => r.ordem = idx + 1);
-                    }
+                    // Vincula a propriedade 'ordem' baseada na ordem estrutural do array (1, 2, 3...) de forma automatizada
+                    p.respostas.forEach((r, idx) => r.ordem = idx + 1);
                 }
             }
 
-            // Envio para a API
             fetch(api + "?tipo=quiz_completo", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     nome,
-                    dificuldade,
+                    dificuldade: difficulty,
                     id_conteudo: conteudo,
                     perguntas
                 })

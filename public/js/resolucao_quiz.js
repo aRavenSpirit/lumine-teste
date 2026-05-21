@@ -92,19 +92,51 @@ function renderizarPergunta() {
             });
             break;
 
-        case 5: // Ordenação Manual (Input numérico)
-            html += `<p><small>Digite a ordem correta para cada item:</small></p>`;
-            p.respostas.forEach(resp => {
-                const valor = (respostasUsuario[p.id] && respostasUsuario[p.id][resp.id]) || "";
-                html += `
-                    <div style="margin-bottom: 8px;">
-                        <input type="number" style="width: 40px;" 
-                               oninput="salvarOrdemManual(${p.id}, ${resp.id}, this.value)" 
-                               value="${valor}">
-                        <span>${resp.descricao}</span>
-                    </div>`;
+        case 5: { // MUDANÇA: Ordenação Estilo Duolingo (Clique para ordenar)
+            if (!Array.isArray(respostasUsuario[p.id])) {
+                respostasUsuario[p.id] = [];
+            }
+            const ordenados = respostasUsuario[p.id]; 
+
+            html += `<p><small>Clique nas opções abaixo para organizá-las na ordem correta (clique no item de cima para remover):</small></p>`;
+            
+            // Área de Destino (Onde os itens clicados vão se posicionando em fila)
+            html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; min-height: 50px; padding: 12px; background: #ebf5fb; border-radius: 8px; border: 2px dashed #3498db; align-items: center;">`;
+            p.respostas.forEach((_, idx) => {
+                const idResp = ordenados[idx];
+                if (idResp) {
+                    const respObj = p.respostas.find(r => r.id == idResp);
+                    html += `
+                        <div onclick="removerOpcaoOrdem(${p.id}, ${idx})" style="padding: 8px 16px; background: #3498db; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none;">
+                            ${respObj ? respObj.descricao : ''}
+                        </div>`;
+                } else {
+                    // Slots vazios esperando o preenchimento
+                    html += `<div style="width: 60px; height: 35px; background: #d6eaf8; border-radius: 20px; opacity: 0.5;"></div>`;
+                }
             });
+            html += `</div>`;
+
+            // Banco de Opções Disponíveis para clique
+            html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">`;
+            p.respostas.forEach(resp => {
+                const jaSelecionado = ordenados.includes(resp.id.toString());
+                if (!jaSelecionado) {
+                    html += `
+                        <button type="button" onclick="selecionarOpcaoOrdem(${p.id}, '${resp.id}')" style="padding: 10px 20px; background: white; border: 2px solid #bdc3c7; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                            ${resp.descricao}
+                        </button>`;
+                } else {
+                    // Botão desativado/opaco enquanto estiver selecionado lá em cima
+                    html += `
+                        <button type="button" disabled style="padding: 10px 20px; background: #eaecee; border: 2px dashed #bdc3c7; border-radius: 20px; color: #bdc3c7; cursor: not-allowed; opacity: 0.6;">
+                            ${resp.descricao}
+                        </button>`;
+                }
+            });
+            html += `</div>`;
             break;
+        }
 
         case 6: // Arrastar e Soltar (Estilo Atividade 1)
             html += `<p><small>Arraste os itens para os campos correspondentes:</small></p>`;
@@ -186,6 +218,24 @@ function salvarRespostaMultipla(perguntaId, valor, marcado) {
     }
 }
 
+// MUDANÇA: Novas funções de controle para o fluxo de cliques ordenados (Case 5)
+function selecionarOpcaoOrdem(perguntaId, respostaId) {
+    if (!Array.isArray(respostasUsuario[perguntaId])) {
+        respostasUsuario[perguntaId] = [];
+    }
+    if (!respostasUsuario[perguntaId].includes(respostaId.toString())) {
+        respostasUsuario[perguntaId].push(respostaId.toString());
+        renderizarPergunta();
+    }
+}
+
+function removerOpcaoOrdem(perguntaId, index) {
+    if (Array.isArray(respostasUsuario[perguntaId])) {
+        respostasUsuario[perguntaId].splice(index, 1);
+        renderizarPergunta();
+    }
+}
+
 function salvarOrdemManual(perguntaId, respostaId, valor) {
     if (!respostasUsuario[perguntaId]) respostasUsuario[perguntaId] = {};
     respostasUsuario[perguntaId][respostaId] = valor;
@@ -237,13 +287,22 @@ async function finalizarQuiz() {
             if (rUser.length === idsCorretos.length && idsCorretos.every(id => rUser.includes(id))) acertos++;
         }
         
-        else if (tipo === 5) {
-            const rUser = respostaUser || {};
-            const acertou = p.respostas.every(r => {
-                const respostaUsuario = parseInt(rUser[r.id]);
-                const ordemCorreta = parseInt(r.ordem);
-                return respostaUsuario === ordemCorreta;
-            });
+        else if (tipo === 5) { // MUDANÇA: Nova lógica de verificação com base na lista de cliques sequenciais
+            const rUser = respostasUsuario[p.id] || [];
+            let acertou = true;
+
+            // Se o usuário não ordenou todos os elementos, já marca como incorreta
+            if (rUser.length !== p.respostas.length) {
+                acertou = false;
+            } else {
+                acertou = p.respostas.every(r => {
+                    // Pega a posição onde o item foi clicado (0, 1, 2...) e soma 1 para bater com a ordem real (1, 2, 3...)
+                    const posicaoUsuario = rUser.indexOf(r.id.toString()) + 1;
+                    const ordemCorreta = parseInt(r.ordem);
+                    return posicaoUsuario === ordemCorreta;
+                });
+            }
+
             if (acertou && p.respostas.length > 0) {
                 acertos++;
             }
@@ -281,16 +340,8 @@ async function finalizarQuiz() {
 
 carregarQuiz();
 
-
 // Monitora quando o usuário tenta sair ou recarregar a página
 window.addEventListener('beforeunload', function (e) {
-    // Cancela o evento (padrão exigido por navegadores modernos)
     e.preventDefault();
-    
-    // Configura a mensagem de confirmação
-    // Nota: A maioria dos navegadores modernos ignora o texto personalizado 
-    // e exibe uma mensagem padrão do sistema por segurança.
     e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
 });
-
-
