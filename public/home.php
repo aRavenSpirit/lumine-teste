@@ -128,7 +128,18 @@
         <hr>
         <div class="modal-body">
             <div id="corpoModal"></div>
-            <button onclick="confirmarEntrada()">Entrar no Quiz</button>
+            <button onclick="abrirModalEntrar()">Entrar no Quiz</button>
+        </div>
+    </div>
+</div>
+
+<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content-confirm">
+        <p>deseja entrar no quiz?</p>
+        <img src="img/LUMINE-5con.ico" alt="logo">
+        <div class="modal-buttons">
+            <button onclick="fecharModalConfirmacao()" class="btn-voltar">não</button>
+            <button id="btnConfirmarEntrada" class="btn-entrar">sim</button>
         </div>
     </div>
 </div>
@@ -291,7 +302,7 @@ function toggleQuizzes(idConteudo, el) {
             } else {
                 quizzes.forEach(q => {
                     box.innerHTML += `
-                        <a href="quiz.html?id=${q.id}" class="quiz-card-link" onclick="return confirmarEntrada();">
+                        <a href="quiz.html?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
                             <div class="quiz-card">
                                 <h4>${q.nome}</h4>
                             </div>
@@ -345,12 +356,31 @@ function confirmarLogout() {
     }
 }
 
-function confirmarEntrada() {
-    if (confirm("Deseja entrar no quiz?")) {
-        return true;
-    }
+let urlDestinoQuiz = ""; // Variável global para guardar o link temporariamente
+
+// Esta função substitui o seu antigo confirmarEntrada()
+function prepararEntrada(event, url) {
+    event.preventDefault(); // Impede o navegador de abrir o link imediatamente
+    urlDestinoQuiz = url;    // Guarda o link (ex: quiz.html?id=5)
+    
+    // Abre o modal de confirmação
+    document.getElementById('modalConfirmacao').style.display = 'flex';
     return false;
 }
+
+function fecharModalConfirmacao() {
+    document.getElementById('modalConfirmacao').style.display = 'none';
+}
+
+function iniciarQuiz() {
+    if (urlDestinoQuiz !== "") {
+        window.location.href = urlDestinoQuiz; // Redireciona agora que confirmou
+    }
+}
+
+// Vincule o clique do botão "Entrar" do modal à função iniciarQuiz
+document.getElementById('btnConfirmarEntrada').onclick = iniciarQuiz;
+
 
 // --- Lógica Refinada da Sidebar (Scroll + Hover) ---
 const sidebarEl = document.getElementById('sidebar');

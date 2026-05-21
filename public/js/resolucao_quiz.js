@@ -292,3 +292,5 @@ window.addEventListener('beforeunload', function (e) {
     // e exibe uma mensagem padrão do sistema por segurança.
     e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
 });
+
+
