@@ -67,8 +67,15 @@ if (isset($_GET['tipo']) && $_GET['tipo'] == "quizzes") {
 
     $id = intval($_GET['id_conteudo']);
 
+    // Ajuste na query: selecionamos q.id_dificuldade para o JS identificar a cor 
+    // e d.dificuldade para exibir o texto (Fácil, Médio, etc)
     $res = $conn->query("
-        SELECT q.id, q.nome, d.dificuldade, c.nome AS conteudo
+        SELECT 
+            q.id, 
+            q.nome, 
+            q.id_dificuldade, 
+            d.dificuldade, 
+            c.nome AS conteudo
         FROM quizzes q
         JOIN dificuldade d ON q.id_dificuldade = d.id
         JOIN conteudo c ON q.id_conteudo = c.id
