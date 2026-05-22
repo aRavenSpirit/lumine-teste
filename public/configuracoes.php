@@ -86,76 +86,76 @@
         }
 
         /* Layout Principal */
-.grid-materias-pills {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 colunas como na foto */
-    gap: 8px;
-    flex: 1;
-}
+        .grid-materias-pills {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 colunas como na foto */
+            gap: 8px;
+            flex: 1;
+        }
 
-/* Estilo dos Botões de Matéria (Pílulas) */
-.materia-pill {
-    padding: 8px 15px;
-    border-radius: 20px; /* Arredondado */
-    color: #333;
-    font-weight: 500;
-    text-align: center;
-    cursor: pointer;
-    border: 2px solid rgba(0,0,0,0.2);
-    font-size: 14px;
-    transition: transform 0.1s, brightness 0.2s;
-    text-transform: capitalize;
-}
+        /* Estilo dos Botões de Matéria (Pílulas) */
+        .materia-pill {
+            padding: 8px 15px;
+            border-radius: 20px; /* Arredondado */
+            color: #333;
+            font-weight: 500;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid rgba(0,0,0,0.2);
+            font-size: 14px;
+            transition: transform 0.1s, brightness 0.2s;
+            text-transform: capitalize;
+        }
 
-.materia-pill:hover {
-    filter: brightness(1.1);
-    transform: scale(1.02);
-}
+        .materia-pill:hover {
+            filter: brightness(1.1);
+            transform: scale(1.02);
+        }
 
-/* Preview de cor lateral */
-.sessao-cores-layout {
-    display: flex;
-    gap: 20px;
-    margin-bottom: 20px;
-}
+        /* Preview de cor lateral */
+        .sessao-cores-layout {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
 
-.color-picker-preview {
-    width: 150px;
-    height: 150px;
-    border: 2px solid #333;
-    border-radius: 10px;
-    background: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%), 
-                linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%);
-    background-size: 20px 20px;
-}
+        .color-picker-preview {
+            width: 150px;
+            height: 150px;
+            border: 2px solid #333;
+            border-radius: 10px;
+            background: linear-gradient(45deg, #eee 25%, transparent 25%, transparent 75%, #eee 75%), 
+                        linear-gradient(45deg, #eee 25%, white 25%, white 75%, #eee 75%);
+            background-size: 20px 20px;
+        }
 
-.preview-box {
-    width: 100%;
-    height: 100%;
-    border-radius: 8px;
-    background-color: #ccc; /* Cor inicial */
-}
+        .preview-box {
+            width: 100%;
+            height: 100%;
+            border-radius: 8px;
+            background-color: #ccc; /* Cor inicial */
+        }
 
-/* Controles de baixo */
-.controles-estilizados {
-    display: flex;
-    justify-content: space-between;
-    background: #bde0fe;
-    padding: 15px;
-    border-radius: 25px;
-    border: 2px solid #333;
-}
+        /* Controles de baixo */
+        .controles-estilizados {
+            display: flex;
+            justify-content: space-between;
+            background: #bde0fe;
+            padding: 15px;
+            border-radius: 25px;
+            border: 2px solid #333;
+        }
 
-.btn-salvar-final {
-    display: block;
-    margin: 20px auto;
-    padding: 10px 40px;
-    border-radius: 25px;
-    background: #f1f1f1;
-    border: 2px solid #333;
-    font-weight: bold;
-    cursor: pointer;
-}
+        .btn-salvar-final {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 40px;
+            border-radius: 25px;
+            background: #f1f1f1;
+            border: 2px solid #333;
+            font-weight: bold;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -172,9 +172,9 @@
             <div class="container-principal">
                 <div class="container-aside">
                     <h1>PERFIL</h1>
-                    <div class="btn-aba active" onclick="carregarPerfil('usuario')">USUÁRIO</div>
-                    <div class="btn-aba" onclick="carregarPerfil('preferencias')">PREFERÊNCIAS</div>
-                    <div class="btn-aba" onclick="carregarPerfil('historico')">HISTÓRICO</div>
+                    <div class="btn-aba active" onclick="carregarPerfil('usuario', event)">USUÁRIO</div>
+                    <div class="btn-aba" onclick="carregarPerfil('preferencias', event)">PREFERÊNCIAS</div>
+                    <div class="btn-aba" onclick="carregarPerfil('historico', event)">HISTÓRICO</div>
                 </div>
 
                 <div id="card-opcoes">
@@ -195,12 +195,22 @@
     const api = "../config/home.php"; 
     let dadosUsuarioLocal = {}; 
 
-    async function carregarPerfil(tipo, event) { // Adicionado 'event' aqui para o currentTarget funcionar
+    // Mudança: event possui "= null" por padrão para evitar erros se for disparado pelo carregamento da página
+    async function carregarPerfil(tipo, event = null) { 
         const cardOpcoes = document.getElementById('card-opcoes');
         const id_usuario = 1; 
 
         document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
-        if (event) event.currentTarget.classList.add('active');
+        
+        if (event) {
+            event.currentTarget.classList.add('active');
+        } else {
+            // Caso seja disparado pelo onload automático da página, marca visualmente a aba correspondente
+            const abas = document.querySelectorAll('.btn-aba');
+            abas.forEach(btn => {
+                if(btn.textContent.toLowerCase() === tipo.toLowerCase()) btn.classList.add('active');
+            });
+        }
 
         cardOpcoes.innerHTML = "<p>Carregando...</p>";
 
@@ -250,108 +260,103 @@
                 `;
             } 
             else if (tipo === 'preferencias') {
-    let cores = data.cores_materia;
+                let cores = data.cores_materia;
 
-    // 1. Garantia de que 'cores' é um objeto (converte se o PHP mandar string)
-    if (typeof cores === 'string') {
-        try { cores = JSON.parse(cores); } catch(e) { cores = {}; }
-    }
-    cores = cores || {};
+                if (typeof cores === 'string') {
+                    try { cores = JSON.parse(cores); } catch(e) { cores = {}; }
+                }
+                cores = cores || {};
 
-    // 2. Monta os botões das matérias (filtrando fora os backgrounds)
-    let cardsHtml = Object.keys(cores)
-        .filter(key => !key.startsWith('bg_')) // Ignora 'bg_claro' e 'bg_escuro'
-        .map(materia => `
-            <div class="materia-pill" 
-                 id="pill-${materia}"
-                 style="background-color: ${cores[materia]}" 
-                 onclick="document.getElementById('picker-${materia}').click()">
-                ${materia.replace('_', ' ')}
-                <input type="color" 
-                       id="picker-${materia}" 
-                       value="${cores[materia]}" 
-                       style="display:none" 
-                       onchange="alterarCorMateria('${materia}', this.value)">
-            </div>
-        `).join('');
+                let cardsHtml = Object.keys(cores)
+                    .filter(key => !key.startsWith('bg_')) 
+                    .map(materia => `
+                        <div class="materia-pill" 
+                             id="pill-${materia}"
+                             style="background-color: ${cores[materia]}" 
+                             onclick="document.getElementById('picker-${materia}').click()">
+                            ${materia.replace('_', ' ')}
+                            <input type="color" 
+                                   id="picker-${materia}" 
+                                   value="${cores[materia]}" 
+                                   style="display:none" 
+                                   onchange="alterarCorMateria('${materia}', this.value)">
+                        </div>
+                    `).join('');
 
-    // 3. Renderiza o HTML com o layout da imagem
-    html = `
-        <div class="preferencias-container-visual">
-            <div class="sessao-cores-layout">
-                <div class="grid-materias-pills">
-                    ${cardsHtml}
-                </div>
-                <div class="color-picker-preview">
-                    <div class="preview-box" id="preview-box" style="background-color: #ccc"></div>
-                </div>
-            </div>
+                html = `
+                    <div class="preferencias-container-visual">
+                        <div class="sessao-cores-layout">
+                            <div class="grid-materias-pills">
+                                ${cardsHtml}
+                            </div>
+                            <div class="color-picker-preview">
+                                <div class="preview-box" id="preview-box" style="background-color: #ccc"></div>
+                            </div>
+                        </div>
 
-            <div class="controles-estilizados">
-                <div class="controle-item">
-                    <span class="label-estilizada">Modo:</span>
-                    <select id="pref-tema" class="select-arredondado">
-                        <option value="0" ${data.tema_escuro == 0 ? 'selected' : ''}>Claro</option>
-                        <option value="1" ${data.tema_escuro == 1 ? 'selected' : ''}>Escuro</option>
-                    </select>
-                </div>
-                <div class="controle-item">
-                    <span class="label-estilizada">Tamanho da letra:</span>
-                    <select id="pref-fonte" class="select-arredondado">
-                        <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
-                        <option value="2" ${data.tamanho_fonte == 2 ? 'selected' : ''}>Médio</option>
-                        <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
-                    </select>
-                </div>
-            </div>
+                        <div class="controles-estilizados">
+                            <div class="controle-item">
+                                <span class="label-estilizada">Modo:</span>
+                                <select id="pref-tema" class="select-arredondado">
+                                    <option value="0" ${data.tema_escuro == 0 ? 'selected' : ''}>Claro</option>
+                                    <option value="1" ${data.tema_escuro == 1 ? 'selected' : ''}>Escuro</option>
+                                </select>
+                            </div>
+                            <div class="controle-item">
+                                <span class="label-estilizada">Tamanho da letra:</span>
+                                <select id="pref-fonte" class="select-arredondado">
+                                    <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
+                                    <option value="2" ${data.tamanho_fonte == 2 ? 'selected' : ''}>Médio</option>
+                                    <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
+                                </select>
+                            </div>
+                        </div>
 
-            <button class="btn-salvar-final" onclick="salvarConfiguracoesGerais()">Salvar</button>
-        </div>
-    `;
-}
+                        <button class="btn-salvar-final" onclick="salvarConfiguracoesGerais()">Salvar</button>
+                    </div>
+                `;
+            }
             else if (tipo === 'historico') {
-    // Renderiza Tabela de Histórico baseada na tabela 'tentativas'
-    let rows = data.map(h => `
-        <tr id="tentativa-${h.id_tentativa}">
-            <td>${h.nome_materia}</td>
-            <td>${h.nome_conteudo}</td>
-            <td><strong>${h.titulo_quiz}</strong></td>
-            <td><span class="badge-dificuldade">${h.dificuldade}</span></td>
-            <td>${h.data_resolucao}</td>
-            <td><span class="badge-acerto">${h.acertos}/${h.total_questoes}</span></td>
-            <td>
-                <button onclick="excluirHistorico(${h.id_tentativa})" class="btn-excluir" title="Excluir">
-                    <i class="fas fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    `).join('');
+                let rows = data.map(h => `
+                    <tr id="tentativa-${h.id_tentativa}">
+                        <td>${h.nome_materia}</td>
+                        <td>${h.nome_conteudo}</td>
+                        <td><strong>${h.titulo_quiz}</strong></td>
+                        <td><span class="badge-dificuldade">${h.dificuldade}</span></td>
+                        <td>${h.data_resolucao}</td>
+                        <td><span class="badge-acerto">${h.acertos}/${h.total_questoes}</span></td>
+                        <td>
+                            <button onclick="excluirHistorico(${h.id_tentativa})" class="btn-excluir" title="Excluir">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
 
-    html = `
-        <div class="preferencias-container">
-            <h3>Meu Histórico de Desempenho</h3>
-            <div class="table-responsive">
-                <table class="historico-table">
-                    <thead>
-                        <tr>
-                            <th>Matéria</th>
-                            <th>Conteúdo</th>
-                            <th>Quiz</th>
-                            <th>Dificuldade</th>
-                            <th>Data</th>
-                            <th>Resultado</th>
-                            <th>Ação</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rows || '<tr><td colspan="7" style="text-align:center;">Você ainda não resolveu nenhum quiz.</td></tr>'}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    `;
-}
-
+                html = `
+                    <div class="preferencias-container">
+                        <h3>Meu Histórico de Desempenho</h3>
+                        <div class="table-responsive">
+                            <table class="historico-table">
+                                <thead>
+                                    <tr>
+                                        <th>Matéria</th>
+                                        <th>Conteúdo</th>
+                                        <th>Quiz</th>
+                                        <th>Dificuldade</th>
+                                        <th>Data</th>
+                                        <th>Resultado</th>
+                                        <th>Ação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${rows || '<tr><td colspan="7" style="text-align:center;">Você ainda não resolveu nenhum quiz.</td></tr>'}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
 
             cardOpcoes.innerHTML = html;
 
@@ -361,84 +366,55 @@
         }
     }
 
-   async function excluirHistorico(idTentativa) {
-    if (!confirm("Deseja remover esta tentativa do histórico?")) return;
+    async function excluirHistorico(idTentativa) {
+        if (!confirm("Deseja remover esta tentativa do histórico?")) return;
 
-    const formData = new FormData();
-    formData.append('acao', 'excluir_historico');
-    formData.append('id_tentativa', idTentativa);
+        const formData = new FormData();
+        formData.append('acao', 'excluir_historico');
+        formData.append('id_tentativa', idTentativa);
 
-    try {
-        const response = await fetch(api, { method: 'POST', body: formData });
-        const result = await response.json();
+        try {
+            const response = await fetch(api, { method: 'POST', body: formData });
+            const result = await response.json();
 
-        if (result.success) {
-            const linha = document.getElementById(`tentativa-${idTentativa}`);
-            if (linha) {
-                linha.style.transition = "0.3s";
-                linha.style.opacity = "0";
-                setTimeout(() => linha.remove(), 300);
+            if (result.success) {
+                const linha = document.getElementById(`tentativa-${idTentativa}`);
+                if (linha) {
+                    linha.style.transition = "0.3s";
+                    linha.style.opacity = "0";
+                    setTimeout(() => linha.remove(), 300);
+                }
+            } else {
+                alert("Erro ao excluir: " + result.error);
             }
-        } else {
-            alert("Erro ao excluir: " + result.error);
+        } catch (error) {
+            console.error("Erro na exclusão:", error);
         }
-    } catch (error) {
-        console.error("Erro na exclusão:", error);
     }
-}
 
+    function alterarCorMateria(materia, novaCor) {
+        document.getElementById(`pill-${materia}`).style.backgroundColor = novaCor;
+        document.getElementById('preview-box').style.backgroundColor = novaCor;
+    }
 
-function alterarCorMateria(materia, novaCor) {
-    // Atualiza a pílula e o preview lateral
-    document.getElementById(`pill-${materia}`).style.backgroundColor = novaCor;
-    document.getElementById('preview-box').style.backgroundColor = novaCor;
-}
-
-async function salvarConfiguracoesGerais() {
-    const tema = document.getElementById('pref-tema').value;
-    const fonte = document.getElementById('pref-fonte').value;
-    
-    // Coleta as cores das pílulas
-    let novasCores = {
-        "bg_claro": "#FFFFFF",
-        "bg_escuro": "#121212"
-    };
-    
-    document.querySelectorAll('.materia-pill input').forEach(input => {
-        const idMateria = input.id.replace('picker-', '');
-        novasCores[idMateria] = input.value;
-    });
-
-    const formData = new FormData();
-    formData.append('acao', 'atualizar_preferencias');
-    formData.append('tema', tema);
-    formData.append('fonte', fonte);
-    formData.append('cores', JSON.stringify(novasCores));
-    formData.append('id_usuario', 1); // Altere conforme seu sistema de login
-
-    const res = await fetch(api, { method: 'POST', body: formData });
-    const result = await res.json();
-    if(result.success) alert("Configurações salvas!");
-}
-
-
+    // Mudança: Removida a duplicidade e corrigido o varredor para focar em '.materia-pill input'
     async function salvarConfiguracoesGerais() {
         const tema = document.getElementById('pref-tema').value;
         const fonte = document.getElementById('pref-fonte').value;
         
-        // Coletar todas as cores atuais dos inputs escondidos
         const novasCores = {};
-        document.querySelectorAll('.materia-card-preferencia input').forEach(input => {
+        
+        // Coleta de forma assertiva baseado nas classes corretas geradas pelo HTML dinâmico
+        document.querySelectorAll('.materia-pill input').forEach(input => {
             const materiaId = input.id.replace('picker-', '');
             novasCores[materiaId] = input.value;
         });
 
-        // Adicionamos as cores de fundo padrão (mantendo as que já existem)
         novasCores['bg_claro'] = '#FFFFFF';
         novasCores['bg_escuro'] = '#121212';
 
         const formData = new FormData();
-        formData.append('acao', 'atualizar_preferencias'); // Crie este bloco no seu PHP
+        formData.append('acao', 'atualizar_preferencias'); 
         formData.append('tema', tema);
         formData.append('fonte', fonte);
         formData.append('cores', JSON.stringify(novasCores));
@@ -449,16 +425,16 @@ async function salvarConfiguracoesGerais() {
             const result = await res.json();
             if (result.success) {
                 alert("Preferências salvas com sucesso!");
-                carregarPerfil('preferencias');
+                carregarPerfil('preferencias'); 
+            } else {
+                alert("Erro ao salvar: " + result.error);
             }
         } catch (e) {
             console.error("Erro ao salvar preferências", e);
         }
     }
 
-
-    // --- FUNÇÕES DE MODAL E SALVAMENTO (MANTIDAS EXATAMENTE COMO VOCÊ ENVIOU) ---
-
+    // --- FUNÇÕES DE MODAL E SALVAMENTO DO USUÁRIO ---
     async function openModalPerfil(campo) {
         const modal = document.getElementById('modalPerfil');
         const containerForm = document.getElementById('modal-form-content');
@@ -516,6 +492,8 @@ async function salvarConfiguracoesGerais() {
         });
     }
 
-    // Carregar aba inicial
     window.onload = () => carregarPerfil('usuario');
 </script>
+
+</body>
+</html>

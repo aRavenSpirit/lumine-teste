@@ -14,7 +14,7 @@ function renderHeader() {
             <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
             <a href="../config/logout.php">Sair</a>
             <li class="item-perfil">
-                <a href="perfil.html" class="perfil-link">
+                <a href="configuracoes.php" class="perfil-link">
                     <span>Perfil</span>
                     <div class="profile-icon">
                         <i class="fa-solid fa-user"></i>
@@ -24,7 +24,7 @@ function renderHeader() {
         </nav>
 
         <div class="mobile-profile-right">
-            <a href="perfil.html">
+            <a href="configuracoes.php">
                 <div class="profile-icon">
                     <i class="fa-solid fa-user"></i>
                 </div>

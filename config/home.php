@@ -162,12 +162,12 @@ switch ($tipo) {
         }
         break;
 
-    // =========================
-    // PREFERÊNCIAS
+// =========================
+    // PREFERÊNCIAS (CORRIGIDO)
     // =========================
     case 'preferencias':
-    // Use o ID da sessão ou variável global
-    $id_usuario_busca = 1; 
+    // CORREÇÃO 1: Usa o ID do usuário logado dinamicamente (da sessão ou GET) em vez do número 1 fixo
+    $id_usuario_busca = $id_usuario; 
     
     $sql = "SELECT id, id_usuario, tema_escuro, tamanho_fonte, cores_materia 
             FROM configuracoes 
@@ -176,18 +176,31 @@ switch ($tipo) {
 
     if ($result && $result->num_rows > 0) {
         $row = $result->fetch_assoc();
-        // IMPORTANTE: Transformar a string do banco em objeto para o JS
         $row['cores_materia'] = json_decode($row['cores_materia'], true);
         $response = $row;
     } else {
-        // Se não existir registro, retorna o padrão compatível com a tabela
+        // CORREÇÃO 2: Caso não exista no banco ainda, retorna TODAS as matérias padrão 
+        // para que o JavaScript tenha a lista completa desde o primeiro segundo
         $response = [
             "id_usuario" => $id_usuario_busca,
             "tema_escuro" => 0,
             "tamanho_fonte" => 2,
             "cores_materia" => [
-                "bg_claro" => "#FFFFFF", "bg_escuro" => "#121212",
-                "matematica" => "#3498db", "portugues" => "#e74c3c", "historia" => "#f1c40f"
+                "bg_claro" => "#FFFFFF", 
+                "bg_escuro" => "#121212",
+                "matematica" => "#3498db", 
+                "portugues" => "#e74c3c", 
+                "historia" => "#f1c40f",
+                "geografia" => "#2ecc71",
+                "biologia" => "#27ae60",
+                "fisica" => "#8e44ad",
+                "quimica" => "#d35400",
+                "ingles" => "#2980b9",
+                "artes" => "#e67e22",
+                "filosofia" => "#7f8c8d",
+                "sociologia" => "#16a085",
+                "educacao_fisica" => "#c0392b",
+                "literatura" => "#9b59b6"
             ]
         ];
     }
