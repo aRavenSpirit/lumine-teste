@@ -16,9 +16,8 @@
 </head>
 
 <body>
-
-<?php renderSidebar(); ?>
-
+<?php renderSidebar(); // Renderiza a sidebar ?>
+    
 <div class="main-container" id="mainContainer">
 
     <?php renderHeader(); ?>
