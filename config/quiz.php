@@ -44,7 +44,9 @@
             $perguntas = [];
             while ($p = $res_perguntas->fetch_assoc()) {
                 $id_p = $p['id'];
-                // Dentro do quiz.php, na parte do detalhes_quiz:
+                $id_tipo = intval($p['id_tipo']);
+
+                // Busca as respostas associadas à pergunta
                 $sql_resp = "SELECT id, descricao, certo, ordem, texto_alvo FROM respostas WHERE id_pergunta = $id_p";
                 $res_resp = $conn->query($sql_resp);
                 
@@ -52,7 +54,21 @@
                 while ($r = $res_resp->fetch_assoc()) {
                     $respostas[] = $r;
                 }
+
+                // Cria uma cópia idêntica para gerar o embaralhamento dos elementos móveis
+                $respostas_embaralhadas = $respostas;
+
+                // Se a pergunta for do tipo Ordenar Itens (5) ou Drag and Drop (6), embaralha apenas a cópia móvel
+                if ($id_tipo === 5 || $id_tipo === 6) {
+                    shuffle($respostas_embaralhadas);
+                }
+
+                // Mantém a ordem original estática para as estruturas de validação e caixas alvo
                 $p['respostas'] = $respostas;
+                
+                // Envia a lista bagunçada em uma propriedade exclusiva para renderizar os botões/blocos arrastáveis
+                $p['respostas_embaralhadas'] = $respostas_embaralhadas;
+                
                 $perguntas[] = $p;
             }
             $dados['perguntas'] = $perguntas;

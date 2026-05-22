@@ -92,7 +92,7 @@ function renderizarPergunta() {
             });
             break;
 
-        case 5: { // MUDANÇA: Ordenação Estilo Duolingo (Clique para ordenar)
+        case 5: { // MUDANÇA: Ordenação Estilo Duolingo consumindo listas separadas do PHP
             if (!Array.isArray(respostasUsuario[p.id])) {
                 respostasUsuario[p.id] = [];
             }
@@ -100,7 +100,7 @@ function renderizarPergunta() {
 
             html += `<p><small>Clique nas opções abaixo para organizá-las na ordem correta (clique no item de cima para remover):</small></p>`;
             
-            // Área de Destino (Onde os itens clicados vão se posicionando em fila)
+            // Área de Destino (Usa o array original 'respostas' para manter os slots na quantidade certa)
             html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; min-height: 50px; padding: 12px; background: #ebf5fb; border-radius: 8px; border: 2px dashed #3498db; align-items: center;">`;
             p.respostas.forEach((_, idx) => {
                 const idResp = ordenados[idx];
@@ -117,9 +117,9 @@ function renderizarPergunta() {
             });
             html += `</div>`;
 
-            // Banco de Opções Disponíveis para clique
+            // Banco de Opções Disponíveis para clique (Usa 'respostas_embaralhadas' isoladamente)
             html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">`;
-            p.respostas.forEach(resp => {
+            p.respostas_embaralhadas.forEach(resp => {
                 const jaSelecionado = ordenados.includes(resp.id.toString());
                 if (!jaSelecionado) {
                     html += `
@@ -138,12 +138,12 @@ function renderizarPergunta() {
             break;
         }
 
-        case 6: // Arrastar e Soltar (Estilo Atividade 1)
+        case 6: // MUDANÇA: Arrastar e Soltar com banco de itens móveis e alvos fixos separados
             html += `<p><small>Arraste os itens para os campos correspondentes:</small></p>`;
             
-            // 1. Itens que o aluno vai arrastar
+            // 1. Itens que o aluno vai arrastar (Usa exclusivamente a lista 'respostas_embaralhadas')
             html += `<div id="itens-disponiveis" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding:15px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
-            p.respostas.forEach(resp => {
+            p.respostas_embaralhadas.forEach(resp => {
                 const jaAlocado = Object.values(respostasUsuario[p.id] || {}).includes(resp.id.toString());
                 if (!jaAlocado) {
                     html += `<div id="drag_${resp.id}" draggable="true" ondragstart="drag(event)" style="padding:10px; background:white; border:1px solid #333; cursor:move; border-radius:4px;">${resp.descricao}</div>`;
@@ -151,10 +151,9 @@ function renderizarPergunta() {
             });
             html += `</div>`;
 
-            // 2. Caixas de destino (Alvos)
+            // 2. Caixas de destino (Usa o array sequencial estável 'respostas' para não embaralhar os alvos de lugar)
             html += `<div id="caixas-destino" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">`;
             
-            // IMPORTANTE: Aqui usamos os dados reais das respostas vindas do banco
             p.respostas.forEach((respOriginal, index) => {
                 const posicaoAlvo = index + 1; // Ordem da caixa
                 const idRespostaSolta = (respostasUsuario[p.id] && respostasUsuario[p.id][posicaoAlvo]);

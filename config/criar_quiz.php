@@ -1,253 +1,254 @@
 <?php
 
-header("Content-Type: application/json; charset=UTF-8");
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Methods: GET, POST");
-header("Access-Control-Allow-Headers: Content-Type");
+    header("Content-Type: application/json; charset=UTF-8");
+    header("Access-Control-Allow-Origin: *");
+    header("Access-Control-Allow-Methods: GET, POST");
+    header("Access-Control-Allow-Headers: Content-Type");
 
-require __DIR__ . "/conexao.php";
-
-
-// =========================
-// TIPOS DE PERGUNTAS
-// =========================
-if (isset($_GET['tipo']) && $_GET['tipo'] == 'tipos_perguntas') {
-
-    $result = $conn->query("SELECT * FROM tipos_perguntas");
-
-    $dados = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $dados[] = $row;
-    }
-
-    echo json_encode($dados);
-    exit;
-}
+    require __DIR__ . "/conexao.php";
 
 
-// =========================
-// DIFICULDADE
-// =========================
-if (isset($_GET['tipo']) && $_GET['tipo'] == 'dificuldade') {
+    // =========================
+    // TIPOS DE PERGUNTAS
+    // =========================
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'tipos_perguntas') {
 
-    $result = $conn->query("SELECT * FROM dificuldade");
+        $result = $conn->query("SELECT * FROM tipos_perguntas");
 
-    $dados = [];
+        $dados = [];
 
-    while ($row = $result->fetch_assoc()) {
-        $dados[] = $row;
-    }
+        while ($row = $result->fetch_assoc()) {
+            $dados[] = $row;
+        }
 
-    echo json_encode($dados);
-    exit;
-}
-
-
-// =========================
-// MATÉRIA
-// =========================
-if (isset($_GET['tipo']) && $_GET['tipo'] == 'materia') {
-
-    $result = $conn->query("SELECT * FROM materia");
-
-    $dados = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $dados[] = $row;
-    }
-
-    echo json_encode($dados);
-    exit;
-}
-
-
-// =========================
-// CONTEÚDO
-// =========================
-if (isset($_GET['tipo']) && $_GET['tipo'] == 'conteudo') {
-
-    $id = intval($_GET['id_materia']);
-
-    $result = $conn->query("
-        SELECT * 
-        FROM conteudo
-        WHERE id_materia = $id
-    ");
-
-    $dados = [];
-
-    while ($row = $result->fetch_assoc()) {
-        $dados[] = $row;
-    }
-
-    echo json_encode($dados);
-    exit;
-}
-
-
-// =========================
-// CRIAR QUIZ COMPLETO
-// =========================
-if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
-
-    $data = json_decode(file_get_contents("php://input"), true);
-
-    // validação geral
-    if (
-        empty($data['nome']) ||
-        empty($data['dificuldade']) ||
-        empty($data['id_conteudo']) ||
-        empty($data['perguntas'])
-    ) {
-        echo json_encode(["erro" => "Dados incompletos"]);
+        echo json_encode($dados);
         exit;
     }
 
-    $nome = $conn->real_escape_string($data['nome']);
-    $id_dificuldade = intval($data['dificuldade']);
-    $id_conteudo = intval($data['id_conteudo']);
 
-    // ✅ CORREÇÃO AQUI (id_dificuldade)
-    $conn->query("
-        INSERT INTO quizzes (nome, id_dificuldade, id_conteudo)
-        VALUES ('$nome', $id_dificuldade, $id_conteudo)
-    ");
+    // =========================
+    // DIFICULDADE
+    // =========================
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'dificuldade') {
 
-    $quiz_id = $conn->insert_id;
+        $result = $conn->query("SELECT * FROM dificuldade");
 
-    foreach ($data['perguntas'] as $p) {
+        $dados = [];
 
-        if (empty($p['descricao']) || empty($p['tipo'])) {
-            echo json_encode(["erro" => "Pergunta inválida"]);
+        while ($row = $result->fetch_assoc()) {
+            $dados[] = $row;
+        }
+
+        echo json_encode($dados);
+        exit;
+    }
+
+
+    // =========================
+    // MATÉRIA
+    // =========================
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'materia') {
+
+        $result = $conn->query("SELECT * FROM materia");
+
+        $dados = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $dados[] = $row;
+        }
+
+        echo json_encode($dados);
+        exit;
+    }
+
+
+    // =========================
+    // CONTEÚDO
+    // =========================
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'conteudo') {
+
+        $id = intval($_GET['id_materia']);
+
+        $result = $conn->query("
+            SELECT * 
+            FROM conteudo
+            WHERE id_materia = $id
+        ");
+
+        $dados = [];
+
+        while ($row = $result->fetch_assoc()) {
+            $dados[] = $row;
+        }
+
+        echo json_encode($dados);
+        exit;
+    }
+
+
+    // =========================
+    // CRIAR QUIZ COMPLETO
+    // =========================
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
+
+        $data = json_decode(file_get_contents("php://input"), true);
+
+        // validação geral
+        if (
+            empty($data['nome']) ||
+            empty($data['dificuldade']) ||
+            empty($data['id_conteudo']) ||
+            empty($data['perguntas'])
+        ) {
+            echo json_encode(["erro" => "Dados incompletos"]);
             exit;
         }
 
-        $desc = $conn->real_escape_string($p['descricao']);
-        $id_tipo = intval($p['tipo']);
+        $nome = $conn->real_escape_string($data['nome']);
+        $id_dificuldade = intval($data['dificuldade']);
+        $id_conteudo = intval($data['id_conteudo']);
 
+        // ✅ CORREÇÃO AQUI (id_dificuldade)
         $conn->query("
-            INSERT INTO perguntas (descricao, id_quiz, id_tipo)
-            VALUES ('$desc', $quiz_id, $id_tipo)
+            INSERT INTO quizzes (nome, id_dificuldade, id_conteudo)
+            VALUES ('$nome', $id_dificuldade, $id_conteudo)
         ");
 
-        $pergunta_id = $conn->insert_id;
+        $quiz_id = $conn->insert_id;
 
-        // =========================
-        // MULTIPLA (1 correta) e VÁRIAS
-        // =========================
-        if ($id_tipo == 1 || $id_tipo == 4) {
+        foreach ($data['perguntas'] as $p) {
 
-            if (empty($p['respostas'])) {
-                echo json_encode(["erro" => "Respostas obrigatórias"]);
+            if (empty($p['descricao']) || empty($p['tipo'])) {
+                echo json_encode(["erro" => "Pergunta inválida"]);
                 exit;
             }
 
-            $corretas = array_filter($p['respostas'], fn($r) => !empty($r['certo']));
+            $desc = $conn->real_escape_string($p['descricao']);
+            $id_tipo = intval($p['tipo']);
 
-            if ($id_tipo == 1 && count($corretas) != 1) {
-                echo json_encode(["erro" => "Pergunta precisa de 1 correta"]);
-                exit;
+            $conn->query("
+                INSERT INTO perguntas (descricao, id_quiz, id_tipo)
+                VALUES ('$desc', $quiz_id, $id_tipo)
+            ");
+
+            $pergunta_id = $conn->insert_id;
+
+            // =========================
+            // MULTIPLA (1 correta) e VÁRIAS
+            // =========================
+            if ($id_tipo == 1 || $id_tipo == 4) {
+
+                if (empty($p['respostas'])) {
+                    echo json_encode(["erro" => "Respostas obrigatórias"]);
+                    exit;
+                }
+
+                $corretas = array_filter($p['respostas'], fn($r) => !empty($r['certo']));
+
+                if ($id_tipo == 1 && count($corretas) != 1) {
+                    echo json_encode(["erro" => "Pergunta precisa de 1 correta"]);
+                    exit;
+                }
+
+                if ($id_tipo == 4 && count($corretas) == 0) {
+                    echo json_encode(["erro" => "Pelo menos 1 correta"]);
+                    exit;
+                }
+
+                foreach ($p['respostas'] as $r) {
+
+                    if (empty($r['descricao'])) continue;
+
+                    $rdesc = $conn->real_escape_string($r['descricao']);
+                    $certo = !empty($r['certo']) ? 1 : 0;
+
+                    $conn->query("
+                        INSERT INTO respostas (descricao, certo, id_pergunta)
+                        VALUES ('$rdesc', $certo, $pergunta_id)
+                    ");
+                }
             }
 
-            if ($id_tipo == 4 && count($corretas) == 0) {
-                echo json_encode(["erro" => "Pelo menos 1 correta"]);
-                exit;
-            }
+            // =========================
+            // TEXTO
+            // =========================
+            if ($id_tipo == 2) {
 
-            foreach ($p['respostas'] as $r) {
+                if (empty($p['resposta_texto'])) {
+                    echo json_encode(["erro" => "Resposta de texto obrigatória"]);
+                    exit;
+                }
 
-                if (empty($r['descricao'])) continue;
-
-                $rdesc = $conn->real_escape_string($r['descricao']);
-                $certo = !empty($r['certo']) ? 1 : 0;
+                $resp = $conn->real_escape_string($p['resposta_texto']);
 
                 $conn->query("
                     INSERT INTO respostas (descricao, certo, id_pergunta)
-                    VALUES ('$rdesc', $certo, $pergunta_id)
+                    VALUES ('$resp', 1, $pergunta_id)
                 ");
             }
-        }
 
-        // =========================
-        // TEXTO
-        // =========================
-        if ($id_tipo == 2) {
+            // =========================
+            // VERDADEIRO/FALSO
+            // =========================
+            if ($id_tipo == 3) {
 
-            if (empty($p['resposta_texto'])) {
-                echo json_encode(["erro" => "Resposta de texto obrigatória"]);
-                exit;
+                if (!isset($p['vf'])) {
+                    echo json_encode(["erro" => "VF obrigatório"]);
+                    exit;
+                }
+
+                $valor = $p['vf'] ? 'Verdadeiro' : 'Falso';
+
+                $conn->query("
+                    INSERT INTO respostas (descricao, certo, id_pergunta)
+                    VALUES ('$valor', 1, $pergunta_id)
+                ");
             }
 
-            $resp = $conn->real_escape_string($p['resposta_texto']);
+            // =========================
+    // ORDENAR / DRAG
+    // =========================
+    if ($id_tipo == 5 || $id_tipo == 6) {
 
-            $conn->query("
-                INSERT INTO respostas (descricao, certo, id_pergunta)
-                VALUES ('$resp', 1, $pergunta_id)
-            ");
-        }
+        $posicao = 1;
 
-        // =========================
-        // VERDADEIRO/FALSO
-        // =========================
-        if ($id_tipo == 3) {
+        foreach ($p['respostas'] as $r) {
 
-            if (!isset($p['vf'])) {
-                echo json_encode(["erro" => "VF obrigatório"]);
-                exit;
+            if (empty($r['descricao'])) continue;
+
+            $descItem = $conn->real_escape_string($r['descricao']);
+
+            // Se for Drag and Drop, salva o texto do alvo
+            $textoAlvo = '';
+
+            if ($id_tipo == 6 && isset($r['texto_alvo'])) {
+                $textoAlvo = $conn->real_escape_string($r['texto_alvo']);
             }
 
-            $valor = $p['vf'] ? 'Verdadeiro' : 'Falso';
-
             $conn->query("
-                INSERT INTO respostas (descricao, certo, id_pergunta)
-                VALUES ('$valor', 1, $pergunta_id)
+                INSERT INTO respostas (
+                    descricao,
+                    certo,
+                    id_pergunta,
+                    ordem,
+                    texto_alvo
+                ) VALUES (
+                    '$descItem',
+                    1,
+                    $pergunta_id,
+                    $posicao,
+                    '$textoAlvo'
+                )
             ");
+
+            $posicao++;
+        }
+    }
         }
 
-        // =========================
-// ORDENAR / DRAG
-// =========================
-if ($id_tipo == 5 || $id_tipo == 6) {
-
-    $posicao = 1;
-
-    foreach ($p['respostas'] as $r) {
-
-        if (empty($r['descricao'])) continue;
-
-        $descItem = $conn->real_escape_string($r['descricao']);
-
-        // Se for Drag and Drop, salva o texto do alvo
-        $textoAlvo = '';
-
-        if ($id_tipo == 6 && isset($r['texto_alvo'])) {
-            $textoAlvo = $conn->real_escape_string($r['texto_alvo']);
-        }
-
-        $conn->query("
-            INSERT INTO respostas (
-                descricao,
-                certo,
-                id_pergunta,
-                ordem,
-                texto_alvo
-            ) VALUES (
-                '$descItem',
-                1,
-                $pergunta_id,
-                $posicao,
-                '$textoAlvo'
-            )
-        ");
-
-        $posicao++;
-    }
-}
+        echo json_encode(["mensagem" => "Quiz criado com sucesso"]);
+        exit;
     }
 
-    echo json_encode(["mensagem" => "Quiz criado com sucesso"]);
-    exit;
-}
-
-$conn->close();
+    $conn->close();
+?>

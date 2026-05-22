@@ -6,15 +6,18 @@
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
     <style>
         /* CSS básico apenas para organização visual */
-        .pergunta-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #f9f9f9; border-radius: 8px; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #f4f7f6; }
+        .pergunta-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .edit-section { background: #eee; padding: 10px; margin-top: 5px; border-radius: 4px; }
         .tipo6-par { margin-bottom: 10px; padding: 10px; border: 1px dashed #999; background: #fff; }
-        button { cursor: pointer; margin: 5px; }
+        .item-ordem-li { margin-bottom: 8px; }
+        button { cursor: pointer; margin: 5px; padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; }
+        input, select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
     </style>
 </head>
 <body>
 
-    <a href="admin_dashboard.html">Voltar ao Painel</a>
+    <a href="admin_dashboard.html" style="text-decoration: none; color: #1595c4; font-weight: bold;">← Voltar ao Painel</a>
     <h2>Editar Quiz</h2>
 
     <div id="dados-quiz">
@@ -42,10 +45,10 @@
     <div id="perguntas-container"></div>
     
     <br>
-    <button onclick="addPergunta()">+ Adicionar Nova Pergunta</button>
+    <button onclick="addPergunta()" style="background-color: #1595c4; color: white; font-weight: bold;">+ Adicionar Nova Pergunta</button>
     <br><br>
     <hr>
-    <button onclick="salvarAlteracoes()" style="padding: 15px; background-color: #28a745; color: white; font-weight: bold; width: 100%;">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
+    <button onclick="salvarAlteracoes()" style="padding: 15px; background-color: #28a745; color: white; font-weight: bold; width: 100%; border: none; font-size: 16px;">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
 
     <script>
         const api = "../config/criar_quiz.php"; 
@@ -59,11 +62,8 @@
         window.onload = async function () {
             if (!quizId) return alert("ID do quiz não encontrado!");
             
-            // 1. Carrega as listas globais primeiro (AWAIT é crucial aqui)
             await carregarTipos();
             await carregarListasIniciais();
-            
-            // 2. Só depois de carregar matérias/dificuldades é que carregamos os dados do quiz
             await carregarDadosDoQuiz();
         }
 
@@ -78,14 +78,12 @@
         }
 
         async function carregarListasIniciais() {
-            // Matérias
             const rMat = await fetch(api + "?tipo=materia");
             const materias = await rMat.json();
             let selMat = document.getElementById("select-materia");
             selMat.innerHTML = '<option value="">Selecione a Matéria</option>';
             materias.forEach(m => selMat.innerHTML += `<option value="${m.id}">${m.nome_materia}</option>`);
 
-            // Dificuldades
             const rDif = await fetch(api + "?tipo=dificuldade");
             const difs = await rDif.json();
             let selDif = document.getElementById("select-dificuldade");
@@ -112,34 +110,38 @@
             const r = await fetch(`../config/quiz.php?tipo=detalhes_quiz&id=${quizId}`);
             const data = await r.json();
 
-            // Preenche Labels
             document.getElementById('label-nome').innerText = data.nome;
             document.getElementById('label-dificuldade').innerText = data.dificuldade;
             document.getElementById('label-conteudo').innerText = data.nome_materia + " / " + data.conteudo;
             
-            // Preenche Inputs de edição (Sincronização correta)
             document.getElementById('input-nome').value = data.nome;
             document.getElementById('select-dificuldade').value = data.id_dificuldade;
             document.getElementById('select-materia').value = data.id_materia;
             
-            // Carrega conteúdos daquela matéria e já seleciona o atual
             await carregarConteudos(data.id_conteudo);
 
-            // Mapeia perguntas para o estado local
-            perguntas = data.perguntas.map(p => ({
-                id: p.id,
-                descricao: p.descricao,
-                tipo: p.id_tipo,
-                respostas: p.respostas.map(r => ({
-                    id: r.id,
-                    descricao: r.descricao,
-                    certo: r.certo == 1,
-                    ordem: r.ordem,
-                    texto_alvo: r.texto_alvo || ""
-                })),
-                resposta_texto: p.id_tipo == 2 ? (p.respostas[0]?.descricao || "") : "",
-                vf: p.id_tipo == 3 ? (p.respostas[0]?.descricao === 'Verdadeiro') : undefined
-            }));
+            perguntas = data.perguntas.map(p => {
+                // CORREÇÃO: Garante que se a pergunta for de ordenação (tipo 5), venha na ordem correta do banco
+                let respostasOrdenadas = p.respostas;
+                if (p.id_tipo == 5 || p.id_tipo == 6) {
+                    respostasOrdenadas.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem));
+                }
+
+                return {
+                    id: p.id,
+                    descricao: p.descricao,
+                    tipo: p.id_tipo,
+                    respostas: respostasOrdenadas.map(r => ({
+                        id: r.id,
+                        descricao: r.descricao,
+                        certo: r.certo == 1,
+                        ordem: r.ordem,
+                        texto_alvo: r.texto_alvo || ""
+                    })),
+                    resposta_texto: p.id_tipo == 2 ? (p.respostas[0]?.descricao || "") : "",
+                    vf: p.id_tipo == 3 ? (p.respostas[0]?.descricao === 'Verdadeiro') : undefined
+                };
+            });
 
             render();
         }
@@ -153,7 +155,7 @@
                 div.className = "pergunta-card";
                 
                 let html = `
-                    <button onclick="removerPergunta(${i})" style="float:right; color:red">Remover Pergunta</button>
+                    <button onclick="removerPergunta(${i})" style="float:right; color:red; font-weight:bold;">Remover Pergunta</button>
                     <strong>Pergunta ${i + 1}</strong><br><br>
                     Descrição: <input style="width:60%" oninput="perguntas[${i}].descricao = this.value" value="${p.descricao}"><br><br>
                     Tipo: <select onchange="updateTipo(${i}, this.value)">
@@ -162,7 +164,7 @@
                     </select><br><br>
                 `;
 
-                // Renderização dinâmica por tipo
+                // 1 e 4: MULTIPLA ESCOLHA
                 if (p.tipo == 1 || p.tipo == 4) {
                     html += `<button onclick="addResposta(${i})">+ Adicionar Opção</button><ul>`;
                     p.respostas.forEach((r, j) => {
@@ -174,15 +176,35 @@
                     });
                     html += `</ul>`;
                 } 
+                // 2: TEXTO
                 else if (p.tipo == 2) {
-                    html += `Resposta correta (Texto): <input oninput="perguntas[${i}].resposta_texto = this.value" value="${p.resposta_texto}">`;
+                    html += `Resposta correta (Texto): <input oninput="perguntas[${i}].resposta_texto = this.value" value="${p.resposta_texto}" style="width:40%;">`;
                 } 
+                // 3: VERDADEIRO OU FALSO
                 else if (p.tipo == 3) {
                     html += `
                         <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = true" ${p.vf === true ? "checked" : ""}> Verdadeiro</label>
                         <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = false" ${p.vf === false ? "checked" : ""}> Falso</label>
                     `;
                 }
+                // 5: ORDENAR ITENS (O BLOCO QUE ESTAVA FALTANDO!)
+                else if (p.tipo == 5) {
+                    html += `
+                        <p style="margin:5px 0; font-size:13px; color:#555;">Defina os itens abaixo na <strong>ordem sequencial exata</strong> (1º ao último):</p>
+                        <button onclick="addResposta(${i})">+ Adicionar Item à Sequência</button>
+                        <ol style="margin-top:10px;">
+                    `;
+                    p.respostas.forEach((r, j) => {
+                        html += `
+                            <li class="item-ordem-li">
+                                <input style="width:50%" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Ex: Item da posição ${j+1}">
+                                <button onclick="removerResposta(${i}, ${j})" style="color:red; border-color:red;">X</button>
+                            </li>
+                        `;
+                    });
+                    html += `</ol>`;
+                }
+                // 6: ARRASTAR E SOLTAR / DRAG AND DROP
                 else if (p.tipo == 6) {
                     html += `<button onclick="addResposta(${i})">+ Adicionar Par Arrastável</button><br><br>`;
                     p.respostas.forEach((r, j) => {
@@ -192,7 +214,7 @@
                             <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].texto_alvo = this.value" value="${r.texto_alvo}" placeholder="Ex: Lê um decimal"><br>
                             <small>Texto para Arrastar (Resposta):</small><br>
                             <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Ex: scanf">
-                            <button onclick="removerResposta(${i}, ${j})" style="color:red">X</button>
+                            <button onclick="removerResposta(${i}, ${j})" style="color:red; border-color:red;">X</button>
                         </div>`;
                     });
                 }
@@ -202,10 +224,11 @@
             });
         }
 
-        // Funções auxiliares
         function updateTipo(i, tipoId) {
             perguntas[i].tipo = tipoId;
             perguntas[i].respostas = [];
+            perguntas[i].resposta_texto = "";
+            perguntas[i].vf = undefined;
             render();
         }
 
@@ -239,6 +262,7 @@
         }
 
         async function salvarAlteracoes() {
+            // Se o administrador não clicou em "Alterar" conteúdo, enviamos o valor guardado no select oculto
             const payload = {
                 id_quiz: quizId,
                 nome: document.getElementById('input-nome').value,
