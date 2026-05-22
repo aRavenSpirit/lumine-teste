@@ -268,21 +268,18 @@ create table tentativas(
     foreign key (id_usuario) references usuario (id),
 	acertos int,
     total_questoes int,
-    tempo time
+    tempo time,
+    data_resolucao DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-create table configuracoes (
-    id int primary key auto_increment,
-    id_usuario int,
-    foreign key (id_usuario) references usuario (id),
-    tema_escuro TINYINT default 0, -- 0: claro, 1: escuro
-    tamanho_fonte TINYINT default 2, -- 1: pequena, 2: média, 3: grande
-    cores_materia json default (json_object(
-        -- cores do background
+CREATE TABLE IF NOT EXISTS configuracoes (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    id_usuario INT UNIQUE,
+    tema_escuro TINYINT DEFAULT 0, -- 0: claro, 1: escuro
+    tamanho_fonte TINYINT DEFAULT 2, -- 1: pequena, 2: média, 3: grande
+    cores_materia JSON DEFAULT (JSON_OBJECT(
         'bg_claro', '#FFFFFF',
         'bg_escuro', '#121212',
-
-        -- cores das matérias
         'matematica', '#3498db',
         'portugues', '#e74c3c',
         'historia', '#f1c40f',
@@ -296,8 +293,14 @@ create table configuracoes (
         'sociologia', '#16a085',
         'educacao_fisica', '#c0392b',
         'literatura', '#9b59b6'
-    ))
+    )),
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id)
 );
+
+INSERT INTO configuracoes (id_usuario, tema_escuro, tamanho_fonte, cores_materia)
+VALUES (1, 0, 2, '{"matematica": "#3498db", "portugues": "#e74c3c", "historia": "#f1c40f", "geografia": "#2ecc71", "biologia": "#27ae60", "fisica": "#8e44ad", "quimica": "#d35400", "ingles": "#2980b9", "artes": "#e67e22", "filosofia": "#7f8c8d", "sociologia": "#16a085", "educacao_fisica": "#c0392b", "literatura": "#9b59b6"}')
+ON DUPLICATE KEY UPDATE cores_materia = VALUES(cores_materia);
+
 
     CREATE TABLE recuperacao_senha (
     id int AUTO_INCREMENT primary key,
@@ -318,8 +321,8 @@ create table configuracoes (
 
 -- Exemplo caso o usuário quiser alterar a cor das matérias
     UPDATE configuracoes 
-    SET cores_materias = JSON_SET(cores_materias, '$.matematica', '#6200ee') 
-    WHERE usuario_id = 101;
+    SET cores_materia = JSON_SET(cores_materia, '$.matematica', '#6200ee') 
+    WHERE id_usuario = 101;
 
 
 -- TESTES
