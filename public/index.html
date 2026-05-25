@@ -35,16 +35,16 @@
     </div>
 
     <main class="hero">
-        <div class="hero-content">
+        <div class="hero-content animation-fade-in">
             <h1 class="letras-lumine">
                 <span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span>
             </h1>
-            <p class="subtitle">NA LUMINE, VOCÊ DESAFIA A SUA MENTE.</p>
-            <p class="subtitle">CONHEÇA AGORA, O <span class="melhor-subtitulo">MELHOR</span> SITE DE QUIZZES!</p>
+            <p class="subtitle animation-slide-up" style="animation-delay: 0.3s;">NA LUMINE, VOCÊ DESAFIA A SUA MENTE.</p>
+            <p class="subtitle animation-slide-up" style="animation-delay: 0.5s;">CONHEÇA AGORA, O <span class="melhor-subtitulo">MELHOR</span> SITE DE QUIZZES!</p>
         </div>
     </main>
     
-    <section class="secao-apresentacao1">
+    <section class="secao-apresentacao1 animation-scroll-trigger">
         <div class="container-text1">
             <h1>CANSADO DO COMUM?</h1>
             <p>Desafie seus limites na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span>. Entre no jogo, teste sua rapidez e prove que você está pronto para <span class="texto-negrito">DOMINAR</span> qualquer assunto!"</p>
@@ -63,7 +63,7 @@
         </div>
     </section>
 
-    <section class="secao-apresentacao2">
+    <section class="secao-apresentacao2 animation-scroll-trigger">
         <div class="testimonial-slider">
             <div class="testimonial-track">
                 <div class="testimonial-card quiz-preview">
@@ -111,7 +111,7 @@
         </div>
     </section>
 
-    <section class="secao-apresentacao3">
+    <section class="secao-apresentacao3 animation-scroll-trigger">
         <div class="container-text3">
             <h1>CONHEÇA AS NOVIDADES!</h1>
             <p>Na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span> você acessa os melhores e mais interativos quizzes. Tudo pensado especialmente para você! </p>
@@ -130,7 +130,7 @@
         </div>
     </section>
 
-    <section class="secao-apresentacao4">
+    <section class="secao-apresentacao4 animation-scroll-trigger">
         <div class="container-text4">
             <h1>TESTE SEU CONHECIMENTO</h1>
             <p>Na <span class="texto-negrito"><span class="L">L</span><span class="U">U</span><span class="M">M</span><span class="I">I</span><span class="N">N</span><span class="E">E</span></span> , seu aprendizado é nossa prioridade! Venha transformar seu conhecimento e construir resultados extraordinários. </p>
@@ -177,9 +177,41 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById("mobileMenu");
- // Ao adicionar/remover 'active', o CSS executa o translateY
-                menu.classList.toggle("active");
+            menu.classList.toggle("active");
+        }
+        window.addEventListener('resize', function() {
+            const menu = document.getElementById("mobileMenu");
+            if (window.innerWidth > 580) {
+                menu.classList.remove("active");
             }
+        });
+
+        // Script dinâmico para fazer os elementos surgirem conforme rola a tela (Scroll Reveal)
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.15 });
+
+        document.querySelectorAll('.animation-scroll-trigger').forEach((section) => {
+            observer.observe(section);
+        });
+
+        // FORÇAR A PÁGINA A IR PARA O TOPO AO ATUALIZAR
+        if (history.scrollRestoration) {
+            history.scrollRestoration = 'manual';
+        }
+        window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+        });
+
+        // Seu código antigo do menu mobile continua aqui abaixo...
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            menu.classList.toggle("active");
+        }
         window.addEventListener('resize', function() {
             const menu = document.getElementById("mobileMenu");
             if (window.innerWidth > 580) {
