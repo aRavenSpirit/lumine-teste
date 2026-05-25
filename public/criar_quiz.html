@@ -1,48 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-BR">
 
 <head>
     <meta charset="UTF-8">
     <title>Criar Quiz</title>
+    <link rel="stylesheet" href="style/criar_quiz.css">
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
 </head>
 
 <body>
 
-    <a href="index.html">Voltar para pagina principal</a>
+    <header class="navbar-container">
+        <button class="nav-btn btn-back-top" onclick="window.location.href='admin_dashboard.html'">Voltar</button>
+        <div class="nav-pill title-pill">CRIAÇÃO DE QUIZ</div>
+        <div class="nav-pill adm-pill">ADM</div>
+        <button class="nav-btn btn-lumine-top" onclick="window.location.href='index.html'">LUMINE</button>
+        <button class="nav-btn btn-danger-top" onclick="window.location.reload()">APAGAR QUIZ</button>
+        <button class="nav-btn btn-success-top" onclick="salvarQuiz()">CRIAR QUIZ</button>
+    </header>
 
-    <h2>Criar Quiz</h2>
+    <main class="main-card">
+        <div class="back-link-container">
+            <a href="index.html" class="back-link">Voltar para pagina principal</a>
+        </div>
 
-    Nome:
-    <input type="text" id="nome">
-    <br><br>
+        <div class="quiz-header-form">
+            <div class="input-group">
+                Nome:
+                <input type="text" id="nome" placeholder="Nome do novo Quiz" class="custom-input main-input">
+            </div>
 
-    Dificuldade:
-    <select id="dificuldade">
-        <option value="">Selecione...</option>
-    </select>
-    <br><br>
+            <div class="input-group select-wrapper">
+                Dificuldade:
+                <select id="dificuldade" class="custom-select small-select">
+                    <option value="">Selecione...</option>
+                </select>
+            </div>
 
-    Matéria:
-    <select id="materia" onchange="carregarConteudos()">
-        <option value="">Selecione...</option>
-    </select>
+            <div class="input-group select-wrapper">
+                Matéria:
+                <select id="materia" onchange="carregarConteudos()" class="custom-select">
+                    <option value="">Selecione...</option>
+                </select>
+            </div>
 
-    <br><br>
+            <div class="input-group select-wrapper">
+                Conteúdo:
+                <select id="conteudo" class="custom-select">
+                    <option value="">Selecione...</option>
+                </select>
+            </div>
 
-    Conteúdo:
-    <select id="conteudo">
-        <option value="">Selecione...</option>
-    </select>
+            <button class="btn-add-question" onclick="addPergunta()">+ Pergunta</button>
+        </div>
 
-    <br><br>
-
-    <button onclick="addPergunta()">+ Pergunta</button>
-
-    <div id="perguntas"></div>
-
-    <br>
-    <button onclick="salvarQuiz()">Salvar Quiz</button>
+        <div id="perguntas"></div>
+    </main>
 
     <script>
 
@@ -175,6 +188,7 @@
 
         function setVF(i, valor) {
             perguntas[i].vf = valor;
+            render();
         }
 
         function setOrdem(i, j, valor) {
@@ -186,15 +200,19 @@
 
             perguntas.forEach((p, i) => {
                 html += `
-                <div style="border:1px solid #000; padding:10px; margin:10px">
-                    <button onclick="removerPergunta(${i})">Remover</button>
-                    <br><br>
-                    Pergunta:
-                    <input onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
-                    <br><br>
-                    Tipo:
-                    <select onchange="updateTipo(${i}, this.value)">
-                        <option value="">Selecione...</option>
+                <div class="question-card">
+                    <div class="question-header">
+                        <div>
+                            Pergunta:
+                            <input class="custom-input question-title-input" onchange="updatePergunta(${i}, this.value)" value="${p.descricao}">
+                        </div>
+                        <button class="btn-remove" onclick="removerPergunta(${i})">Remover</button>
+                    </div>
+                    
+                    <div class="select-wrapper type-select-wrapper">
+                        Tipo:
+                        <select class="custom-select" onchange="updateTipo(${i}, this.value)">
+                            <option value="">Selecione...</option>
                 `;
 
                 tipos.forEach(t => {
@@ -205,91 +223,98 @@
                     `;
                 });
 
-                html += `</select><br><br>`;
+                html += `</select></div><br>`;
 
                 if (p.tipo == 1) {
-                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
+                    html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Respostas</button><div class="answers-container flex-row">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                            <input type="radio" name="correta_${i}"
-                                onchange="updateCorreta(${i}, ${j})"
-                                ${r.certo ? "checked" : ""}>
-                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
-                        </li>
+                        <div class="answer-pill-box">
+                            <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
+                            <input class="inner-pill-input" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                            <label class="custom-radio-checkbox">
+                                <input type="radio" name="correta_${i}"
+                                    onchange="updateCorreta(${i}, ${j})"
+                                    ${r.certo ? "checked" : ""}>
+                                <span class="radio-mark"></span>
+                            </label>
+                        </div>
                         `;
                     });
-                    html += `</ul>`;
+                    html += `</div>`;
                 }
 
                 if (p.tipo == 2) {
                     html += `
+                    <div class="answers-container">
                         Resposta:
-                        <input onchange="setTexto(${i}, this.value)" value="${p.resposta_texto ?? ""}">
+                        <input class="custom-input text-answer-input" onchange="setTexto(${i}, this.value)" value="${p.resposta_texto ?? ""}">
+                    </div>
                     `;
                 }
 
                 if (p.tipo == 3) {
                     html += `
-                        <label>
+                    <div class="answers-container vf-container">
+                        <label class="vf-label-wrapper">
                             <input type="radio" name="vf_${i}" onchange="setVF(${i}, true)" ${p.vf === true ? "checked" : ""}>
-                            Verdadeiro
+                            <span class="vf-btn vf-true">Verdadeiro <span class="dot-indicator"></span></span>
                         </label>
-                        <label>
+                        <label class="vf-label-wrapper">
                             <input type="radio" name="vf_${i}" onchange="setVF(${i}, false)" ${p.vf === false ? "checked" : ""}>
-                            Falso
+                            <span class="vf-btn vf-false">Falso <span class="dot-indicator"></span></span>
                         </label>
+                    </div>
                     `;
                 }
 
                 if (p.tipo == 4) {
-                    html += `<button onclick="addResposta(${i})">+ Resposta</button><ul>`;
+                    html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Respostas</button><div class="answers-container flex-row">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
+                        <div class="answer-pill-box">
+                            <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
+                            <input class="inner-pill-input" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
                             <input type="checkbox"
                                 onchange="marcarMultipla(${i}, ${j}, this.checked)"
                                 ${r.certo ? "checked" : ""}>
-                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
-                        </li>
+                        </div>
                         `;
                     });
-                    html += `</ul>`;
+                    html += `</div>`;
                 }
 
-                // REFORMULADO: Tipo 5 Estilo Duolingo (Sem input de número, ordenação por inserção visual)
                 if (p.tipo == 5) {
-                    html += `<button onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
+                    html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
                     html += `<p style="margin: 5px 0;"><small><em>Escreva os itens rigorosamente na ordem correta (de cima para baixo):</em></small></p>`;
-                    html += `<ol style="margin-top:5px;">`;
+                    html += `<div class="answers-container drag-drop-container"><div class="drag-arrow-indicator"></div><div class="drag-items-list">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li style="margin-bottom: 5px;">
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: item da posição ${j+1}" style="width: 250px;">
-                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
-                        </li>`;
+                        <div class="answer-pill-box drag-pill">
+                            <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
+                            <input class="inner-pill-input full-width" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: item da posição ${j+1}">
+                        </div>`;
                     });
-                    html += `</ol>`;
+                    html += `</div></div>`;
                 }
 
                 if (p.tipo == 6) {
-                    html += `<button onclick="addResposta(${i})">+ Adicionar Par (Caixa e Resposta)</button><ul style="list-style:none">`;
+                    html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Par (Caixa e Resposta)</button>`;
+                    html += `<div class="answers-container matching-container">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <li style="padding:10px; border:1px dashed #ccc; margin-bottom:10px; background:#f9f9f9">
-                            <strong>Par ${j+1}:</strong><br>
-                            <small>Texto na Caixa (Alvo):</small><br>
-                            <input onchange="updateTextoAlvo(${i}, ${j}, this.value)" value="${r.texto_alvo ?? ''}" placeholder="Ex: Capital da França" style="width:70%"><br>
-                            
-                            <small>Item para Arrastar (Resposta):</small><br>
-                            <input onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: Paris" style="width:70%">
-                            
-                            <button onclick="removerResposta(${i}, ${j})">Remover</button>
-                        </li>`;
+                        <div class="matching-row">
+                            <div class="match-box-left">
+                                <input class="inner-pill-input full-width" onchange="updateTextoAlvo(${i}, ${j}, this.value)" value="${r.texto_alvo ?? ''}" placeholder="Ex: Capital da França">
+                            </div>
+                            <div class="match-arrow"></div>
+                            <div class="match-box-right">
+                                <input class="inner-pill-input full-width" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: Paris">
+                                <button class="btn-inline-remove margin-left" onclick="removerResposta(${i}, ${j})">×</button>
+                            </div>
+                        </div>`;
                     });
-                    html += `</ul>`;
+                    html += `</div>`;
                 }
 
                 html += `</div>`;
@@ -342,12 +367,10 @@
                 if (p.tipo == 3 && p.vf === undefined)
                     return alert(`Pergunta ${i + 1} precisa VF`);
 
-                // REFORMULADO: Validação unificada para os tipos 5 e 6
                 if (p.tipo == 5 || p.tipo == 6) {
                     if (p.respostas.length < 2) 
                         return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
                     
-                    // Vincula a propriedade 'ordem' baseada na ordem estrutural do array (1, 2, 3...) de forma automatizada
                     p.respostas.forEach((r, idx) => r.ordem = idx + 1);
                 }
             }
