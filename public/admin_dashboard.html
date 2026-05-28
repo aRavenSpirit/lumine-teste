@@ -218,6 +218,19 @@
             const r = await res.json();
             if (r.status) {
                 mostrarFeedback("Removido com sucesso!", "success");
+                
+                // =========================================================================
+                // NOVO: Se o backend disser para deslogar, redireciona para a página principal
+                // =========================================================================
+                if (tipo === 'usuario' && r.deslogar) {
+                    setTimeout(() => {
+                        // Altere para 'index.html', 'login.php' ou a página que preferir como sua principal pública
+                        window.location.href = 'index.html'; 
+                    }, 1000); // Aguarda 1 segundo para o usuário ver o feedback de sucesso antes de sair
+                    return;
+                }
+                // =========================================================================
+
                 const rowId = `row-${tipo==='usuario'?'user':'quiz'}-${id}`;
                 const row = document.getElementById(rowId);
                 if(row) row.style.display = 'none';

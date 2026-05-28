@@ -159,7 +159,7 @@ function abrirModalQuizzes(idConteudo, nomeConteudo) {
             } else {
                 quizzes.forEach(q => {
                     html += `
-                        <a href="quiz.html?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
+                        <a href="quiz.php?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
                             <div class="quiz-card">
                                 <h4>${q.nome}</h4>
                             </div>

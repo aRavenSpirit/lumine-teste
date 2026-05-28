@@ -40,7 +40,7 @@ function renderSidebar() {
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <a href="home.php">
+                <a href="../public/index.html">
                     <img src="img/LUMINE.png" alt="Lumine Logo" class="sidebar-logo">
                 </a>
             </div>

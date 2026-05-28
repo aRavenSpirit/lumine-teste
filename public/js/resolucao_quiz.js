@@ -206,6 +206,7 @@ function limparDrag(perguntaId) {
 // --- FUNÇÕES DE SALVAMENTO ---
 function salvarResposta(perguntaId, valor) {
     respostasUsuario[perguntaId] = valor;
+    atualizarControles(); // <--- MUDANÇA AQUI: Atualiza o estado do botão na hora
 }
 
 function salvarRespostaMultipla(perguntaId, valor, marcado) {
@@ -215,6 +216,7 @@ function salvarRespostaMultipla(perguntaId, valor, marcado) {
     } else {
         respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
     }
+    atualizarControles(); // <--- MUDANÇA AQUI: Atualiza o estado do botão na hora
 }
 
 // MUDANÇA: Novas funções de controle para o fluxo de cliques ordenados (Case 5)
@@ -255,16 +257,97 @@ function perguntaAnterior() {
     }
 }
 
+// --- VALIDAÇÃO DE PREENCHIMENTO ---
+function validouTodasRespostas() {
+    if (!dadosQuiz || !dadosQuiz.perguntas) return false;
+
+    // Percorre cada pergunta do quiz para checar se foi respondida
+    return dadosQuiz.perguntas.every(p => {
+        const resp = respostasUsuario[p.id];
+        const tipo = parseInt(p.id_tipo);
+
+        switch (tipo) {
+            case 1: // Múltipla Escolha
+            case 2: // Resposta Curta
+            case 3: // Verdadeiro ou Falso
+                // Verifica se não está vazio, nulo ou indefinido
+                return resp !== undefined && resp !== null && resp.toString().trim() !== '';
+
+            case 4: // Múltipla Escolha (Várias Corretas)
+                // Verifica se é uma array e se tem pelo menos 1 item selecionado
+                return Array.isArray(resp) && resp.length > 0;
+
+            case 5: // Ordenação estilo Duolingo
+                // O usuário precisa ter ordenado TODOS os elementos disponíveis
+                return Array.isArray(resp) && resp.length === p.respostas.length;
+
+            case 6: // Arrastar e Soltar
+                // Verifica se a quantidade de itens alocados é igual à quantidade de alvos fixos
+                if (!resp || typeof resp !== 'object') return false;
+                const totalAlocados = Object.keys(resp).length;
+                return totalAlocados === p.respostas.length;
+
+            default:
+                return false;
+        }
+    });
+}
+
 function atualizarControles() {
     document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
+    
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
     document.getElementById('btn-proximo').style.display = final ? 'none' : 'inline';
-    document.getElementById('btn-finalizar').style.display = final ? 'inline' : 'none';
+    
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    
+    if (final) {
+        btnFinalizar.style.display = 'inline';
+        
+        // Se respondeu tudo, ativa o botão. Se falta algo, desativa.
+        if (validouTodasRespostas()) {
+            btnFinalizar.removeAttribute('disabled');
+            btnFinalizar.style.opacity = '1';
+            btnFinalizar.style.cursor = 'pointer';
+            btnFinalizar.innerText = "Finalizar e Ver Resultado";
+        } else {
+            btnFinalizar.setAttribute('disabled', 'true');
+            btnFinalizar.style.opacity = '0.5';
+            btnFinalizar.style.cursor = 'not-allowed';
+            btnFinalizar.innerText = "Responda todas as questões para finalizar";
+        }
+    } else {
+        btnFinalizar.style.display = 'none';
+    }
+}
+
+// --- FINALIZAÇÃO ---
+
+
+// Função para remover o bloqueio de saída da página
+function desativarAvisoSaida() {
+    window.onbeforeunload = null;
+    // Remove o listener antigo caso tenha sido adicionado via addEventListener
+    const clonado = window.cloneNode ? window.cloneNode(true) : null; 
+    // Uma forma infalível de anular no fluxo atual:
+    window.addEventListener('beforeunload', function (e) {
+        delete e['returnValue'];
+    });
 }
 
 // --- FINALIZAÇÃO ---
 async function finalizarQuiz() {
     clearInterval(intervaloCronometro);
+    
+    // Bloqueia interações na tela durante o envio
+    const container = document.getElementById('quiz-container');
+    if (container) {
+        container.style.pointerEvents = 'none'; 
+        container.style.opacity = '0.6';
+    }
+    document.getElementById('quiz-controls').style.pointerEvents = 'none';
+    document.getElementById('quiz-controls').style.opacity = '0.6';
+
     let acertos = 0;
     const totalQuestoes = dadosQuiz.perguntas.length;
 
@@ -286,16 +369,14 @@ async function finalizarQuiz() {
             if (rUser.length === idsCorretos.length && idsCorretos.every(id => rUser.includes(id))) acertos++;
         }
         
-        else if (tipo === 5) { // MUDANÇA: Nova lógica de verificação com base na lista de cliques sequenciais
+        else if (tipo === 5) {
             const rUser = respostasUsuario[p.id] || [];
             let acertou = true;
 
-            // Se o usuário não ordenou todos os elementos, já marca como incorreta
             if (rUser.length !== p.respostas.length) {
                 acertou = false;
             } else {
                 acertou = p.respostas.every(r => {
-                    // Pega a posição onde o item foi clicado (0, 1, 2...) e soma 1 para bater com a ordem real (1, 2, 3...)
                     const posicaoUsuario = rUser.indexOf(r.id.toString()) + 1;
                     const ordemCorreta = parseInt(r.ordem);
                     return posicaoUsuario === ordemCorreta;
@@ -326,21 +407,58 @@ async function finalizarQuiz() {
             body: JSON.stringify(dadosParaSalvar)
         });
         const resultado = await response.json();
-        if (resultado.sucesso) {
-            alert(`Quiz Finalizado! Acertos: ${acertos}/${totalQuestoes}`);
-            window.location.href = `resultado.php?id_tentativa=${resultado.id_tentativa}`;
+        
+    if (resultado.sucesso) {
+            desativarAvisoSaida(); // Libera o pop-up de saída do navegador
+
+            // Formata o tempo decorrido para exibir na modal
+            const min = Math.floor(segundos / 60).toString().padStart(2, '0');
+            const seg = (segundos % 60).toString().padStart(2, '0');
+
+            // CÁLCULO DE ERROS: Quantidade total menos o que o usuário acertou
+            const erros = totalQuestoes - acertos;
+
+            // Alimenta os dados nos elementos do HTML
+            document.getElementById('modal-acertos').innerText = `${acertos} / ${totalQuestoes}`;
+            document.getElementById('modal-erros').innerText = `${erros} / ${totalQuestoes}`; // <--- MUDANÇA AQUI (Injeta os erros)
+            document.getElementById('modal-tempo').innerText = `${min}:${seg}`;
+
+            // Configura a ação do botão único da modal para redirecionar para a Home
+            document.getElementById('btn-modal-home').onclick = function() {
+                window.removeEventListener('beforeunload', gerenciarAvisoSaida);
+                window.onbeforeunload = null;
+                window.location.href = 'home.php'; 
+            };
+
+            // Exibe a modal na tela (muda de display: none para flex)
+            document.getElementById('modal-resultado').style.display = 'flex';
+
         } else {
             alert("Erro ao salvar: " + resultado.erro);
+            reativarQuiz();
         }
     } catch (error) {
         console.error("Erro:", error);
+        reativarQuiz();
     }
+}
+
+function reativarQuiz() {
+    const container = document.getElementById('quiz-container');
+    if (container) {
+        container.style.pointerEvents = 'auto';
+        container.style.opacity = '1';
+    }
+    document.getElementById('quiz-controls').style.pointerEvents = 'auto';
+    document.getElementById('quiz-controls').style.opacity = '1';
 }
 
 carregarQuiz();
 
-// Monitora quando o usuário tenta sair ou recarregar a página
-window.addEventListener('beforeunload', function (e) {
+// Monitora quando o usuário tenta fechar a aba por acidente (durante o quiz)
+function gerenciarAvisoSaida(e) {
     e.preventDefault();
     e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
-});
+    return e.returnValue;
+}
+window.addEventListener('beforeunload', gerenciarAvisoSaida);

@@ -11,14 +11,58 @@
     }
 
     if ($tipo == 'usuario') {
-        // Exclui o usuário diretamente
-        $sql = "DELETE FROM usuario WHERE id = $id";
-        if ($conn->query($sql)) {
-            echo json_encode(["status" => true]);
-        } else {
-            echo json_encode(["status" => false, "erro" => $conn->error]);
+        // Iniciando transação para garantir a integridade dos dados
+        $conn->begin_transaction();
+
+        try {
+            // 1. Deleta o histórico de respostas/tentativas que pertencem a esse usuário
+            $sql_tentativas = "DELETE FROM tentativas WHERE id_usuario = $id";
+            $conn->query($sql_tentativas);
+
+            // 2. Agora apaga o usuário com segurança
+            $sql_usuario = "DELETE FROM usuario WHERE id = $id";
+            $conn->query($sql_usuario);
+
+            $conn->commit();
+
+            // =========================================================================
+            // NOVO: Verifica se o usuário deletado é o mesmo que está logado
+            // =========================================================================
+            // Inicia a sessão se ela ainda não tiver sido iniciada por outro arquivo incluído
+            if (session_status() === PHP_SESSION_NONE) {
+                session_start();
+            }
+
+            $deslogar = false;
+            // Altere 'id_usuario' ou 'user_id' para a chave exata que você usa na sua $_SESSION para guardar o ID do usuário logado
+            if (isset($_SESSION['id_usuario']) && intval($_SESSION['id_usuario']) === $id) {
+                // Limpa todas as variáveis de sessão
+                $_SESSION = array();
+                
+                // Destrói o cookie de sessão do navegador se existir
+                if (ini_get("session.use_cookies")) {
+                    $params = session_get_cookie_params();
+                    setcookie(session_name(), '', time() - 42000,
+                        $params["path"], $params["domain"],
+                        $params["secure"], $params["httponly"]
+                    );
+                }
+                
+                // Destrói a sessão no servidor
+                session_destroy();
+                $deslogar = true;
+            }
+            // =========================================================================
+
+            // Retorna no JSON se o usuário atual deve ser deslogado/redirecionado
+            echo json_encode(["status" => true, "deslogar" => $deslogar]);
+
+        } catch (Exception $e) {
+            $conn->rollback();
+            echo json_encode(["status" => false, "erro" => "Usuário possui dependências que não puderam ser apagadas: " . $e->getMessage()]);
         }
-    } 
+    }
+    
     else if ($tipo == 'quiz') {
         
         // Iniciando transação para garantir que apague tudo ou nada
