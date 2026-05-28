@@ -1,11 +1,15 @@
-/* ==========================================================================
-   CONFIGURAÇÃO GERAL / NEOBRUTALISTA (BASEADO NO DASHBOARD)
-   ========================================================================== */
-@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+/* --- FONTES --- */
+@font-face {
+    font-family: 'Open_Sans';
+    src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 
 * {
     box-sizing: border-box;
-    font-family: 'Fredoka', 'Segoe UI', sans-serif;
+    font-family: 'Open_Sans', sans-serif;
     margin: 0;
     padding: 0;
 }

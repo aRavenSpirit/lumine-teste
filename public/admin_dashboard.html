@@ -7,59 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
     <link rel="stylesheet" href="./style/admin_dashboard.css">
-    <style>
-        /* Estilos do Modal incorporados para manter o escopo de funcionamento */
-        #modal { 
-            display: none; 
-            position: fixed; 
-            z-index: 999; 
-            top: 0; 
-            left: 0; 
-            width: 100%; 
-            height: 100%; 
-            background: rgba(0,0,0,0.6); 
-            justify-content: center; 
-            align-items: center; 
-        }
-        .modal-content { 
-            background: white; 
-            padding: 25px; 
-            border-radius: 15px; 
-            width: 90%; 
-            max-width: 1000px; 
-            max-height: 80vh; 
-            overflow-y: auto; 
-            border: 3px solid #000;
-        }
-        .status-msg { padding: 10px; margin-bottom: 10px; border-radius: 4px; display: none; font-weight: bold; text-align: center; border: 2px solid #000; }
-        .status-success { background: #d4edda; color: #155724; }
-        .status-error { background: #f8d7da; color: #721c24; }
-        
-        .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .admin-table th, .admin-table td { border: 2px solid #000; padding: 10px; text-align: left; font-weight: 600; }
-        .admin-table th { background-color: #40c4ff; color: black; position: sticky; top: 0; }
-        
-        .tag-dificuldade { padding: 5px 12px; border-radius: 15px; border: 2px solid #000; color: white; font-weight: bold; font-size: 12px; display: inline-block; min-width: 90px; text-align: center; }
-        .dif-facil { background-color: #00c853 !important; }
-        .dif-intermediario { background-color: #ffea00 !important; color: #000 !important; }
-        .dif-dificil { background-color: #ff5252 !important; }
-        
-        .btn-excluir { background: #ff5252; color: white; border: 2px solid #000; padding: 6px 12px; cursor: pointer; border-radius: 8px; font-weight: bold; }
-        .btn-editar { background: #ffea00; color: #333; border: 2px solid #000; padding: 6px 12px; cursor: pointer; border-radius: 8px; font-weight: bold; }
-        .btn-fechar { background: #fff; border: 2px solid #000; padding: 10px 20px; cursor: pointer; font-weight: bold; border-radius: 10px; }
-    </style>
 </head>
 <body>
 
 <div class="main-frame">
     <header>
         <div class="brand-adm">ADM</div>
-        <div class="nav-btns">
-            <button onclick="location.href='criar_quiz.html'">CRIAR QUIZZES</button>
-        </div>
-        <div class="logo-lumine">
-            <span>L</span><span>U</span><span>M</span><span>I</span><span>N</span><span>E</span>
-        </div>
+            <button onclick="location.href='criar_quiz.html'" class="nav-btn ">CRIAR QUIZZES</button>
+        <button class="nav-btn btn-lumine-top" onclick="window.location.href='index.html'">LUMINE</button>
     </header>
 
     <div class="dashboard">
@@ -183,7 +138,15 @@
     function abrirModal(tipo) {
         const titulo = document.getElementById('modal-titulo');
         const corpo = document.getElementById('modal-corpo');
-        titulo.innerText = "Gerenciar " + tipo.charAt(0).toUpperCase() + tipo.slice(1);
+        
+        const nomesFormatados = {
+            'usuários': 'Usuários',
+            'quizzes': 'Quizzes',
+            'avaliacoes': 'Avaliações'
+        };
+
+        const tituloFormatado = nomesFormatados[tipo] || (tipo.charAt(0).toUpperCase() + tipo.slice(1));
+        titulo.innerText = "Gerenciar " + tituloFormatado;
         
         const dados = detalhesModais[tipo] || [];
         let html = "";
@@ -249,7 +212,7 @@
         div.style.display = "block";
     }
 
-    async function ejecutarExclusao(tipo, id) {
+    async function executarExclusao(tipo, id) {
         try {
             const res = await fetch(`../config/excluir_adm.php?tipo=${tipo}&id=${id}`);
             const r = await res.json();

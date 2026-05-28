@@ -1,0 +1,475 @@
+/* --- FONTES --- */
+@font-face {
+    font-family: 'Open_Sans';
+    src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 1. CONFIGURAÇÕES GERAIS E PALETA DE CORES */
+:root {
+    --bg-page: #faf8f5;
+    --card-border: #a2dbff;
+    --header-blue: #a3ddfc;
+    --text-main: #000000;
+    
+    /* Cores Temáticas Lumine */
+    --color-green: #00ca72;
+    --color-red: #ff6565;
+    --color-blue: #a3dbff;
+    --color-orange: #ffc265;
+    --color-dark-blue: #152d53;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: 'Open_Sans', sans-serif;
+}
+
+body {
+    margin: 0;
+    padding: 20px;
+    background-color: var(--bg-page);
+    font-family: 'Open_Sans', sans-serif;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+}
+
+/* Estrutura Geral do Topo */
+#quiz-header {
+    width: 100%;
+    max-width: 850px;
+    margin-bottom: 10px;
+}
+#quiz-titulo {
+    font-size: 28px;
+    color: var(--color-dark-blue);
+    margin-bottom: 5px;
+}
+#cronometro {
+    font-weight: bold;
+    color: #e67e22;
+    font-size: 18px;
+}
+
+/* O CARD PRINCIPAL DA PERGUNTA */
+#pergunta-atual {
+    background: #ffffff;
+    border: 4px solid var(--card-border);
+    border-radius: 35px;
+    width: 100%;
+    max-width: 850px;
+    min-height: 520px; /* Aumentado levemente para acomodar os botões absolutos */
+    padding: 35px;
+    box-shadow: 0 10px 25px rgba(162, 219, 255, 0.25);
+    margin-bottom: 25px;
+    display: flex;
+    flex-direction: column;
+    position: relative; /* Necessário para o posicionamento dos botões V/F */
+}
+
+/* Enunciado da Questão (Transformado no bloco de destaque superior) */
+#pergunta-atual h3 {
+    background-color: var(--header-blue);
+    color: #000000;
+    font-weight: bold;
+    font-size: 22px;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 18px 25px;
+    border-radius: 20px;
+    width: 100%;
+    margin-top: 0;
+    margin-bottom: 25px;
+    border: 3px solid #000000;
+    box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+}
+
+/* Alinhamento de textos menores/informativos injetados dentro do card */
+#pergunta-atual p {
+    font-size: 16px;
+    font-weight: bold;
+    color: var(--color-dark-blue);
+}
+
+/* Evita quebras de linha (<br>) feias bagunçarem o grid de labels */
+#pergunta-atual br {
+    display: none;
+}
+
+
+/* ==========================================================================
+   ESTILIZAÇÃO DOS COMPONENTES POR TIPO DE QUESTÃO (CASE 1 AO 6)
+   ========================================================================== */
+
+/* --- CASE 1 e CASE 4: Alternativas Únicas e Múltiplas --- */
+#pergunta-atual label {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: #ffffff;
+    border: 3px solid var(--card-border);
+    border-radius: 20px;
+    padding: 16px 22px;
+    margin-bottom: 12px !important; /* Sobrescreve estilo inline do case 4 */
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    user-select: none;
+    box-shadow: 0 4px 0 var(--card-border);
+}
+
+#pergunta-atual label:hover {
+    background-color: #f0f9ff;
+    transform: translateY(-2px);
+}
+
+/* Escondendo e customizando o Radio e o Checkbox nativo */
+#pergunta-atual label input[type="radio"],
+#pergunta-atual label input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 26px;
+    height: 26px;
+    border: 3px solid var(--color-dark-blue);
+    background: #fff;
+    cursor: pointer;
+    display: grid;
+    place-content: center;
+    margin: 0;
+}
+#pergunta-atual label input[type="radio"] { border-radius: 50%; }
+#pergunta-atual label input[type="checkbox"] { border-radius: 6px; }
+
+#pergunta-atual label input:checked {
+    background: var(--color-green);
+    border-color: var(--color-dark-blue);
+}
+#pergunta-atual label input:checked::before {
+    content: "✓";
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+
+/* --- CASE 2: Resposta Curta (Caixa de Texto de Input Amigável) --- */
+#pergunta-atual input[type="text"] {
+    width: 100%;
+    max-width: 550px;
+    padding: 16px 24px;
+    border: 4px solid var(--card-border);
+    border-radius: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    outline: none;
+    margin: 30px auto;
+    display: block;
+    text-align: center;
+    transition: border-color 0.2s;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.05);
+}
+#pergunta-atual input[type="text"]:focus {
+    border-color: var(--color-dark-blue);
+}
+
+
+/* --- CASE 3: Verdadeiro ou Falso (Estilo Lado a Lado Obrigatório) --- */
+/* Força o botão FALSO a ficar estrito no lado esquerdo inferior do card */
+#pergunta-atual button[onclick*="'Falso'"] {
+    position: absolute !important;
+    bottom: 80px !important;
+    left: 4% !important;
+    width: 44% !important;
+    height: 180px !important;
+    border: 4px solid #000000 !important;
+    border-radius: 40px !important;
+    cursor: pointer;
+    background-color: var(--color-red) !important;
+    box-shadow: 0 8px 0 #bc4b4b !important;
+    font-size: 0 !important; /* Esconde o texto original */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+#pergunta-atual button[onclick*="'Falso'"]::before {
+    content: "✕" !important;
+    font-family: 'Open_Sans', sans-serif !important;
+    color: #ffffff !important;
+    font-size: 90px !important;
+    font-weight: 300 !important;
+}
+
+/* Força o botão VERDADEIRO a ficar estrito no lado direito inferior do card */
+#pergunta-atual button[onclick*="'Verdadeiro'"] {
+    position: absolute !important;
+    bottom: 80px !important;
+    right: 4% !important;
+    width: 44% !important;
+    height: 180px !important;
+    border: 4px solid #000000 !important;
+    border-radius: 40px !important;
+    cursor: pointer;
+    background-color: var(--color-green) !important;
+    box-shadow: 0 8px 0 #009353 !important;
+    font-size: 0 !important; /* Esconde o texto original */
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+#pergunta-atual button[onclick*="'Verdadeiro'"]::before {
+    content: "✓" !important;
+    font-family: 'Open_Sans', sans-serif !important;
+    color: #ffffff !important;
+    font-size: 90px !important;
+    font-weight: bold !important;
+}
+
+/* Efeito quando SELECIONADO / FOCUS (Fica escuro e abaixa) */
+#pergunta-atual button[onclick*="'Falso'"]:focus,
+#pergunta-atual button[onclick*="'Falso'"].active,
+#pergunta-atual button[onclick*="'Falso'"].selecionado {
+    background-color: #bd3a3a !important; /* Vermelho Escuro */
+    transform: translateY(6px) !important;
+    box-shadow: 0 2px 0 #000000 !important;
+}
+
+#pergunta-atual button[onclick*="'Verdadeiro'"]:focus,
+#pergunta-atual button[onclick*="'Verdadeiro'"].active,
+#pergunta-atual button[onclick*="'Verdadeiro'"].selecionado {
+    background-color: #00874c !important; /* Verde Escuro */
+    transform: translateY(6px) !important;
+    box-shadow: 0 2px 0 #000000 !important;
+}
+
+/* Hover simples antes de clicar */
+#pergunta-atual button[onclick*="'Verdadeiro'"]:hover,
+#pergunta-atual button[onclick*="'Falso'"]:hover {
+    filter: brightness(1.08);
+}
+
+/* Ajuste do texto de feedback "Selecionado: ..." para alinhar na base */
+#pergunta-atual p[id*="selecionado"] {
+    position: absolute !important;
+    bottom: 25px !important;
+    left: 0 !important;
+    width: 100% !important;
+    text-align: center !important;
+    margin: 0 !important;
+}
+
+
+/* --- CASE 5: Ordenação Estilo Duolingo (Cliques Sequenciais) --- */
+/* Forçando a reestilização dos elementos gerados com estilos inline do PHP */
+#pergunta-atual div[style*="background: #ebf5fb"] {
+    background-color: #eaf6ff !important;
+    border: 3px dashed #229df5 !important;
+    border-radius: 20px !important;
+    padding: 20px 25px 20px 85px !important; /* Abre espaçamento na esquerda para o texto 'Início' */
+    box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
+    position: relative !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    gap: 12px !important;
+    min-height: 90px !important;
+}
+
+/* Elemento da Seta de Início */
+#pergunta-atual div[style*="background: #ebf5fb"]::before {
+    content: "Início ➔" !important;
+    position: absolute !important;
+    left: 15px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+    font-family: 'Open_Sans', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    color: #229df5 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+}
+
+/* Elemento Indicador de Fim */
+#pergunta-atual div[style*="background: #ebf5fb"]::after {
+    content: "• Fim" !important;
+    font-family: 'Open_Sans', sans-serif !important;
+    font-size: 15px !important;
+    font-weight: bold !important;
+    color: #a3dbff !important;
+    text-transform: uppercase !important;
+    margin-left: 5px !important;
+    align-self: center !important;
+}
+
+/* Os blocks de palavras que sobem quando clicados */
+#pergunta-atual div[onclick*="removerOpcaoOrdem"] {
+    background: var(--color-dark-blue) !important;
+    color: #ffffff !important;
+    border: 3px solid #000000 !important;
+    border-radius: 16px !important;
+    font-size: 18px !important;
+    padding: 10px 20px !important;
+    box-shadow: 0 4px 0 #071224 !important;
+    margin: 0 !important; /* Reseta margens inline do PHP */
+}
+
+/* Os quadradinhos cinzas que marcam os espaços vazios esperando as palavras */
+#pergunta-atual div[style*="background: #d6eaf8"] {
+    background: #d4ecff !important;
+    border: 2px dashed var(--card-border) !important;
+    border-radius: 16px !important;
+    width: 75px !important;
+    height: 44px !important;
+    margin: 0 !important;
+}
+
+/* Botões do Banco de palavras inferior (Disponíveis para clique) */
+#pergunta-atual button[onclick*="selecionarOpcaoOrdem"] {
+    background: #ffffff !important;
+    border: 3px solid var(--card-border) !important;
+    border-radius: 18px !important;
+    font-size: 18px !important;
+    font-weight: bold !important;
+    padding: 12px 24px !important;
+    box-shadow: 0 5px 0 var(--card-border) !important;
+    transition: all 0.1s;
+}
+#pergunta-atual button[onclick*="selecionarOpcaoOrdem"]:active {
+    transform: translateY(3px);
+    box-shadow: 0 2px 0 var(--card-border) !important;
+}
+
+/* Botões já clicados e desativados no banco inferior */
+#pergunta-atual button[disabled][style*="opacity: 0.6"] {
+    background: #eaecee !important;
+    border: 3px dashed #bdc3c7 !important;
+    border-radius: 18px !important;
+    color: #bdc3c7 !important;
+    box-shadow: none !important;
+}
+
+
+/* --- CASE 6: Arrastar e Soltar (Drag and Drop) --- */
+/* Banco de itens para arrastar */
+#itens-disponiveis {
+    background: #fff9f2 !important;
+    border: 3px dashed var(--color-orange) !important;
+    border-radius: 20px !important;
+    padding: 16px !important;
+}
+
+/* Os cards arrastáveis individuais */
+div[id^="drag_"] {
+    background: #ffffff !important;
+    border: 3px solid var(--color-dark-blue) !important;
+    border-radius: 16px !important;
+    padding: 12px 22px !important;
+    font-weight: bold !important;
+    font-size: 16px !important;
+    box-shadow: 0 4px 0 var(--color-dark-blue) !important;
+}
+
+/* As caixas alvo de destino fixas */
+.box-target {
+    border: 3px dashed #a6b1b2 !important;
+    background-color: #fdfdfd !important;
+    border-radius: 20px !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+    color: #4a5556 !important;
+    transition: all 0.2s ease;
+}
+
+/* Alvo preenchido pelo item solto (Sobrescrevendo o verde claro original do JS) */
+.box-target[style*="background:#d1f2eb"], 
+.box-target[style*="background: rgb(209, 242, 235)"] {
+    background-color: #e1fbec !important;
+    border: 3px solid var(--color-green) !important;
+    color: #0b693d !important;
+    box-shadow: 0 4px 0 var(--color-green);
+}
+
+/* Botão Limpar Tudo interno do Drag */
+#pergunta-atual button[onclick*="limparDrag"] {
+    background: #f39c12;
+    color: white;
+    border: 3px solid #d68910;
+    border-radius: 14px;
+    padding: 10px 20px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #b37005;
+    margin-top: 20px;
+    align-self: flex-start;
+    transition: transform 0.1s;
+}
+#pergunta-atual button[onclick*="limparDrag"]:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #b37005;
+}
+
+
+/* ==========================================================================
+   3. CONTROLES DE NAVEGAÇÃO INFERIORES DO QUIZ (FOOTER)
+   ========================================================================== */
+#quiz-controls {
+    width: 100%;
+    max-width: 850px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 10px;
+}
+
+/* Configuração base unificada para os botões de navegação */
+#btn-voltar, #btn-proximo, #btn-finalizar {
+    background-color: #ffffff;
+    border: 3px solid var(--card-border);
+    padding: 14px 35px;
+    border-radius: 20px;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: 0 5px 0 var(--card-border);
+    transition: transform 0.1s, background 0.2s;
+    font-family: 'Open_Sans', sans-serif !important;
+}
+
+#btn-voltar:hover, #btn-proximo:hover {
+    background-color: #f0f9ff;
+}
+
+#btn-voltar:active, #btn-proximo:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 transparent;
+}
+
+/* Estilo do Botão Finalizar */
+#btn-finalizar {
+    background-color: var(--color-green) !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 0 #00874c !important;
+}
+#btn-finalizar:hover {
+    background-color: #02b869 !important;
+}
+#btn-finalizar:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 transparent !important;
+}
+
+#progresso {
+    font-size: 18px;
+    color: var(--color-dark-blue);
+    font-weight: bold;
+}
