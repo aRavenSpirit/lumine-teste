@@ -1,7 +1,10 @@
 <?php
     require_once("../config/conexao.php");
     include_once("../config/session.php");
-    include_once("../config/layout.php"); // Inclui o novo arquivo
+    include_once("../config/layout.php");
+
+    // Captura com segurança o ID do usuário logado via sessão para o ambiente JS
+    $id_usuario_logado = isset($_SESSION['usuario_id']) ? (int)$_SESSION['usuario_id'] : 1;
 ?>
 
 <!DOCTYPE html>
@@ -45,28 +48,10 @@
             background: #d1d3d6;
         }
 
-        /* ESTILOS ADICIONADOS PARA PREFERÊNCIAS E HISTÓRICO */
         .preferencias-container {
             padding: 20px;
         }
-        .color-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-            gap: 10px;
-            margin-top: 10px;
-        }
-        .color-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 13px;
-        }
-        .color-box {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-            border: 1px solid #ccc;
-        }
+        
         .historico-table {
             width: 100%;
             border-collapse: collapse;
@@ -85,18 +70,16 @@
             font-size: 12px;
         }
 
-        /* Layout Principal */
         .grid-materias-pills {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* 2 colunas como na foto */
+            grid-template-columns: repeat(2, 1fr);
             gap: 8px;
             flex: 1;
         }
 
-        /* Estilo dos Botões de Matéria (Pílulas) */
         .materia-pill {
             padding: 8px 15px;
-            border-radius: 20px; /* Arredondado */
+            border-radius: 20px;
             color: #333;
             font-weight: 500;
             text-align: center;
@@ -104,7 +87,6 @@
             border: 2px solid rgba(0,0,0,0.2);
             font-size: 14px;
             transition: transform 0.1s, brightness 0.2s;
-            text-transform: capitalize;
         }
 
         .materia-pill:hover {
@@ -112,7 +94,6 @@
             transform: scale(1.02);
         }
 
-        /* Preview de cor lateral */
         .sessao-cores-layout {
             display: flex;
             gap: 20px;
@@ -133,10 +114,9 @@
             width: 100%;
             height: 100%;
             border-radius: 8px;
-            background-color: #ccc; /* Cor inicial */
+            background-color: #ccc;
         }
 
-        /* Controles de baixo */
         .controles-estilizados {
             display: flex;
             justify-content: space-between;
@@ -156,6 +136,28 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+        /* Estilização para o Modal */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000;
+        }
+        .modal-content {
+            background: white; padding: 25px; border-radius: 8px; width: 90%; max-width: 400px;
+        }
+        .modal-input {
+            width: 100%; padding: 10px; margin-top: 10px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box;
+        }
+        .modal-footer {
+            display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;
+        }
+        .cancel-btn { background: #eee; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .save-btn-modal { background: #43b581; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .save-btn { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-excluir { background: none; border: none; color: #e74c3c; cursor: pointer; font-size: 16px; }
     </style>
 </head>
 
@@ -193,19 +195,17 @@
 
 <script>
     const api = "../config/home.php"; 
+    const id_usuario = <?php echo $id_usuario_logado; ?>; 
     let dadosUsuarioLocal = {}; 
 
-    // Mudança: event possui "= null" por padrão para evitar erros se for disparado pelo carregamento da página
     async function carregarPerfil(tipo, event = null) { 
         const cardOpcoes = document.getElementById('card-opcoes');
-        const id_usuario = 1; 
 
         document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
         
         if (event) {
             event.currentTarget.classList.add('active');
         } else {
-            // Caso seja disparado pelo onload automático da página, marca visualmente a aba correspondente
             const abas = document.querySelectorAll('.btn-aba');
             abas.forEach(btn => {
                 if(btn.textContent.toLowerCase() === tipo.toLowerCase()) btn.classList.add('active');
@@ -261,12 +261,12 @@
             } 
             else if (tipo === 'preferencias') {
                 let cores = data.cores_materia;
-
                 if (typeof cores === 'string') {
                     try { cores = JSON.parse(cores); } catch(e) { cores = {}; }
                 }
                 cores = cores || {};
 
+                // Mapeia as chaves geradas dinamicamente com base nas propriedades limpas de strings JSON
                 let cardsHtml = Object.keys(cores)
                     .filter(key => !key.startsWith('bg_')) 
                     .map(materia => `
@@ -274,7 +274,7 @@
                              id="pill-${materia}"
                              style="background-color: ${cores[materia]}" 
                              onclick="document.getElementById('picker-${materia}').click()">
-                            ${materia.replace('_', ' ')}
+                            ${materia.replace(/_/g, ' ')}
                             <input type="color" 
                                    id="picker-${materia}" 
                                    value="${cores[materia]}" 
@@ -372,6 +372,7 @@
         const formData = new FormData();
         formData.append('acao', 'excluir_historico');
         formData.append('id_tentativa', idTentativa);
+        formData.append('id_usuario', id_usuario);
 
         try {
             const response = await fetch(api, { method: 'POST', body: formData });
@@ -397,14 +398,12 @@
         document.getElementById('preview-box').style.backgroundColor = novaCor;
     }
 
-    // Mudança: Removida a duplicidade e corrigido o varredor para focar em '.materia-pill input'
     async function salvarConfiguracoesGerais() {
         const tema = document.getElementById('pref-tema').value;
         const fonte = document.getElementById('pref-fonte').value;
         
         const novasCores = {};
         
-        // Coleta de forma assertiva baseado nas classes corretas geradas pelo HTML dinâmico
         document.querySelectorAll('.materia-pill input').forEach(input => {
             const materiaId = input.id.replace('picker-', '');
             novasCores[materiaId] = input.value;
@@ -418,7 +417,7 @@
         formData.append('tema', tema);
         formData.append('fonte', fonte);
         formData.append('cores', JSON.stringify(novasCores));
-        formData.append('id_usuario', 1);
+        formData.append('id_usuario', id_usuario);
 
         try {
             const res = await fetch(api, { method: 'POST', body: formData });
@@ -434,7 +433,6 @@
         }
     }
 
-    // --- FUNÇÕES DE MODAL E SALVAMENTO DO USUÁRIO ---
     async function openModalPerfil(campo) {
         const modal = document.getElementById('modalPerfil');
         const containerForm = document.getElementById('modal-form-content');
@@ -443,11 +441,11 @@
 
         if (campo === 'nome') {
             inputHtml = `<h3>Alterar seu nome</h3><label class="modal-label">NOME DE EXIBIÇÃO</label>
-                         <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome}">`;
+                         <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome || ''}">`;
         } 
         else if (campo === 'email') {
             inputHtml = `<h3>Alterar seu e-mail</h3><label class="modal-label">E-MAIL</label>
-                         <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email}">`;
+                         <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email || ''}">`;
         }
 
         containerForm.innerHTML = `
@@ -466,7 +464,7 @@
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', campo);
         formData.append('valor', novoValor);
-        formData.append('id_usuario', 1);
+        formData.append('id_usuario', id_usuario);
 
         fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
@@ -482,12 +480,12 @@
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', 'escolaridade');
         formData.append('valor', id_esc);
-        formData.append('id_usuario', 1);
+        formData.append('id_usuario', id_usuario);
 
         fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => {
-            if (data.success) carregarPerfil('usuario');
+            if (data.success) { alert("Alterações salvas com sucesso!"); carregarPerfil('usuario'); }
             else alert("Erro: " + data.error);
         });
     }
