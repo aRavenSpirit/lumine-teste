@@ -11,7 +11,7 @@ function renderHeader() {
         <nav class="nav-links-home">
             <li class="item-sobre"><a href="#">Sobre nós</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
-            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-quizzes"><a href="home.php">Todos os quizzes</a></li>
             <li class="item-perfil">
                 <a href="configuracoes.php" class="perfil-link">
                     <span>Perfil</span>
