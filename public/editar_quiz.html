@@ -4,51 +4,56 @@
     <meta charset="UTF-8">
     <title>Editar Quiz - LUMINE</title>
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
-    <style>
-        /* CSS básico apenas para organização visual */
-        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #f4f7f6; }
-        .pergunta-card { border: 1px solid #ccc; padding: 15px; margin: 10px 0; background: #fff; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .edit-section { background: #eee; padding: 10px; margin-top: 5px; border-radius: 4px; }
-        .tipo6-par { margin-bottom: 10px; padding: 10px; border: 1px dashed #999; background: #fff; }
-        .item-ordem-li { margin-bottom: 8px; }
-        button { cursor: pointer; margin: 5px; padding: 5px 10px; border-radius: 4px; border: 1px solid #ccc; }
-        input, select { padding: 6px; border-radius: 4px; border: 1px solid #ccc; }
-    </style>
+    <link rel="stylesheet" href="./style/editar_quiz.css">
 </head>
 <body>
 
-    <a href="admin_dashboard.html" style="text-decoration: none; color: #1595c4; font-weight: bold;">← Voltar ao Painel</a>
-    <h2>Editar Quiz</h2>
-
-    <div id="dados-quiz">
-        <p><strong>Nome Atual:</strong> <span id="label-nome"></span> <button onclick="mostrarEdit('quiz-nome')">Alterar</button></p>
-        <div id="edit-quiz-nome" style="display:none" class="edit-section">
-            <input type="text" id="input-nome" style="width: 300px;">
-        </div>
-
-        <p><strong>Dificuldade Atual:</strong> <span id="label-dificuldade"></span> <button onclick="mostrarEdit('quiz-dif')">Alterar</button></p>
-        <div id="edit-quiz-dif" style="display:none" class="edit-section">
-            <select id="select-dificuldade"></select>
-        </div>
-
-        <p><strong>Matéria/Conteúdo Atual:</strong> <span id="label-conteudo"></span> <button onclick="mostrarEdit('quiz-cont')">Alterar</button></p>
-        <div id="edit-quiz-cont" style="display:none" class="edit-section">
-            <label>Matéria:</label>
-            <select id="select-materia" onchange="carregarConteudos()"></select>
-            <label>Conteúdo:</label>
-            <select id="select-conteudo"></select>
-        </div>
+    <div class="navbar-container">
+        <div class="nav-pill title-pill">LUMINE ADM</div>
+        <a href="admin_dashboard.html" class="nav-btn btn-back-top" style="text-decoration: none;">← Voltar ao Painel</a>
+        <div class="nav-pill adm-pill">QUIZ</div>
     </div>
 
-    <hr>
-    <h3>Perguntas do Quiz</h3>
-    <div id="perguntas-container"></div>
-    
-    <br>
-    <button onclick="addPergunta()" style="background-color: #1595c4; color: white; font-weight: bold;">+ Adicionar Nova Pergunta</button>
-    <br><br>
-    <hr>
-    <button onclick="salvarAlteracoes()" style="padding: 15px; background-color: #28a745; color: white; font-weight: bold; width: 100%; border: none; font-size: 16px;">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
+    <div class="main-card">
+        <h2>Editar Quiz</h2>
+        <br>
+
+        <div id="dados-quiz" class="quiz-header-form">
+            <p><strong>Nome Atual:</strong> <span id="label-nome"></span> <button class="btn-inline-edit" onclick="mostrarEdit('quiz-nome')">Alterar</button></p>
+            <div id="edit-quiz-nome" style="display:none" class="edit-section">
+                <input type="text" id="input-nome" class="custom-input main-input">
+            </div>
+
+            <p><strong>Dificuldade Atual:</strong> <span id="label-dificuldade"></span> <button class="btn-inline-edit" onclick="mostrarEdit('quiz-dif')">Alterar</button></p>
+            <div id="edit-quiz-dif" style="display:none" class="edit-section">
+                <select id="select-dificuldade" class="custom-select small-select"></select>
+            </div>
+
+            <p><strong>Matéria/Conteúdo Atual:</strong> <span id="label-conteudo"></span> <button class="btn-inline-edit" onclick="mostrarEdit('quiz-cont')">Alterar</button></p>
+            <div id="edit-quiz-cont" style="display:none" class="edit-section row-fields">
+                <div class="field-group">
+                    <label>Matéria:</label>
+                    <select id="select-materia" class="custom-select" onchange="carregarConteudos()"></select>
+                </div>
+                <div class="field-group">
+                    <label>Conteúdo:</label>
+                    <select id="select-conteudo" class="custom-select"></select>
+                </div>
+            </div>
+        </div>
+
+        <hr class="custom-hr">
+        <h3>Perguntas do Quiz</h3>
+        
+        <div id="perguntas-container"></div>
+        
+        <br>
+        <button onclick="addPergunta()" class="btn-add-question">+ Adicionar Nova Pergunta</button>
+        <br><br>
+        <hr class="custom-hr">
+        
+        <button onclick="salvarAlteracoes()" class="btn-save-bottom">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
+    </div>
 
     <script>
         const api = "../config/criar_quiz.php"; 
@@ -58,7 +63,6 @@
         let perguntas = [];
         let tipos = [];
 
-        // Inicialização controlada
         window.onload = async function () {
             if (!quizId) return alert("ID do quiz não encontrado!");
             
@@ -121,7 +125,6 @@
             await carregarConteudos(data.id_conteudo);
 
             perguntas = data.perguntas.map(p => {
-                // CORREÇÃO: Garante que se a pergunta for de ordenação (tipo 5), venha na ordem correta do banco
                 let respostasOrdenadas = p.respostas;
                 if (p.id_tipo == 5 || p.id_tipo == 6) {
                     respostasOrdenadas.sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem));
@@ -152,71 +155,110 @@
 
             perguntas.forEach((p, i) => {
                 let div = document.createElement("div");
-                div.className = "pergunta-card";
+                div.className = "question-card";
                 
                 let html = `
-                    <button onclick="removerPergunta(${i})" style="float:right; color:red; font-weight:bold;">Remover Pergunta</button>
-                    <strong>Pergunta ${i + 1}</strong><br><br>
-                    Descrição: <input style="width:60%" oninput="perguntas[${i}].descricao = this.value" value="${p.descricao}"><br><br>
-                    Tipo: <select onchange="updateTipo(${i}, this.value)">
-                        <option value="">Selecione...</option>
-                        ${tipos.map(t => `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`).join('')}
-                    </select><br><br>
+                    <div class="question-header">
+                        <strong>Pergunta ${i + 1}</strong>
+                        <button onclick="removerPergunta(${i})" class="btn-remove">Remover Pergunta</button>
+                    </div>
+                    <div class="question-body">
+                        <label>Descrição:</label>
+                        <input class="custom-input question-title-input" oninput="perguntas[${i}].descricao = this.value" value="${p.descricao}">
+                    </div>
+                    <div class="question-body">
+                        <label>Tipo:</label>
+                        <div class="type-select-wrapper">
+                            <select class="custom-select" onchange="updateTipo(${i}, this.value)">
+                                <option value="">Selecione...</option>
+                                ${tipos.map(t => `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`).join('')}
+                            </select>
+                        </div>
+                    </div>
                 `;
 
-                // 1 e 4: MULTIPLA ESCOLHA
+                // 1 e 4: MULTIPLA ESCOLHA / CAIXA DE SELEÇÃO
                 if (p.tipo == 1 || p.tipo == 4) {
-                    html += `<button onclick="addResposta(${i})">+ Adicionar Opção</button><ul>`;
+                    html += `
+                    <div class="answers-container">
+                        <button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Opção</button>
+                        <div class="flex-row">`;
                     p.respostas.forEach((r, j) => {
-                        html += `<li>
-                            <input oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}">
-                            Correta? <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="c_${i}" 
-                                onchange="setCorreta(${i}, ${j}, this)" ${r.certo ? "checked" : ""}>
-                        </li>`;
+                        html += `
+                            <div class="answer-pill-box">
+                                <input class="inner-pill-input" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Opção">
+                                <label class="check-label-wrapper">
+                                    Correta? <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="c_${i}" 
+                                        onchange="setCorreta(${i}, ${j}, this)" ${r.certo ? "checked" : ""}>
+                                </label>
+                                <button onclick="removerResposta(${i}, ${j})" class="btn-inline-remove">X</button>
+                            </div>`;
                     });
-                    html += `</ul>`;
+                    html += `</div></div>`;
                 } 
                 // 2: TEXTO
                 else if (p.tipo == 2) {
-                    html += `Resposta correta (Texto): <input oninput="perguntas[${i}].resposta_texto = this.value" value="${p.resposta_texto}" style="width:40%;">`;
+                    html += `
+                    <div class="answers-container">
+                        <label>Resposta correta (Texto):</label><br>
+                        <input class="custom-input text-answer-input" oninput="perguntas[${i}].resposta_texto = this.value" value="${p.resposta_texto}">
+                    </div>`;
                 } 
                 // 3: VERDADEIRO OU FALSO
                 else if (p.tipo == 3) {
                     html += `
-                        <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = true" ${p.vf === true ? "checked" : ""}> Verdadeiro</label>
-                        <label><input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = false" ${p.vf === false ? "checked" : ""}> Falso</label>
-                    `;
+                    <div class="answers-container">
+                        <div class="vf-container">
+                            <label class="vf-label-wrapper">
+                                <input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = true" ${p.vf === true ? "checked" : ""}>
+                                <div class="vf-btn vf-true">Verdadeiro <span class="dot-indicator"></span></div>
+                            </label>
+                            <label class="vf-label-wrapper">
+                                <input type="radio" name="vf_${i}" onchange="perguntas[${i}].vf = false" ${p.vf === false ? "checked" : ""}>
+                                <div class="vf-btn vf-false">Falso <span class="dot-indicator"></span></div>
+                            </label>
+                        </div>
+                    </div>`;
                 }
-                // 5: ORDENAR ITENS (O BLOCO QUE ESTAVA FALTANDO!)
+                // 5: ORDENAR ITENS
                 else if (p.tipo == 5) {
                     html += `
-                        <p style="margin:5px 0; font-size:13px; color:#555;">Defina os itens abaixo na <strong>ordem sequencial exata</strong> (1º ao último):</p>
-                        <button onclick="addResposta(${i})">+ Adicionar Item à Sequência</button>
-                        <ol style="margin-top:10px;">
-                    `;
+                    <div class="answers-container">
+                        <p class="section-instruction">Defina os itens abaixo na <strong>ordem sequencial exata</strong> (1º ao último):</p>
+                        <button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Item à Sequência</button>
+                        <div class="drag-drop-container">
+                            <div class="drag-arrow-indicator"></div>
+                            <div class="drag-items-list">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                            <li class="item-ordem-li">
-                                <input style="width:50%" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Ex: Item da posição ${j+1}">
-                                <button onclick="removerResposta(${i}, ${j})" style="color:red; border-color:red;">X</button>
-                            </li>
-                        `;
+                                <div class="answer-pill-box drag-pill full-width">
+                                    <span class="order-number">${j+1}º</span>
+                                    <input class="inner-pill-input" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Item da posição ${j+1}">
+                                    <button onclick="removerResposta(${i}, ${j})" class="btn-inline-remove">X</button>
+                                </div>`;
                     });
-                    html += `</ol>`;
+                    html += `</div></div></div>`;
                 }
                 // 6: ARRASTAR E SOLTAR / DRAG AND DROP
                 else if (p.tipo == 6) {
-                    html += `<button onclick="addResposta(${i})">+ Adicionar Par Arrastável</button><br><br>`;
+                    html += `
+                    <div class="answers-container">
+                        <button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Par Arrastável</button>
+                        <div class="matching-container">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <div class="tipo6-par">
-                            <small>Texto fixo na Caixa (Alvo):</small><br>
-                            <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].texto_alvo = this.value" value="${r.texto_alvo}" placeholder="Ex: Lê um decimal"><br>
-                            <small>Texto para Arrastar (Resposta):</small><br>
-                            <input style="width:80%" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Ex: scanf">
-                            <button onclick="removerResposta(${i}, ${j})" style="color:red; border-color:red;">X</button>
-                        </div>`;
+                            <div class="matching-row">
+                                <div class="match-box-left">
+                                    <input class="inner-pill-input full-width" oninput="perguntas[${i}].respostas[${j}].texto_alvo = this.value" value="${r.texto_alvo}" placeholder="Texto Fixo (Caixa)">
+                                </div>
+                                <div class="match-arrow"></div>
+                                <div class="match-box-right">
+                                    <input class="inner-pill-input full-width" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Arrastável (Resposta)">
+                                </div>
+                                <button onclick="removerResposta(${i}, ${j})" class="btn-inline-remove">X</button>
+                            </div>`;
                     });
+                    html += `</div></div>`;
                 }
 
                 div.innerHTML = html;
@@ -262,7 +304,6 @@
         }
 
         async function salvarAlteracoes() {
-            // Se o administrador não clicou em "Alterar" conteúdo, enviamos o valor guardado no select oculto
             const payload = {
                 id_quiz: quizId,
                 nome: document.getElementById('input-nome').value,
