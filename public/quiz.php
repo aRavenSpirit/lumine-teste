@@ -52,7 +52,7 @@
         <div class="modal-resultado-card">
             
             <div class="modal-resultado-topo">
-                <h2 id="modal-titulo-dinamico">QUIZ DE MATEMÁTICA CONCLUÍDO!!</h2>
+                <h2 id="modal-titulo-dinamico">QUIZ CONCLUÍDO!!</h2>
             </div>
 
             <h3 class="modal-resultado-subtitulo">RESULTADOS FINAIS:</h3>

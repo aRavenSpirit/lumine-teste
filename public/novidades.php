@@ -176,7 +176,7 @@ function carregarMenuSidebar() {
                 cardsIniciais += `
                     <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                         <div class="card-banner">
-                            <img src="img/${nomeLimpo}.jpg" onerror="this.src='img/'">
+                            <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
                         </div>
                         <div class="card-body"><p>${m.nome_materia}</p></div>
                     </div>`;
@@ -269,7 +269,7 @@ function renderizarCards(lista) {
             <div onclick="prepararEntrada('${q.nome}', ${q.id})" class="card-materia">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
-                    <img src="img/${imgNome}.jpg" onerror="this.style.display='none'">
+                    <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
                 </div>
                 <div class="card-body">
                     <p>${q.nome}</p>
@@ -290,7 +290,7 @@ function filtrarGeral() {
 }
 
 function prepararEntrada(nomeQuiz, idQuiz) {
-    urlDestinoQuiz = `quiz.html?id=${idQuiz}`;
+    urlDestinoQuiz = `quiz.php?id=${idQuiz}`;
     document.getElementById('nomeQuizConfirmacao').innerText = nomeQuiz;
     document.getElementById('modalConfirmacao').style.display = 'flex';
 }

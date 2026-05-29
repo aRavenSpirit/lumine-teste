@@ -99,7 +99,7 @@ function carregarMenuSidebar() {
                 cardsIniciais += `
                     <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                         <div class="card-banner">
-                            <img src="img/${nomeLimpo}.jpg" onerror="this.src='img/'">
+                            <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
                         </div>
                         <div class="card-body"><p>${m.nome_materia}</p></div>
                     </div>`;
@@ -131,7 +131,7 @@ function carregarConteudos(idMateria, nomeMateria) {
                     html += `
                         <div onclick="abrirModalQuizzes(${c.id}, '${c.nome}')" class="card-materia">
                             <div class="card-banner">
-                                <img src="img/${nomeImgMateria}.jpg" onerror="this.src='img/'">
+                                <img src="img/${nomeImgMateria}.webp" onerror="this.src='img/'">
                             </div>
                             <div class="card-body">
                                 <p>${c.nome}</p>

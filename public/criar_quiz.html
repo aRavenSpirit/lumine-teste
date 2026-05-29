@@ -65,7 +65,7 @@
         window.onload = function () {
             carregarMaterias();
             carregarTipos();
-            carregarDificuldades(); 
+            carregarDificuldades();
         }
 
         function carregarDificuldades() {
@@ -159,10 +159,13 @@
         function updateTextoAlvo(i, j, valor) {
             perguntas[i].respostas[j].texto_alvo = valor;
         }
-        
+       
         function updateTipo(i, tipo) {
             perguntas[i].tipo = tipo;
             perguntas[i].respostas = [];
+            // Inicializações padrão para evitar propriedades undefined no JSON final
+            if (tipo == 2) perguntas[i].resposta_texto = "";
+            if (tipo == 3) perguntas[i].vf = true; 
             render();
         }
 
@@ -193,6 +196,22 @@
             perguntas[i].respostas[j].ordem = parseInt(valor);
         }
 
+        let dragSourceIndex = null;
+
+        function dragStart(i, j) {
+            dragSourceIndex = j;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
+        function drop(i, targetIndex) {
+            const movido = perguntas[i].respostas.splice(dragSourceIndex, 1)[0];
+            perguntas[i].respostas.splice(targetIndex, 0, movido);
+            render();
+        }
+
         function render() {
             let html = "";
 
@@ -206,7 +225,7 @@
                         </div>
                         <button class="btn-remove" onclick="removerPergunta(${i})">Remover</button>
                     </div>
-                    
+                   
                     <div class="select-wrapper type-select-wrapper">
                         Tipo:
                         <select class="custom-select" onchange="updateTipo(${i}, this.value)">
@@ -282,13 +301,14 @@
                     html += `</div>`;
                 }
 
+                // ✅ MUDANÇA: Adicionado os atributos e eventos nativos de Drag and Drop para que a ordenação visual funcione e chame as funções
                 if (p.tipo == 5) {
                     html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
-                    html += `<p style="margin: 5px 0;"><small><em>Escreva os itens rigorosamente na ordem correta (de cima para baixo):</em></small></p>`;
+                    html += `<p style="margin: 5px 0;"><small><em>Arraste os itens para ordenar ou escreva de cima para baixo:</em></small></p>`;
                     html += `<div class="answers-container drag-drop-container"><div class="drag-arrow-indicator"></div><div class="drag-items-list">`;
                     p.respostas.forEach((r, j) => {
                         html += `
-                        <div class="answer-pill-box drag-pill">
+                        <div class="answer-pill-box drag-pill" draggable="true" ondragstart="dragStart(${i}, ${j})" ondragover="allowDrop(event)" ondrop="drop(${i}, ${j})" style="cursor: move;">
                             <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
                             <input class="inner-pill-input full-width" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: item da posição ${j+1}">
                         </div>`;
@@ -321,22 +341,6 @@
             document.getElementById("perguntas").innerHTML = html;
         }
 
-        let dragSourceIndex = null;
-
-        function dragStart(i, j) {
-            dragSourceIndex = j;
-        }
-
-        function allowDrop(ev) {
-            ev.preventDefault();
-        }
-
-        function drop(i, targetIndex) {
-            const movido = perguntas[i].respostas.splice(dragSourceIndex, 1)[0];
-            perguntas[i].respostas.splice(targetIndex, 0, movido);
-            render();
-        }
-
         function salvarQuiz() {
             let nome = document.getElementById("nome").value.trim();
             let difficulty = document.getElementById("dificuldade").value;
@@ -366,7 +370,7 @@
                     return alert(`Pergunta ${i + 1} precisa VF`);
 
                 if (p.tipo == 5 || p.tipo == 6) {
-                    if (p.respostas.length < 2) 
+                    if (p.respostas.length < 2)
                         return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
                     
                     p.respostas.forEach((r, idx) => r.ordem = idx + 1);
@@ -386,9 +390,15 @@
             .then(r => r.json())
             .then(d => {
                 if (d.erro) alert("Erro: " + d.erro);
-                else alert(d.mensagem || "Quiz salvo com sucesso!");
+                else {
+                    alert(d.mensagem || "Quiz salvo com sucesso!");
+                    window.location.href='admin_dashboard.html';
+                }
             })
-            .catch(err => alert("Erro ao conectar com o servidor"));
+            .catch(err => {
+                console.error(err);
+                alert("Erro ao conectar com o servidor ou processar os dados.");
+            });
         }
 
     </script>
