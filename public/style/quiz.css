@@ -27,49 +27,122 @@
     font-family: 'Open_Sans', sans-serif;
 }
 
+/* Alterado para não chocar com a estrutura da home.css */
 body {
     margin: 0;
-    padding: 20px;
+    padding: 0;
     background-color: var(--bg-page);
     font-family: 'Open_Sans', sans-serif;
     color: var(--text-main);
+    min-height: 100vh;
+    overflow-x: hidden; /* Evita barras de rolagem horizontais fantasmas nas animações */
+}
+
+/* Nova seção que centraliza o conteúdo do quiz mantendo o Header alinhado */
+.quiz-main-section {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-height: 100vh;
+    padding: 30px 20px;
+    width: 100%;
 }
 
-/* Estrutura Geral do Topo */
+/* Estrutura Geral do Topo - TOTALMENTE REESTILIZADA */
 #quiz-header {
     width: 100%;
     max-width: 850px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    background: #ffffff;
+    padding: 20px 25px;
+    border-radius: 22px;
+    border: 3px solid var(--card-border);
+    box-shadow: 0 8px 20px rgba(162, 219, 255, 0.15);
 }
+
+#quiz-header div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
 #quiz-titulo {
-    font-size: 28px;
+    font-size: 26px;
+    font-weight: 800;
     color: var(--color-dark-blue);
-    margin-bottom: 5px;
+    margin: 0;
 }
-#cronometro {
-    font-weight: bold;
+
+#quiz-header p {
+    margin: 0;
+    font-size: 14px;
+    color: #7f8c8d;
+    font-weight: 600;
+}
+
+/* Badges para Matéria e Conteúdo */
+#quiz-materia, #quiz-conteudo {
+    background-color: #eef7fc;
+    color: #2980b9;
+    padding: 4px 10px;
+    border-radius: 8px;
+    font-weight: 700;
+    display: inline-block;
+}
+
+#quiz-conteudo {
+    background-color: #fef5e7;
     color: #e67e22;
+}
+
+/* Cronômetro Estilizado */
+#cronometro {
+    font-weight: 800;
+    color: #e67e22;
+    font-size: 16px;
+    background: #fff5eb;
+    padding: 10px 18px;
+    border-radius: 14px;
+    border: 2px solid #fde3cf;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 0 #fde3cf;
+}
+
+#cronometro::before {
+    content: "⏱️";
     font-size: 18px;
 }
 
-/* O CARD PRINCIPAL DA PERGUNTA */
+/* Container que envolve o card da pergunta */
+#quiz-container {
+    width: 100%;
+    max-width: 850px;
+    perspective: 1000px; /* Profundidade habilitada para as transições em 3D */
+}
+
+/* O CARD PRINCIPAL DA PERGUNTA - COM ANIMAÇÃO DE ENTRADA INICIAL */
 #pergunta-atual {
     background: #ffffff;
     border: 4px solid var(--card-border);
     border-radius: 35px;
     width: 100%;
     max-width: 850px;
-    min-height: 520px; /* Aumentado levemente para acomodar os botões absolutos */
+    min-height: 520px;
     padding: 35px;
     box-shadow: 0 10px 25px rgba(162, 219, 255, 0.25);
     margin-bottom: 25px;
     display: flex;
     flex-direction: column;
-    position: relative; /* Necessário para o posicionamento dos botões V/F */
+    position: relative;
+    
+    /* Quando carrega a tela pela primeira vez, ele cai do topo com efeito elástico */
+    animation: dropFromTop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
 /* Enunciado da Questão (Transformado no bloco de destaque superior) */
@@ -115,7 +188,7 @@ body {
     border: 3px solid var(--card-border);
     border-radius: 20px;
     padding: 16px 22px;
-    margin-bottom: 12px !important; /* Sobrescreve estilo inline do case 4 */
+    margin-bottom: 12px !important;
     font-size: 18px;
     font-weight: bold;
     cursor: pointer;
@@ -179,8 +252,7 @@ body {
 }
 
 
-/* --- CASE 3: Verdadeiro ou Falso (Estilo Lado a Lado Obrigatório) --- */
-/* Força o botão FALSO a ficar estrito no lado esquerdo inferior do card */
+/* --- CASE 3: Verdadeiro ou Falso --- */
 #pergunta-atual button[onclick*="'Falso'"] {
     position: absolute !important;
     bottom: 80px !important;
@@ -192,7 +264,7 @@ body {
     cursor: pointer;
     background-color: var(--color-red) !important;
     box-shadow: 0 8px 0 #bc4b4b !important;
-    font-size: 0 !important; /* Esconde o texto original */
+    font-size: 0 !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -206,7 +278,6 @@ body {
     font-weight: 300 !important;
 }
 
-/* Força o botão VERDADEIRO a ficar estrito no lado direito inferior do card */
 #pergunta-atual button[onclick*="'Verdadeiro'"] {
     position: absolute !important;
     bottom: 80px !important;
@@ -218,7 +289,7 @@ body {
     cursor: pointer;
     background-color: var(--color-green) !important;
     box-shadow: 0 8px 0 #009353 !important;
-    font-size: 0 !important; /* Esconde o texto original */
+    font-size: 0 !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
@@ -232,11 +303,10 @@ body {
     font-weight: bold !important;
 }
 
-/* Efeito quando SELECIONADO / FOCUS (Fica escuro e abaixa) */
 #pergunta-atual button[onclick*="'Falso'"]:focus,
 #pergunta-atual button[onclick*="'Falso'"].active,
 #pergunta-atual button[onclick*="'Falso'"].selecionado {
-    background-color: #bd3a3a !important; /* Vermelho Escuro */
+    background-color: #bd3a3a !important;
     transform: translateY(6px) !important;
     box-shadow: 0 2px 0 #000000 !important;
 }
@@ -244,18 +314,16 @@ body {
 #pergunta-atual button[onclick*="'Verdadeiro'"]:focus,
 #pergunta-atual button[onclick*="'Verdadeiro'"].active,
 #pergunta-atual button[onclick*="'Verdadeiro'"].selecionado {
-    background-color: #00874c !important; /* Verde Escuro */
+    background-color: #00874c !important;
     transform: translateY(6px) !important;
     box-shadow: 0 2px 0 #000000 !important;
 }
 
-/* Hover simples antes de clicar */
 #pergunta-atual button[onclick*="'Verdadeiro'"]:hover,
 #pergunta-atual button[onclick*="'Falso'"]:hover {
     filter: brightness(1.08);
 }
 
-/* Ajuste do texto de feedback "Selecionado: ..." para alinhar na base */
 #pergunta-atual p[id*="selecionado"] {
     position: absolute !important;
     bottom: 25px !important;
@@ -266,13 +334,12 @@ body {
 }
 
 
-/* --- CASE 5: Ordenação Estilo Duolingo (Cliques Sequenciais) --- */
-/* Forçando a reestilização dos elementos gerados com estilos inline do PHP */
+/* --- CASE 5: Ordenação Estilo Duolingo --- */
 #pergunta-atual div[style*="background: #ebf5fb"] {
     background-color: #eaf6ff !important;
     border: 3px dashed #229df5 !important;
     border-radius: 20px !important;
-    padding: 20px 25px 20px 85px !important; /* Abre espaçamento na esquerda para o texto 'Início' */
+    padding: 20px 25px 20px 85px !important;
     box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
     position: relative !important;
     display: flex !important;
@@ -282,7 +349,6 @@ body {
     min-height: 90px !important;
 }
 
-/* Elemento da Seta de Início */
 #pergunta-atual div[style*="background: #ebf5fb"]::before {
     content: "Início ➔" !important;
     position: absolute !important;
@@ -297,7 +363,6 @@ body {
     letter-spacing: 0.5px !important;
 }
 
-/* Elemento Indicador de Fim */
 #pergunta-atual div[style*="background: #ebf5fb"]::after {
     content: "• Fim" !important;
     font-family: 'Open_Sans', sans-serif !important;
@@ -309,7 +374,6 @@ body {
     align-self: center !important;
 }
 
-/* Os blocks de palavras que sobem quando clicados */
 #pergunta-atual div[onclick*="removerOpcaoOrdem"] {
     background: var(--color-dark-blue) !important;
     color: #ffffff !important;
@@ -318,10 +382,9 @@ body {
     font-size: 18px !important;
     padding: 10px 20px !important;
     box-shadow: 0 4px 0 #071224 !important;
-    margin: 0 !important; /* Reseta margens inline do PHP */
+    margin: 0 !important;
 }
 
-/* Os quadradinhos cinzas que marcam os espaços vazios esperando as palavras */
 #pergunta-atual div[style*="background: #d6eaf8"] {
     background: #d4ecff !important;
     border: 2px dashed var(--card-border) !important;
@@ -331,7 +394,6 @@ body {
     margin: 0 !important;
 }
 
-/* Botões do Banco de palavras inferior (Disponíveis para clique) */
 #pergunta-atual button[onclick*="selecionarOpcaoOrdem"] {
     background: #ffffff !important;
     border: 3px solid var(--card-border) !important;
@@ -347,7 +409,6 @@ body {
     box-shadow: 0 2px 0 var(--card-border) !important;
 }
 
-/* Botões já clicados e desativados no banco inferior */
 #pergunta-atual button[disabled][style*="opacity: 0.6"] {
     background: #eaecee !important;
     border: 3px dashed #bdc3c7 !important;
@@ -358,7 +419,6 @@ body {
 
 
 /* --- CASE 6: Arrastar e Soltar (Drag and Drop) --- */
-/* Banco de itens para arrastar */
 #itens-disponiveis {
     background: #fff9f2 !important;
     border: 3px dashed var(--color-orange) !important;
@@ -366,7 +426,6 @@ body {
     padding: 16px !important;
 }
 
-/* Os cards arrastáveis individuais */
 div[id^="drag_"] {
     background: #ffffff !important;
     border: 3px solid var(--color-dark-blue) !important;
@@ -377,7 +436,6 @@ div[id^="drag_"] {
     box-shadow: 0 4px 0 var(--color-dark-blue) !important;
 }
 
-/* As caixas alvo de destino fixas */
 .box-target {
     border: 3px dashed #a6b1b2 !important;
     background-color: #fdfdfd !important;
@@ -388,7 +446,6 @@ div[id^="drag_"] {
     transition: all 0.2s ease;
 }
 
-/* Alvo preenchido pelo item solto (Sobrescrevendo o verde claro original do JS) */
 .box-target[style*="background:#d1f2eb"], 
 .box-target[style*="background: rgb(209, 242, 235)"] {
     background-color: #e1fbec !important;
@@ -397,7 +454,6 @@ div[id^="drag_"] {
     box-shadow: 0 4px 0 var(--color-green);
 }
 
-/* Botão Limpar Tudo interno do Drag */
 #pergunta-atual button[onclick*="limparDrag"] {
     background: #f39c12;
     color: white;
@@ -430,7 +486,6 @@ div[id^="drag_"] {
     padding: 0 10px;
 }
 
-/* Configuração base unificada para os botões de navegação */
 #btn-voltar, #btn-proximo, #btn-finalizar {
     background-color: #ffffff;
     border: 3px solid var(--card-border);
@@ -453,7 +508,6 @@ div[id^="drag_"] {
     box-shadow: 0 1px 0 transparent;
 }
 
-/* Estilo do Botão Finalizar */
 #btn-finalizar {
     background-color: var(--color-green) !important;
     border-color: #000000 !important;
@@ -472,4 +526,226 @@ div[id^="drag_"] {
     font-size: 18px;
     color: var(--color-dark-blue);
     font-weight: bold;
+}
+
+
+/* ==========================================================================
+   ESTILIZAÇÃO DO MODAL DE RESULTADOS (POP-IN COM IMPACTO VISUAL)
+   ========================================================================== */
+#modal-resultado {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(21, 45, 83, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: fadeInBg 0.4s ease forwards;
+}
+
+.modal-resultado-card {
+    background-color: #8cd3ff;
+    width: 100%;
+    max-width: 850px;
+    border: 4px solid #000000;
+    border-radius: 35px;
+    padding: 40px 30px;
+    text-align: center;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    box-sizing: border-box;
+    animation: feedbackPopIn 0.55s cubic-bezier(0.34, 1.7, 0.64, 1) forwards;
+}
+
+.modal-resultado-topo {
+    background-color: #e2f0fe;
+    border: 3px solid #ffffff;
+    border-radius: 25px;
+    padding: 15px 35px;
+    display: inline-block;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.modal-resultado-topo h2 {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 800;
+    color: #000000;
+    letter-spacing: 0.5px;
+}
+
+.modal-resultado-subtitulo {
+    font-size: 20px;
+    font-weight: 800;
+    color: #000000;
+    margin: 0 0 35px 0;
+    letter-spacing: 1px;
+}
+
+.modal-resultado-grid {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+    width: 100%;
+}
+
+.resultado-box {
+    flex: 1;
+    min-width: 200px;
+    max-width: 240px;
+    border: 4px solid #000000;
+    border-radius: 22px;
+    padding: 20px 12px 12px 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.resultado-label {
+    font-size: 16px; /* Letras Brancas maiores */
+    font-weight: 800;
+    color: #ffffff;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.3;
+    letter-spacing: 0.5px;
+}
+
+.resultado-valor {
+    background-color: #e2f0fe;
+    width: 100%;
+    border-radius: 14px;
+    padding: 18px 10px;
+    font-size: 42px;
+    font-weight: 800;
+    color: #000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.box-tempo {
+    background-color: var(--color-orange);
+    box-shadow: 0 8px 0 #d99f43;
+}
+.box-acertos {
+    background-color: var(--color-green);
+    box-shadow: 0 8px 0 #00aa5f;
+}
+.box-erros {
+    background-color: var(--color-red);
+    box-shadow: 0 8px 0 #db4f4f;
+}
+
+#btn-modal-home {
+    background-color: #000000;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    padding: 15px 50px;
+    font-size: 18px;
+    font-weight: 800;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+    box-shadow: 0 6px 0 #333333;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+#btn-modal-home:active {
+    transform: translateY(4px);
+    box-shadow: 0 2px 0 #333333;
+}
+
+#btn-modal-home i {
+    margin: 0;
+    font-size: 16px;
+}
+
+
+/* ==========================================================================
+   CLASSES ESPECÍFICAS DISPARADAS AUTOMATICAMENTE NO CLIQUE
+   ========================================================================== */
+
+/* Transição de Próximo (Vem deslizando da Direita em 3D) */
+.slide-proximo {
+    animation: slideFromRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+/* Transição de Anterior (Vem deslizando da Esquerda em 3D) */
+.slide-anterior {
+    animation: slideFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+
+/* ==========================================================================
+   MECÂNICA KEYFRAMES DAS ANIMAÇÕES
+   ========================================================================== */
+
+/* Entrada Inicial (Caindo do topo) */
+@keyframes dropFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-80px) scale(0.96);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Avançar Pergunta */
+@keyframes slideFromRight {
+    0% {
+        opacity: 0;
+        transform: translateX(120px) rotateY(-8deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotateY(0);
+    }
+}
+
+/* Voltar Pergunta */
+@keyframes slideFromLeft {
+    0% {
+        opacity: 0;
+        transform: translateX(-120px) rotateY(8deg);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) rotateY(0);
+    }
+}
+
+/* Fade simples do fundo do Modal */
+@keyframes fadeInBg {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* Efeito Elástico tridimensional do Pop-up de resultados */
+@keyframes feedbackPopIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.7) translateY(50px) rotateX(-15deg);
+    }
+    70% {
+        transform: scale(1.04) translateY(-5px) rotateX(2deg);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0) rotateX(0);
+    }
 }
