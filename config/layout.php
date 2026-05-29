@@ -9,7 +9,7 @@ function renderHeader() {
         </div>
 
         <nav class="nav-links-home">
-            <li class="item-sobre"><a href="#">Sobre nós</a></li>
+            <li class="item-sobre"><a href="sobre.php">Sobre nós</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-quizzes"><a href="home.php">Todos os quizzes</a></li>
             <li class="item-perfil">
@@ -54,9 +54,9 @@ function renderSidebar() {
         <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
         <div class="mobile-menu-scroll">
             <nav class="nav-links-mobile">
-                <li><a href="#">Sobre nós</a></li>
+                <li><a href="sobre.php">Sobre nós</a></li>
                 <li><a href="novidades.php">Novidades</a></li>
-                <li><a href="#">Todos os quizzes</a></li>
+                <li><a href="home.php">Todos os quizzes</a></li>
                 <li><a href="perfil.html">Perfil</a></li>
             </nav>
             <hr>

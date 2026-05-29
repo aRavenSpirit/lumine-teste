@@ -1,3 +1,8 @@
+<?php
+    include_once("../config/session.php");
+?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -101,7 +106,7 @@
             <li class="item-novidades"><a href="#">Novidades</a></li>
             <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
             <li class="item-acessar">
-                <a href="login.html" class="btn-acessar">Acessar</a>
+                <a href="home.php" class="btn-acessar">Acessar</a>
             </li>
         </ul>
 
