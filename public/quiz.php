@@ -43,6 +43,7 @@
                 <span id="progresso">Pergunta 1 de X</span>
                 <button id="btn-proximo" onclick="proximaPerguntaOpcao()">Próximo</button>
                 <button id="btn-finalizar" onclick="finalizarQuiz()" style="display:none;">Finalizar e Ver Resultado</button>
+                <button id="btn-home-revisao" onclick="window.location.href='home.php'" style="display:none; background-color: #3498db; color: white;">Voltar para a Home</button>
             </footer>
         </main>
 
@@ -168,12 +169,20 @@
                 btnFinalizar.style.display = 'none';
             }
 
+            // Oculta o botão da Home ao iniciar a revisão (ele só deve aparecer na última pergunta)
+            const btnHomeRevisao = document.getElementById('btn-home-revisao');
+            if(btnHomeRevisao) {
+                btnHomeRevisao.style.display = 'none';
+            }
+
             // --- GARANTE QUE O CONTROLLER DO RODAPÉ SEJA REATIVADO ---
             const controles = document.getElementById('quiz-controls');
             if (controles) {
                 controles.style.pointerEvents = 'auto';
                 controles.style.opacity = '1';
             }
+
+            
 
             emModoRevisao = true;   // Ativa a flag do JS
             indicePergunta = 0;     // Reseta para a primeira pergunta

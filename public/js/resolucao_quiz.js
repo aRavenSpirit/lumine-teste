@@ -54,13 +54,20 @@ function renderizarPergunta() {
     let html = `<h3>${p.descricao}</h3>`;
     const valorSalvo = respostasUsuario[p.id];
 
+    // VARIÁVEL ADICIONADA PARA VERIFICAR SE DEVE DESABILITAR OS ELEMENTOS NA REVISÃO
+    const disabledSeRevisao = emModoRevisao ? 'disabled' : '';
+
     switch (parseInt(p.id_tipo)) {
         case 1: // Múltipla Escolha
             p.respostas.forEach(resp => {
                 const checked = valorSalvo == resp.id ? 'checked' : '';
+                
+                // DEFINE DINAMICAMENTE SE A ALTERNATIVA É A CORRETA PARA SEU SCRIPT DE VERIFICAÇÃO ENCONTRAR
+                const classeCorreta = resp.correta == 1 ? 'correta' : '';
+
                 html += `
-                    <label>
-                        <input type="radio" name="p_${p.id}" value="${resp.id}" ${checked} 
+                    <label class="resposta ${classeCorreta}" style="${emModoRevisao ? 'cursor: not-allowed;' : ''}">
+                        <input type="radio" name="p_${p.id}" value="${resp.id}" ${checked} ${disabledSeRevisao}
                                onchange="salvarResposta(${p.id}, this.value)">
                         ${resp.descricao}
                     </label><br>`;
@@ -68,15 +75,16 @@ function renderizarPergunta() {
             break;
 
         case 2: // Resposta Curta
-            html += `<input type="text" value="${valorSalvo || ''}" 
+            html += `<input type="text" value="${valorSalvo || ''}" ${disabledSeRevisao}
                             oninput="salvarResposta(${p.id}, this.value)" 
-                            placeholder="Sua resposta...">`;
+                            placeholder="${emModoRevisao ? 'Não respondido' : 'Sua resposta...'}"
+                            style="${emModoRevisao ? 'background-color: #f5f5f5; cursor: not-allowed;' : ''}">`;
             break;
 
         case 3: // Verdadeiro ou Falso
             html += `
-                <button onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()">V</button>
-                <button onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()">F</button>
+                <button ${disabledSeRevisao} onclick="salvarResposta(${p.id}, 'Verdadeiro'); renderizarPergunta()" style="${emModoRevisao ? 'cursor: not-allowed; opacity: 0.6;' : ''}">V</button>
+                <button ${disabledSeRevisao} onclick="salvarResposta(${p.id}, 'Falso'); renderizarPergunta()" style="${emModoRevisao ? 'cursor: not-allowed; opacity: 0.6;' : ''}">F</button>
                 <p>Selecionado: ${valorSalvo || 'Nenhum'}</p>`;
             break;
 
@@ -84,9 +92,13 @@ function renderizarPergunta() {
             const selecionadas = respostasUsuario[p.id] || [];
             p.respostas.forEach(resp => {
                 const checked = selecionadas.includes(resp.id.toString()) ? 'checked' : '';
+                
+                // DEFINE DINAMICAMENTE SE A ALTERNATIVA É A CORRETA PARA SEU SCRIPT DE VERIFICAÇÃO ENCONTRAR
+                const classeCorreta = resp.correta == 1 ? 'correta' : '';
+
                 html += `
-                    <label style="display: block; margin-bottom: 8px;">
-                        <input type="checkbox" value="${resp.id}" ${checked} 
+                    <label class="resposta ${classeCorreta}" style="display: block; margin-bottom: 8px; ${emModoRevisao ? 'cursor: not-allowed;' : ''}">
+                        <input type="checkbox" value="${resp.id}" ${checked} ${disabledSeRevisao}
                             onchange="salvarRespostaMultipla(${p.id}, this.value, this.checked)">
                         ${resp.descricao}
                     </label>`;
@@ -107,8 +119,10 @@ function renderizarPergunta() {
                 const idResp = ordenados[idx];
                 if (idResp) {
                     const respObj = p.respostas.find(r => r.id == idResp);
+                    // CONDIÇÃO PARA EVITAR CLIQUE DE REMOÇÃO SE ESTIVER EM REVISÃO
+                    const acaoRemover = emModoRevisao ? '' : `onclick="removerOpcaoOrdem(${p.id}, ${idx})"`;
                     html += `
-                        <div onclick="removerOpcaoOrdem(${p.id}, ${idx})" style="padding: 8px 16px; background: #3498db; color: white; border-radius: 20px; cursor: pointer; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none;">
+                        <div ${acaoRemover} style="padding: 8px 16px; background: #3498db; color: white; border-radius: 20px; cursor: ${emModoRevisao ? 'default' : 'pointer'}; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none;">
                             ${respObj ? respObj.descricao : ''}
                         </div>`;
                 } else {
@@ -123,8 +137,10 @@ function renderizarPergunta() {
             p.respostas_embaralhadas.forEach(resp => {
                 const jaSelecionado = ordenados.includes(resp.id.toString());
                 if (!jaSelecionado) {
+                    // CONDIÇÃO PARA EVITAR CLIQUE DE SELEÇÃO SE ESTIVER EM REVISÃO
+                    const acaoSelecionar = emModoRevisao ? '' : `onclick="selecionarOpcaoOrdem(${p.id}, '${resp.id}')"`;
                     html += `
-                        <button type="button" onclick="selecionarOpcaoOrdem(${p.id}, '${resp.id}')" style="padding: 10px 20px; background: white; border: 2px solid #bdc3c7; border-radius: 20px; cursor: pointer; font-weight: bold; transition: 0.2s;">
+                        <button type="button" ${disabledSeRevisao} ${acaoSelecionar} style="padding: 10px 20px; background: white; border: 2px solid #bdc3c7; border-radius: 20px; cursor: ${emModoRevisao ? 'not-allowed' : 'pointer'}; font-weight: bold; transition: 0.2s;">
                             ${resp.descricao}
                         </button>`;
                 } else {
@@ -143,14 +159,17 @@ function renderizarPergunta() {
             html += `<p><small>Arraste os itens para os campos correspondentes:</small></p>`;
             
             // 1. Itens que o aluno vai arrastar (Usa exclusivamente a lista 'respostas_embaralhadas')
-            html += `<div id="itens-disponiveis" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding:15px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
-            p.respostas_embaralhadas.forEach(resp => {
-                const jaAlocado = Object.values(respostasUsuario[p.id] || {}).includes(resp.id.toString());
-                if (!jaAlocado) {
-                    html += `<div id="drag_${resp.id}" draggable="true" ondragstart="drag(event)" style="padding:10px; background:white; border:1px solid #333; cursor:move; border-radius:4px;">${resp.descricao}</div>`;
-                }
-            });
-            html += `</div>`;
+            // TRAVA ADICIONADA PARA ESCONDER O BANCO DE ITENS CASO JÁ ESTEJA NA REVISÃO
+            if (!emModoRevisao) {
+                html += `<div id="itens-disponiveis" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding:15px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
+                p.respostas_embaralhadas.forEach(resp => {
+                    const jaAlocado = Object.values(respostasUsuario[p.id] || {}).includes(resp.id.toString());
+                    if (!jaAlocado) {
+                        html += `<div id="drag_${resp.id}" draggable="true" ondragstart="drag(event)" style="padding:10px; background:white; border:1px solid #333; cursor:move; border-radius:4px;">${resp.descricao}</div>`;
+                    }
+                });
+                html += `</div>`;
+            }
 
             // 2. Caixas de destino (Usa o array sequencial estável 'respostas' para não embaralhar os alvos de lugar)
             html += `<div id="caixas-destino" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">`;
@@ -167,21 +186,121 @@ function renderizarPergunta() {
                     conteudoCaixa = `<strong>${itemSolto.descricao}</strong>`;
                 } else {
                     // Aqui pegamos o texto que você digitou no Criar Quiz!
-                    conteudoCaixa = respOriginal.texto_alvo || `Arraste o item correspondente aqui`;
+                    conteudoCaixa = respOriginal.texto_alvo || `Nenhum item adicionado`;
                 }
                 
+                // CONDIÇÃO PARA REMOVER EVENTOS DE ARRASTAR (DROP) SE ESTIVER EM REVISÃO
+                const eventosArrastar = emModoRevisao ? '' : `ondragover="event.preventDefault()" ondrop="drop(event, ${p.id}, ${posicaoAlvo})"`;
+
                 html += `
-                    <div class="box-target" ondragover="event.preventDefault()" ondrop="drop(event, ${p.id}, ${posicaoAlvo})" 
-                         style="border:2px dashed #888; padding:20px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center; background:${idRespostaSolta ? '#d1f2eb' : '#fff'}; border-radius:8px;">
+                    <div class="box-target" ${eventosArrastar} 
+                         style="border:2px dashed #888; padding:20px; text-align:center; min-height:80px; display:flex; align-items:center; justify-content:center; background:${idRespostaSolta ? '#d1f2eb' : '#fff'}; border-radius:8px; cursor: ${emModoRevisao ? 'default' : 'move'};">
                         ${conteudoCaixa}
                     </div>`;
             });
             html += `</div>`;
-            html += `<button onclick="limparDrag(${p.id})" style="margin-top:15px; padding:5px 10px; cursor:pointer;">Limpar Tudo</button>`;
+
+            // SÓ EXIBE O BOTÃO DE LIMPAR SE NÃO ESTIVER REVISANDO
+            if (!emModoRevisao) {
+                html += `<button onclick="limparDrag(${p.id})" style="margin-top:15px; padding:5px 10px; cursor:pointer;">Limpar Tudo</button>`;
+            }
             break;
     }
 
     container.innerHTML = html;
+
+    // =========================================================================
+    // NOVA LOGICA DE CORREÇÃO TEXTUAL EM MODO REVISÃO (UNIFICADA COM O GABARITO)
+    // =========================================================================
+    if (emModoRevisao) {
+        let acertouGeral = false;
+        let respostaCertaTexto = "";
+
+        // Identifica e valida dependendo do tipo da pergunta
+        switch (parseInt(p.id_tipo)) {
+            case 1: { // Múltipla escolha simples
+                const respCorretaObj = p.respostas.find(r => r.certo == 1 || r.correta == 1);
+                if (respCorretaObj) {
+                    respostaCertaTexto = respCorretaObj.descricao;
+                    acertouGeral = (valorSalvo == respCorretaObj.id);
+                }
+                break;
+            }
+            case 2: { // Resposta curta textual
+                const respCorretaObj = p.respostas[0];
+                if (respCorretaObj) {
+                    respostaCertaTexto = respCorretaObj.descricao || respCorretaObj.texto_alvo;
+                    acertouGeral = (String(valorSalvo).trim().toLowerCase() === String(respostaCertaTexto).trim().toLowerCase());
+                }
+                break;
+            }
+            case 3: { // Verdadeiro ou Falso
+                const respCorretaObj = p.respostas.find(r => r.certo == 1 || r.correta == 1);
+                if (respCorretaObj) {
+                    respostaCertaTexto = respCorretaObj.descricao; 
+                    acertouGeral = (String(valorSalvo).toLowerCase() === String(respostaCertaTexto).toLowerCase());
+                }
+                break;
+            }
+            case 4: { // Várias corretas
+                const idsCorretos = p.respostas.filter(r => r.certo == 1 || r.correta == 1).map(r => r.id.toString());
+                const selecionadas = Array.isArray(respostasUsuario[p.id]) ? respostasUsuario[p.id] : [];
+                
+                respostaCertaTexto = p.respostas.filter(r => r.certo == 1 || r.correta == 1).map(r => r.descricao).join(', ');
+                acertouGeral = idsCorretos.length === selecionadas.length && idsCorretos.every(id => selecionadas.includes(id));
+                break;
+            }
+            case 5: { // Ordenação Duolingo
+                const rUser = respostasUsuario[p.id] || [];
+                respostaCertaTexto = [...p.respostas].sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem)).map(r => r.descricao).join(' → ');
+                
+                if (rUser.length !== p.respostas.length) {
+                    acertouGeral = false;
+                } else {
+                    acertouGeral = p.respostas.every(r => {
+                        const posicaoUsuario = rUser.indexOf(r.id.toString()) + 1;
+                        const ordemCorreta = parseInt(r.ordem);
+                        return posicaoUsuario === ordemCorreta;
+                    });
+                }
+                break;
+            }
+            case 6: { // Arrastar e Soltar (Drag and Drop)
+                const rUser = respostasUsuario[p.id] || {};
+                let detalheGabarito = [];
+                acertouGeral = true;
+
+                p.respostas.forEach(r => {
+                    detalheGabarito.push(`[${r.texto_alvo || 'Campo ' + r.ordem}]: ${r.descricao}`);
+                    if (rUser[r.ordem] != r.id) {
+                        acertouGeral = false;
+                    }
+                });
+
+                respostaCertaTexto = detalheGabarito.join(' | ');
+                break;
+            }
+        }
+
+        // Cria o elemento de feedback para exibir abaixo da questão
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.style.marginTop = '20px';
+        feedbackDiv.style.padding = '10px';
+        feedbackDiv.style.borderTop = '2px solid #ccc';
+
+        if (acertouGeral) {
+            feedbackDiv.innerHTML = `<p style="color: #27ae60; font-weight: bold;"><i class="fas fa-check-circle"></i> Resposta correta</p>`;
+        } else {
+            feedbackDiv.innerHTML = `
+                <p style="color: #c0392b; font-weight: bold;"><i class="fas fa-times-circle"></i> Resposta incorreta</p>
+                <p><em>A resposta correta era:</em> <strong>${respostaCertaTexto}</strong></p>
+            `;
+        }
+        container.appendChild(feedbackDiv);
+    }
+    // =========================================================================
+    // =========================================================================
+
     atualizarControles();
 }
 
@@ -295,31 +414,43 @@ function validouTodasRespostas() {
 }
 
 function atualizarControles() {
+    const btnVoltar = document.getElementById('btn-voltar');
+    const btnProximo = document.getElementById('btn-proximo');
+    const btnFinalizar = document.getElementById('btn-finalizar');
+    const btnHomeRevisao = document.getElementById('btn-home-revisao');
+    const final = indicePergunta === dadosQuiz.perguntas.length - 1;
+
     if (emModoRevisao) {
-        // Garante que o rodapé e os botões aceitem cliques de navegação
+        // Garante que o rodapé e os botões aceitem cliques
         const controles = document.getElementById('quiz-controls');
         if (controles) {
             controles.style.pointerEvents = 'auto';
             controles.style.opacity = '1';
         }
 
-        // Mostra ou esconde os botões baseado na página atual da revisão
-        document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
-        document.getElementById('btn-voltar').disabled = false;
+        // Controle de navegação comum na revisão
+        btnVoltar.style.display = indicePergunta > 0 ? 'inline' : 'none';
+        btnVoltar.removeAttribute('disabled');
         
-        document.getElementById('btn-proximo').style.display = indicePergunta < dadosQuiz.perguntas.length - 1 ? 'inline' : 'none';
-        document.getElementById('btn-proximo').disabled = false;
+        btnProximo.style.display = final ? 'none' : 'inline';
+        btnProximo.removeAttribute('disabled');
         
-        document.getElementById('btn-finalizar').style.display = 'none';
-        return; // Corta a execução aqui para não aplicar as travas do modo de jogo
+        // Nunca mostra o botão de finalizar na revisão
+        btnFinalizar.style.display = 'none';
+
+        // Exibe o botão de voltar para a Home APENAS na última pergunta da revisão
+        if (btnHomeRevisao) {
+            btnHomeRevisao.style.display = final ? 'inline' : 'none';
+        }
+        
+        return; // Corta a execução aqui para ignorar as regras de validação normais
     }
 
-    document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
-    
-    const final = indicePergunta === dadosQuiz.perguntas.length - 1;
-    document.getElementById('btn-proximo').style.display = final ? 'none' : 'inline';
-    
-    const btnFinalizar = document.getElementById('btn-finalizar');
+    // --- FLUXO NORMAL DO JOGO (Fora da revisão) ---
+    if (btnHomeRevisao) btnHomeRevisao.style.display = 'none';
+
+    btnVoltar.style.display = indicePergunta > 0 ? 'inline' : 'none';
+    btnProximo.style.display = final ? 'none' : 'inline';
     
     if (final) {
         btnFinalizar.style.display = 'inline';
@@ -375,19 +506,19 @@ async function finalizarQuiz() {
         const tipo = parseInt(p.id_tipo);
 
         if (tipo === 1 || tipo === 3) {
-            const correta = p.respostas.find(r => r.certo == 1);
+            const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
             if (correta && respostaUser == correta.id) acertos++;
         } 
         else if (tipo === 2) {
             const correta = p.respostas[0];
-            if (correta && respostaUser?.trim().toLowerCase() === correta.descricao.toLowerCase()) acertos++;
+            const textoCorreto = correta ? (correta.descricao || correta.texto_alvo) : "";
+            if (textoCorreto && respostaUser?.trim().toLowerCase() === textoCorreto.trim().toLowerCase()) acertos++;
         }
         else if (tipo === 4) {
             const rUser = respostaUser || [];
-            const idsCorretos = p.respostas.filter(r => r.certo == 1).map(r => r.id.toString());
+            const idsCorretos = p.respostas.filter(r => r.certo == 1 || r.correta == 1).map(r => r.id.toString());
             if (rUser.length === idsCorretos.length && idsCorretos.every(id => rUser.includes(id))) acertos++;
         }
-        
         else if (tipo === 5) {
             const rUser = respostasUsuario[p.id] || [];
             let acertou = true;
@@ -402,11 +533,8 @@ async function finalizarQuiz() {
                 });
             }
 
-            if (acertou && p.respostas.length > 0) {
-                acertos++;
-            }
+            if (acertou && p.respostas.length > 0) acertos++;
         }
-
         else if (tipo === 6) {
             const rUser = respostaUser || {};
             let acertouTudo = true;
@@ -427,7 +555,7 @@ async function finalizarQuiz() {
         });
         const resultado = await response.json();
         
-    if (resultado.sucesso) {
+        if (resultado.sucesso) {
             desativarAvisoSaida(); // Libera o pop-up de saída do navegador
 
             reativarQuiz();
@@ -441,7 +569,7 @@ async function finalizarQuiz() {
 
             // Alimenta os dados nos elementos do HTML
             document.getElementById('modal-acertos').innerText = `${acertos} / ${totalQuestoes}`;
-            document.getElementById('modal-erros').innerText = `${erros} / ${totalQuestoes}`; // <--- MUDANÇA AQUI (Injeta os erros)
+            document.getElementById('modal-erros').innerText = `${erros} / ${totalQuestoes}`;
             document.getElementById('modal-tempo').innerText = `${min}:${seg}`;
 
             // Configura a ação do botão único da modal para redirecionar para a Home
