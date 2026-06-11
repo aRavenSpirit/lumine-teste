@@ -8,6 +8,7 @@ let respostasUsuario = {};
 // Variáveis do Cronômetro
 let segundos = 0;
 let intervaloCronometro;
+let emModoRevisao = false;
 
 async function carregarQuiz() {
     if (!quizId) return alert("Quiz não encontrado!");
@@ -294,6 +295,25 @@ function validouTodasRespostas() {
 }
 
 function atualizarControles() {
+    if (emModoRevisao) {
+        // Garante que o rodapé e os botões aceitem cliques de navegação
+        const controles = document.getElementById('quiz-controls');
+        if (controles) {
+            controles.style.pointerEvents = 'auto';
+            controles.style.opacity = '1';
+        }
+
+        // Mostra ou esconde os botões baseado na página atual da revisão
+        document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
+        document.getElementById('btn-voltar').disabled = false;
+        
+        document.getElementById('btn-proximo').style.display = indicePergunta < dadosQuiz.perguntas.length - 1 ? 'inline' : 'none';
+        document.getElementById('btn-proximo').disabled = false;
+        
+        document.getElementById('btn-finalizar').style.display = 'none';
+        return; // Corta a execução aqui para não aplicar as travas do modo de jogo
+    }
+
     document.getElementById('btn-voltar').style.display = indicePergunta > 0 ? 'inline' : 'none';
     
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
@@ -304,7 +324,6 @@ function atualizarControles() {
     if (final) {
         btnFinalizar.style.display = 'inline';
         
-        // Se respondeu tudo, ativa o botão. Se falta algo, desativa.
         if (validouTodasRespostas()) {
             btnFinalizar.removeAttribute('disabled');
             btnFinalizar.style.opacity = '1';
@@ -410,6 +429,8 @@ async function finalizarQuiz() {
         
     if (resultado.sucesso) {
             desativarAvisoSaida(); // Libera o pop-up de saída do navegador
+
+            reativarQuiz();
 
             // Formata o tempo decorrido para exibir na modal
             const min = Math.floor(segundos / 60).toString().padStart(2, '0');

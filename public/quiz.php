@@ -74,6 +74,8 @@
                 </div>
             </div>
             
+            <button onclick="revisarRespostas()">Revisar Respostas</button>
+
             <button id="btn-modal-home">
                 Avançar <i class="fas fa-arrow-right"></i>
             </button>
@@ -139,6 +141,43 @@
             const main = document.getElementById('mainContainer');
             if(sidebar) sidebar.classList.toggle('open');
             if(main) main.classList.toggle('sidebar-open');
+        }
+        
+        function revisarRespostas() {
+            const modal = document.getElementById('modal-resultado');
+            if(modal) {
+                modal.style.display = 'none';
+                toggleSidebar(); // Abre a sidebar para revisão
+            }
+
+            // Libera o botão de pergunta anterior
+            const btnAnterior = document.getElementById('btn-voltar');
+            if(btnAnterior) {
+                btnAnterior.disabled = false;
+            }
+
+            // Libera o botão de próximo
+            const btnProximo = document.getElementById('btn-proximo');
+            if(btnProximo) {
+                btnProximo.disabled = false;
+            }
+
+            // Oculta o botão de finalizar
+            const btnFinalizar = document.getElementById('btn-finalizar');
+            if(btnFinalizar) {
+                btnFinalizar.style.display = 'none';
+            }
+
+            // --- GARANTE QUE O CONTROLLER DO RODAPÉ SEJA REATIVADO ---
+            const controles = document.getElementById('quiz-controls');
+            if (controles) {
+                controles.style.pointerEvents = 'auto';
+                controles.style.opacity = '1';
+            }
+
+            emModoRevisao = true;   // Ativa a flag do JS
+            indicePergunta = 0;     // Reseta para a primeira pergunta
+            renderizarPergunta();   // Atualiza a tela com a primeira pergunta
         }
     </script>
 </body>
