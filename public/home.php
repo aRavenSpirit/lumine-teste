@@ -127,11 +127,22 @@ function carregarConteudos(idMateria, nomeMateria) {
                 html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
             } else {
                 dados.forEach(c => {
-                    let nomeImgMateria = nomeMateria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    // SEPARAÇÃO DA LÓGICA:
+                    // 1. Se houver imagem salva no banco (c.imagem_conteudo), usa ela.
+                    // 2. Fallback: Se não houver no banco, gera um nome limpo baseado no NOME DO CONTEÚDO (ex: "adicaoesubtracao.webp")
+                    let imagemCard = "";
+                    
+                    if (c.imagem_conteudo && c.imagem_conteudo.trim() !== "") {
+                        imagemCard = c.imagem_conteudo;
+                    } else {
+                        let nomeConteudoLimpo = c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                        imagemCard = `img/conteudos/${nomeConteudoLimpo}.webp`; 
+                    }
+
                     html += `
                         <div onclick="abrirModalQuizzes(${c.id}, '${c.nome}')" class="card-materia">
                             <div class="card-banner">
-                                <img src="img/${nomeImgMateria}.webp" onerror="this.src='img/'">
+                                <img src="${imagemCard}" onerror="this.src='img/LUMINE-5con.ico'">
                             </div>
                             <div class="card-body">
                                 <p>${c.nome}</p>

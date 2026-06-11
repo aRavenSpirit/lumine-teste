@@ -309,6 +309,9 @@ ON DUPLICATE KEY UPDATE cores_materia = VALUES(cores_materia);
     expira_em DATETIME NOT NULL
 );
 
+    CREATE TABLE 
+    
+
 -- Exemplo caso o usuário quiser alterar a cor do fundo
     UPDATE configuracoes 
     SET tema_escuro = 1 
