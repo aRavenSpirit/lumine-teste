@@ -259,6 +259,159 @@ body {
     margin-left: 12px;
 }
 
+/* --- DROPDOWN DE PERFIL (MOUSEDOWN / HOVER) --- */
+
+/* Garante o posicionamento relativo no item de perfil original */
+.item-perfil {
+    position: relative;
+}
+
+/* A caixinha de informações (escondida por padrão) */
+.perfil-dropdown {
+    display: none;
+    position: absolute;
+    right: 10px;
+    top: 80%; /* Alinha logo abaixo da sua navbar de 80px */
+    background-color: #ffffff;
+    min-width: 240px;
+    box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
+    border-radius: 15px;
+    border: 2px solid #ff5757; /* Combinando com a cor vermelha do seu hover de perfil */
+    padding: 15px;
+    z-index: 9999;
+    text-align: left;
+    font-family: 'Open_Sans', sans-serif;
+    animation: fadeInDown 0.3s ease;
+}
+
+/* Mini seta apontando para cima */
+.perfil-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    right: 20px;
+    border-width: 0 10px 10px 10px;
+    border-style: solid;
+    border-color: transparent transparent #ff5757 transparent;
+}
+
+/* Mostra a caixinha quando passa o mouse sobre o elemento pai */
+.item-perfil:hover .perfil-dropdown {
+    display: block;
+}
+
+/* Conteúdo interno da caixinha */
+.perfil-dropdown h4 {
+    font-family: 'gliker', sans-serif;
+    color: #ff5757;
+    font-size: 16px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+
+.perfil-dropdown hr {
+    border: 0;
+    border-top: 1px solid #eee;
+    margin: 8px 0;
+}
+
+.perfil-dropdown p {
+    font-size: 13px;
+    color: #444;
+    margin: 5px 0;
+    line-height: 1.4;
+}
+
+.perfil-dropdown p strong {
+    color: #111;
+}
+
+/* Botão de Logout personalizado */
+.btn-logout {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #ff5757;
+    color: white !important;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #d94545;
+}
+
+/* Garante que o contêiner limite tudo que está dentro dele como um círculo perfeito */
+.avatar-upload-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px auto;
+    cursor: pointer;
+    border-radius: 50%; /* Mantém o contêiner redondo */
+}
+
+/* Força tanto a DIV do rostinho quanto a IMG a ocuparem o espaço perfeitamente */
+.avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover; /* Recorta as laterais da imagem mantendo a proporção original, sem distorcer! */
+    object-position: center; /* Centraliza o foco do corte no meio da imagem */
+    background-color: #8A4FFF; /* Roxo padrão */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 32px;
+    border: 3px solid #ff5757;
+    transition: filter 0.2s;
+    box-sizing: border-box; /* Evita que a borda altere o tamanho final do círculo */
+}
+
+/* Garante o comportamento correto caso o seletor procure diretamente pela tag img */
+#avatarImg {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* O badge do lápis indicador */
+.avatar-edit-badge {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background-color: #ff5757;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 12px;
+    border: 2px solid white;
+    box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
+    transition: transform 0.2s;
+}
+
+/* Efeito de hover ao passar o mouse na foto */
+.avatar-upload-container:hover .avatar-preview {
+    filter: brightness(0.8);
+}
+.avatar-upload-container:hover .avatar-edit-badge {
+    transform: scale(1.1);
+}
+
 /* --- SEÇÃO DE BOAS-VINDAS --- */
 main { 
     padding: 60px 5%; 

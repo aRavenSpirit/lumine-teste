@@ -22,6 +22,7 @@ function renderHeader() {
             </li>
         </nav>
 
+
         <div class="mobile-profile-right">
             <a href="configuracoes.php">
                 <div class="profile-icon">
@@ -34,12 +35,24 @@ function renderHeader() {
 }
 
     // Função para a Sidebar
+// Função para a Sidebar
 function renderSidebar() {
+    // 1. Pega o nome do arquivo atual que está rodando (ex: home.php, quiz.php, index.php)
+    $pagina_atual = basename($_SERVER['SCRIPT_NAME']);
+
+    // 2. Define a lógica do link da logo
+    if ($pagina_atual === 'home.php') {
+        // Se já estiver na home, a logo manda para a página inicial pública (index.html ou index.php)
+        $link_logo = "../public/index.html"; 
+    } else {
+        // Se estiver em qualquer outra página (quiz, sobre, novidades, etc), volta para a home.php
+        $link_logo = "home.php";
+    }
     ?>
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <div class="logo-container">
-                <a href="../public/index.html">
+                <a href="<?php echo $link_logo; ?>">
                     <img src="img/LUMINE.png" alt="Lumine Logo" class="sidebar-logo">
                 </a>
             </div>

@@ -89,7 +89,33 @@
 
         window.addEventListener('load', () => {
             carregarMenuSidebarQuiz();
+            carregarDadosUsuarioHeader(); // <-- ADICIONADO: Nova função para trazer a foto do perfil
         });
+
+        // FUNÇÃO ADICIONADA PARA TRATAR A FOTO DE PERFIL NO CABEÇALHO DO QUIZ
+        function carregarDadosUsuarioHeader() {
+            fetch(apiHome + "?tipo=usuario")
+                .then(r => r.json())
+                .then(usuario => {
+                    if (usuario && !usuario.error) {
+                        // Seleciona a imagem do perfil (certifique-se de que o ID no seu renderHeader seja esse)
+                        const imgPerfil = document.getElementById("fotoPerfil") || document.getElementById("img-perfil"); 
+                        const nomeHeader = document.getElementById("nomeUsuarioHeader");
+
+                        // Se o usuário tiver foto cadastrada no banco, injeta ela
+                        if (usuario.foto_perfil && imgPerfil) {
+                            imgPerfil.src = usuario.foto_perfil;
+                        }
+                        
+                        // Opcional: Atualiza o nome no header se houver o campo
+                        if (usuario.nome && nomeHeader) {
+                            nomeHeader.textContent = usuario.nome;
+                        }
+                    }
+                })
+                .catch(err => console.error("Erro ao carregar dados do usuário no header do quiz:", err));
+        }
+        
 
         // FUNÇÕES INTERMÉDIAS PARA DISPARAR AS ANIMAÇÕES LATERAIS ANTES DE MUDAR A QUESTÃO
         function proximaPerguntaOpcao() {

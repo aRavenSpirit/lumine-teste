@@ -22,7 +22,37 @@
     if (!$nome || !$email || !$senhaRaw || !$escolaridade) {
         echo json_encode(["erro" => "Campos obrigatórios não preenchidos"]);
         exit;
+        
     }
+
+    // ==========================================================
+// VALIDAÇÃO INTELIGENTE DE REQUISITOS DA SENHA (BACKEND)
+// ==========================================================
+
+// 1. Mínimo 8 caracteres
+if (strlen($senhaRaw) < 8) {
+    echo json_encode(["erro" => "A senha deve ter no mínimo 8 caracteres."]);
+    exit;
+}
+
+// 2. Pelo menos uma letra maiúscula
+if (!preg_match('/[A-Z]/', $senhaRaw)) {
+    echo json_encode(["erro" => "A senha deve conter pelo menos uma letra maiúscula."]);
+    exit;
+}
+
+// 3. Pelo menos um número
+if (!preg_match('/[0-9]/', $senhaRaw)) {
+    echo json_encode(["erro" => "A senha deve conter pelo menos um número."]);
+    exit;
+}
+
+// 4. Pelo menos um caractere especial
+if (!preg_match('/[^A-Za-z0-9]/', $senhaRaw)) {
+    echo json_encode(["erro" => "A senha deve conter pelo menos um caractere especial (ex: !@#$)."]);
+    exit;
+}
+// ==========================================================
 
     // hash da senha
     $senha = password_hash($senhaRaw, PASSWORD_DEFAULT);

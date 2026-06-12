@@ -50,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($campo === 'nome') $coluna = 'nome';
         elseif ($campo === 'email') $coluna = 'email';
         elseif ($campo === 'escolaridade') $coluna = 'escolaridade_id';
+        elseif ($campo === 'foto_perfil') $coluna = 'foto_perfil'; // Adicionado para aceitar a foto!
 
         if ($coluna != '') {
             $sql = "UPDATE usuario SET $coluna = '$valor' WHERE id = $id";
@@ -63,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     }
+
+    
 
     // --- AÇÃO: EXCLUIR HISTÓRICO (AGORA FORA DO IF DE ATUALIZAR) ---
     if ($acao === 'excluir_historico') {
@@ -91,12 +94,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Unificamos tudo dentro de um único Switch para evitar conflitos
 switch ($tipo) {
 
+
+    // =========================
+    // QUIZZES
+    // =========================
+    case 'quizzes':
+        $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
+        $res = $conn->query("
+            SELECT 
+                q.id, 
+                q.nome, 
+                q.id_dificuldade, 
+                d.dificuldade, 
+                c.nome AS conteudo,
+                m.nome_materia,
+                COUNT(p.id) AS total_questoes
+            FROM quizzes q
+            JOIN dificuldade d ON q.id_dificuldade = d.id
+            JOIN conteudo c ON q.id_conteudo = c.id
+            JOIN materia m ON c.id_materia = m.id
+            LEFT JOIN perguntas p ON p.id_quiz = q.id
+            WHERE q.id_conteudo = $id_conteudo
+            GROUP BY q.id
+        ");
+        $response = [];
+        while ($row = $res->fetch_assoc()) {
+            $response[] = $row;
+        }
+        break;
+
+
     // =========================
     // PERFIL DO USUÁRIO
     // =========================
     case 'usuario':
-        // Busca nome, email e o ID da escolaridade para o select funcionar
-        $sql = "SELECT u.nome, u.email, u.escolaridade_id, e.nome_escolaridade 
+        // CORREÇÃO: Adicionada a coluna u.foto_perfil no SELECT
+        $sql = "SELECT u.nome, u.email, u.escolaridade_id, u.foto_perfil, e.nome_escolaridade 
                 FROM usuario u
                 LEFT JOIN escolaridade e ON u.escolaridade_id = e.id_escolaridade
                 WHERE u.id = $id_usuario";

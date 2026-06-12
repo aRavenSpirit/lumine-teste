@@ -38,6 +38,19 @@
 
     <?php renderFooter(); ?>
 
+    <div id="cookieBanner" style="display: none;">
+        <div class="cookie-text">
+            <p>Nós utilizamos cookies para melhorar a sua experiência no Lumine. Você aceita nossa política?</p>
+        </div>
+        <div class="cookie-buttons">
+            <button class="btn-ok" onclick="interagirCookie('accept')">Aceitar</button>
+            <button class="btn-no" onclick="interagirCookie('decline')">Recusar</button>
+        </div>
+    </div>
+
+    <script src="js/cookies.js"></script>
+
+
 </div>
 
 <div id="meuModal" class="modal">
@@ -79,7 +92,116 @@ function carregarUsuario() {
         .then(u => {
             const nomeUsuario = u.nome ? u.nome.toUpperCase() : "ALUNO";
             document.getElementById("bemvindo").innerHTML = `SEJA BEM-VINDO, <span class="nome-destaque">${nomeUsuario}</span>!!`;
+            
+            // --- NOVO: Se o usuário já tiver foto, atualiza a imagem no HEADER (Navbar superior) ---
+            const linkPerfilHeader = document.querySelector('.item-perfil a');
+            if (linkPerfilHeader && u.foto_perfil) {
+                const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
+                if (iconeRoxo) {
+                    // Substitui o círculo roxo com o ícone de usuário por uma imagem circular correspondente
+                    iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                } else {
+                    // Caso já seja uma imagem, apenas atualiza o src
+                    const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
+                    if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
+                        imagemHeaderExistente.src = u.foto_perfil;
+                    }
+                }
+            }
+
+            // Captura o item de perfil para montar o Dropdown
+            const itemPerfil = document.querySelector('.item-perfil');
+            
+            if (itemPerfil) {
+                const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
+                if (antigoDropdown) antigoDropdown.remove();
+
+                // Define se exibe a foto real em formato <img> ou o layout do rostinho original
+                const fotoHtml = u.foto_perfil 
+                    ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
+                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+
+                const dropdown = document.createElement('div');
+                dropdown.className = 'perfil-dropdown';
+                dropdown.innerHTML = `
+                    <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
+                        <div id="avatarWrapper">
+                            ${fotoHtml}
+                        </div>
+                        <div class="avatar-edit-badge">
+                            <i class="fas fa-pencil-alt"></i>
+                        </div>
+                        <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
+                    </div>
+
+                    <h4 style="text-align: center;">Minha Conta</h4>
+                    <hr>
+                    <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
+                    <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
+                    <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
+                    <hr>
+                    <a href="../config/logout.php" class="btn-logout">
+                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                    </a>
+                `;
+                
+                itemPerfil.appendChild(dropdown);
+            }
         });
+}
+
+// Processa o arquivo selecionado e atualiza a interface instantaneamente
+function uploadFotoPerfil(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            const base64Image = e.target.result;
+            
+            const formData = new FormData();
+            formData.append('acao', 'atualizar_perfil');
+            formData.append('campo', 'foto_perfil');
+            formData.append('valor', base64Image);
+
+            fetch(api, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // 1. Atualiza dinamicamente a foto dentro do container do Dropdown
+                    const wrapper = document.getElementById('avatarWrapper');
+                    if (wrapper) {
+                        wrapper.innerHTML = `<img src="${base64Image}" class="avatar-preview" id="avatarImg">`;
+                    }
+                    
+                    // 2. Atualiza a foto na barra superior (Navbar) sem precisar dar F5 na página!
+                    const linkPerfilHeader = document.querySelector('.item-perfil a');
+                    if (linkPerfilHeader) {
+                        const iconHeader = linkPerfilHeader.querySelector('.profile-icon');
+                        if (iconHeader) {
+                            if (iconHeader.tagName === 'IMG') {
+                                iconHeader.src = base64Image;
+                            } else {
+                                iconHeader.outerHTML = `<img src="${base64Image}" class="profile-icon" style="object-fit: cover;">`;
+                            }
+                        }
+                    }
+                    
+                    alert("Foto de perfil atualizada com sucesso!");
+                } else {
+                    alert("Erro ao salvar a foto: " + data.error);
+                }
+            })
+            .catch(err => {
+                console.error("Erro na requisição:", err);
+                alert("Erro de comunicação com o servidor.");
+            });
+        };
+        
+        reader.readAsDataURL(input.files[0]);
+    }
 }
 
 function carregarMenuSidebar() {
@@ -169,10 +291,22 @@ function abrirModalQuizzes(idConteudo, nomeConteudo) {
                 html = "<p>Sem quizzes para este conteúdo no momento.</p>";
             } else {
                 quizzes.forEach(q => {
+                    // Pega as primeiras 3 letras da matéria como sigla (ex: Matemática -> MAT)
+                    let siglaMateria = q.nome_materia ? q.nome_materia.substring(0, 3).toUpperCase() : "QUIZ";
+
                     html += `
                         <a href="quiz.php?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
                             <div class="quiz-card">
+                                <span class="quiz-numero">${q.total_questoes}</span>
+
                                 <h4>${q.nome}</h4>
+
+                                <p class="quiz-conteudo">Conteúdo: ${nomeConteudo}</p>
+
+                                <div class="quiz-badges">
+                                    <span class="badge-materia">${siglaMateria}</span>
+                                    <span class="badge-dificuldade">${q.dificuldade.toUpperCase()}</span>
+                                </div>
                             </div>
                         </a>`;
                 });
