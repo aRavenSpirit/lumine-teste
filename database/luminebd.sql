@@ -302,15 +302,22 @@ VALUES (1, 0, 2, '{"matematica": "#3498db", "portugues": "#e74c3c", "historia": 
 ON DUPLICATE KEY UPDATE cores_materia = VALUES(cores_materia);
 
 
-    CREATE TABLE recuperacao_senha (
+CREATE TABLE recuperacao_senha (
     id int AUTO_INCREMENT primary key,
     email varchar(255) NOT NULL,
     token varchar(255) NOT NULL,
     expira_em DATETIME NOT NULL
 );
 
-    CREATE TABLE 
-    
+CREATE TABLE feedbacks_usuarios (
+    id int AUTO_INCREMENT primary key,
+    id_usuario int,
+    foreign key (id_usuario) references usuario (id),
+    id_quiz int,
+    foreign key (id_quiz) references quizzes (id),
+    mensagem text,
+    data_envio datetime default current_timestamp
+);
 
 -- Exemplo caso o usuário quiser alterar a cor do fundo
     UPDATE configuracoes 
