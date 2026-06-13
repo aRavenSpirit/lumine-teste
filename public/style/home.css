@@ -31,7 +31,9 @@ body {
     color: #333;
 }
 
-/* --- SIDEBAR DESKTOP --- */
+/* ==================================================================
+   1. BASE DA SIDEBAR DESKTOP
+   ================================================================== */
 .sidebar {
     position: fixed;
     left: 0;
@@ -54,13 +56,16 @@ body {
     overflow-y: hidden;
 }
 
-/* ATIVA SCROLL APENAS QUANDO ABERTA */
+/* Ativa scroll apenas quando aberta */
 .sidebar.open {
     width: 250px; 
     overflow-y: auto; 
 }
 
-/* --- CUSTOMIZAÇÃO DA SCROLLBAR --- */
+
+/* ==================================================================
+   2. CUSTOMIZAÇÃO DA SCROLLBAR (SÓ APARECE QUANDO ABERTA)
+   ================================================================== */
 .sidebar.open::-webkit-scrollbar {
     width: 10px;
 }
@@ -87,7 +92,10 @@ body {
     background: #0043af; 
 }
 
-/* --- HEADER (LOGO E HAMBURGUER) --- */
+
+/* ==================================================================
+   3. CONTAINER HEADER (LOGO E HAMBURGUER)
+   ================================================================== */
 .sidebar-header {
     width: 100%;
     display: flex;
@@ -99,10 +107,16 @@ body {
     flex-shrink: 0; 
 }
 
+/* Quando a Sidebar abre, o recuo do topo aumenta */
 .sidebar.open .sidebar-header {
     padding-top: 40px; 
 }
 
+
+/* ==================================================================
+   4. COMPONENTES INTERNOS DO HEADER (LOGO E MENU TRIGGER)
+   ================================================================== */
+/* Bloco do Logotipo */
 .logo-container {
     height: 60px;
     display: flex;
@@ -118,6 +132,7 @@ body {
     transform: scale(1.1);
 }
 
+/* Imagem do Logo */
 .sidebar-logo {
     width: 50px; 
     height: auto;
@@ -128,6 +143,7 @@ body {
     width: 100px; 
 }
 
+/* Ícone de Hambúrguer */
 .menu-trigger {
     font-size: 24px;
     color: #000000;
@@ -145,6 +161,84 @@ body {
     color: #333;
 }
 
+/* ==================================================================
+   5. SISTEMA DE BOTÃO FIXO ALINHADO À SIDEBAR
+   ================================================================== */
+
+/* SIDEBAR FECHADA: Fica centralizado nos 80px e abaixo da logo pequena */
+.sidebar .btn-sair-flutuante {
+    position: fixed;
+    top: 140px;         /* Mantém a altura atual que deu certo na barra fechada */
+    left: 17px;         /* Centralizado horizontalmente nos 80px */
+    width: 46px;
+    height: 46px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    z-index: 3000;      /* Passa por cima do overflow da sidebar */
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Ícone da seta */
+.sidebar .btn-sair-flutuante i {
+    font-size: 16px;
+    color: #ffffff;
+}
+
+/* Texto oculto na barra fechada */
+.sidebar .btn-sair-flutuante .btn-sair-text {
+    display: none;
+    opacity: 0;
+    white-space: nowrap;
+    font-family: 'Open_Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+/* SIDEBAR ABERTA: O botão desce e expande para não cobrir o hambúrguer */
+.sidebar.open .btn-sair-flutuante {
+    top: 230px;         /* CORREÇÃO: Desce o botão para abrir espaço para o Header/Hambúrguer */
+    left: 20px;         /* Margem elegante da borda da tela */
+    width: 210px;       /* Vira o retângulo */
+    border-radius: 8px;
+    justify-content: flex-start;
+    padding-left: 20px;
+}
+
+/* Revela o texto quando a barra abrir */
+.sidebar.open .btn-sair-flutuante .btn-sair-text {
+    display: inline-block;
+    opacity: 1;
+    margin-left: 12px;
+    color: #ffffff;
+}
+
+/* Hover */
+.sidebar .btn-sair-flutuante:hover {
+    background-color: #c0392b;
+    transform: scale(1.05);
+}
+
+/* ==================================================================
+   CONTROLE PARA DISPOSITIVOS MÓVEIS (Abaixo de 900px)
+   ================================================================== */
+@media (max-width: 900px) {
+    .sidebar .btn-sair-flutuante {
+        display: none !important;
+    }
+}
+
+
+/* ==================================================================
+   6. MENU DE NAVEGAÇÃO / LINKS DA SIDEBAR
+   ================================================================== */
 .sidebar nav {
     margin-top: 30px;
     width: 100%;
@@ -165,6 +259,7 @@ body {
     transition: all 0.3s ease;
 }
 
+/* Revela os links normais quando a sidebar abre */
 .sidebar.open nav a {
     visibility: visible;
     pointer-events: all;

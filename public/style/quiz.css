@@ -40,6 +40,7 @@ body {
 
 /* Nova seção que centraliza o conteúdo do quiz mantendo o Header alinhado */
 .quiz-main-section {
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -752,20 +753,145 @@ div[id^="drag_"] {
     transform: scale(1.18);
 }
 
+/* Estilização do Botão Sair / Voltar */
+.btn-sair {
+    position: absolute;
+    top: 125px;      /* Distância do topo */
+    left: 125px;     /* Distância da esquerda */
+    width: 45px;    /* Largura idêntica à altura para fazer um círculo perfeito */
+    height: 45px;   /* Altura idêntica */
+    background-color: #e74c3c; /* Vermelho moderno (Alizarin) */
+    color: #ffffff; /* Ícone branco */
+    border: none;
+    border-radius: 50%; /* Deixa o botão perfeitamente redondo */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem; /* Tamanho da seta */
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* Sombra leve vermelha */
+    transition: all 0.2s ease-in-out;
+    z-index: 10000; /* Garante que ele fique acima de outros elementos do quiz */
+}
+
+/* Efeito de Hover (Passar o mouse) */
+.btn-sair:hover {
+    background-color: #c0392b; /* Vermelho um pouco mais escuro */
+    transform: scale(1.08); /* Dá uma leve aumentada ao passar o mouse */
+    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
+}
+
+/* Efeito de Clique */
+.btn-sair:active {
+    transform: scale(0.95); /* Dá um efeito de "afundar" ao clicar */
+}
+
+/* ==========================================================================
+   MODAL DE CONFIRMAÇÃO DE SAÍDA
+   ========================================================================== */
+
+/* O overlay (fundo escurecido que cobre toda a tela) */
 .modal-confirmar-saida {
-    position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(21, 45, 83, 0.5);
-        backdrop-filter: blur(5px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        animation: fadeInBg 0.4s ease forwards;
+    display: none; /* <-- ESSENCIAL: Começa totalmente escondida */
+    position: fixed !important; /* Força a modal a sair do fluxo do Flexbox */
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ocupa 100% da largura da janela */
+    height: 100vh; /* Ocupa 100% da altura da janela */
+    background-color: rgba(0, 0, 0, 0.6); /* Fundo escurecido */
+    backdrop-filter: blur(5px); /* Efeito blur no quiz atrás */
+    justify-content: center;
+    align-items: center;
+    z-index: 99999; /* Garante que fique por cima de absolutamente tudo */
+}
+
+/* O card centralizado */
+.modal-confirmar-saida-card {
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 450px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    
+    /* Animação suave ao aparecer */
+    animation: aparecerModal 0.3s ease-out;
+}
+
+/* Título da Modal */
+.modal-confirmar-saida-card h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
+    font-weight: 700;
+}
+
+/* Subtítulo / Texto explicativo */
+.modal-confirmar-saida-card p {
+    color: #7f8c8d;
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}
+
+/* Container dos botões */
+.modal-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px; /* Espaçamento entre os botões */
+}
+
+/* Estilização Geral dos Botões da Modal */
+.modal-buttons button {
+    padding: 12px 24px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1; /* Faz os dois botões terem exatamente o mesmo tamanho */
+}
+
+/* Botão Principal (Não, Continuar) - Destacado para o usuário não sair sem querer */
+.btn-primary {
+    background-color: #3498db; /* Azul combinando com o Lumine */
+    color: #ffffff;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Botão Secundário (Sim, Sair) - Mais discreto ou com tom de aviso */
+.btn-secondary {
+    background-color: #ecf0f1;
+    color: #7f8c8d;
+}
+
+.btn-secondary:hover {
+    background-color: #e74c3c; /* Fica vermelho ao passar o mouse, indicando perigo/saída */
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* Efeito de clique nos botões */
+.modal-buttons button:active {
+    transform: translateY(0);
+}
+
+/* Keyframes para a animação de entrada */
+@keyframes aparecerModal {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* ==========================================================================

@@ -334,10 +334,30 @@ function fecharModal() {
 }
 
 function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.getElementById('mainContainer');
-    sidebar.classList.toggle('open');
-    main.classList.toggle('sidebar-open');
+    // 900px é o limite exato que está configurado no seu arquivo home.css
+    if (window.innerWidth <= 900) {
+        
+        // ==================================================================
+        // COMPORTAMENTO MOBILE (Celular / Tablet)
+        // ==================================================================
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenu) {
+            mobileMenu.classList.toggle('active');
+        }
+        document.body.classList.toggle('no-scroll');
+
+    } else {
+        
+        // ==================================================================
+        // COMPORTAMENTO DESKTOP (O seu código original intacto!)
+        // ==================================================================
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('mainContainer');
+        
+        if (sidebar) sidebar.classList.toggle('open');
+        if (main) main.classList.toggle('sidebar-open');
+        
+    }
 }
 
 window.onclick = (event) => {

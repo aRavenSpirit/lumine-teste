@@ -632,22 +632,37 @@ function gerenciarAvisoSaida(e) {
 }
 window.addEventListener('beforeunload', gerenciarAvisoSaida);
 
-
-
-// Função para abrir a sua modal quando o usuário clica num link interno
-function tentarSairInternamente(event) {
-    event.preventDefault(); // Impede que o link vá para outra página imediatamente
-    document.getElementById('modal-confirmar-saida').style.display = 'flex';
+// Abre a modal mudando o display para FLEX
+function toggleModalSaida(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation(); // Impede interferências com elementos do fundo
+    }
+    const modal = document.getElementById('modal-confirmar-saida');
+    if (modal) {
+        modal.style.display = 'flex'; 
+    } else {
+        console.error("Erro: A modal 'modal-confirmar-saida' não foi encontrada no HTML.");
+    }
 }
 
-// Função para fechar a modal (caso o usuário clique em "Não, Continuar")
+// Fecha a modal voltando o display para NONE
 function fecharModalSaida() {
-    document.getElementById('modal-confirmar-saida').style.display = 'none';
+    const modal = document.getElementById('modal-confirmar-saida');
+    if (modal) {
+        modal.style.display = 'none';
+    }
 }
 
-// Exemplo: se você tiver um botão ou link de voltar na tela do quiz
-// <a href="home.php" id="link-voltar-quiz">Voltar</a>
-document.getElementById('link-voltar-quiz')?.addEventListener('click', tentarSairInternamente);
+// Executa a saída real ao confirmar
+function confirmarSaida() {
+    // 1. CORREÇÃO: Remove o escutador usando o nome correto da sua função para destravar a aba
+    window.removeEventListener('beforeunload', gerenciarAvisoSaida);
+    
+    // 2. CORREÇÃO: Redireciona de forma direta. 
+    // Se home.php está na mesma pasta que quiz.php, use apenas 'home.php'
+    window.location.href = 'home.php';
+}
 
 
 let notaSelecionada = 0;

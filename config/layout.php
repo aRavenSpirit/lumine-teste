@@ -34,22 +34,19 @@ function renderHeader() {
     <?php
 }
 
-    // Função para a Sidebar
-// Função para a Sidebar
-function renderSidebar() {
-    // 1. Pega o nome do arquivo atual que está rodando (ex: home.php, quiz.php, index.php)
+function renderSidebar($isQuiz = false) {
     $pagina_atual = basename($_SERVER['SCRIPT_NAME']);
-
-    // 2. Define a lógica do link da logo
-    if ($pagina_atual === 'home.php') {
-        // Se já estiver na home, a logo manda para a página inicial pública (index.html ou index.php)
-        $link_logo = "../public/index.html"; 
-    } else {
-        // Se estiver em qualquer outra página (quiz, sobre, novidades, etc), volta para a home.php
-        $link_logo = "home.php";
-    }
+    $link_logo = ($pagina_atual === 'home.php') ? "../public/index.html" : "home.php";
     ?>
+    
     <aside class="sidebar" id="sidebar">
+        <?php if ($isQuiz): ?>
+            <button class="btn-sair-flutuante" onclick="toggleModalSaida(event)" title="Sair do Quiz">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span class="btn-sair-text">Sair do Quiz</span>
+            </button>
+        <?php endif; ?>
+
         <div class="sidebar-header">
             <div class="logo-container">
                 <a href="<?php echo $link_logo; ?>">
@@ -60,6 +57,7 @@ function renderSidebar() {
                 <i class="fa-solid fa-bars"></i>
             </div>
         </div>
+
         <nav id="menuMaterias"></nav>
     </aside>
 
@@ -67,6 +65,13 @@ function renderSidebar() {
         <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
         <div class="mobile-menu-scroll">
             <nav class="nav-links-mobile">
+                <?php if ($isQuiz): ?>
+                    <li>
+                        <a href="#" onclick="toggleModalSaida(event)" style="color: #e74c3c; font-weight: bold;">
+                            <i class="fa-solid fa-arrow-left"></i> SAIR DO QUIZ
+                        </a>
+                    </li>
+                <?php endif; ?>
                 <li><a href="sobre.php">Sobre nós</a></li>
                 <li><a href="novidades.php">Novidades</a></li>
                 <li><a href="home.php">Todos os quizzes</a></li>
@@ -78,7 +83,6 @@ function renderSidebar() {
     </div>
     <?php
 }
-
     // Função para o Footer (Rodapé)
     function renderFooter() {
         ?>

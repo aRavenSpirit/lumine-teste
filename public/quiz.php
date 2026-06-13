@@ -16,7 +16,8 @@
 </head>
 <body>
 
-    <?php renderSidebar(); // Renderiza a sidebar ?>
+        
+    <?php renderSidebar(true); // Ativa o botão de sair! ?>
 
     <div class="main-container" id="mainContainer">
 
@@ -83,16 +84,17 @@
         </div>
     </div>  
 
-    <div class="modal-confirmar-saida" id="modal-confirmar-saida" style="display: none;">
-        <div class="modal-confirmar-saida-card">
-            <h2>Tem certeza que deseja sair?</h2>
-            <p>Se você sair agora, perderá todo o progresso do quiz atual.</p>
-            <div class="modal-buttons">
-                <button id="btn-confirmar-saida" class="btn-secondary" onclick="window.location.href='home.php'">Sim, Sair</button>
-                <button id="btn-cancelar-saida" class="btn-primary" onclick="fecharModalSaida()">Não, Continuar</button>
-            </div>
+<div class="modal-confirmar-saida" id="modal-confirmar-saida">
+    <div class="modal-confirmar-saida-card">
+        <h2>Tem certeza que deseja sair?</h2>
+        <p>Se você sair agora, perderá todo o progresso do quiz atual.</p>
+        
+        <div class="modal-buttons">
+            <button id="btn-confirmar-saida" class="btn-secondary" onclick="confirmarSaida()">Sim, Sair</button>
+            <button id="btn-cancelar-saida" class="btn-primary" onclick="fecharModalSaida()">Não, Continuar</button>
         </div>
     </div>
+</div>
 
     <div id="modal-avaliacao" class="modal-avaliacao" style="display: none;">
         <div id="container-avaliacao" class="modal-content text-center">
@@ -196,10 +198,30 @@
         }
 
         function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            const main = document.getElementById('mainContainer');
-            if(sidebar) sidebar.classList.toggle('open');
-            if(main) main.classList.toggle('sidebar-open');
+            // 900px é o limite exato que está configurado no seu arquivo home.css
+            if (window.innerWidth <= 900) {
+                
+                // ==================================================================
+                // COMPORTAMENTO MOBILE (Celular / Tablet)
+                // ==================================================================
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (mobileMenu) {
+                    mobileMenu.classList.toggle('active');
+                }
+                document.body.classList.toggle('no-scroll');
+
+            } else {
+                
+                // ==================================================================
+                // COMPORTAMENTO DESKTOP (O seu código original intacto!)
+                // ==================================================================
+                const sidebar = document.getElementById('sidebar');
+                const main = document.getElementById('mainContainer');
+                
+                if (sidebar) sidebar.classList.toggle('open');
+                if (main) main.classList.toggle('sidebar-open');
+                
+            }
         }
         
         function revisarRespostas() {
