@@ -264,7 +264,7 @@ function carregarConteudos(idMateria, nomeMateria) {
                     html += `
                         <div onclick="abrirModalQuizzes(${c.id}, '${c.nome}')" class="card-materia">
                             <div class="card-banner">
-                                <img src="${imagemCard}" onerror="this.src='img/LUMINE-5con.ico'">
+                                <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
                             </div>
                             <div class="card-body">
                                 <p>${c.nome}</p>
