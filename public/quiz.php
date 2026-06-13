@@ -81,6 +81,17 @@
                 Avançar <i class="fas fa-arrow-right"></i>
             </button>
         </div>
+    </div>  
+
+    <div class="modal-confirmar-saida" id="modal-confirmar-saida" style="display: none;">
+        <div class="modal-confirmar-saida-card">
+            <h2>Tem certeza que deseja sair?</h2>
+            <p>Se você sair agora, perderá todo o progresso do quiz atual.</p>
+            <div class="modal-buttons">
+                <button id="btn-confirmar-saida" class="btn-secondary" onclick="window.location.href='home.php'">Sim, Sair</button>
+                <button id="btn-cancelar-saida" class="btn-primary" onclick="fecharModalSaida()">Não, Continuar</button>
+            </div>
+        </div>
     </div>
 
     <div id="modal-avaliacao" class="modal-avaliacao" style="display: none;">

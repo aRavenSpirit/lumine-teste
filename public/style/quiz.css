@@ -752,6 +752,22 @@ div[id^="drag_"] {
     transform: scale(1.18);
 }
 
+.modal-confirmar-saida {
+    position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(21, 45, 83, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: fadeInBg 0.4s ease forwards;
+}
+
 /* ==========================================================================
    MECÂNICA KEYFRAMES DAS ANIMAÇÕES
    ========================================================================== */

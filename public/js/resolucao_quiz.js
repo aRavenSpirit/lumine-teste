@@ -633,6 +633,23 @@ function gerenciarAvisoSaida(e) {
 window.addEventListener('beforeunload', gerenciarAvisoSaida);
 
 
+
+// Função para abrir a sua modal quando o usuário clica num link interno
+function tentarSairInternamente(event) {
+    event.preventDefault(); // Impede que o link vá para outra página imediatamente
+    document.getElementById('modal-confirmar-saida').style.display = 'flex';
+}
+
+// Função para fechar a modal (caso o usuário clique em "Não, Continuar")
+function fecharModalSaida() {
+    document.getElementById('modal-confirmar-saida').style.display = 'none';
+}
+
+// Exemplo: se você tiver um botão ou link de voltar na tela do quiz
+// <a href="home.php" id="link-voltar-quiz">Voltar</a>
+document.getElementById('link-voltar-quiz')?.addEventListener('click', tentarSairInternamente);
+
+
 let notaSelecionada = 0;
 
 function inicializarSistemaEstrelas() {
