@@ -582,6 +582,26 @@ async function finalizarQuiz() {
             // Exibe a modal na tela (muda de display: none para flex)
             document.getElementById('modal-resultado').style.display = 'flex';
 
+
+            //Modal de avaliações
+
+            // Alimenta os dados nos elementos do HTML
+            document.getElementById('modal-acertos').innerText = `${acertos} / ${totalQuestoes}`;
+
+            // Modificado para abrir a modal de avaliação em vez de ir direto para a home
+            document.getElementById('btn-modal-home').onclick = function() {
+                window.removeEventListener('beforeunload', gerenciarAvisoSaida);
+                window.onbeforeunload = null;
+                
+                document.getElementById('modal-resultado').style.display = 'none';
+                document.getElementById('modal-avaliacao').style.display = 'flex';
+                
+                inicializarSistemaEstrelas();
+            };
+
+            // Exibe a modal na tela (muda de display: none para flex)
+            document.getElementById('modal-resultado').style.display = 'flex';
+
         } else {
             alert("Erro ao salvar: " + resultado.erro);
             reativarQuiz();
@@ -611,3 +631,84 @@ function gerenciarAvisoSaida(e) {
     return e.returnValue;
 }
 window.addEventListener('beforeunload', gerenciarAvisoSaida);
+
+
+let notaSelecionada = 0;
+
+function inicializarSistemaEstrelas() {
+    const containerAvaliacao = document.getElementById('container-avaliacao'); // A div que envolve as estrelas
+
+    fetch('../config/quiz.php?tipo=checar_avaliacao')
+        .then(res => res.json())
+        .then(data => {
+            if (data.avaliou) {
+                // MÁGICA AQUI: O usuário já avaliou a plataforma. 
+                // Em vez de só esconder a caixa e travar no blur, voltamos direto pra home!
+                window.location.href = 'home.php';
+                return; 
+            } else {
+                // Se não avaliou, prepara o evento das estrelas normalmente
+                configurarEventosDasEstrelas();
+            }
+        })
+        .catch(err => console.error("Erro ao verificar avaliação", err));
+}
+
+function configurarEventosDasEstrelas() {
+    const estrelas = document.querySelectorAll('.rating-stars i');
+    const btnEnviarAvaliacao = document.getElementById('btn-enviar-avaliacao');
+    const avaliacaoValor = document.getElementById('avaliacao-valor');
+    let notaSelecionada = 0;
+
+    estrelas.forEach(estrela => {
+        estrela.addEventListener('mouseover', function() {
+            atualizarVisualEstrelas(estrelas, this.getAttribute('data-value'));
+        });
+
+        estrela.addEventListener('mouseout', function() {
+            atualizarVisualEstrelas(estrelas, notaSelecionada);
+        });
+
+        estrela.addEventListener('click', function() {
+            notaSelecionada = parseInt(this.getAttribute('data-value'));
+            atualizarVisualEstrelas(estrelas, notaSelecionada);
+            if (avaliacaoValor) avaliacaoValor.innerText = notaSelecionada;
+            if (btnEnviarAvaliacao) btnEnviarAvaliacao.disabled = false;
+        });
+    });
+
+    if (btnEnviarAvaliacao) {
+        btnEnviarAvaliacao.onclick = function() {
+            // RESTAURADO: Exigimos que a variável quizId exista.
+            if (notaSelecionada === 0 || !quizId) return alert("Selecione uma nota antes de enviar.");
+
+            fetch('../config/quiz.php?tipo=salvar_feedback', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                // RESTAURADO: Enviamos o quiz_id novamente!
+                body: JSON.stringify({ quiz_id: quizId, nota: notaSelecionada })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.sucesso) window.location.href = 'home.php';
+                else alert("Falha: " + data.erro);
+            })
+            .catch(err => {
+                console.error("Erro:", err);
+                window.location.href = 'home.php';
+            });
+        };
+    }
+}
+
+function atualizarVisualEstrelas(listaEstrelas, valorLimite) {
+    listaEstrelas.forEach(est => {
+        if (est.getAttribute('data-value') <= valorLimite) {
+            est.classList.replace('fa-regular', 'fa-solid');
+            est.style.color = '#f1c40f';
+        } else {
+            est.classList.replace('fa-solid', 'fa-regular');
+            est.style.color = '#ccc';
+        }
+    });
+}

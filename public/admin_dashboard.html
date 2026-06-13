@@ -169,11 +169,12 @@
                     <td>${u.nome}</td>
                     <td>${u.email}</td>
                     <td>${u.nome_escolaridade || 'Não informado'}</td>
-                    <td><button class="btn-excluir" onclick="confirmarExclusao('usuario', ${u.id})">Excluir</button></td>
+                    <td><button class="btn-excluir" onclick="confirmarExclusao('usuario', '${u.id}')">Excluir</button></td>
                 </tr>`;
             });
             html += `</tbody></table>`;
         } 
+        // SUBSTUIA OU ADICIONE APENAS ESTA CONDICIONAL NO SEU abrirModal(tipo)
         else if (tipo === 'quizzes') {
             html = `<table class="admin-table">
                 <thead>
@@ -187,17 +188,63 @@
                 else if (d.includes("inter")) cl = "dif-intermediario";
                 else if (d.includes("dif")) cl = "dif-dificil";
 
+                // Repare nas crases abrindo a linha abaixo e no ${q.id} formatado corretamente
                 html += `<tr id="row-quiz-${q.id}">
                     <td>${q.nome_quiz}</td><td>${q.nome_materia}</td><td>${q.nome_conteudo}</td>
                     <td align="center">${q.total_perguntas}</td>
                     <td align="center"><span class="tag-dificuldade ${cl}">${q.nome_dificuldade}</span></td>
                     <td>
                         <button class="btn-editar" onclick="location.href='editar_quiz.html?id=${q.id}'">Editar</button>
-                        <button class="btn-excluir" onclick="confirmarExclusao('quiz', ${q.id})">Excluir</button>
+                        
+                        <button class="btn-excluir" onclick="confirmarExclusao('quiz', '${q.id}')">Excluir</button>
                     </td>
                 </tr>`;
             });
             html += `</tbody></table>`;
+        }
+        else if (tipo === 'avaliacoes') {
+            let soma = 0;
+            dados.forEach(a => soma += parseFloat(a.nota || 0));
+            const media = dados.length > 0 ? (soma / dados.length).toFixed(1) : "0.0";
+
+            html = `<div class="container-split-modal">
+                <div class="coluna-lista-avaliacoes">
+                    <table class="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Usuário</th>
+                                <th>Quiz Onde Avaliou</th>
+                                <th>Nota</th>
+                            </tr>
+                        </thead>
+                        <tbody>`;
+            
+            dados.forEach(a => {
+                let estrelasLinha = "";
+                for(let i = 1; i <= 5; i++) {
+                    estrelasLinha += i <= a.nota ? '<i class="fa-solid fa-star" style="color: #f1c40f;"></i>' : '<i class="fa-regular fa-star" style="color: #ccc;"></i>';
+                }
+                html += `<tr>
+                    <td>${a.nome_usuario || 'Anônimo'}</td>
+                    <td>${a.nome_quiz || 'Quiz Excluído'}</td>
+                    <td><div class="estrelas-celula">${estrelasLinha} <span class="num-nota">(${a.nota})</span></div></td>
+                </tr>`;
+            });
+
+            html += `    </tbody>
+                    </table>
+                </div>
+                <div class="coluna-card-media">
+                    <div class="card-media-geral">
+                        <h4>Média Geral</h4>
+                        <div class="media-score">${media}</div>
+                        <div class="media-estrela-grande">
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+                        <p>Baseado em ${dados.length} avaliações</p>
+                    </div>
+                </div>
+            </div>`;
         }
         corpo.innerHTML = html || "<p>Nenhum registro.</p>";
         document.getElementById('modal').style.display = 'flex';

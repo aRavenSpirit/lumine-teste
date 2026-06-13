@@ -83,6 +83,27 @@
         </div>
     </div>
 
+    <div id="modal-avaliacao" class="modal-avaliacao" style="display: none;">
+        <div id="container-avaliacao" class="modal-content text-center">
+            <h2>Avalie este Quiz</h2>
+            
+            <div class="rating-stars">
+                <i class="fa-regular fa-star" data-value="1"></i>
+                <i class="fa-regular fa-star" data-value="2"></i>
+                <i class="fa-regular fa-star" data-value="3"></i>
+                <i class="fa-regular fa-star" data-value="4"></i>
+                <i class="fa-regular fa-star" data-value="5"></i>
+            </div>
+
+             <p>Sua avaliação foi de <span id="avaliacao-valor">0</span> estrelas</p>
+
+            <div class="modal-buttons">
+                <button id="btn-enviar-avaliacao" class="btn-primary" disabled>Enviar Avaliação</button>
+                <button onclick="window.location.href='home.php'" class="btn-secondary">Pular</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/resolucao_quiz.js"></script>
     <script>
         const apiHome = "../config/home.php";

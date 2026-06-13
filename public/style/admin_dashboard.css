@@ -265,6 +265,91 @@ header {
     position: relative;
 }
 
+
+/* ==========================================================================
+   ESTRUTURA DE DUAS COLUNAS PARA A MODAL DE AVALIAÇÕES
+   ========================================================================== */
+.container-split-modal {
+    display: flex;
+    gap: 25px;
+    align-items: flex-start;
+    text-align: left;
+}
+
+.coluna-lista-avaliacoes {
+    flex: 2;
+    max-height: 400px;
+    overflow-y: auto;
+    border: 2px solid #000;
+    border-radius: 8px;
+}
+
+.coluna-card-media {
+    flex: 1;
+    position: sticky;
+    top: 0;
+}
+
+.card-media-geral {
+    background-color: #ffffff;
+    border: 3px solid #000000;
+    border-radius: 16px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 4px 4px 0px #000000;
+}
+
+.card-media-geral h4 {
+    font-size: 1.2rem;
+    margin: 0 0 10px 0;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.card-media-geral .media-score {
+    font-size: 3.5rem;
+    font-weight: 900;
+    color: #152d53;
+    line-height: 1;
+    margin-bottom: 5px;
+}
+
+.card-media-geral .media-estrela-grande i {
+    font-size: 3.2rem;
+    color: #f1c40f;
+    filter: drop-shadow(2px 2px 0px #000);
+    margin-bottom: 10px;
+}
+
+.card-media-geral p {
+    font-size: 0.9rem;
+    color: #555;
+    margin: 5px 0 0 0;
+    font-weight: bold;
+}
+
+.estrelas-celula {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+}
+
+.estrelas-celula i {
+    font-size: 0.95rem;
+}
+
+.num-nota {
+    font-weight: bold;
+    margin-left: 4px;
+    color: #444;
+}
+
+@media screen and (max-width: 768px) {
+    .container-split-modal { flex-direction: column-reverse; }
+    .coluna-card-media { width: 100%; }
+}
+
 /* Responsividade Básica */
 @media (max-width: 768px) {
     .cards-container, .charts-container {

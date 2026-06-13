@@ -319,6 +319,17 @@ CREATE TABLE feedbacks_usuarios (
     data_envio datetime default current_timestamp
 );
 
+
+CREATE TABLE avaliacoes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    id_usuario INT,
+    id_quiz INT,
+    nota INT NOT NULL,
+    data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_quiz) REFERENCES quizzes(id)
+);
+
 -- Exemplo caso o usuário quiser alterar a cor do fundo
     UPDATE configuracoes 
     SET tema_escuro = 1 

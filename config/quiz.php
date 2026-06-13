@@ -25,6 +25,82 @@
         exit;
     }
 
+// =========================================================================
+// ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU A PLATAFORMA (NOVA)
+// =========================================================================
+if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+    
+    $id_usuario = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 0; 
+
+    if ($id_usuario > 0) {
+        $stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ?");
+        $stmt->bind_param("i", $id_usuario);
+        $stmt->execute();
+        $stmt->store_result();
+        
+        $ja_avaliou = $stmt->num_rows > 0; // Se for maior que 0, ele já avaliou
+        $stmt->close();
+        
+        echo json_encode(["avaliou" => $ja_avaliou]);
+    } else {
+        echo json_encode(["avaliou" => false]);
+    }
+    exit;
+}
+
+// =========================================================================
+// ROTA PARA SALVAR A AVALIAÇÃO DA PLATAFORMA (1 POR USUÁRIO)
+// =========================================================================
+if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    $data = json_decode(file_get_contents("php://input"), true);
+    
+    // RESTAURADO: Capturamos o quiz_id normalmente. Não excluímos nada!
+    $quiz_id = isset($data['quiz_id']) ? intval($data['quiz_id']) : 0;
+    $nota = isset($data['nota']) ? intval($data['nota']) : 0;
+    $id_usuario = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 0; 
+
+    if ($id_usuario === 0) {
+        echo json_encode(["sucesso" => false, "erro" => "Sessão expirada."]);
+        exit;
+    }
+
+    if ($quiz_id > 0 && $nota > 0) {
+        // TRAVA MANTIDA: Verifica se o usuário já avaliou a plataforma antes
+        $check_stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ?");
+        $check_stmt->bind_param("i", $id_usuario);
+        $check_stmt->execute();
+        $check_stmt->store_result();
+
+        if ($check_stmt->num_rows > 0) {
+            $check_stmt->close();
+            echo json_encode(["sucesso" => true]); // Finge que salvou para não travar a tela
+            exit;
+        }
+        $check_stmt->close();
+
+        // RESTAURADO: Inserimos com todas as 3 informações (id_quiz, id_usuario, nota)
+        $stmt = $conn->prepare("INSERT INTO avaliacoes (id_quiz, id_usuario, nota) VALUES (?, ?, ?)");
+        $stmt->bind_param("iii", $quiz_id, $id_usuario, $nota);
+        
+        if ($stmt->execute()) {
+            echo json_encode(["sucesso" => true]);
+        } else {
+            echo json_encode(["sucesso" => false, "erro" => "Erro SQL: " . $stmt->error]);
+        }
+        $stmt->close();
+    } else {
+        echo json_encode(["sucesso" => false, "erro" => "Dados inválidos."]);
+    }
+    exit;
+}
+
     if (isset($_GET['tipo']) && $_GET['tipo'] == 'detalhes_quiz') {
         $id_quiz = intval($_GET['id']);
 

@@ -63,35 +63,51 @@
         }
     }
     
-    else if ($tipo == 'quiz') {
-        
-        // Iniciando transação para garantir que apague tudo ou nada
+   if ($tipo === 'quiz') {
+        // Inicia a transação de segurança
         $conn->begin_transaction();
 
         try {
-            // 1. Deletar tentativas primeiro (Garante que a FK não trave o processo)
-            $sql_tentativas = "DELETE FROM tentativas WHERE id_quiz = $id";
-            $conn->query($sql_tentativas);
+            // 0º Passo: Apaga as TENTATIVAS (O vilão secreto que estava bloqueando tudo!)
+            $stmt0 = $conn->prepare("DELETE FROM tentativas WHERE id_quiz = ?");
+            $stmt0->bind_param("i", $id);
+            if (!$stmt0->execute()) throw new Exception("Falha ao apagar tentativas: " . $stmt0->error);
+            $stmt0->close();
 
-            // 2. Deletar as respostas vinculadas às perguntas deste quiz
-            $sql_respostas = "DELETE FROM respostas WHERE id_pergunta IN (SELECT id FROM perguntas WHERE id_quiz = $id)";
-            $conn->query($sql_respostas);
+            // 1º Passo: Apaga as avaliações vinculadas a esse quiz
+            $stmt1 = $conn->prepare("DELETE FROM avaliacoes WHERE id_quiz = ?");
+            $stmt1->bind_param("i", $id);
+            if (!$stmt1->execute()) throw new Exception("Falha ao apagar avaliações: " . $stmt1->error);
+            $stmt1->close();
 
-            // 3. Deletar as perguntas vinculadas a este quiz
-            $sql_perguntas = "DELETE FROM perguntas WHERE id_quiz = $id";
-            $conn->query($sql_perguntas);
+            // 2º Passo: Apaga as respostas 
+            $stmt2 = $conn->prepare("DELETE r FROM respostas r JOIN perguntas p ON r.id_pergunta = p.id WHERE p.id_quiz = ?");
+            $stmt2->bind_param("i", $id);
+            if (!$stmt2->execute()) throw new Exception("Falha ao apagar respostas: " . $stmt2->error);
+            $stmt2->close();
 
-            // 4. Deletar o quiz principal
-            $sql_quiz = "DELETE FROM quizzes WHERE id = $id";
-            $conn->query($sql_quiz);
+            // 3º Passo: Apaga as perguntas 
+            $stmt3 = $conn->prepare("DELETE FROM perguntas WHERE id_quiz = ?");
+            $stmt3->bind_param("i", $id);
+            if (!$stmt3->execute()) throw new Exception("Falha ao apagar perguntas: " . $stmt3->error);
+            $stmt3->close();
 
+            // 4º Passo: Finalmente, apaga o QUIZ livre de amarras!
+            $stmt4 = $conn->prepare("DELETE FROM quizzes WHERE id = ?");
+            $stmt4->bind_param("i", $id);
+            if (!$stmt4->execute()) throw new Exception("Falha ao apagar o quiz: " . $stmt4->error);
+            $stmt4->close();
+
+            // Se tudo deu certo, confirma as exclusões no banco!
             $conn->commit();
             echo json_encode(["status" => true]);
 
         } catch (Exception $e) {
+            // Desfaz tudo e envia o erro exato para o console se der ruim
             $conn->rollback();
-            echo json_encode(["status" => false, "erro" => "Erro ao deletar quiz e dependências: " . $e->getMessage()]);
+            echo json_encode(["status" => false, "erro" => $e->getMessage()]);
         }
+        exit;
     }
     exit;
 ?>

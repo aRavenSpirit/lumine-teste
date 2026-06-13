@@ -688,6 +688,69 @@ div[id^="drag_"] {
     animation: slideFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
 }
 
+/* ==========================================================================
+   SISTEMA DE AVALIAÇÃO DO QUIZ (APENAS ESTRELAS)
+   ========================================================================== */
+
+   .modal-avaliacao{
+        position: fixed;
+        z-index: 9999;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(21, 45, 83, 0.5);
+        backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        animation: fadeInBg 0.4s ease forwards;
+        
+   }
+#modal-avaliacao .modal-content {
+    text-align: center;
+    padding: 30px;
+}
+
+#modal-avaliacao h2 {
+    font-size: 1.8rem;
+    color:#f0f9ff;
+    background-color: #229df5;
+    padding: 20px;
+    border-radius: 30px;
+    width: fit-content;
+    text-align: center;
+    margin: 0 auto;
+    font-weight: 800;
+}
+
+#modal-avaliacao p {
+    font-size: 1rem;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Container centralizado das estrelas */
+.rating-stars {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+/* Estilo individual de cada estrela */
+.rating-stars i {
+    font-size: 2.6rem;
+    cursor: pointer;
+    color: #ccc;
+    transition: transform 0.2s ease, color 0.2s ease;
+}
+
+/* Efeito de crescimento sutil no hover */
+.rating-stars i:hover {
+    transform: scale(1.18);
+}
 
 /* ==========================================================================
    MECÂNICA KEYFRAMES DAS ANIMAÇÕES

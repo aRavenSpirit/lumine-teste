@@ -53,6 +53,34 @@
         $resSem = $conn->query("SELECT DAYOFWEEK(criacao) as dia, COUNT(*) as qtd FROM usuario GROUP BY dia");
         while($row = $resSem->fetch_assoc()) $response["graficoSemana"][(int)$row['dia'] - 1] = (int)$row['qtd'];
 
+        // =========================================================================
+        // BUSCA DE DADOS BASEADA NA NOVA TABELA DE AVALIAÇÕES (admin_data.php)
+        // =========================================================================
+        
+        // 1. Alimenta o card superior do Dashboard com o total real de avaliações
+        $resAval = $conn->query("SELECT COUNT(*) as total FROM avaliacoes");
+        $response["cards"]["avaliacoes"] = (int)$resAval->fetch_assoc()['total'];
+
+        // 2. Busca detalhada com os JOINs corretos para listar dentro da Modal
+        $sqlDetAval = "SELECT 
+                        a.nota,
+                        u.nome AS nome_usuario,
+                        q.nome AS nome_quiz
+                    FROM avaliacoes a
+                    LEFT JOIN usuario u ON a.id_usuario = u.id
+                    LEFT JOIN quizzes q ON a.id_quiz = q.id";
+
+        // =========================================================================
+        // A SOLUÇÃO ESTÁ AQUI: O código abaixo faltava para executar a busca!
+        // =========================================================================
+        $resDetAval = $conn->query($sqlDetAval);
+        if ($resDetAval) {
+            while($row = $resDetAval->fetch_assoc()) {
+                $response["detalhes"]["avaliacoes"][] = $row;
+            }
+        }
+        // =========================================================================
+
     } catch (Exception $e) {}
 
     echo json_encode($response);
