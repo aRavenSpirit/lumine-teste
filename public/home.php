@@ -266,7 +266,7 @@ function carregarMenuSidebar() {
                 cardsIniciais += `
                     <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                         <div class="card-banner">
-                            <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
+                            <img src="img/${nomeLimpo}.webp" onerror="this.src='img/indisponivel.png'">
                         </div>
                         <div class="card-body" style="background-color: ${corDoCard} !important;"><p>${m.nome_materia}</p></div>
                     </div>`;

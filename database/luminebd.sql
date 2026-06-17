@@ -50,7 +50,9 @@ insert into materia (nome_materia) values
 ('Biologia'),
 ('Inglês'),
 ('Artes'),
-('Educação Física');
+('Educação Física'),
+('Filosofia'),
+('Sociologia');
 
 
 create table conteudo(
@@ -203,6 +205,15 @@ create table conteudo(
         ('Jogos e Brincadeiras', 11),
         ('Regras dos Esportes', 11);
         
+    -- FILOSOFIA
+        
+    INSERT INTO conteudo (nome, id_materia) VALUES
+        ('Socrates', 12);
+
+    -- SOCIOLOGIA
+        
+    INSERT INTO conteudo (nome, id_materia) VALUES
+        ('Teoria Classica', 13);
 
 create table dificuldade (
     id int primary key auto_increment,
@@ -316,7 +327,6 @@ CREATE TABLE feedbacks_usuarios (
     mensagem text,
     data_envio datetime default current_timestamp
 );
-
 
 CREATE TABLE avaliacoes (
     id INT AUTO_INCREMENT PRIMARY KEY,

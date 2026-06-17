@@ -2,6 +2,14 @@
 // Função para o Header (Navbar)
 function renderHeader() {
     ?>
+    <link rel="stylesheet" href="./style/dark-mode.css">
+
+    <script>
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark-mode");
+        }
+    </script>
+    
     <header class="navbar-home">
         <div class="hamburger-mobile" onclick="toggleSidebar()">☰</div>
         <div class="mobile-logo-central">
@@ -86,6 +94,13 @@ function renderSidebar($isQuiz = false) {
     // Função para o Footer (Rodapé)
     function renderFooter() {
         ?>
+
+        <script>
+    // Verifica imediatamente ao carregar a página se o tema salvo é o escuro
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+</script>
         <footer>
             <div class="footer-section">
                 <h3>GERAL</h3>

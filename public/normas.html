@@ -65,6 +65,12 @@
 
     <script>
         function toggleMenu() { document.getElementById("mobileMenu").classList.toggle("active"); }
+    
+    // Verifica imediatamente ao carregar a página se o tema salvo é o escuro
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+
     </script>
 </body>
 </html>

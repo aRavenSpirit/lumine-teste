@@ -1,0 +1,129 @@
+/* ==========================================================================
+   LUMINE - CSS GLOBAL DO MODO ESCURO
+   ========================================================================== */
+
+/* 1. CONFIGURAÇÕES GERAIS DE FUNDO E TEXTO */
+body.dark-mode {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center;
+    color: #e0e0e0 !important;
+}
+
+.L { color: #00bf63; }
+.U { color: #0cc0df; }
+.M { color: #5170ff; }
+.I { color: #cb6ce6; }
+.N { color: #ff5757; }
+.E { color: #ffbd59; }
+
+
+/* 2. COMPONENTES DA PÁGINA INICIAL / INSTITUCIONAL (index.css) */
+body.dark-mode .navbar,
+body.dark-mode .mobile-menu {
+    background-color: #1a1a1a !important;
+    border-bottom: 1px solid #2d2d2d;
+}
+
+body.dark-mode .navbar .logo-section{
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .navbar .hamburger {
+    background-color: #1a1a1a;
+    color: #ffffff;
+    transition: all 0.3s ease;
+}
+
+body.dark-mode .navbar .hamburger:hover{
+    background: #5170ff;
+}
+body.dark-mode .nav-links a,
+body.dark-mode .mobile-menu a {
+    color: #ffffff;
+}
+
+
+
+body.dark-mode .nav-links .item-acessar {
+    color: #1a1a1a;
+}
+
+body.dark-mode .hero {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), url('../img/background-index-transparente.png') no-repeat center center;
+}
+
+body.dark-mode .hero .subtitle {
+    color: #e0e0e0;
+}
+
+body.dark-mode section,
+body.dark-mode .main-container {
+    background-color: #121212 !important;
+}
+
+body.dark-mode .legal-card,
+body.dark-mode .testimonial-card,
+body.dark-mode .accordion-item {
+    background-color: #1a1a1a !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+    border: 1px solid #2d2d2d;
+}
+
+body.dark-mode .accordion-header {
+    background-color: #222222 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode footer {
+    background-color: #1a1a1a !important;
+    border-top: 1px solid #2d2d2d !important;
+}
+
+body.dark-mode footer a,
+body.dark-mode footer p {
+    color: #b0b0b0 !important;
+}
+
+/* 3. COMPONENTES DO PAINEL INTERNO E QUIZZES (home.css / layout.php) */
+body.dark-mode .navbar-home {
+    background-color: #1a1a1a !important;
+    border-bottom: 1px solid #2d2d2d !important;
+}
+
+body.dark-mode .sidebar {
+    background-color: #1a1a1a !important;
+    border-right: 1px solid #2d2d2d !important;
+}
+
+body.dark-mode .sidebar a {
+    color: #ffffff !important;
+}
+
+body.dark-mode .sidebar a:hover,
+body.dark-mode .sidebar li.active a {
+    background-color: #2d2d2d !important;
+}
+
+body.dark-mode .nav-links-home a {
+    color: #ffffff !important;
+}
+
+body.dark-mode .quiz-card {
+    color: #1a1a1a;
+}
+
+/* Cards de Quiz, Comentários e Elementos Internos */
+body.dark-mode .card-respostas,
+body.dark-mode .comentario-form,
+body.dark-mode .welcome-section {
+    background-color: #1a1a1a !important;
+    border: 1px solid #2d2d2d !important;
+}
+
+body.dark-mode input,
+body.dark-mode textarea,
+body.dark-mode select {
+    background-color: #2d2d2d !important;
+    color: #ffffff !important;
+    border: 1px solid #444444 !important;
+}

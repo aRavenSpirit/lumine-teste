@@ -156,6 +156,102 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+
+        /* =========================================
+        ESTILOS DO MODO ESCURO
+        ========================================= */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        body.dark-mode h1, 
+        body.dark-mode h2, 
+        body.dark-mode h3 {
+            color: #ffffff;
+        }
+
+        body.dark-mode .main-container {
+            background-color: #1a1a1a;
+            color: #e0e0e0;
+        }
+
+        /* Modificando a Sidebar e Aside do Perfil */
+        body.dark-mode .container-aside {
+            background-color: #1e1e1e;
+            color: #fff;
+        }
+
+        body.dark-mode .btn-aba {
+            color: #aaa;
+        }
+
+        body.dark-mode .btn-aba:hover,
+        body.dark-mode .btn-aba.active {
+            background-color: #333;
+            color: #fff;
+        }
+
+        /* Modificando os formulários e linhas */
+        body.dark-mode .campo-row {
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .campo-grupo label {
+            color: #aaaaaa;
+        }
+
+        body.dark-mode input, 
+        body.dark-mode select {
+            background-color: #333 !important;
+            color: #fff !important;
+            border: 1px solid #555 !important;
+        }
+
+        /* Botões */
+        body.dark-mode .edit-btn, 
+        body.dark-mode .btn-salvar-final,
+        body.dark-mode .save-btn,
+        body.dark-mode .cancel-btn,
+        body.dark-mode .save-btn-modal {
+            background: #333;
+            color: #fff;
+            border: 1px solid #555;
+        }
+
+        body.dark-mode .edit-btn:hover, 
+        body.dark-mode .btn-salvar-final:hover {
+            background: #444;
+        }
+
+        /* Pílulas de Matérias */
+        body.dark-mode .materia-pill {
+            color: #fff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Controles de Estilo */
+        body.dark-mode .controles-estilizados {
+            background: #2a2a2a;
+            border: 2px solid #444;
+        }
+
+        /* Modal */
+        body.dark-mode .modal-content {
+            background-color: #222;
+            color: #fff;
+        }
+
+        /* Tabela de Histórico */
+        body.dark-mode .historico-table th, 
+        body.dark-mode .historico-table td {
+            border-bottom: 1px solid #333;
+        }
+
+        body.dark-mode .historico-table th {
+            color: #ccc;
+        }
     </style>
 </head>
 
@@ -192,6 +288,12 @@
 </div>
 
 <script>
+
+    // Verifica imediatamente ao carregar a página se o tema salvo é o escuro
+    if (localStorage.getItem("theme") === "dark") {
+        document.body.classList.add("dark-mode");
+    }
+
     const api = "../config/home.php"; 
     let dadosUsuarioLocal = {}; 
 
@@ -297,9 +399,9 @@
                         <div class="controles-estilizados">
                             <div class="controle-item">
                                 <span class="label-estilizada">Modo:</span>
-                                <select id="pref-tema" class="select-arredondado">
-                                    <option value="0" ${data.tema_escuro == 0 ? 'selected' : ''}>Claro</option>
-                                    <option value="1" ${data.tema_escuro == 1 ? 'selected' : ''}>Escuro</option>
+                                <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
+                                    <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
+                                    <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
                                 </select>
                             </div>
                             <div class="controle-item">
@@ -406,47 +508,64 @@
     }
 
     async function salvarConfiguracoesGerais() {
-        const formData = new FormData();
-        
-        // 1. Usa a ação correta que salva o JSON no banco sem quebrar
-        formData.append('acao', 'atualizar_preferencias_prepared');
-        
-        // 2. Coleta os valores usando os IDs REAIS que o seu sistema gera ('pref-tema' e 'pref-fonte')
-        const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
-        const fonte = document.getElementById('pref-fonte') ? document.getElementById('pref-fonte').value : 2;
-        formData.append('tema', tema);
-        formData.append('fonte', fonte);
-        
-        // 3. Coleta as cores de forma inteligente (Varre todos os inputs gerados na tela)
-        const objetoCores = {};
-        objetoCores['bg_claro'] = '#FFFFFF';
-        objetoCores['bg_escuro'] = '#121212';
-        
-        document.querySelectorAll('.materia-pill input[type="color"]').forEach(input => {
-            const materiaId = input.id.replace('picker-', ''); // Pega o nome certinho: matematica, artes, etc.
-            objetoCores[materiaId] = input.value;
-        });
-        
-        formData.append('cores', JSON.stringify(objetoCores)); 
-        
-        // 4. Usa o ID do usuário logado na sessão (com fallback para 1 caso a sessão caia)
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 1; ?>); 
-
-        try {
-            const res = await fetch(api, { method: 'POST', body: formData });
-            const result = await res.json();
-            
-            if (result && result.success) {
-                alert("Configurações salvas com sucesso!");
-                carregarPerfil('preferencias'); // Recarrega a aba para mostrar que salvou de verdade
-            } else {
-                alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
-            }
-        } catch (e) {
-            console.error("Erro ao salvar preferências", e);
-            alert("Não foi possível conectar ao servidor.");
-        }
+    const formData = new FormData();
+    
+    formData.append('acao', 'atualizar_preferencias_prepared');
+    
+    const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
+    const fonte = document.getElementById('pref-fonte') ? document.getElementById('pref-fonte').value : 2;
+    formData.append('tema', tema);
+    formData.append('fonte', fonte);
+    
+    // --- LÓGICA CORRETA: MODO ESCURO ---
+    if (String(tema) === "1") {
+        localStorage.setItem("theme", "dark");
+        document.body.classList.add("dark-mode");
+    } else {
+        localStorage.setItem("theme", "light");
+        document.body.classList.remove("dark-mode");
     }
+    // -----------------------------------
+    
+    const objetoCores = {};
+    objetoCores['bg_claro'] = '#FFFFFF';
+    objetoCores['bg_escuro'] = '#121212';
+    
+    document.querySelectorAll('.materia-pill input[type="color"]').forEach(input => {
+        const materiaId = input.id.replace('picker-', ''); 
+        objetoCores[materiaId] = input.value;
+    });
+    
+    formData.append('cores', JSON.stringify(objetoCores)); 
+    formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 1; ?>); 
+
+    try {
+        const res = await fetch(api, { method: 'POST', body: formData });
+        const result = await res.json();
+        
+        if (result && result.success) {
+            alert("Configurações salvas com sucesso!");
+            carregarPerfil('preferencias'); 
+        } else {
+            alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
+        }
+    } catch (e) {
+        console.error("Erro ao salvar", e);
+        alert("Não foi possível conectar ao servidor.");
+    }
+}
+
+// Função para pré-visualizar o tema instantaneamente ao trocar no select
+function mudarTemaAoVivo(valor) {
+    if (String(valor) === "1") {
+        // Se escolheu Escuro, adiciona a classe
+        document.body.classList.add("dark-mode");
+    } else {
+        // Se escolheu Claro (0), remove a classe e o layout volta ao padrão instantaneamente
+        document.body.classList.remove("dark-mode");
+    }
+}
+
 
     // --- FUNÇÕES DE MODAL E SALVAMENTO DO USUÁRIO ---
     async function openModalPerfil(campo) {
