@@ -1,0 +1,221 @@
+/* --- CONTAINER CENTRAL DE COMENTÁRIOS --- */
+.container-comentarios {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e3f0fe;
+    margin: 0 auto;
+}
+
+.container-comentarios h2 {
+    color: #1595C4; /* Azul padrão do rodapé do index */
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* --- ÁREA DE EXIBIÇÃO DOS COMENTÁRIOS (CARD-RESPOSTAS) --- */
+.card-respostas {
+    background-color: #f8fbff; /* Fundo suave das seções do index */
+    border-radius: 15px;
+    padding: 20px;
+    max-height: 450px;
+    overflow-y: auto;
+    margin-bottom: 30px;
+    border: 1px solid #d1def2;
+}
+
+/* Estilização de cada bloco de comentário inserido pelo JS */
+.comentario {
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    border-left: 5px solid #00bf63; /* Detalhe verde Lumine na esquerda */
+    transition: transform 0.2s ease;
+}
+
+.comentario:last-child {
+    margin-bottom: 0;
+}
+
+.comentario:hover {
+    transform: translateX(5px);
+}
+
+/* --- CABEÇALHO DO COMENTÁRIO (FOTO, NOME E DATA) --- */
+.comentario-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.comentario-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e3f0fe;
+    background-color: #ddd;
+}
+
+.comentario-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comentario-info h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.comentario-data {
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 600;
+}
+
+.comentario-texto {
+    margin: 0;
+    padding-left: 57px;
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* --- FORMULÁRIO DESIGN PÍLULA TRAVADO COM FLEXBOX --- */
+.comentario-form form {
+    display: flex;
+    flex-direction: row; /* Mantém textarea e botão lado a lado */
+    align-items: center; /* Centraliza o botão verticalmente */
+    background-color: #f8fbff;
+    border: 2px solid #d1def2;
+    border-radius: 50px; /* Sua pílula arredondada original */
+    padding: 4px 6px 4px 25px;
+    
+    /* SOLUÇÃO: Bloqueia a pílula para nunca expandir verticalmente */
+    min-height: 56px;
+    height: 56px; 
+    overflow: hidden; /* Garante que nada quebre o contorno da pílula */
+    
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.comentario-form form:focus-within {
+    border-color: #0cc0df; /* Azul Lumine ao focar */
+    box-shadow: 0 0 0 4px rgba(12, 192, 223, 0.15);
+    background-color: #ffffff;
+}
+
+.comentario-form textarea {
+    flex: 1; /* Ocupa todo o espaço até chegar no botão */
+    
+    /* SOLUÇÃO DO SCROLL INTERNO: Define uma altura fixa baseada no form */
+    height: 36px; 
+    max-height: 36px;
+    overflow-y: auto; /* Ativa o scroll vertical apenas aqui dentro quando o texto crescer */
+    
+    padding: 6px 0; /* Ajuste sutil para o texto rolar perfeitamente no centro */
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #333;
+    
+    /* Mantém os bloqueios que você pediu anteriormente */
+    resize: none; 
+    outline: none;
+    line-height: 1.5;
+    display: block;
+}
+
+/* --- BOTÃO ALINHADO E ESPAÇADO VIA FLEXBOX --- */
+.comentario-form button {
+    background-color: #00bf63; /* Verde Lumine */
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0px 4px 0px #008f4a;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    
+    /* Mantém os 3px exatos de respiro antes do início do botão */
+    margin-left: 3px; 
+    flex-shrink: 0; /* Impede o flexbox de esmagar o botão */
+}
+
+.comentario-form button:hover {
+    transform: translateY(-1px);
+    background-color: #02d16d;
+    box-shadow: 0px 5px 0px #008f4a;
+}
+
+.comentario-form button:active {
+    transform: translateY(3px);
+    box-shadow: 0px 1px 0px #008f4a;
+}
+
+/* --- ESTILIZAÇÃO DO SCROLLBAR INTERNO DA TEXTAREA (ESTILO LUMINE) --- */
+.comentario-form textarea::-webkit-scrollbar {
+    width: 4px; /* Barra bem fininha para ficar discreta dentro da pílula */
+}
+
+.comentario-form textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.comentario-form textarea::-webkit-scrollbar-thumb {
+    background: #0cc0df; /* Azul Lumine */
+    border-radius: 10px;
+}
+
+/* --- RESPONSIVIDADE ADAPTATIVA --- */
+@media screen and (max-width: 768px) {
+    .container-comentarios {
+        padding: 20px;
+    }
+
+    /* Em telas mobile menores, desfazemos a pílula para o layout respirar */
+    .comentario-form form {
+        border-radius: 20px;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 10px;
+        height: auto;
+        min-height: unset;
+    }
+
+    .comentario-form textarea {
+        height: 80px;
+        padding: 5px;
+    }
+
+    .comentario-form button {
+        width: 100%;
+        margin-left: 0;
+        margin-top: 10px;
+        text-align: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .comentario-texto {
+        padding-left: 0;
+        margin-top: 8px;
+    }
+}

@@ -1,6 +1,40 @@
 <?php
     include_once("../config/session.php");
     include_once("../config/layout.php"); // Inclui o novo arquivo
+    include_once("../config/conexao.php"); // Certifique-se de incluir a conexão aqui
+
+    // Busca as preferências de cores do usuário logado na sessão
+    $id_usuario_logado = $_SESSION['usuario_id'] ?? 1;
+    $sql_pref = "SELECT cores_materia FROM configuracoes WHERE id_usuario = $id_usuario_logado";
+    $result_pref = $conn->query($sql_pref);
+
+    // Array de fallback com todas as matérias padrão caso o usuário ainda não tenha registro na tabela
+    $cores_usuario = [
+        "bg_claro" => "#FFFFFF", 
+        "bg_escuro" => "#121212",
+        "matematica" => "#3498db", 
+        "portugues" => "#e74c3c", 
+        "historia" => "#f1c40f",
+        "geografia" => "#2ecc71",
+        "biologia" => "#27ae60",
+        "fisica" => "#8e44ad",
+        "quimica" => "#d35400",
+        "ingles" => "#2980b9",
+        "artes" => "#e67e22",
+        "filosofia" => "#7f8c8d",
+        "sociologia" => "#16a085",
+        "educacao_fisica" => "#c0392b",
+        "literatura" => "#9b59b6"
+    ];
+
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
+        $cores_banco = json_decode($row_pref['cores_materia'], true);
+        if (is_array($cores_banco)) {
+            // Mescla as cores salvas com o padrão (garante que nenhuma matéria fique sem cor)
+            $cores_usuario = array_merge($cores_usuario, $cores_banco);
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -13,6 +47,8 @@
     <link rel="stylesheet" href="./style/home.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+
+    
 </head>
 
 <body>
@@ -81,6 +117,9 @@
 const api = "../config/home.php";
 let urlDestinoQuiz = "";
 
+// Transforma o array do PHP em um objeto JavaScript utilizável
+const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
+
 window.onload = () => {
     carregarUsuario();
     carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais
@@ -101,7 +140,7 @@ function carregarUsuario() {
                     // Substitui o círculo roxo com o ícone de usuário por uma imagem circular correspondente
                     iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
                 } else {
-                    // Caso já seja uma imagem, apenas atualiza o src
+                    // Caso já seja uma imagem, apenas updates o src
                     const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
                     if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
                         imagemHeaderExistente.src = u.foto_perfil;
@@ -189,7 +228,7 @@ function uploadFotoPerfil(input) {
                         }
                     }
                     
-                    alert("Foto de perfil atualizada com sucesso!");
+                    alert("Foto de perfil updated com sucesso!");
                 } else {
                     alert("Erro ao salvar a foto: " + data.error);
                 }
@@ -214,16 +253,22 @@ function carregarMenuSidebar() {
             dados.forEach(m => {
                 let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
                 
+                // Normaliza o nome da matéria para buscar a cor correta mapeada (Ex: "Matemática" vira "matematica")
+                let chaveMateria = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+                
+                // Busca a cor correspondente do banco ou usa o azul padrão como fallback
+                let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+
                 // Link na Sidebar
                 menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
                 
-                // Card inicial na tela
+                // Card inicial na tela - Agora injetando dinamicamente a cor do banco na parte branca (.card-body)
                 cardsIniciais += `
                     <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                         <div class="card-banner">
                             <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
                         </div>
-                        <div class="card-body"><p>${m.nome_materia}</p></div>
+                        <div class="card-body" style="background-color: ${corDoCard} !important;"><p>${m.nome_materia}</p></div>
                     </div>`;
             });
             document.getElementById("menuMaterias").innerHTML = menuHTML;

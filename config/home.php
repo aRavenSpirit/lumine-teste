@@ -41,6 +41,52 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // --- AÇÃO: ATUALIZAR PREFERÊNCIAS (PREPARED STATEMENTS) ---
+    if ($acao === 'atualizar_preferencias_prepared') {
+        // Garante que as variáveis globais de conexão e sessão sejam acessíveis neste escopo
+        global $conn, $id_usuario;
+
+        $tema  = isset($_POST['tema']) ? intval($_POST['tema']) : 0;
+        $fonte = isset($_POST['fonte']) ? intval($_POST['fonte']) : 2;
+        $cores = $_POST['cores'] ?? '{}'; 
+        
+        // Se id_usuario não vier no POST, usa o ID da sessão de fallback
+        $id = isset($_POST['id_usuario']) ? intval($_POST['id_usuario']) : intval($id_usuario ?? 0);
+
+        // Validação preventiva: Se não houver conexão ou ID válido, aborta com erro limpo
+        if (!$conn) {
+            echo json_encode(["success" => false, "error" => "Conexão com o banco de dados falhou."]);
+            exit;
+        }
+        if ($id === 0) {
+            echo json_encode(["success" => false, "error" => "Usuário não identificado ou sessão expirada."]);
+            exit;
+        }
+
+        // Usamos Prepared Statements para garantir que a String JSON seja gravada perfeitamente
+        $sql = "UPDATE configuracoes SET 
+                tema_escuro = ?, 
+                tamanho_fonte = ?, 
+                cores_materia = ? 
+                WHERE id_usuario = ?";
+                
+        $stmt = $conn->prepare($sql);
+        
+        if ($stmt) {
+            $stmt->bind_param("iisi", $tema, $fonte, $cores, $id);
+
+            if ($stmt->execute()) {
+                echo json_encode(["success" => true]);
+            } else {
+                echo json_encode(["success" => false, "error" => $stmt->error]);
+            }
+            $stmt->close();
+        } else {
+            echo json_encode(["success" => false, "error" => $conn->error]);
+        }
+        exit;
+    }
+
     // --- AÇÃO: ATUALIZAR PERFIL ---
     if ($acao === 'atualizar_perfil') {
         $campo = $_POST['campo'] ?? '';
@@ -238,29 +284,6 @@ switch ($tipo) {
         ];
     }
     break;
-
-    case 'atualizar_preferencias':
-    $id_usuario = $_POST['id_usuario'];
-    $tema = $_POST['tema'];
-    $fonte = $_POST['fonte'];
-    $cores = $_POST['cores']; // Isso já deve vir como uma string JSON do JS
-
-    // O segredo está em usar o valor vindo do POST direto na query para o campo JSON
-    $sql = "UPDATE configuracoes SET 
-            tema_escuro = ?, 
-            tamanho_fonte = ?, 
-            cores_materia = ? 
-            WHERE id_usuario = ?";
-            
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("iisi", $tema, $fonte, $cores, $id_usuario);
-    
-    if ($stmt->execute()) {
-        echo json_encode(["success" => true]);
-    } else {
-        echo json_encode(["success" => false, "error" => $conn->error]);
-    }
-    exit;
 
     case 'historico':
         $sql = "SELECT 

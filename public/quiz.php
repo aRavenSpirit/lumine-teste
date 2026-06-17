@@ -78,6 +78,8 @@
             
             <button onclick="revisarRespostas()">Revisar Respostas</button>
 
+            <button onclick="window.location.href='comentario.php'" >Fazer comentário</button>
+
             <button id="btn-modal-home">
                 Avançar <i class="fas fa-arrow-right"></i>
             </button>

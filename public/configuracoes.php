@@ -229,7 +229,7 @@
                     <option value="${esc.id_escolaridade}" ${esc.id_escolaridade == data.escolaridade_id ? 'selected' : ''}>
                         ${esc.nome_escolaridade}
                     </option>
-                `).join('');
+                 `).join('');
 
                 html = `
                     <div class="perfil-discord-style">
@@ -395,42 +395,56 @@
     function alterarCorMateria(materia, novaCor) {
         document.getElementById(`pill-${materia}`).style.backgroundColor = novaCor;
         document.getElementById('preview-box').style.backgroundColor = novaCor;
+
+        // ARRUMADO: Se a matéria alterada for artes, atualiza dinamicamente o card exemplo em tempo real na tela!
+        if (materia === 'artes') {
+            const cardExemplo = document.querySelector('.card-exemplo-artes');
+            if (cardExemplo) {
+                cardExemplo.style.backgroundColor = novaCor;
+            }
+        }
     }
 
-    // Mudança: Removida a duplicidade e corrigido o varredor para focar em '.materia-pill input'
     async function salvarConfiguracoesGerais() {
-        const tema = document.getElementById('pref-tema').value;
-        const fonte = document.getElementById('pref-fonte').value;
-        
-        const novasCores = {};
-        
-        // Coleta de forma assertiva baseado nas classes corretas geradas pelo HTML dinâmico
-        document.querySelectorAll('.materia-pill input').forEach(input => {
-            const materiaId = input.id.replace('picker-', '');
-            novasCores[materiaId] = input.value;
-        });
-
-        novasCores['bg_claro'] = '#FFFFFF';
-        novasCores['bg_escuro'] = '#121212';
-
         const formData = new FormData();
-        formData.append('acao', 'atualizar_preferencias'); 
+        
+        // 1. Usa a ação correta que salva o JSON no banco sem quebrar
+        formData.append('acao', 'atualizar_preferencias_prepared');
+        
+        // 2. Coleta os valores usando os IDs REAIS que o seu sistema gera ('pref-tema' e 'pref-fonte')
+        const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
+        const fonte = document.getElementById('pref-fonte') ? document.getElementById('pref-fonte').value : 2;
         formData.append('tema', tema);
         formData.append('fonte', fonte);
-        formData.append('cores', JSON.stringify(novasCores));
-        formData.append('id_usuario', 1);
+        
+        // 3. Coleta as cores de forma inteligente (Varre todos os inputs gerados na tela)
+        const objetoCores = {};
+        objetoCores['bg_claro'] = '#FFFFFF';
+        objetoCores['bg_escuro'] = '#121212';
+        
+        document.querySelectorAll('.materia-pill input[type="color"]').forEach(input => {
+            const materiaId = input.id.replace('picker-', ''); // Pega o nome certinho: matematica, artes, etc.
+            objetoCores[materiaId] = input.value;
+        });
+        
+        formData.append('cores', JSON.stringify(objetoCores)); 
+        
+        // 4. Usa o ID do usuário logado na sessão (com fallback para 1 caso a sessão caia)
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 1; ?>); 
 
         try {
             const res = await fetch(api, { method: 'POST', body: formData });
             const result = await res.json();
-            if (result.success) {
-                alert("Preferências salvas com sucesso!");
-                carregarPerfil('preferencias'); 
+            
+            if (result && result.success) {
+                alert("Configurações salvas com sucesso!");
+                carregarPerfil('preferencias'); // Recarrega a aba para mostrar que salvou de verdade
             } else {
-                alert("Erro ao salvar: " + result.error);
+                alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
             }
         } catch (e) {
             console.error("Erro ao salvar preferências", e);
+            alert("Não foi possível conectar ao servidor.");
         }
     }
 
@@ -466,7 +480,7 @@
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', campo);
         formData.append('valor', novoValor);
-        formData.append('id_usuario', 1);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>);
 
         fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
@@ -482,7 +496,7 @@
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', 'escolaridade');
         formData.append('valor', id_esc);
-        formData.append('id_usuario', 1);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>);
 
         fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
@@ -492,6 +506,75 @@
         });
     }
 
+    // Mantido intacto conforme seu código anterior
+    document.getElementById('cores-artes')?.addEventListener('input', function(e) {
+        const novaCor = e.target.value;
+        const cardExemplo = document.querySelector('.card-exemplo-artes');
+        if (cardExemplo) {
+            cardExemplo.style.backgroundColor = novaCor;
+        }
+    });
+
+    // Substitua APENAS esta função dentro das suas tags <script> no seu configuracoes.php
+    function salvarPreferenciasGerais() {
+        const formData = new FormData();
+        
+        // Chamamos a ação que criamos com Prepared Statements para persistir o JSON perfeitamente
+        formData.append('acao', 'atualizar_preferencias_prepared');
+        
+        // Captura o Tema e a Fonte de forma segura
+        const elementoTema = document.getElementById('config-tema');
+        const elementoFonte = document.getElementById('config-fonte');
+        formData.append('tema', elementoTema ? elementoTema.value : 0);
+        formData.append('fonte', elementoFonte ? elementoFonte.value : 2);
+        
+        // Cria dinamicamente o objeto de cores coletando todos os inputs de cores da tela
+        const objetoCores = {};
+        
+        // Artes e Matemática (Seus inputs padrão)
+        const elementoArtes = document.getElementById('cores-artes');
+        const elementoMatematica = document.getElementById('cores-matematica');
+        
+        objetoCores.artes = elementoArtes ? elementoArtes.value : "#e67e22";
+        objetoCores.matematica = elementoMatematica ? elementoMatematica.value : "#3498db";
+        
+        // Adiciona as demais matérias caso existam outros inputs criados na sua tela
+        // (Isso evita que o banco resete as cores das outras matérias para vazio)
+        const listaMaterias = ['portugues', 'historia', 'geografia', 'biologia', 'fisica', 'quimica', 'ingles', 'filosofia', 'sociologia', 'educacao_fisica', 'literatura'];
+        listaMaterias.forEach(materia => {
+            const inputMateria = document.getElementById('cores-' + materia);
+            if (inputMateria) {
+                objetoCores[materia] = inputMateria.value;
+            }
+        });
+        
+        // Transforma o objeto em string JSON para salvar no campo 'cores_materia'
+        formData.append('cores', JSON.stringify(objetoCores)); 
+        
+        // Envia o ID correto do usuário logado através da sessão do PHP
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>); 
+
+        // Dispara a requisição para salvar no banco
+        fetch(api, { 
+            method: 'POST', 
+            body: formData 
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data && data.success) {
+                console.log("Preferências salvas com sucesso!");
+                alert("Configurações salvas com sucesso!");
+                // Opcional: Recarrega a página para validar visualmente que a cor fixou
+                window.location.reload();
+            } else {
+                alert("Erro ao salvar preferências: " + (data.error || "Erro desconhecido"));
+            }
+        })
+        .catch(err => {
+            console.error("Erro na requisição:", err);
+            alert("Não foi possível conectar ao servidor.");
+        });
+    }
     window.onload = () => carregarPerfil('usuario');
 </script>
 

@@ -313,8 +313,6 @@ CREATE TABLE feedbacks_usuarios (
     id int AUTO_INCREMENT primary key,
     id_usuario int,
     foreign key (id_usuario) references usuario (id),
-    id_quiz int,
-    foreign key (id_quiz) references quizzes (id),
     mensagem text,
     data_envio datetime default current_timestamp
 );
