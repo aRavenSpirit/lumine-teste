@@ -1,7 +1,7 @@
 <?php
     require_once("../config/conexao.php");
     include_once("../config/session.php");
-    include_once("../config/layout.php"); // Inclui o novo arquivo
+    include_once("../config/layout.php");
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +16,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
 </head>
+
 <body>
 
 <?php renderSidebar(); ?>
@@ -27,11 +28,21 @@
     <main>
         <section class="cards-section">
             <div class="container-principal">
+
                 <div class="container-aside">
                     <h1>PERFIL</h1>
-                    <div class="btn-aba active" onclick="carregarPerfil('usuario', event)">USUÁRIO</div>
-                    <div class="btn-aba" onclick="carregarPerfil('preferencias', event)">PREFERÊNCIAS</div>
-                    <div class="btn-aba" onclick="carregarPerfil('historico', event)">HISTÓRICO</div>
+
+                    <div class="btn-aba active" onclick="carregarPerfil('usuario', event)">
+                        USUÁRIO
+                    </div>
+
+                    <div class="btn-aba" onclick="carregarPerfil('preferencias', event)">
+                        PREFERÊNCIAS
+                    </div>
+
+                    <div class="btn-aba" onclick="carregarPerfil('historico', event)">
+                        HISTÓRICO
+                    </div>
                 </div>
 
                 <div id="card-opcoes">
@@ -43,117 +54,138 @@
                         <div id="modal-form-content"></div>
                     </div>
                 </div>
+
             </div>
         </section>
     </main>
+
 </div>
 
 <script>
 
-    // Verifica imediatamente ao carregar a página se o tema salvo é o escuro
     if (localStorage.getItem("theme") === "dark") {
         document.body.classList.add("dark-mode");
     }
 
-    const api = "../config/home.php"; 
-    let dadosUsuarioLocal = {}; 
+    const api = "../config/home.php";
+    let dadosUsuarioLocal = {};
 
-    // Mudança: event possui "= null" por padrão para evitar erros se for disparado pelo carregamento da página
-    async function carregarPerfil(tipo, event = null) { 
+    async function carregarPerfil(tipo, event = null) {
+
         const cardOpcoes = document.getElementById('card-opcoes');
-        const id_usuario = 1; 
-
-        document.querySelectorAll('.btn-aba').forEach(btn => btn.classList.remove('active'));
-        
+        // CORREÇÃO: Agora pega o usuário da sessão PHP
+        const id_usuario = <?php echo $_SESSION['usuario_id'] ?? 0; ?>;
+        document.querySelectorAll('.btn-aba').forEach(btn => {
+            btn.classList.remove('active');
+        });
         if (event) {
             event.currentTarget.classList.add('active');
         } else {
-            // Caso seja disparado pelo onload automático da página, marca visualmente a aba correspondente
             const abas = document.querySelectorAll('.btn-aba');
             abas.forEach(btn => {
-                if(btn.textContent.toLowerCase() === tipo.toLowerCase()) btn.classList.add('active');
+                if (btn.textContent.toLowerCase() === tipo.toLowerCase()) {
+                    btn.classList.add('active');
+                }
             });
         }
 
         cardOpcoes.innerHTML = "<p>Carregando...</p>";
 
         try {
-            const resData = await fetch(`${api}?tipo=${tipo}&id_conteudo=${id_usuario}`);
+            // CORREÇÃO: não envia mais id_conteudo.
+            // A API usa a sessão para identificar o usuário.
+            const resData = await fetch(`${api}?tipo=${tipo}`);
             const data = await resData.json();
-
             let html = '';
-            
             if (tipo === 'usuario') {
+
                 dadosUsuarioLocal = data;
                 const resEsc = await fetch(`${api}?tipo=lista_escolaridades`);
                 const listaEscolaridades = await resEsc.json();
-
                 let optionsHtml = listaEscolaridades.map(esc => `
+
                     <option value="${esc.id_escolaridade}" ${esc.id_escolaridade == data.escolaridade_id ? 'selected' : ''}>
                         ${esc.nome_escolaridade}
                     </option>
-                 `).join('');
+
+                `).join('');
 
                 html = `
+
                     <div class="perfil-discord-style">
                         <div class="campo-grupo">
                             <label>NOME DE EXIBIÇÃO</label>
                             <div class="campo-row">
                                 <span>${data.nome || 'Não informado'}</span>
-                                <button onclick="openModalPerfil('nome')" class="edit-btn">Editar</button>
+                                <button onclick="openModalPerfil('nome')" class="edit-btn">
+                                    Editar
+                                </button>
                             </div>
                         </div>
+
                         <div class="campo-grupo">
                             <label>E-MAIL</label>
                             <div class="campo-row">
                                 <span>${data.email || 'Não informado'}</span>
-                                <button onclick="openModalPerfil('email')" class="edit-btn">Editar</button>
+                                <button onclick="openModalPerfil('email')" class="edit-btn">
+                                    Editar
+                                </button>
                             </div>
                         </div>
+
                         <div class="campo-grupo">
                             <label>ESCOLARIDADE</label>
                             <div class="campo-row">
-                                <select id="edit-escolaridade" class="select-inline" style="width: 100%; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #f9f9f9;">
+                                <select id="edit-escolaridade" class="select-inline">
                                     ${optionsHtml}
                                 </select>
                             </div>
                         </div>
-                        <button class="save-btn" style="margin-top:20px" onclick="salvarGeral()">Salvar Alterações</button>
+                        <button class="save-btn" onclick="salvarGeral()">
+                            Salvar Alterações
+                        </button>
                     </div>
                 `;
-            } 
+            }
+
             else if (tipo === 'preferencias') {
                 let cores = data.cores_materia;
-
                 if (typeof cores === 'string') {
-                    try { cores = JSON.parse(cores); } catch(e) { cores = {}; }
+                    try {
+                        cores = JSON.parse(cores);
+                    } catch(e) {
+                        cores = {};
+                    }
                 }
                 cores = cores || {};
 
                 let cardsHtml = Object.keys(cores)
-                    .filter(key => !key.startsWith('bg_')) 
+                    .filter(key => !key.startsWith('bg_'))
                     .map(materia => `
-                        <div class="materia-pill" 
+
+                        <div class="materia-pill"
                              id="pill-${materia}"
-                             style="background-color: ${cores[materia]}" 
+                             style="background-color:${cores[materia]}"
                              onclick="document.getElementById('picker-${materia}').click()">
+
                             ${materia.replace('_', ' ')}
-                            <input type="color" 
-                                   id="picker-${materia}" 
-                                   value="${cores[materia]}" 
-                                   style="display:none" 
+
+
+                            <input type="color"
+                                   id="picker-${materia}"
+                                   value="${cores[materia]}"
+                                   style="display:none"
                                    onchange="alterarCorMateria('${materia}', this.value)">
                         </div>
                     `).join('');
-
-                html = `
+                    html = `
                     <div class="preferencias-container-visual">
                         <div class="sessao-cores-layout">
                             <div class="grid-materias-pills">
                                 ${cardsHtml}
                             </div>
                             <div class="color-picker-preview">
-                                <div class="preview-box" id="preview-box" style="background-color: #ccc"></div>
+                                <div class="preview-box" id="preview-box" style="background-color:#ccc"></div>
                             </div>
                         </div>
 
@@ -165,6 +197,7 @@
                                     <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
                                 </select>
                             </div>
+
                             <div class="controle-item">
                                 <span class="label-estilizada">Tamanho da letra:</span>
                                 <select id="pref-fonte" class="select-arredondado">
@@ -177,7 +210,7 @@
 
                         <button class="btn-salvar-final" onclick="salvarConfiguracoesGerais()">Salvar</button>
                     </div>
-                `;
+                    `;
             }
             else if (tipo === 'historico') {
                 let rows = data.map(h => `
@@ -242,14 +275,18 @@
 
             if (result.success) {
                 const linha = document.getElementById(`tentativa-${idTentativa}`);
+
                 if (linha) {
                     linha.style.transition = "0.3s";
                     linha.style.opacity = "0";
+
                     setTimeout(() => linha.remove(), 300);
                 }
+
             } else {
                 alert("Erro ao excluir: " + result.error);
             }
+
         } catch (error) {
             console.error("Erro na exclusão:", error);
         }
@@ -259,9 +296,9 @@
         document.getElementById(`pill-${materia}`).style.backgroundColor = novaCor;
         document.getElementById('preview-box').style.backgroundColor = novaCor;
 
-        // ARRUMADO: Se a matéria alterada for artes, atualiza dinamicamente o card exemplo em tempo real na tela!
         if (materia === 'artes') {
             const cardExemplo = document.querySelector('.card-exemplo-artes');
+
             if (cardExemplo) {
                 cardExemplo.style.backgroundColor = novaCor;
             }
@@ -269,79 +306,81 @@
     }
 
     async function salvarConfiguracoesGerais() {
-    const formData = new FormData();
-    
-    formData.append('acao', 'atualizar_preferencias_prepared');
-    
-    const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
-    const fonte = document.getElementById('pref-fonte') ? document.getElementById('pref-fonte').value : 2;
-    formData.append('tema', tema);
-    formData.append('fonte', fonte);
-    
-    // --- LÓGICA CORRETA: MODO ESCURO ---
-    if (String(tema) === "1") {
-        localStorage.setItem("theme", "dark");
-        document.body.classList.add("dark-mode");
-    } else {
-        localStorage.setItem("theme", "light");
-        document.body.classList.remove("dark-mode");
-    }
-    // -----------------------------------
-    
-    const objetoCores = {};
-    objetoCores['bg_claro'] = '#FFFFFF';
-    objetoCores['bg_escuro'] = '#121212';
-    
-    document.querySelectorAll('.materia-pill input[type="color"]').forEach(input => {
-        const materiaId = input.id.replace('picker-', ''); 
-        objetoCores[materiaId] = input.value;
-    });
-    
-    formData.append('cores', JSON.stringify(objetoCores)); 
-    formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 1; ?>); 
+        const formData = new FormData();
 
-    try {
-        const res = await fetch(api, { method: 'POST', body: formData });
-        const result = await res.json();
-        
-        if (result && result.success) {
-            alert("Configurações salvas com sucesso!");
-            carregarPerfil('preferencias'); 
+        formData.append('acao', 'atualizar_preferencias_prepared');
+
+        const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
+        const fonte = document.getElementById('pref-fonte') ? document.getElementById('pref-fonte').value : 2;
+
+        formData.append('tema', tema);
+        formData.append('fonte', fonte);
+
+        if (String(tema) === "1") {
+            localStorage.setItem("theme", "dark");
+            document.body.classList.add("dark-mode");
         } else {
-            alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
+            localStorage.setItem("theme", "light");
+            document.body.classList.remove("dark-mode");
         }
-    } catch (e) {
-        console.error("Erro ao salvar", e);
-        alert("Não foi possível conectar ao servidor.");
+
+        const objetoCores = {
+            bg_claro: '#FFFFFF',
+            bg_escuro: '#121212'
+        };
+
+        document.querySelectorAll('.materia-pill input[type="color"]').forEach(input => {
+            const materiaId = input.id.replace('picker-', '');
+            objetoCores[materiaId] = input.value;
+        });
+
+        formData.append('cores', JSON.stringify(objetoCores));
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+        try {
+            const res = await fetch(api, { method: 'POST', body: formData });
+            const result = await res.json();
+
+            if (result && result.success) {
+                alert("Configurações salvas com sucesso!");
+                carregarPerfil('preferencias');
+            } else {
+                alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
+            }
+
+        } catch (e) {
+            console.error("Erro ao salvar", e);
+            alert("Não foi possível conectar ao servidor.");
+        }
     }
-}
-
-// Função para pré-visualizar o tema instantaneamente ao trocar no select
-function mudarTemaAoVivo(valor) {
-    if (String(valor) === "1") {
-        // Se escolheu Escuro, adiciona a classe
-        document.body.classList.add("dark-mode");
-    } else {
-        // Se escolheu Claro (0), remove a classe e o layout volta ao padrão instantaneamente
-        document.body.classList.remove("dark-mode");
+    function mudarTemaAoVivo(valor) {
+        if (String(valor) === "1") {
+            document.body.classList.add("dark-mode");
+        } else {
+            document.body.classList.remove("dark-mode");
+        }
     }
-}
 
-
-    // --- FUNÇÕES DE MODAL E SALVAMENTO DO USUÁRIO ---
     async function openModalPerfil(campo) {
         const modal = document.getElementById('modalPerfil');
         const containerForm = document.getElementById('modal-form-content');
+
         modal.style.display = 'flex';
+
         let inputHtml = '';
 
         if (campo === 'nome') {
-            inputHtml = `<h3>Alterar seu nome</h3><label class="modal-label">NOME DE EXIBIÇÃO</label>
-                         <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome}">`;
-        } 
-        else if (campo === 'email') {
-            inputHtml = `<h3>Alterar seu e-mail</h3><label class="modal-label">E-MAIL</label>
-                         <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email}">`;
+            inputHtml = `
+                <h3>Alterar seu nome</h3>
+                <label class="modal-label">NOME DE EXIBIÇÃO</label>
+                <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome}">
+            `;
+        } else if (campo === 'email') {
+            inputHtml = `
+                <h3>Alterar seu e-mail</h3>
+                <label class="modal-label">E-MAIL</label>
+                <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email}">
+            `;
         }
 
         containerForm.innerHTML = `
@@ -349,113 +388,76 @@ function mudarTemaAoVivo(valor) {
             <div class="modal-footer">
                 <button onclick="closeModal()" class="cancel-btn">Cancelar</button>
                 <button onclick="salvarAlteracao('${campo}')" class="save-btn-modal">Pronto</button>
-            </div>`;
+            </div>
+        `;
     }
 
-    function closeModal() { document.getElementById('modalPerfil').style.display = 'none'; }
+    function closeModal() {
+        document.getElementById('modalPerfil').style.display = 'none';
+    }
 
     function salvarAlteracao(campo) {
         const novoValor = document.getElementById('edit-valor').value;
+
         const formData = new FormData();
+
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', campo);
         formData.append('valor', novoValor);
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        fetch(api, { method: 'POST', body: formData })
+        fetch(api, {
+            method: 'POST',
+            body: formData
+        })
         .then(r => r.json())
         .then(data => {
-            if (data.success) { closeModal(); carregarPerfil('usuario'); }
-            else { alert("Erro: " + data.error); }
+            if (data.success) {
+                closeModal();
+                carregarPerfil('usuario');
+            } else {
+                alert("Erro: " + data.error);
+            }
         });
     }
 
     function salvarGeral() {
         const id_esc = document.getElementById('edit-escolaridade').value;
+
         const formData = new FormData();
+
         formData.append('acao', 'atualizar_perfil');
         formData.append('campo', 'escolaridade');
         formData.append('valor', id_esc);
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        fetch(api, { method: 'POST', body: formData })
+        fetch(api, {
+            method: 'POST',
+            body: formData
+        })
         .then(r => r.json())
         .then(data => {
-            if (data.success) carregarPerfil('usuario');
-            else alert("Erro: " + data.error);
+            if (data.success) {
+                carregarPerfil('usuario');
+            } else {
+                alert("Erro: " + data.error);
+            }
         });
     }
 
-    // Mantido intacto conforme seu código anterior
     document.getElementById('cores-artes')?.addEventListener('input', function(e) {
         const novaCor = e.target.value;
+
         const cardExemplo = document.querySelector('.card-exemplo-artes');
+
         if (cardExemplo) {
             cardExemplo.style.backgroundColor = novaCor;
         }
     });
 
-    // Substitua APENAS esta função dentro das suas tags <script> no seu configuracoes.php
-    function salvarPreferenciasGerais() {
-        const formData = new FormData();
-        
-        // Chamamos a ação que criamos com Prepared Statements para persistir o JSON perfeitamente
-        formData.append('acao', 'atualizar_preferencias_prepared');
-        
-        // Captura o Tema e a Fonte de forma segura
-        const elementoTema = document.getElementById('config-tema');
-        const elementoFonte = document.getElementById('config-fonte');
-        formData.append('tema', elementoTema ? elementoTema.value : 0);
-        formData.append('fonte', elementoFonte ? elementoFonte.value : 2);
-        
-        // Cria dinamicamente o objeto de cores coletando todos os inputs de cores da tela
-        const objetoCores = {};
-        
-        // Artes e Matemática (Seus inputs padrão)
-        const elementoArtes = document.getElementById('cores-artes');
-        const elementoMatematica = document.getElementById('cores-matematica');
-        
-        objetoCores.artes = elementoArtes ? elementoArtes.value : "#e67e22";
-        objetoCores.matematica = elementoMatematica ? elementoMatematica.value : "#3498db";
-        
-        // Adiciona as demais matérias caso existam outros inputs criados na sua tela
-        // (Isso evita que o banco resete as cores das outras matérias para vazio)
-        const listaMaterias = ['portugues', 'historia', 'geografia', 'biologia', 'fisica', 'quimica', 'ingles', 'filosofia', 'sociologia', 'educacao_fisica', 'literatura'];
-        listaMaterias.forEach(materia => {
-            const inputMateria = document.getElementById('cores-' + materia);
-            if (inputMateria) {
-                objetoCores[materia] = inputMateria.value;
-            }
-        });
-        
-        // Transforma o objeto em string JSON para salvar no campo 'cores_materia'
-        formData.append('cores', JSON.stringify(objetoCores)); 
-        
-        // Envia o ID correto do usuário logado através da sessão do PHP
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id']; ?>); 
-
-        // Dispara a requisição para salvar no banco
-        fetch(api, { 
-            method: 'POST', 
-            body: formData 
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data && data.success) {
-                console.log("Preferências salvas com sucesso!");
-                alert("Configurações salvas com sucesso!");
-                // Opcional: Recarrega a página para validar visualmente que a cor fixou
-                window.location.reload();
-            } else {
-                alert("Erro ao salvar preferências: " + (data.error || "Erro desconhecido"));
-            }
-        })
-        .catch(err => {
-            console.error("Erro na requisição:", err);
-            alert("Não foi possível conectar ao servidor.");
-        });
-    }
     window.onload = () => carregarPerfil('usuario');
+
 </script>
+
 </body>
 </html>

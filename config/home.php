@@ -1,80 +1,132 @@
 <?php
 
-    header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 
-    require __DIR__ . "/conexao.php";
+require __DIR__ . "/conexao.php";
+
+session_set_cookie_params(0, '/');
+
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
+}
 
-// Pegamos as variáveis globais que seu script usa
+$id_usuario = $_SESSION['usuario_id'] ?? 0;
+
+if ($id_usuario === 0) {
+    echo json_encode(["error" => "Usuário não autenticado"]);
+    exit;
+}
+
 $tipo = $_GET['tipo'] ?? '';
-// Usamos o ID da sessão para o usuário logado, ou o ID vindo da URL como fallback
-$id_usuario = isset($_GET['id_conteudo']) ? (int)$_GET['id_conteudo'] : ($_SESSION['usuario_id'] ?? 1);
 
 $response = null;
 
-// ==========================================================
-// 1. PROCESSAR ATUALIZAÇÕES (MÉTODO POST)
-// ==========================================================
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Pegamos a ação primeiro para saber o que o POST quer fazer
+
     $acao = $_POST['acao'] ?? '';
     $id = intval($_POST['id_usuario'] ?? $id_usuario);
 
-    // --- AÇÃO: ATUALIZAR PREFERÊNCIAS ---
-    if ($acao === 'atualizar_preferencias') {
+    if ($acao === 'atualizar_preferencias' || $acao === 'atualizar_preferencias_prepared') {
+
         $tema = intval($_POST['tema'] ?? 0);
         $fonte = intval($_POST['fonte'] ?? 2);
-        $cores = $conn->real_escape_string($_POST['cores'] ?? '{}');
-        $id = intval($_POST['id_usuario'] ?? $id_usuario);
+        $cores = $_POST['cores'] ?? '{}';
 
-        $sql = "UPDATE configuracoes SET 
-                tema_escuro = $tema, 
-                tamanho_fonte = $fonte, 
-                cores_materia = '$cores' 
-                WHERE id_usuario = $id";
+        $sql_check = "SELECT id FROM configuracoes WHERE id_usuario = ?";
+        $stmt_check = $conn->prepare($sql_check);
+        $stmt_check->bind_param("i", $id);
+        $stmt_check->execute();
+        $resultado_check = $stmt_check->get_result();
 
-        if ($conn->query($sql)) {
-            echo json_encode(["success" => true]);
+        if ($resultado_check->num_rows > 0) {
+
+            $sql = "UPDATE configuracoes SET 
+                        tema_escuro = ?, 
+                        tamanho_fonte = ?, 
+                        cores_materia = ?
+                    WHERE id_usuario = ?";
+
+            $stmt = $conn->prepare($sql);
+
+            if ($stmt) {
+                $stmt->bind_param("iisi", $tema, $fonte, $cores, $id);
+
+                if ($stmt->execute()) {
+                    echo json_encode(["success" => true]);
+                } else {
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+
+                $stmt->close();
+
+            } else {
+                echo json_encode(["success" => false, "error" => $conn->error]);
+            }
+
         } else {
-            echo json_encode(["success" => false, "error" => $conn->error]);
+
+            $sql = "INSERT INTO configuracoes 
+                        (id_usuario, tema_escuro, tamanho_fonte, cores_materia)
+                    VALUES (?, ?, ?, ?)";
+
+            $stmt = $conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("iiis", $id, $tema, $fonte, $cores);
+                if ($stmt->execute()) {
+                    echo json_encode(["success" => true]);
+                } else {
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+                $stmt->close();
+            } else {
+                echo json_encode(["success" => false, "error" => $conn->error]);
+            }
+        }
+        $stmt_check->close();
+        exit;
+    }
+    if ($acao === 'atualizar_perfil') {
+        $campo = $_POST['campo'] ?? '';
+        $valor = $conn->real_escape_string($_POST['valor'] ?? '');
+        $coluna = '';
+        if ($campo === 'nome') {
+            $coluna = 'nome';
+        } elseif ($campo === 'email') {
+            $coluna = 'email';
+        } elseif ($campo === 'escolaridade') {
+            $coluna = 'escolaridade_id';
+        } elseif ($campo === 'foto_perfil') {
+            $coluna = 'foto_perfil';
+        }
+        if ($coluna !== '') {
+            $sql = "UPDATE usuario SET $coluna = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+            if ($stmt) {
+                $stmt->bind_param("si", $valor, $id);
+                if ($stmt->execute()) {
+                    echo json_encode(["success" => true]);
+                } else {
+                    echo json_encode(["success" => false, "error" => $stmt->error]);
+                }
+                $stmt->close();
+            } else {
+                echo json_encode(["success" => false, "error" => $conn->error]);
+            }
+        } else {
+            echo json_encode(["success" => false, "error" => "Campo inválido"]);
         }
         exit;
     }
+    if ($acao === 'excluir_historico') {
+        $id_tentativa = intval($_POST['id_tentativa'] ?? 0);
+        $sql = "DELETE FROM tentativas 
+                WHERE id = ? 
+                AND id_usuario = ?";
 
-    // --- AÇÃO: ATUALIZAR PREFERÊNCIAS (PREPARED STATEMENTS) ---
-    if ($acao === 'atualizar_preferencias_prepared') {
-        // Garante que as variáveis globais de conexão e sessão sejam acessíveis neste escopo
-        global $conn, $id_usuario;
-
-        $tema  = isset($_POST['tema']) ? intval($_POST['tema']) : 0;
-        $fonte = isset($_POST['fonte']) ? intval($_POST['fonte']) : 2;
-        $cores = $_POST['cores'] ?? '{}'; 
-        
-        // Se id_usuario não vier no POST, usa o ID da sessão de fallback
-        $id = isset($_POST['id_usuario']) ? intval($_POST['id_usuario']) : intval($id_usuario ?? 0);
-
-        // Validação preventiva: Se não houver conexão ou ID válido, aborta com erro limpo
-        if (!$conn) {
-            echo json_encode(["success" => false, "error" => "Conexão com o banco de dados falhou."]);
-            exit;
-        }
-        if ($id === 0) {
-            echo json_encode(["success" => false, "error" => "Usuário não identificado ou sessão expirada."]);
-            exit;
-        }
-
-        // Usamos Prepared Statements para garantir que a String JSON seja gravada perfeitamente
-        $sql = "UPDATE configuracoes SET 
-                tema_escuro = ?, 
-                tamanho_fonte = ?, 
-                cores_materia = ? 
-                WHERE id_usuario = ?";
-                
         $stmt = $conn->prepare($sql);
-        
-        if ($stmt) {
-            $stmt->bind_param("iisi", $tema, $fonte, $cores, $id);
 
+        if ($stmt) {
+            $stmt->bind_param("ii", $id_tentativa, $id);
             if ($stmt->execute()) {
                 echo json_encode(["success" => true]);
             } else {
@@ -86,49 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     }
-
-    // --- AÇÃO: ATUALIZAR PERFIL ---
-    if ($acao === 'atualizar_perfil') {
-        $campo = $_POST['campo'] ?? '';
-        $valor = $conn->real_escape_string($_POST['valor'] ?? '');
-
-        $coluna = '';
-        if ($campo === 'nome') $coluna = 'nome';
-        elseif ($campo === 'email') $coluna = 'email';
-        elseif ($campo === 'escolaridade') $coluna = 'escolaridade_id';
-        elseif ($campo === 'foto_perfil') $coluna = 'foto_perfil'; // Adicionado para aceitar a foto!
-
-        if ($coluna != '') {
-            $sql = "UPDATE usuario SET $coluna = '$valor' WHERE id = $id";
-            if ($conn->query($sql)) {
-                echo json_encode(["success" => true]);
-            } else {
-                echo json_encode(["success" => false, "error" => $conn->error]);
-            }
-        } else {
-            echo json_encode(["success" => false, "error" => "Campo inválido"]);
-        }
-        exit;
-    }
-
-    
-
-    // --- AÇÃO: EXCLUIR HISTÓRICO (AGORA FORA DO IF DE ATUALIZAR) ---
-    if ($acao === 'excluir_historico') {
-        $id_tentativa = intval($_POST['id_tentativa'] ?? 0);
-        
-        // Deleta apenas se pertencer ao usuário logado por segurança
-        $sql = "DELETE FROM tentativas WHERE id = $id_tentativa AND id_usuario = $id";
-        
-        if ($conn->query($sql)) {
-            echo json_encode(["success" => true]);
-        } else {
-            echo json_encode(["success" => false, "error" => $conn->error]);
-        }
-        exit;
-    }
-
-    // Se houver um POST mas nenhuma ação válida
     echo json_encode(["success" => false, "error" => "Ação não reconhecida"]);
     exit;
 }
@@ -139,188 +148,241 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 // Unificamos tudo dentro de um único Switch para evitar conflitos
 switch ($tipo) {
-
-
-    // =========================
-    // QUIZZES
-    // =========================
-    case 'quizzes':
-        $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
-        $res = $conn->query("
-            SELECT 
-                q.id, 
-                q.nome, 
-                q.id_dificuldade, 
-                d.dificuldade, 
-                c.nome AS conteudo,
-                m.nome_materia,
-                COUNT(p.id) AS total_questoes
-            FROM quizzes q
-            JOIN dificuldade d ON q.id_dificuldade = d.id
-            JOIN conteudo c ON q.id_conteudo = c.id
-            JOIN materia m ON c.id_materia = m.id
-            LEFT JOIN perguntas p ON p.id_quiz = q.id
-            WHERE q.id_conteudo = $id_conteudo
-            GROUP BY q.id
-        ");
-        $response = [];
-        while ($row = $res->fetch_assoc()) {
-            $response[] = $row;
-        }
-        break;
-
-
-    // =========================
-    // PERFIL DO USUÁRIO
-    // =========================
     case 'usuario':
-        // CORREÇÃO: Adicionada a coluna u.foto_perfil no SELECT
-        $sql = "SELECT u.nome, u.email, u.escolaridade_id, u.foto_perfil, e.nome_escolaridade 
-                FROM usuario u
-                LEFT JOIN escolaridade e ON u.escolaridade_id = e.id_escolaridade
-                WHERE u.id = $id_usuario";
-        
-        $result = $conn->query($sql);
-        if ($result && $result->num_rows > 0) {
-            $response = $result->fetch_assoc();
-        } else {
-            $response = ["error" => "Usuário não encontrado"];
-        }
-        break;
-
-    // =========================
-    // LISTA DE ESCOLARIDADES
-    // =========================
-    case 'lista_escolaridades':
-        $sql = "SELECT id_escolaridade, nome_escolaridade FROM escolaridade ORDER BY id_escolaridade ASC";
-        $result = $conn->query($sql);
-        $response = [];
-        while ($row = $result->fetch_assoc()) {
-            $response[] = $row;
-        }
-        break;
-
-    // =========================
-    // MATÉRIAS
-    // =========================
-    case 'materias':
-        $res = $conn->query("SELECT id, nome_materia FROM materia ORDER BY nome_materia ASC");
-        $response = [];
-        while ($row = $res->fetch_assoc()) {
-            $response[] = $row;
-        }
-        break;
-
-    // =========================
-    // CONTEÚDOS
-    // =========================
-    case 'conteudos':
-        $id_materia = intval($_GET['id_materia'] ?? 0);
-        $res = $conn->query("SELECT id, nome FROM conteudo WHERE id_materia = $id_materia ORDER BY nome ASC");
-        $response = [];
-        while ($row = $res->fetch_assoc()) {
-            $response[] = $row;
-        }
-        break;
-
-    // =========================
-    // QUIZZES
-    // =========================
-    case 'quizzes':
-        $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
-        $res = $conn->query("
-            SELECT q.id, q.nome, q.id_dificuldade, d.dificuldade, c.nome AS conteudo
-            FROM quizzes q
-            JOIN dificuldade d ON q.id_dificuldade = d.id
-            JOIN conteudo c ON q.id_conteudo = c.id
-            WHERE q.id_conteudo = $id_conteudo
-        ");
-        $response = [];
-        while ($row = $res->fetch_assoc()) {
-            $response[] = $row;
-        }
-        break;
-
-// =========================
-    // PREFERÊNCIAS (CORRIGIDO)
-    // =========================
-    case 'preferencias':
-    // CORREÇÃO 1: Usa o ID do usuário logado dinamicamente (da sessão ou GET) em vez do número 1 fixo
-    $id_usuario_busca = $id_usuario; 
-    
-    $sql = "SELECT id, id_usuario, tema_escuro, tamanho_fonte, cores_materia 
-            FROM configuracoes 
-            WHERE id_usuario = $id_usuario_busca";
-    $result = $conn->query($sql);
-
-    if ($result && $result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $row['cores_materia'] = json_decode($row['cores_materia'], true);
-        $response = $row;
-    } else {
-        // CORREÇÃO 2: Caso não exista no banco ainda, retorna TODAS as matérias padrão 
-        // para que o JavaScript tenha a lista completa desde o primeiro segundo
-        $response = [
-            "id_usuario" => $id_usuario_busca,
-            "tema_escuro" => 0,
-            "tamanho_fonte" => 2,
-            "cores_materia" => [
-                "bg_claro" => "#FFFFFF", 
-                "bg_escuro" => "#121212",
-                "matematica" => "#3498db", 
-                "portugues" => "#e74c3c", 
-                "historia" => "#f1c40f",
-                "geografia" => "#2ecc71",
-                "biologia" => "#27ae60",
-                "fisica" => "#8e44ad",
-                "quimica" => "#d35400",
-                "ingles" => "#2980b9",
-                "artes" => "#e67e22",
-                "filosofia" => "#7f8c8d",
-                "sociologia" => "#16a085",
-                "educacao_fisica" => "#c0392b",
-                "literatura" => "#9b59b6"
-            ]
-        ];
-    }
-    break;
-
-    case 'historico':
         $sql = "SELECT 
-                    t.id AS id_tentativa, 
-                    q.nome AS titulo_quiz, 
-                    t.acertos, 
-                    t.total_questoes, 
-                    t.tempo, 
-                    t.data_resolucao, 
-                    d.dificuldade, 
-                    m.nome_materia,
-                    c.nome AS nome_conteudo
-                FROM tentativas t
-                JOIN quizzes q ON t.id_quiz = q.id
-                JOIN dificuldade d ON q.id_dificuldade = d.id
-                JOIN conteudo c ON q.id_conteudo = c.id
-                JOIN materia m ON c.id_materia = m.id
-                WHERE t.id_usuario = $id_usuario
-                ORDER BY t.data_resolucao DESC"; // Ordena pelo mais recente
-        
+                    u.nome, 
+                    u.email, 
+                    u.escolaridade_id, 
+                    u.foto_perfil, 
+                    e.nome_escolaridade
+                FROM usuario u
+                LEFT JOIN escolaridade e 
+                    ON u.escolaridade_id = e.id_escolaridade
+                WHERE u.id = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+
+            $result = $stmt->get_result();
+
+            if ($result->num_rows > 0) {
+                $response = $result->fetch_assoc();
+            } else {
+                $response = ["error" => "Usuário não encontrado"];
+            }
+
+            $stmt->close();
+
+        } else {
+            $response = ["error" => $conn->error];
+        }
+        break;
+
+    case 'lista_escolaridades':
+
+        $sql = "SELECT 
+                    id_escolaridade, 
+                    nome_escolaridade 
+                FROM escolaridade 
+                ORDER BY id_escolaridade ASC";
+
         $result = $conn->query($sql);
         $response = [];
-        
+
         if ($result) {
+
             while ($row = $result->fetch_assoc()) {
-                // Formata a data para o padrão brasileiro antes de enviar
-                $row['data_resolucao'] = date('d/m/Y H:i', strtotime($row['data_resolucao']));
                 $response[] = $row;
             }
         }
         break;
+    case 'materias':
+        $sql = "SELECT 
+                    id, 
+                    nome_materia 
+                FROM materia 
+                ORDER BY nome_materia ASC";
+
+        $result = $conn->query($sql);
+        $response = [];
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $response[] = $row;
+            }
+        }
+        break;
+    case 'conteudos':
+
+        $id_materia = intval($_GET['id_materia'] ?? 0);
+
+        $sql = "SELECT 
+                    id, 
+                    nome 
+                FROM conteudo 
+                WHERE id_materia = ?
+                ORDER BY nome ASC";
+
+        $stmt = $conn->prepare($sql);
+        $response = [];
+
+        if ($stmt) {
+            $stmt->bind_param("i", $id_materia);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $response[] = $row;
+            }
+            $stmt->close();
+        }
+        break;
+    case 'quizzes':
+        $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
+
+        $sql = "
+            SELECT 
+                q.id,
+                q.nome,
+                q.id_dificuldade,
+                d.dificuldade,
+                c.nome AS conteudo,
+                m.nome_materia,
+                COUNT(p.id) AS total_questoes
+            FROM quizzes q
+            JOIN dificuldade d 
+                ON q.id_dificuldade = d.id
+            JOIN conteudo c 
+                ON q.id_conteudo = c.id
+            JOIN materia m 
+                ON c.id_materia = m.id
+            LEFT JOIN perguntas p 
+                ON p.id_quiz = q.id
+            WHERE q.id_conteudo = ?
+            GROUP BY q.id
+        ";
+        $stmt = $conn->prepare($sql);
+        $response = [];
+        if ($stmt) {
+            $stmt->bind_param("i", $id_conteudo);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $response[] = $row;
+            }
+            $stmt->close();
+        }
+        break;
+
+    case 'preferencias':
+
+        $sql = "SELECT 
+                    id,
+                    id_usuario,
+                    tema_escuro,
+                    tamanho_fonte,
+                    cores_materia
+                FROM configuracoes
+                WHERE id_usuario = ?";
+
+        $stmt = $conn->prepare($sql);
+
+        if ($stmt) {
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            if ($result->num_rows > 0) {
+                $row = $result->fetch_assoc();
+                $cores = json_decode($row['cores_materia'], true);
+                if (!is_array($cores)) {
+                    $cores = [];
+                }
+                $row['cores_materia'] = $cores;
+                $response = $row;
+            } else {
+
+
+                $response = [
+                    "id_usuario" => $id_usuario,
+                    "tema_escuro" => 0,
+                    "tamanho_fonte" => 2,
+                    "cores_materia" => [
+                        "bg_claro" => "#FFFFFF",
+                        "bg_escuro" => "#121212",
+                        "matematica" => "#3498db",
+                        "portugues" => "#e74c3c",
+                        "historia" => "#f1c40f",
+                        "geografia" => "#2ecc71",
+                        "biologia" => "#27ae60",
+                        "fisica" => "#8e44ad",
+                        "quimica" => "#d35400",
+                        "ingles" => "#2980b9",
+                        "artes" => "#e67e22",
+                        "filosofia" => "#7f8c8d",
+                        "sociologia" => "#16a085",
+                        "educacao_fisica" => "#c0392b",
+                        "literatura" => "#9b59b6"
+                    ]
+                ];
+            }
+            $stmt->close();
+
+        }
+        break;
+
+    case 'historico':
+        $sql = "
+            SELECT 
+                t.id AS id_tentativa,
+                q.nome AS titulo_quiz,
+                t.acertos,
+                t.total_questoes,
+                t.tempo,
+                t.data_resolucao,
+                d.dificuldade,
+                m.nome_materia,
+                c.nome AS nome_conteudo
+            FROM tentativas t
+            JOIN quizzes q 
+                ON t.id_quiz = q.id
+            JOIN dificuldade d 
+                ON q.id_dificuldade = d.id
+            JOIN conteudo c 
+                ON q.id_conteudo = c.id
+            JOIN materia m 
+                ON c.id_materia = m.id
+            WHERE t.id_usuario = ?
+            ORDER BY t.data_resolucao DESC
+        ";
+
+        $stmt = $conn->prepare($sql);
+        $response = [];
+        if ($stmt) {
+            $stmt->bind_param("i", $id_usuario);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            while ($row = $result->fetch_assoc()) {
+                $row['data_resolucao'] = date(
+                    'd/m/Y H:i',
+                    strtotime($row['data_resolucao'])
+                );
+                $response[] = $row;
+            }
+            $stmt->close();
+        }
+
+        break;
 
     default:
-        $response = ["error" => "Tipo de requisição inválido"];
+        $response = [
+            "error" => "Tipo de requisição inválido"
+        ];
+
         break;
 }
-
-// Resposta única para as requisições GET
 echo json_encode($response);
 $conn->close();
+
+?>

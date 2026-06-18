@@ -1,19 +1,26 @@
 <?php
     include_once("../config/session.php");
-    include_once("../config/layout.php"); // Inclui o novo arquivo
-    include_once("../config/conexao.php"); // Certifique-se de incluir a conexão aqui
-
-    // Busca as preferências de cores do usuário logado na sessão
-    $id_usuario_logado = $_SESSION['usuario_id'] ?? 1;
-    $sql_pref = "SELECT cores_materia FROM configuracoes WHERE id_usuario = $id_usuario_logado";
+    include_once("../config/layout.php");
+    include_once("../config/conexao.php");
+    // ==========================================================
+    // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
+    // ==========================================================
+    // O session.php já garante que existe usuário autenticado
+    $id_usuario_logado = intval($_SESSION['usuario_id']);
+    $sql_pref = "SELECT cores_materia 
+                 FROM configuracoes 
+                 WHERE id_usuario = $id_usuario_logado";
+                 
     $result_pref = $conn->query($sql_pref);
-
-    // Array de fallback com todas as matérias padrão caso o usuário ainda não tenha registro na tabela
+    // ==========================================================
+    // CORES PADRÃO CASO O USUÁRIO AINDA NÃO TENHA CONFIGURAÇÕES
+    // ==========================================================
     $cores_usuario = [
-        "bg_claro" => "#FFFFFF", 
+        "bg_claro" => "#FFFFFF",
         "bg_escuro" => "#121212",
-        "matematica" => "#3498db", 
-        "portugues" => "#e74c3c", 
+
+        "matematica" => "#3498db",
+        "portugues" => "#e74c3c",
         "historia" => "#f1c40f",
         "geografia" => "#2ecc71",
         "biologia" => "#27ae60",
@@ -26,13 +33,22 @@
         "educacao_fisica" => "#c0392b",
         "literatura" => "#9b59b6"
     ];
-
+    // ==========================================================
+    // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
+    // ==========================================================
     if ($result_pref && $result_pref->num_rows > 0) {
         $row_pref = $result_pref->fetch_assoc();
-        $cores_banco = json_decode($row_pref['cores_materia'], true);
+        $cores_banco = json_decode(
+            $row_pref['cores_materia'],
+            true
+        );
         if (is_array($cores_banco)) {
-            // Mescla as cores salvas com o padrão (garante que nenhuma matéria fique sem cor)
-            $cores_usuario = array_merge($cores_usuario, $cores_banco);
+
+            $cores_usuario = array_merge(
+                $cores_usuario,
+                $cores_banco
+            );
+
         }
     }
 ?>
