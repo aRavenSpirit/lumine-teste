@@ -505,10 +505,28 @@ async function finalizarQuiz() {
         const respostaUser = respostasUsuario[p.id];
         const tipo = parseInt(p.id_tipo);
 
-        if (tipo === 1 || tipo === 3) {
-            const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
-            if (correta && respostaUser == correta.id) acertos++;
-        } 
+        if (tipo === 1) {
+            const correta = p.respostas.find(
+                r => r.certo == 1 || r.correta == 1
+            );
+
+            if (correta && respostaUser == correta.id) {
+                acertos++;
+            }
+        }
+        else if (tipo === 3) {
+            const correta = p.respostas.find(
+                r => r.certo == 1 || r.correta == 1
+            );
+
+            if (
+                correta &&
+                String(respostaUser).trim().toLowerCase() ===
+                String(correta.descricao).trim().toLowerCase()
+            ) {
+                acertos++;
+            }
+        }
         else if (tipo === 2) {
             const correta = p.respostas[0];
             const textoCorreto = correta ? (correta.descricao || correta.texto_alvo) : "";
