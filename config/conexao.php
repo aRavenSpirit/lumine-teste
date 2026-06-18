@@ -1,9 +1,9 @@
 <?php
     $host = "localhost";
     $user = "root";
-    //$pass = "Home@spSENAI2025!"; 
+    $pass = "Home@spSENAI2025!"; 
     //$pass = "Mathws02.10";
-    $pass = "";
+    //$pass = "";
     $db   = "luminebd";
 
     $conn = new mysqli($host, $user, $pass, $db);

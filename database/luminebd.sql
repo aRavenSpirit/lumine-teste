@@ -309,11 +309,6 @@ CREATE TABLE IF NOT EXISTS configuracoes (
     FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
 );
 
-INSERT INTO configuracoes (id_usuario, tema_escuro, tamanho_fonte, cores_materia)
-VALUES (1, 0, 2, '{"matematica": "#3498db", "portugues": "#e74c3c", "historia": "#f1c40f", "geografia": "#2ecc71", "biologia": "#27ae60", "fisica": "#8e44ad", "quimica": "#d35400", "ingles": "#2980b9", "artes": "#e67e22", "filosofia": "#7f8c8d", "sociologia": "#16a085", "educacao_fisica": "#c0392b", "literatura": "#9b59b6"}')
-ON DUPLICATE KEY UPDATE cores_materia = VALUES(cores_materia);
-
-
 CREATE TABLE recuperacao_senha (
     id int AUTO_INCREMENT primary key,
     email varchar(255) NOT NULL,
