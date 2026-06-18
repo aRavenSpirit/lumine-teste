@@ -1,0 +1,52 @@
+🎒 1. Ensino Fundamental 1
+(Aplicado para as escolaridades de ID: 2, 3, 4, 5 e 6, que correspondem do 1º ao 5º Ano do Ensino Fundamental 1)
+
+Matemática: Adição e Subtração, Multiplicação e Divisão, Frações, Números Decimais.
+
+Português: Interpretação de Texto, Ortografia, Pontuação.
+
+Ciências da Natureza: Sistema Solar, Corpo Humano, Ecossistemas, Cadeia Alimentar, Estados da Matéria, Energia, Água.
+
+Artes: Elementos das Artes Visuais, Cores e Formas, Teatro.
+
+Educação Física: Jogos e Brincadeiras.
+
+História: (Nenhum conteúdo associado no script)
+
+Geografia: (Nenhum conteúdo associado no script)
+
+📐 2. Ensino Fundamental 2
+(Aplicado para as escolaridades de ID: 7, 8, 9 e 10, que correspondem do 6º ao 9º Ano do Ensino Fundamental 2)
+
+Matemática: Porcentagem, Regra de Três, Equações do 1º grau, Geometria Plana, Potenciação, Radiciação.
+
+Português: Classes Gramaticais, Verbos, Concordância Verbal, Concordância Nominal, Figures de Linguagem.
+
+História: Pré-História, Antiguidade, Idade Média, Brasil Colônia, Brasil Império.
+
+Geografia: Cartografia, Climas, Relevo, Globalização, Urbanização.
+
+Inglês: Verbo To Be, Simple Present, Vocabulary.
+
+🔬 3. Ensino Médio e Médio Completo
+(Aplicado para as escolaridades de ID: 1, 11, 12 e 13, que correspondem ao Ensino Médio Completo e de 1º ao 3º Ano do Ensino Médio)
+
+Matemática (Avançada + Revisão): Equações do 2º grau, Geometria Espacial, Porcentagem, Regra de Três, Geometria Plana.
+
+Português (Avançado + Revisão): Regência, Crase, Interpretação de Texto, Figuras de Linguagem.
+
+História: Idade Moderna, Idade Contemporânea, Brasil República, Segunda Guerra Mundial, Guerra Fria.
+
+Geografia: População, Geopolítica.
+
+Física: Todas as matérias (Cinemática, Dinâmica, Leis de Newton, Trabalho e Energia, Termologia, Óptica, Ondulatória, Eletricidade).
+
+Química: Todas as matérias (Tabela Periódica, Ligações Químicas, Reações Químicas, Estequiometria, Soluções, Ácidos e Bases, Química Orgânica).
+
+Biologia: Todas as matérias (Célula, Genética, Evolução, Ecologia, Sistema Digestório, Sistema Respiratório, Sistema Nervoso).
+
+Inglês: Todas as matérias (Verbo To Be, Simple Present, Simple Past, Present Continuous, Vocabulary, Reading, Listening).
+
+Filosofia: Todas as matérias (Mito e Filosofia, Filosofia Antiga, Filosofia Medieval, Filosofia Moderna, Filosofia Contemporânea, Ética e Moral, Teoria do Conhecimento, Filosofia Política).
+
+Sociologia: Todas as matérias (O que é Sociologia, Émile Durkheim, Max Weber, Karl Marx, Cultura e Ideologia, Desigualdade Social, Instituições Sociais, Movimentos Sociais).

@@ -146,7 +146,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // 2. CONSULTAS DE DADOS (MÉTODO GET)
 // ==========================================================
 
-// Unificamos tudo dentro de um único Switch para evitar conflitos
 switch ($tipo) {
     case 'usuario':
         $sql = "SELECT 
@@ -200,6 +199,7 @@ switch ($tipo) {
             }
         }
         break;
+
     case 'materias':
         $sql = "SELECT 
                     id, 
@@ -215,6 +215,7 @@ switch ($tipo) {
             }
         }
         break;
+
     case 'conteudos':
 
         $id_materia = intval($_GET['id_materia'] ?? 0);
@@ -239,6 +240,7 @@ switch ($tipo) {
             $stmt->close();
         }
         break;
+
     case 'quizzes':
         $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
 
@@ -276,6 +278,59 @@ switch ($tipo) {
         }
         break;
 
+    // 🎯 NOVA ROTA DE RECOMENDAÇÕES INTEGRADAS DE ACORDO COM A ESCOLARIDADE
+    case 'recomendados':
+        // 1. Busca a escolaridade do usuário logado
+        $sql_user = "SELECT escolaridade_id FROM usuario WHERE id = ?";
+        $stmt_user = $conn->prepare($sql_user);
+        
+        if ($stmt_user) {
+            $stmt_user->bind_param("i", $id_usuario);
+            $stmt_user->execute();
+            $res_user = $stmt_user->get_result()->fetch_assoc();
+            $stmt_user->close();
+
+            $id_escolaridade = $res_user['escolaridade_id'] ?? null;
+
+            if (is_null($id_escolaridade)) {
+                $response = ["erro" => "Você precisa selecionar sua escolaridade para ver as recomendações.", "precisa_escolaridade" => true];
+                break;
+            }
+
+            // 2. Busca os quizzes usando Prepared Statements cruzando a tabela relacional
+            $sql_recomendados = "
+                SELECT 
+                    q.id,
+                    q.nome,
+                    q.id_dificuldade,
+                    d.dificuldade,
+                    c.nome AS conteudo,
+                    m.nome_materia
+                FROM quizzes q
+                JOIN dificuldade d ON q.id_dificuldade = d.id
+                JOIN conteudo c ON q.id_conteudo = c.id
+                JOIN materia m ON c.id_materia = m.id
+                JOIN conteudo_escolaridade ce ON c.id = ce.id_conteudo
+                WHERE ce.id_escolaridade = ?
+                ORDER BY q.id DESC
+            ";
+
+            $stmt_rec = $conn->prepare($sql_recomendados);
+            $response = [];
+
+            if ($stmt_rec) {
+                $stmt_rec->bind_param("i", $id_escolaridade);
+                $stmt_rec->execute();
+                $result_rec = $stmt_rec->get_result();
+                
+                while ($row = $result_rec->fetch_assoc()) {
+                    $response[] = $row;
+                }
+                $stmt_rec->close();
+            }
+        }
+        break;
+
     case 'preferencias':
 
         $sql = "SELECT 
@@ -302,7 +357,6 @@ switch ($tipo) {
                 $row['cores_materia'] = $cores;
                 $response = $row;
             } else {
-
 
                 $response = [
                     "id_usuario" => $id_usuario,

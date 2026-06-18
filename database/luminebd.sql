@@ -206,14 +206,27 @@ create table conteudo(
         ('Regras dos Esportes', 11);
         
     -- FILOSOFIA
-        
+
     INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Socrates', 12);
+        ('Mito e Filosofia', 12),
+        ('Filosofia Antiga (Pré-socráticos, Platão e Aristóteles)', 12),
+        ('Filosofia Medieval (Patrística e Escolástica)', 12),
+        ('Filosofia Moderna (Racionalismo e Empirismo)', 12),
+        ('Filosofia Contemporânea', 12),
+        ('Ética e Moral', 12),
+        ('Teoria do Conhecimento (Epistemologia)', 12),
+        ('Filosofia Política', 12);
 
     -- SOCIOLOGIA
-        
     INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Teoria Classica', 13);
+        ('O que é Sociologia (Surgimento e Contexto)', 13),
+        ('Émile Durkheim', 13),
+        ('Max Weber', 13),
+        ('Karl Marx', 13),
+        ('Cultura e Ideologia', 13),
+        ('Desigualdade Social e Estratificação', 13),
+        ('Instituições Sociais (Família, Escola, Estado)', 13),
+        ('Movimentos Sociais e Direitos Humanos', 13);
 
 create table dificuldade (
     id int primary key auto_increment,
@@ -335,4 +348,120 @@ CREATE TABLE avaliacoes (
         ON DELETE CASCADE,
     FOREIGN KEY (id_quiz) REFERENCES quizzes(id)
 );
+
+CREATE TABLE conteudo_escolaridade (
+    id_conteudo INT,
+    id_escolaridade INT,
+    PRIMARY KEY (id_conteudo, id_escolaridade),
+    FOREIGN KEY (id_conteudo) REFERENCES conteudo(id) ON DELETE CASCADE,
+    FOREIGN KEY (id_escolaridade) REFERENCES escolaridade(id_escolaridade) ON DELETE CASCADE
+);
+
+-- =========================================================================
+-- 1. ENSINO FUNDAMENTAL 1 (IDs de escolaridade: 2, 3, 4, 5, 6)
+-- Conteúdos básicos de Matemática, Português, Ciências, Artes e Ed. Física
+-- =========================================================================
+
+-- Matemática: Adição e Subtração (id: 1), Multiplicação e Divisão (id: 2), Frações (id: 3), Números Decimais (id: 4)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (1, 2, 3, 4) AND e.id_escolaridade IN (2, 3, 4, 5, 6);
+
+-- Português: Interpretação de Texto (id: 13), Ortografia (id: 14), Pontuação (id: 15)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (13, 14, 15) AND e.id_escolaridade IN (2, 3, 4, 5, 6);
+
+-- Ciências da Natureza: Todo o bloco (ids: 43 a 49)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id BETWEEN 43 AND 49 AND e.id_escolaridade IN (2, 3, 4, 5, 6);
+
+-- Artes & Ed. Física básicos (ids: 65, 71, 72, 75, 82)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (65, 71, 72, 75, 82) AND e.id_escolaridade IN (2, 3, 4, 5, 6);
+
+
+-- =========================================================================
+-- 2. ENSINO FUNDAMENTAL 2 (IDs de escolaridade: 7, 8, 9, 10)
+-- Conteúdos intermediários de todas as matérias de base
+-- =========================================================================
+
+-- Matemática: Porcentagem (5), Regra de Três (6), Equações 1º grau (7), Geometria Plana (9), Potenciação (11), Radiciação (12)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (5, 6, 7, 9, 11, 12) AND e.id_escolaridade IN (7, 8, 9, 10);
+
+-- Português: Classes Gramaticais (16), Verbos (17), Concordâncias (18, 19), Figuras de Linguagem (22)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (16, 17, 18, 19, 22) AND e.id_escolaridade IN (7, 8, 9, 10);
+
+-- História & Geografia: Pré-História à Idade Média (23-25), Brasil Colónia/Império (28, 29), Cartografia, Climas, Relevo, População (33-36, 39)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (23, 24, 25, 28, 29, 33, 34, 35, 36, 39) AND e.id_escolaridade IN (7, 8, 9, 10);
+
+-- Inglês inicial: Verbo To Be (58), Simple Present (59), Vocabulary (62)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (58, 59, 62) AND e.id_escolaridade IN (7, 8, 9, 10);
+
+
+-- =========================================================================
+-- 3. ENSINO MÉDIO E MÉDIO COMPLETO (IDs de escolaridade: 1, 11, 12, 13)
+-- Conteúdos avançados, Física, Química, Biologia, Filosofia e Sociologia
+-- =========================================================================
+
+-- Matemática Avançada: Equações do 2º grau (8), Geometria Espacial (10) + Revisão do resto
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (8, 10, 5, 6, 9) AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- Português Avançado: Regência (20), Crase (21) + Revisões textuais
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (20, 21, 13, 22) AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- História & Geografia Avançadas: Idade Moderna ao séc. XXI, Guerras Mundiais, Globalização e Geopolítica (26, 27, 30, 31, 32, 38, 40, 41)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id IN (26, 27, 30, 31, 32, 38, 40, 41) AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- Física (ids: 50 a 57) e Química (ids: 65 a 71 - ajustados conforme a ordem da tabela de conteúdos)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id_materia IN (6, 7) AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- Biologia (ids: 51 a 57 na tabela conteudo)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id_materia = 8 AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- Inglês Completo (id_materia = 9)
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id_materia = 9 AND e.id_escolaridade IN (1, 11, 12, 13);
+
+-- Filosofia e Sociologia Completas (id_materia = 12 e 13)
+-- Isso inclui o Sócrates antigo (id 83), Teoria Clássica (id 84) e todos os novos conteúdos gerados acima
+    INSERT INTO conteudo_escolaridade (id_conteudo, id_escolaridade)
+    SELECT c.id, e.id_escolaridade 
+    FROM conteudo c, escolaridade e 
+    WHERE c.id_materia IN (12, 13) AND e.id_escolaridade IN (1, 11, 12, 13);
 
