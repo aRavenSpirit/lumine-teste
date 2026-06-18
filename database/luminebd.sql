@@ -276,7 +276,8 @@ create table tentativas(
     id_quiz int,
     foreign key (id_quiz) references quizzes (id),
     id_usuario int,
-    foreign key (id_usuario) references usuario (id),
+    foreign key (id_usuario) references usuario (id)
+        ON DELETE CASCADE,
 	acertos int,
     total_questoes int,
     tempo time,
@@ -305,7 +306,7 @@ CREATE TABLE IF NOT EXISTS configuracoes (
         'educacao_fisica', '#c0392b',
         'literatura', '#9b59b6'
     )),
-    FOREIGN KEY (id_usuario) REFERENCES usuario (id)
+    FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
 );
 
 INSERT INTO configuracoes (id_usuario, tema_escuro, tamanho_fonte, cores_materia)
@@ -323,7 +324,8 @@ CREATE TABLE recuperacao_senha (
 CREATE TABLE feedbacks_usuarios (
     id int AUTO_INCREMENT primary key,
     id_usuario int,
-    foreign key (id_usuario) references usuario (id),
+    foreign key (id_usuario) references usuario (id)
+        ON DELETE CASCADE,
     mensagem text,
     data_envio datetime default current_timestamp
 );
@@ -334,7 +336,8 @@ CREATE TABLE avaliacoes (
     id_quiz INT,
     nota INT NOT NULL,
     data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id),
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id)
+        ON DELETE CASCADE,
     FOREIGN KEY (id_quiz) REFERENCES quizzes(id)
 );
 
