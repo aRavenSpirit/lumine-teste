@@ -709,8 +709,10 @@ div[id^="drag_"] {
         animation: fadeInBg 0.4s ease forwards;
         
    }
+
+   
 #modal-avaliacao .modal-content {
-    text-align: center;
+    text-align: center;     
     padding: 30px;
 }
 

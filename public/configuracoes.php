@@ -32,16 +32,18 @@
                 <div class="container-aside">
                     <h1>PERFIL</h1>
 
-                    <div class="btn-aba active" onclick="carregarPerfil('usuario', event)">
-                        USUÁRIO
-                    </div>
-
-                    <div class="btn-aba" onclick="carregarPerfil('preferencias', event)">
-                        PREFERÊNCIAS
-                    </div>
-
-                    <div class="btn-aba" onclick="carregarPerfil('historico', event)">
-                        HISTÓRICO
+                    <div class="container-aside-btn">
+                        <div class="btn-aba active card-btn" onclick="carregarPerfil('usuario', event)">
+                            USUÁRIO
+                        </div>
+    
+                        <div class="btn-aba card-btn" onclick="carregarPerfil('preferencias', event)">
+                            PREFERÊNCIAS
+                        </div>
+    
+                        <div class="btn-aba card-btn" onclick="carregarPerfil('historico', event)">
+                            HISTÓRICO
+                        </div>
                     </div>
                 </div>
 
@@ -97,6 +99,7 @@
             const resData = await fetch(`${api}?tipo=${tipo}`);
             const data = await resData.json();
             let html = '';
+            
             if (tipo === 'usuario') {
 
                 dadosUsuarioLocal = data;
@@ -110,40 +113,64 @@
 
                 `).join('');
 
+                // 1. DEFINE O HTML DA FOTO
+                const fotoHtml = data.foto_perfil 
+                    ? `<img src="${data.foto_perfil}" class="avatar-preview" id="avatarImg">`
+                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+
+                // 2. MONTA O HTML USANDO CLASSES CSS LIGADAS AO SEU ARQUIVO EXTERNO
                 html = `
+                    <div class="perfil-discord-style perfil-container-flex">
+                        
+                        <div class="coluna-dados-perfil">
+                            <div class="campo-grupo">
+                                <label>NOME DE EXIBIÇÃO</label>
+                                <div class="campo-row">
+                                    <span>${data.nome || 'Não informado'}</span>
+                                    <button onclick="openModalPerfil('nome')" class="edit-btn">
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
 
-                    <div class="perfil-discord-style">
-                        <div class="campo-grupo">
-                            <label>NOME DE EXIBIÇÃO</label>
-                            <div class="campo-row">
-                                <span>${data.nome || 'Não informado'}</span>
-                                <button onclick="openModalPerfil('nome')" class="edit-btn">
-                                    Editar
-                                </button>
+                            <div class="campo-grupo">
+                                <label>E-MAIL</label>
+                                <div class="campo-row">
+                                    <span>${data.email || 'Não informado'}</span>
+                                    <button onclick="openModalPerfil('email')" class="edit-btn">
+                                        Editar
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="campo-grupo">
+                                <label>ESCOLARIDADE</label>
+                                <div class="campo-row">
+                                    <select id="edit-escolaridade" class="select-inline input-escolaridade-perfil">
+                                        ${optionsHtml}
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="save-btn btn-salvar-perfil" onclick="salvarGeral()">
+                                Salvar Alterações
+                            </button>
+                        </div>
+
+                        <div class="coluna-foto-perfil">
+                            <label class="titulo-foto-label">Foto de Perfil</label>
+                            
+                            <div class="avatar-upload-container container-upload-pagina" onclick="document.getElementById('inputFotoPerfilPagina').click()">
+                                <div id="avatarWrapper">
+                                    ${fotoHtml}
+                                </div>
+                                <div class="avatar-edit-badge">
+                                    <i class="fas fa-pencil-alt"></i>
+                                </div>
+                                <input type="file" id="inputFotoPerfilPagina" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
                             </div>
                         </div>
 
-                        <div class="campo-grupo">
-                            <label>E-MAIL</label>
-                            <div class="campo-row">
-                                <span>${data.email || 'Não informado'}</span>
-                                <button onclick="openModalPerfil('email')" class="edit-btn">
-                                    Editar
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="campo-grupo">
-                            <label>ESCOLARIDADE</label>
-                            <div class="campo-row">
-                                <select id="edit-escolaridade" class="select-inline">
-                                    ${optionsHtml}
-                                </select>
-                            </div>
-                        </div>
-                        <button class="save-btn" onclick="salvarGeral()">
-                            Salvar Alterações
-                        </button>
                     </div>
                 `;
             }
@@ -189,25 +216,28 @@
                             </div>
                         </div>
 
-                        <div class="controles-estilizados">
-                            <div class="controle-item">
-                                <span class="label-estilizada">Modo:</span>
-                                <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
-                                    <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
-                                    <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
-                                </select>
+                        <div class="container-controles-estilizados">
+                            <div class="controles-estilizados">
+                                <div class="controle-item">
+                                    <span class="label-estilizada">Modo:</span>
+                                    <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
+                                        <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
+                                        <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
+                                    </select>
+                                </div>
                             </div>
 
-                            <div class="controle-item">
-                                <span class="label-estilizada">Tamanho da letra:</span>
-                                <select id="pref-fonte" class="select-arredondado">
-                                    <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
-                                    <option value="2" ${data.tamanho_fonte == 2 ? 'selected' : ''}>Médio</option>
-                                    <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
-                                </select>
+                            <div class="controles-estilizados">
+                                <div class="controle-item">
+                                    <span class="label-estilizada">Tamanho da letra:</span>
+                                    <select id="pref-fonte" class="select-arredondado">
+                                        <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
+                                        <option value="2" ${data.tamanho_fonte == 2 ? 'selected' : ''}>Médio</option>
+                                        <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
-
                         <button class="btn-salvar-final" onclick="salvarConfiguracoesGerais()">Salvar</button>
                     </div>
                     `;
@@ -415,6 +445,7 @@
             if (data.success) {
                 closeModal();
                 carregarPerfil('usuario');
+                carregarUsuario();
             } else {
                 alert("Erro: " + data.error);
             }
@@ -455,7 +486,124 @@
         }
     });
 
-    window.onload = () => carregarPerfil('usuario');
+    function toggleSidebar() {
+        const sidebar = document.getElementById('sidebar');
+        const main = document.getElementById('mainContainer');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const body = document.body;
+        
+        if (window.innerWidth <= 900) {
+            mobileMenu.classList.toggle('active');
+            mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
+        } else {
+            sidebar.classList.toggle('open');
+            main.classList.toggle('sidebar-open');
+        }
+    }
+
+    function carregarMenuSidebar() {
+        fetch(api + "?tipo=materias")
+            .then(r => r.json())
+            .then(dados => {
+                let menuHTML = "";
+                let cardsIniciais = "";
+
+                dados.forEach(m => {
+                    let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+                    
+                    // Link na Sidebar
+                    menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
+                    
+                    // Card inicial na tela
+                    cardsIniciais += `
+                        <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
+                            <div class="card-banner">
+                                <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
+                            </div>
+                            <div class="card-body"><p>${m.nome_materia}</p></div>
+                        </div>`;
+                });
+                document.getElementById("menuMaterias").innerHTML = menuHTML;
+                document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+                document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+            });
+    }
+
+
+    function carregarUsuario() {
+        fetch(api + "?tipo=usuario")
+            .then(r => r.json())
+            .then(u => {
+                // 1. Atualiza a imagem no HEADER (Navbar superior Desktop)
+                const linkPerfilHeader = document.querySelector('.item-perfil a');
+                if (linkPerfilHeader && u.foto_perfil) {
+                    const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
+                    if (iconeUsuario) {
+                        iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                    } else {
+                        const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
+                        if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
+                            imagemHeaderExistente.src = u.foto_perfil;
+                        }
+                    }
+                }
+                
+                // 2. Atualiza a foto no menu mobile (Navbar superior Mobile)
+                const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
+                if (linkPerfilMobile && u.foto_perfil) {
+                    linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                }
+
+                // 3. MONTA E ADICIONA O DROPDOWN DO PERFIL (Igual ao da Home)
+                const itemPerfil = document.querySelector('.item-perfil');
+                if (itemPerfil) {
+                    // Remove um dropdown antigo se já existir para não duplicar
+                    const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
+                    if (antigoDropdown) antigoDropdown.remove();
+
+                    // Define se exibe a foto real ou o ícone de rostinho padrão
+                    const fotoHtml = u.foto_perfil 
+                        ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
+                        : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+
+                    // Cria o elemento do dropdown
+                    const dropdown = document.createElement('div');
+                    dropdown.className = 'perfil-dropdown';
+                    dropdown.innerHTML = `
+                        <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
+                            <div id="avatarWrapper">
+                                ${fotoHtml}
+                            </div>
+                            <div class="avatar-edit-badge">
+                                <i class="fas fa-pencil-alt"></i>
+                            </div>
+                            <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
+                        </div>
+
+                        <h4 style="text-align: center;">Minha Conta</h4>
+                        <hr>
+                        <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
+                        <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
+                        <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
+                        <hr>
+                        <a href="../config/logout.php" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                        </a>
+                    `;
+                    
+                    // Insere o dropdown montado dentro do item de perfil na barra de navegação
+                    itemPerfil.appendChild(dropdown);
+                }
+            });
+    }
+    
+    window.onload = () => {
+        carregarUsuario();     // <--- Adicionado para carregar a foto no header
+        carregarMenuSidebar(); // Carrega a sidebar
+        carregarPerfil('usuario'); 
+    };
+
+
 
 </script>
 

@@ -1,4 +1,75 @@
-        .campo-row {
+/* Modificado: Removido width rígido de 1000px para permitir expansão flexível flex */
+.cards-section { 
+    width: 100%;
+    max-width: 1100px; /* Limite máximo estético opcional */
+    min-height: 500px;
+    margin: auto;
+    border-radius: 15px;
+    border: 2px solid #333;
+    overflow: hidden; /* Garante que o fundo das pontas acompanhe o border-radius */
+}
+
+/* Modificado: O container pai agora garante o alinhamento esticado dos filhos */
+.container-principal {
+    display: flex;
+    width: 100%;
+    align-items: stretch; /* Faz as duas colunas terem a mesma altura sempre */
+}
+
+/* O canto ESQUERDO: assume a proporção flex: 1 */
+.container-aside {
+    flex: 1; /* Ocupa 1 parte do espaço proporcional */
+    background-color: #a3e1ff;
+    min-height: 500px; /* Mantém a altura mínima */
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 10px; /* Garante um espaçamento interno */
+}
+
+/* O canto DIREITO: assume a proporção flex: 3 (Ocupará 3x mais espaço que o esquerdo) */
+#card-opcoes {
+    flex: 3; /* Altere para 2 se preferir a barra lateral um pouco mais larga */
+    padding: 30px; /* Espaço confortável interno para os formulários/tabelas */
+    background-color: transparent; /* Opcional */
+    display: flex;
+    flex-direction: column;
+    background-color: #bde0fe;
+}
+
+/* Ajuste nos botões laterais para não quebrarem em telas menores */
+.container-aside-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%; /* Ocupa toda a largura interna do container-aside */
+}
+
+.card-btn {
+    background-color: #bde0fe;
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 85%; /* Em vez de largura fixa em px, usa porcentagem do flex: 1 */
+    max-width: 160px;
+    height: 100px;
+    border-radius: 10px;
+    border: 2px solid #333;
+    cursor: pointer;
+}
+
+       .perfil-discord-style {
+
+        margin:  20px auto;
+        width: 100%;
+        
+       }
+       .campo-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -118,6 +189,10 @@
             background-color: #ccc; /* Cor inicial */
         }
 
+        .container-controles-estilizados {
+            display: flex;
+            width: 100%;
+        }
         /* Controles de baixo */
         .controles-estilizados {
             display: flex;
@@ -126,7 +201,90 @@
             padding: 15px;
             border-radius: 25px;
             border: 2px solid #333;
+             width: 100%;
         }
+
+
+        /* Container pai que alinha os dados e a foto lado a lado */
+.perfil-container-flex {
+    display: flex;
+    gap: 30px;
+    width: 100%;
+    align-items: flex-start;
+    padding: 20px;
+}
+
+/* Coluna esquerda de informações (Nome, Email, Escolaridade) */
+.coluna-dados-perfil {
+    flex: 3; /* Ocupa proporcionalmente mais espaço */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Força o select inline a ocupar a largura disponível na coluna dele */
+.input-escolaridade-perfil {
+    width: 100%;
+}
+
+/* Botão de Salvar Alterações posicionado na esquerda */
+.btn-salvar-perfil {
+    margin-top: 15px;
+    align-self: flex-start;
+}
+
+/* Coluna direita que centraliza a foto de perfil */
+.coluna-foto-perfil {
+    flex: 2; /* Fica exatamente com flex 2 em relação aos dados */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* Texto descritivo acima da foto */
+.titulo-foto-label {
+    font-size: 12px;
+    font-weight: bold;
+    color: #5c5e66;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+/* Torna o container da foto clicável com feedback visual */
+.container-upload-pagina {
+    cursor: pointer;
+    position: relative;
+}
+
+/* Modificado: Aplica o tamanho ampliado APENAS no avatar que está dentro do container da página */
+.container-upload-pagina #avatarImg {
+    width: 200px;  /* Aumente ou diminua este valor como preferir */
+    height: 200px; /* Deve ser igual à largura para manter um círculo perfeito */
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+
+
+/* Ajuste fino para imagens dentro do wrapper da página de perfil */
+.container-upload-pagina .avatar-preview img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+
+/* Suporte para o Modo Escuro na etiqueta da foto */
+body.dark-mode .titulo-foto-label {
+    color: #aaaaaa;
+}
+
 
         .btn-salvar-final {
             display: block;
@@ -138,6 +296,9 @@
             font-weight: bold;
             cursor: pointer;
         }
+
+
+
 
 
         /* =========================================
