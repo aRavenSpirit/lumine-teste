@@ -244,7 +244,7 @@ function uploadFotoPerfil(input) {
                         }
                     }
                     
-                    alert("Foto de perfil updated com sucesso!");
+                    
                 } else {
                     alert("Erro ao salvar a foto: " + data.error);
                 }

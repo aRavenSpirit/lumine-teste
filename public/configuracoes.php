@@ -372,7 +372,6 @@
             const result = await res.json();
 
             if (result && result.success) {
-                alert("Configurações salvas com sucesso!");
                 carregarPerfil('preferencias');
             } else {
                 alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
