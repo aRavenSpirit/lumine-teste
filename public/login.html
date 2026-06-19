@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="./style/login.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
+    
 </head>
 <body>
     <div class="container-login">
@@ -35,7 +36,7 @@
                     </label>
                 </div>
 
-                <div id="mensagem"></div>
+                <div id="mensagem" style="text-align: center; color: red; font-size: 14px; margin-top: 5px;"></div>
             </div>
 
             <div class="area-botao">
@@ -61,23 +62,28 @@
         <p class="texto-cadastro">Ainda não tem cadastro? <a href="cadastro.html">Cadastre-se</a></p>
 
         <div id="modal-escolaridade" class="modal-overlay">
-        <div class="modal-content">
-            <h2>Quase lá! 🎉</h2>
-            <p>Para adaptarmos a plataforma Lumine ao seu perfil, selecione o seu nível de escolaridade atual:</p>
-            
-            <select id="select-escolaridade">
-                <option value="">A carregar opções...</option>
-            </select>
-            
-            <div id="msg-modal" style="color: #dc2626; margin-bottom: 12px; font-size: 14px; font-weight: 500;"></div>
-            
-            <button onclick="salvarEscolaridade()" class="botao-modal">Confirmar e Entrar</button>
+            <div class="modal-content">
+                <h2>Quase lá! 🎉</h2>
+                <p>Para adaptarmos a plataforma Lumine ao seu perfil, selecione o seu nível de escolaridade atual:</p>
+                
+                <select id="select-escolaridade">
+                    <option value="">A carregar opções...</option>
+                </select>
+                
+                <div id="msg-modal" style="color: #dc2626; margin-bottom: 12px; font-size: 14px; font-weight: 500;"></div>
+                
+                <button onclick="salvarEscolaridade()" class="botao-modal">Confirmar e Entrar</button>
+            </div>
         </div>
     </div>
 
-    </div>
-
     <script>
+        // Função indispensável para exibir mensagens de aviso/erro na tela
+        function exibirErro(texto) {
+            const msg = document.getElementById("mensagem");
+            if (msg) msg.innerText = texto;
+        }
+
         function mostrarModalEscolaridade() {
             document.getElementById("modal-escolaridade").classList.add("ativo");
             
@@ -131,10 +137,8 @@
             .then(r => r.json())
             .then(d => {
                 if (d.status) {
-                    // Verifica se o backend respondeu que precisa selecionar a escolaridade
                     if(d.precisa_escolaridade) {
-                        const msg = document.getElementById("mensagem");
-                        if(msg) msg.innerHTML = ""; // Limpa texto de "autenticando"
+                        exibirErro(""); // Limpa texto "A autenticar..."
                         mostrarModalEscolaridade();
                     } else {
                         window.location = "home.php";
@@ -165,7 +169,6 @@
             .then(r => r.json())
             .then(d => {
                 if (d.status) {
-                    // Verifica se o backend respondeu que precisa selecionar a escolaridade
                     if(d.precisa_escolaridade) {
                         mostrarModalEscolaridade();
                     } else {
