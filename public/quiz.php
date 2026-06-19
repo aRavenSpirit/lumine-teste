@@ -121,6 +121,7 @@
 
     <script src="js/resolucao_quiz.js"></script>
     <script>
+        
         const apiHome = "../config/home.php";
 
         window.addEventListener('load', () => {

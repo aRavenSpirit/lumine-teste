@@ -421,6 +421,22 @@ function atualizarControles() {
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
 
     if (emModoRevisao) {
+        // ====================================================================
+        // CORREÇÃO: Oculta o botão vermelho de sair (Desktop e Mobile) na revisão
+        // ====================================================================
+        const btnSairDesktop = document.querySelector(".btn-sair-flutuante");
+        if (btnSairDesktop) {
+            btnSairDesktop.style.display = 'none';
+        }
+
+        // Procura o link de sair do menu mobile baseado no clique do evento do quiz
+        const btnSairMobile = document.querySelector(".nav-links-mobile a[onclick*='toggleModalSaida']");
+        if (btnSairMobile) {
+            // Esconde o item de lista (li) que envelopa o link
+            const liPai = btnSairMobile.closest('li');
+            if (liPai) liPai.style.display = 'none';
+        }
+
         // Garante que o rodapé e os botões aceitem cliques
         const controles = document.getElementById('quiz-controls');
         if (controles) {
@@ -628,6 +644,8 @@ async function finalizarQuiz() {
         console.error("Erro:", error);
         reativarQuiz();
     }
+
+    emModoRevisao = true;
 }
 
 function reativarQuiz() {
@@ -644,6 +662,11 @@ carregarQuiz();
 
 // Monitora quando o usuário tenta fechar a aba por acidente (durante o quiz)
 function gerenciarAvisoSaida(e) {
+    // SE ESTIVER EM REVISÃO, LIBERA TOTALMENTE A SAÍDA E NÃO MOSTRA NADA
+    if (emModoRevisao) {
+        return; 
+    }
+    
     e.preventDefault();
     e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
     return e.returnValue;
