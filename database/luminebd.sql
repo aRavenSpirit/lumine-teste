@@ -22,15 +22,15 @@ insert into escolaridade (nome_escolaridade) values
 ('2º ANO (ENSINO MÉDIO)'),
 ('3º ANO (ENSINO MÉDIO)');
 
-create table usuario(
-    id int primary key auto_increment,
-    nome varchar(255) not null,
-    email varchar (255) not null unique,
-    senha varchar(255),
-    escolaridade_id int not null,
-    foreign key (escolaridade_id) references escolaridade (id_escolaridade),
-    criacao date,
-    foto_perfil longtext default null
+CREATE TABLE usuario (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    nome VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    senha VARCHAR(255),
+    escolaridade_id INT NULL, -- Alterado para NULL para permitir cadastro sem escolaridade inicial
+    FOREIGN KEY (escolaridade_id) REFERENCES escolaridade (id_escolaridade),
+    criacao DATE,
+    foto_perfil LONGTEXT DEFAULT NULL
 );
 
 create table materia(

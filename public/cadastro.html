@@ -24,9 +24,7 @@
 
                 <input type="email" id="email" placeholder="Insira seu email" required>
 
-                <select id="escolaridade">
-                    <option value="">Escolaridade</option>
-                </select>
+                
 
                 <div class="container-senha" style="position: relative; width: 100%;">
                     <input type="password" id="senha" placeholder="Crie uma senha" required>
@@ -128,12 +126,8 @@
 
     const api = "../config/api.php";
 
-    window.onload = function () {
-        carregarEscolaridades();
-    }
-
     // Faz a mensagem sumir ao digitar em qualquer campo
-    const campos = document.querySelectorAll('input, select');
+    const campos = document.querySelectorAll('input');
     campos.forEach(campo => {
         campo.addEventListener('input', () => {
             const msg = document.getElementById("mensagem");
@@ -145,17 +139,6 @@
             }, 400);
         });
     });
-
-    function carregarEscolaridades() {
-        fetch(api + "?tipo=escolaridade")
-            .then(r => r.json())
-            .then(dados => {
-                let select = document.getElementById("escolaridade");
-                dados.forEach(e => {
-                    select.innerHTML += `<option value="${e.id_escolaridade}">${e.nome_escolaridade}</option>`;
-                });
-            });
-    }
 
     function exibirErro(texto) {
         const msg = document.getElementById("mensagem");
@@ -174,10 +157,9 @@
         let email = document.getElementById("email").value.trim();
         let senha = document.getElementById("senha").value;
         let confirmar = document.getElementById("confirmar").value;
-        let escolaridade = document.getElementById("escolaridade").value;
 
         // Validações básicas antes do fetch
-        if(!nome || !email || !escolaridade || !senha || !confirmar){
+        if(!nome || !email || !senha || !confirmar){
             exibirErro("Preencha todos os campos!");
             return;
         }
@@ -193,8 +175,7 @@
             body:JSON.stringify({
                 nome: nome,
                 email: email,
-                senha: senha,
-                escolaridade_id: escolaridade
+                senha: senha
             })
         })
         .then(r=>r.json())
