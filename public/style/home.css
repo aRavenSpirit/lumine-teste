@@ -1042,10 +1042,11 @@ body.no-scroll {
     bottom: 20px;
     left: 20px;
     right: 20px;
-    background: #222;
+    background: #1595C4;
     color: #fff;
     padding: 15px 25px;
     border-radius: 10px;
+    border: 3px solid #333;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1059,6 +1060,7 @@ body.no-scroll {
 /* Os Botões */
 .cookie-buttons {
     display: flex;
+    flex-direction: column;
     gap: 10px;
 }
 
@@ -1071,8 +1073,35 @@ button {
     transition: 0.2s;
 }
 
-.btn-ok { background: #2ecc71; color: #fff; }
-.btn-no { background: #555; color: #fff; }
+.options-button {
+    display: flex;
+    gap: 10px;
+}
+.btn-box {
+    padding: 20px 40px;
+    border-radius: 5px;
+    border: 3px solid #333;
+    border-radius: 10px;
+    color: #333; 
+    font-size: 1.5em;
+    text-transform: uppercase;
+}
+
+.btn-ok { 
+    background: #2ecc71; 
+    
+}
+
+.btn-no { 
+    background: #c0392b; 
+}
+
+.politica {
+    text-align: right;
+}
+.politica a {
+    color: #fff;
+}
 
 button:hover { opacity: 0.8; }
 

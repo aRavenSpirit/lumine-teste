@@ -92,11 +92,15 @@
 
     <div id="cookieBanner" style="display: none;">
         <div class="cookie-text">
-            <p>Nós utilizamos cookies para melhorar a sua experiência no Lumine. Você aceita nossa política?</p>
+            <h3>Aceita cookies?</h3>
+            <p>Usamos cookies para deixar sua experiência por aqui mais brilhante e personalizada. Aceita que sejam guardadas umas migalhas digitais para melhorar sua navegação?</p>
         </div>
         <div class="cookie-buttons">
-            <button class="btn-ok" onclick="interagirCookie('accept')">Aceitar</button>
-            <button class="btn-no" onclick="interagirCookie('decline')">Recusar</button>
+            <div class="options-button">
+                <button class="btn-ok btn-box" onclick="interagirCookie('accept')">Aceitar</button>
+                <button class="btn-no btn-box" onclick="interagirCookie('decline')">Recusar</button>
+            </div>
+            <div class="politica"><a href="">politica de privacidade</a></div>
         </div>
     </div>
 

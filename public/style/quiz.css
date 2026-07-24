@@ -675,6 +675,15 @@ div[id^="drag_"] {
 }
 
 
+.btn-final {
+    padding: 8px 15px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.2s;
+}
+
 /* ==========================================================================
    CLASSES ESPECÍFICAS DISPARADAS AUTOMATICAMENTE NO CLIQUE
    ========================================================================== */
