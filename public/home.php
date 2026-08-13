@@ -299,8 +299,7 @@ function carregarMenuSidebar() {
 
 function carregarConteudos(idMateria, nomeMateria) {
     // Fecha menus mobile se abertos
-    document.getElementById('mobileMenu').classList.remove('active');
-    document.body.classList.remove('no-scroll');
+    fecharMenuMobile();
     
     document.querySelector(".subtitle").innerText = `CONTEÚDOS DE: ${nomeMateria.toUpperCase()}`;
     const container = document.getElementById("cardsConteudos");
@@ -398,6 +397,14 @@ function fecharModal() {
     document.getElementById('meuModal').style.display = "none"; 
 }
 
+function fecharMenuMobile() {
+    const mobileMenu = document.getElementById('mobileMenu');
+    if (mobileMenu) {
+        mobileMenu.classList.remove('active');
+    }
+    document.body.classList.remove('no-scroll');
+}
+
 function toggleSidebar() {
     // 900px é o limite exato que está configurado no seu arquivo home.css
     if (window.innerWidth <= 900) {
@@ -408,8 +415,12 @@ function toggleSidebar() {
         const mobileMenu = document.getElementById('mobileMenu');
         if (mobileMenu) {
             mobileMenu.classList.toggle('active');
+            if (mobileMenu.classList.contains('active')) {
+                document.body.classList.add('no-scroll');
+            } else {
+                document.body.classList.remove('no-scroll');
+            }
         }
-        document.body.classList.toggle('no-scroll');
 
     } else {
         
@@ -419,14 +430,31 @@ function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
         const main = document.getElementById('mainContainer');
         
-        if (sidebar) sidebar.classList.toggle('open');
+        if (sidebar) {
+            sidebar.classList.toggle('open');
+            // Quando a sidebar é minimizada (perde a classe 'open'), resetamos a rolagem interna para o topo
+            if (!sidebar.classList.contains('open')) {
+                sidebar.scrollTop = 0;
+            }
+        }
         if (main) main.classList.toggle('sidebar-open');
         
     }
 }
 
+// Fecha o menu mobile quando a tela for redimensionada para tamanho desktop
+window.onresize = () => {
+    if (window.innerWidth > 900) {
+        fecharMenuMobile();
+    }
+};
+
 window.onclick = (event) => {
     if (event.target == document.getElementById('meuModal')) fecharModal();
+    // Clique no botão X do menu mobile
+    if (event.target.classList.contains('mobile-menu-close') || event.target.closest('.mobile-menu-close')) {
+        fecharMenuMobile();
+    }
 };
 </script>
 
