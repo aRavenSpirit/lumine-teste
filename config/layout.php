@@ -20,7 +20,7 @@ function renderHeader() {
             <li class="item-sobre"><a href="sobre.php">Sobre nós</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-novidades"><a href="recomendados.php">Recomendados</a></li>
-            <li class="item-quizzes"><a href="home.php">Todos os quizzes</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-perfil">
                 <a href="configuracoes.php" class="perfil-link">
                     <span>Perfil</span>
