@@ -1,164 +1,149 @@
 <?php
-    // ==========================================
-    // PARTE DO SCRIPT PHP DE PROVIMENTO DA API
-    // ==========================================
-    header("Content-Type: application/json; charset=UTF-8");
-    header("Access-Control-Allow-Origin: *");
-    header("Access-Control-Allow-Methods: GET, POST");
-    header("Access-Control-Allow-Headers: Content-Type");
+// ==========================================
+// API DE CRIAÇÃO E CONSULTAS - LUMINEQUIZ
+// ==========================================
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST");
+header("Access-Control-Allow-Headers: Content-Type");
 
-    require __DIR__ . "/conexao.php";
+require __DIR__ . "/conexao.php";
 
-    // TIPOS DE PERGUNTAS
-    if (isset($_GET['tipo']) && $_GET['tipo'] == 'tipos_perguntas') {
+$metodo = $_SERVER['REQUEST_METHOD'];
+$tipo = $_GET['tipo'] ?? '';
+
+// ------------------------------------------
+// CONSULTAS GET
+// ------------------------------------------
+if ($metodo === 'GET') {
+    if ($tipo === 'tipos_perguntas') {
         $result = $conn->query("SELECT * FROM tipos_perguntas");
-        $dados = [];
-        while ($row = $result->fetch_assoc()) {
-            $dados[] = $row;
-        }
-        echo json_encode($dados);
+        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
         exit;
     }
 
-    // DIFICULDADE
-    if (isset($_GET['tipo']) && $_GET['tipo'] == 'dificuldade') {
+    if ($tipo === 'dificuldade') {
         $result = $conn->query("SELECT * FROM dificuldade");
-        $dados = [];
-        while ($row = $result->fetch_assoc()) {
-            $dados[] = $row;
-        }
-        echo json_encode($dados);
+        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
         exit;
     }
 
-    // MATÉRIA
-    if (isset($_GET['tipo']) && $_GET['tipo'] == 'materia') {
+    if ($tipo === 'materia') {
         $result = $conn->query("SELECT * FROM materia");
-        $dados = [];
-        while ($row = $result->fetch_assoc()) {
-            $dados[] = $row;
-        }
-        echo json_encode($dados);
+        echo json_encode($result->fetch_all(MYSQLI_ASSOC));
         exit;
     }
 
-    // CONTEÚDO
-    if (isset($_GET['tipo']) && $_GET['tipo'] == 'conteudo') {
-        $id = intval($_GET['id_materia']);
-        $result = $conn->query("SELECT * FROM conteudo WHERE id_materia = $id");
-        $dados = [];
-        while ($row = $result->fetch_assoc()) {
-            $dados[] = $row;
-        }
-        echo json_encode($dados);
+    if ($tipo === 'conteudo' && isset($_GET['id_materia'])) {
+        $id = (int)$_GET['id_materia'];
+        $stmt = $conn->prepare("SELECT * FROM conteudo WHERE id_materia = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        echo json_encode($stmt->get_result()->fetch_all(MYSQLI_ASSOC));
+        exit;
+    }
+}
+
+// ------------------------------------------
+// CADASTRO DE QUIZ COMPLETO (POST)
+// ------------------------------------------
+if ($metodo === 'POST' && $tipo === 'quiz_completo') {
+    $data = json_decode(file_get_contents("php://input"), true);
+
+    if (
+        empty($data['nome']) ||
+        empty($data['imagem_quiz']) ||
+        empty($data['dificuldade']) ||
+        empty($data['id_conteudo']) ||
+        empty($data['perguntas'])
+    ) {
+        echo json_encode(["erro" => "Dados incompletos no envio. A imagem da capa do quiz é obrigatória."]);
         exit;
     }
 
-    // CRIAR QUIZ COMPLETO
-    if (isset($_GET['tipo']) && $_GET['tipo'] == 'quiz_completo') {
-        $data = json_decode(file_get_contents("php://input"), true);
+    // Inicia Transação
+    $conn->begin_transaction();
 
-        if (
-            empty($data['nome']) ||
-            empty($data['dificuldade']) ||
-            empty($data['id_conteudo']) ||
-            empty($data['perguntas'])
-        ) {
-            echo json_encode(["erro" => "Dados incompletos no envio"]);
-            exit;
-        }
-
-        $nome = $conn->real_escape_string($data['nome']);
-        $id_dificuldade = intval($data['dificuldade']);
-        $id_conteudo = intval($data['id_conteudo']);
-
-        $sqlQuiz = "INSERT INTO quizzes (nome, id_dificuldade, id_conteudo) VALUES ('$nome', $id_dificuldade, $id_conteudo)";
-        if (!$conn->query($sqlQuiz)) {
-            echo json_encode(["erro" => "Erro ao inserir quiz: " . $conn->error]);
-            exit;
-        }
-
+    try {
+        // 1. Inserir Quiz com Imagem
+        $stmtQuiz = $conn->prepare("INSERT INTO quizzes (nome, id_dificuldade, id_conteudo, imagem_quiz) VALUES (?, ?, ?, ?)");
+        $stmtQuiz->bind_param("siis", $data['nome'], $data['dificuldade'], $data['id_conteudo'], $data['imagem_quiz']);
+        $stmtQuiz->execute();
         $quiz_id = $conn->insert_id;
 
+        // Prepared statements reutilizáveis
+        $stmtPergunta = $conn->prepare("INSERT INTO perguntas (descricao, id_quiz, id_tipo, imagem_perguntas) VALUES (?, ?, ?, ?)");
+        $stmtRespostaBase = $conn->prepare("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES (?, ?, ?)");
+        $stmtRespostaAvancada = $conn->prepare("INSERT INTO respostas (descricao, certo, id_pergunta, ordem, texto_alvo) VALUES (?, 1, ?, ?, ?)");
+
+        // 2. Loop de Perguntas
         foreach ($data['perguntas'] as $p) {
             if (empty($p['descricao']) || empty($p['tipo'])) {
-                echo json_encode(["erro" => "Existe uma pergunta inválida ou sem título"]);
-                exit;
+                throw new Exception("Existe uma pergunta com dados incompletos.");
             }
 
-            $desc = $conn->real_escape_string($p['descricao']);
-            $id_tipo = intval($p['tipo']);
+            $imgPergunta = !empty($p['imagem_perguntas']) ? $p['imagem_perguntas'] : null;
+            $id_tipo = (int)$p['tipo'];
 
-            $sqlPergunta = "INSERT INTO perguntas (descricao, id_quiz, id_tipo) VALUES ('$desc', $quiz_id, $id_tipo)";
-            if (!$conn->query($sqlPergunta)) {
-                echo json_encode(["erro" => "Erro ao inserir pergunta: " . $conn->error]);
-                exit;
-            }
-
+            $stmtPergunta->bind_param("siis", $p['descricao'], $quiz_id, $id_tipo, $imgPergunta);
+            $stmtPergunta->execute();
             $pergunta_id = $conn->insert_id;
 
-            // MULTIPLA (1 correta) e VÁRIAS
+            // Múltipla Escolha (1 ou Várias)
             if ($id_tipo == 1 || $id_tipo == 4) {
-                if (empty($p['respostas'])) {
-                    echo json_encode(["erro" => "Respostas obrigatórias em múltipla escolha"]);
-                    exit;
-                }
+                if (empty($p['respostas'])) throw new Exception("Respostas obrigatórias em múltipla escolha.");
 
                 foreach ($p['respostas'] as $r) {
                     if (empty($r['descricao'])) continue;
-
-                    $rdesc = $conn->real_escape_string($r['descricao']);
                     $certo = !empty($r['certo']) ? 1 : 0;
-
-                    $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$rdesc', $certo, $pergunta_id)");
+                    $stmtRespostaBase->bind_param("sii", $r['descricao'], $certo, $pergunta_id);
+                    $stmtRespostaBase->execute();
                 }
             }
 
-            // TEXTO
+            // Texto
             if ($id_tipo == 2) {
-                if (empty($p['resposta_texto'])) {
-                    echo json_encode(["erro" => "Resposta de texto obrigatória"]);
-                    exit;
-                }
-                $resp = $conn->real_escape_string($p['resposta_texto']);
-                $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$resp', 1, $pergunta_id)");
+                if (empty($p['resposta_texto'])) throw new Exception("Resposta de texto obrigatória.");
+                $certo = 1;
+                $stmtRespostaBase->bind_param("sii", $p['resposta_texto'], $certo, $pergunta_id);
+                $stmtRespostaBase->execute();
             }
 
-            // VERDADEIRO/FALSO
+            // Verdadeiro / Falso
             if ($id_tipo == 3) {
-                if (!isset($p['vf'])) {
-                    echo json_encode(["erro" => "Seleção de Verdadeiro/Falso obrigatória"]);
-                    exit;
-                }
+                if (!isset($p['vf'])) throw new Exception("Seleção de V/F obrigatória.");
                 $valor = $p['vf'] ? 'Verdadeiro' : 'Falso';
-                $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$valor', 1, $pergunta_id)");
+                $certo = 1;
+                $stmtRespostaBase->bind_param("sii", $valor, $certo, $pergunta_id);
+                $stmtRespostaBase->execute();
             }
 
-            // ORDENAR / DRAG AND DROP
-            // ✅ CORREÇÃO: Tratamento unificado com verificação de isset preventiva
+            // Ordenar e Arrastar/Soltar
             if ($id_tipo == 5 || $id_tipo == 6) {
                 $posicao = 1;
-
                 foreach ($p['respostas'] as $r) {
                     if (empty($r['descricao'])) continue;
 
-                    $descItem = $conn->real_escape_string($r['descricao']);
-                    $textoAlvo = '';
-
-                    if ($id_tipo == 6 && isset($r['texto_alvo'])) {
-                        $textoAlvo = $conn->real_escape_string($r['texto_alvo']);
-                    }
-
-                    $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem, texto_alvo) 
-                                  VALUES ('$descItem', 1, $pergunta_id, $posicao, '$textoAlvo')");
+                    $textoAlvo = ($id_tipo == 6 && isset($r['texto_alvo'])) ? $r['texto_alvo'] : '';
+                    $stmtRespostaAvancada->bind_param("siis", $r['descricao'], $pergunta_id, $posicao, $textoAlvo);
+                    $stmtRespostaAvancada->execute();
                     $posicao++;
                 }
             }
         }
 
+        // Sucesso: Confirma alterações no banco
+        $conn->commit();
         echo json_encode(["mensagem" => "Quiz criado com sucesso!"]);
-        exit;
+
+    } catch (Exception $e) {
+        // Erro: Reverte tudo para evitar dados incompletos
+        $conn->rollback();
+        echo json_encode(["erro" => $e->getMessage()]);
     }
 
-    $conn->close();
+    exit;
+}
+
+$conn->close();
 ?>
