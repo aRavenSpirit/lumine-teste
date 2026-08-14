@@ -14,7 +14,7 @@
     <header>
         <div class="brand-adm">ADM</div>
             <button onclick="location.href='criar_quiz.html'" class="nav-btn ">CRIAR QUIZZES</button>
-        <button class="nav-btn btn-lumine-top" onclick="window.location.href='index.html'">LUMINE</button>
+        <button class="nav-btn btn-lumine-top" onclick="window.location.href='index.php'">LUMINE</button>
     </header>
 
     <div class="dashboard">
@@ -271,8 +271,8 @@
                 // =========================================================================
                 if (tipo === 'usuario' && r.deslogar) {
                     setTimeout(() => {
-                        // Altere para 'index.html', 'login.php' ou a página que preferir como sua principal pública
-                        window.location.href = 'index.html'; 
+                        // Altere para 'index.php', 'login.php' ou a página que preferir como sua principal pública
+                        window.location.href = 'index.php'; 
                     }, 1000); // Aguarda 1 segundo para o usuário ver o feedback de sucesso antes de sair
                     return;
                 }

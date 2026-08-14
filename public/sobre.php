@@ -102,9 +102,9 @@
         </div>
         
         <ul class="nav-links">
-            <li class="item-sobre"><a href="index.html">Início</a></li>
-            <li class="item-novidades"><a href="#">Novidades</a></li>
-            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-sobre"><a href="index.php">Início</a></li>
+            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-acessar">
                 <a href="home.php" class="btn-acessar">Acessar</a>
             </li>
@@ -114,9 +114,9 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <div class="item-sobre"><a href="index.html">Início</a></div>
-        <div class="item-novidades"><a href="#">Novidades</a></div>
-        <div class="item-quizzes"><a href="#">Todos os quizzes</a></div>
+        <div class="item-sobre"><a href="index.php">Início</a></div>
+        <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
+        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
         <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
     </div>
 

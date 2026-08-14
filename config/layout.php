@@ -45,7 +45,7 @@ function renderHeader() {
 
 function renderSidebar($isQuiz = false) {
     $pagina_atual = basename($_SERVER['SCRIPT_NAME']);
-    $link_logo = ($pagina_atual === 'home.php') ? "../public/index.html" : "home.php";
+    $link_logo = ($pagina_atual === 'home.php') ? "../public/index.php" : "home.php";
     ?>
     
     <aside class="sidebar" id="sidebar">
