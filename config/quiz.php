@@ -1,39 +1,32 @@
 <?php
-require "conexao.php";
-header("Content-Type: application/json; charset=UTF-8");
+    require "conexao.php";
+    header("Content-Type: application/json; charset=UTF-8");
 
-// =========================================================================
-// 1. ROTA PARA LISTAR TODOS OS QUIZZES (PAINEL / HOME)
-// =========================================================================
-if (isset($_GET['tipo']) && $_GET['tipo'] === 'listar_quizzes') {
-    $sql = "SELECT 
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'listar_quizzes') {
+        $result = $conn->query("
+            SELECT 
                 q.id,
                 q.nome,
-                q.imagem_quiz,
                 d.dificuldade,
                 c.nome AS conteudo,
                 m.nome_materia
             FROM quizzes q
-            INNER JOIN dificuldade d ON q.id_dificuldade = d.id
-            INNER JOIN conteudo c ON q.id_conteudo = c.id
-            INNER JOIN materia m ON c.id_materia = m.id
-            ORDER BY q.id DESC";
+            JOIN dificuldade d ON q.id_dificuldade = d.id
+            JOIN conteudo c ON q.id_conteudo = c.id
+            JOIN materia m ON c.id_materia = m.id
+            ORDER BY q.id DESC
+        ");
 
-    $result = $conn->query($sql);
-    $dados = [];
-
-    if ($result) {
+        $dados = [];
         while ($row = $result->fetch_assoc()) {
             $dados[] = $row;
         }
+        echo json_encode($dados);
+        exit;
     }
-    
-    echo json_encode($dados, JSON_UNESCAPED_UNICODE);
-    exit;
-}
 
 // =========================================================================
-// 2. ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU A PLATAFORMA
+// ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU A PLATAFORMA (NOVA)
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
     if (session_status() === PHP_SESSION_NONE) {
@@ -48,7 +41,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
         $stmt->execute();
         $stmt->store_result();
         
-        $ja_avaliou = ($stmt->num_rows > 0);
+        $ja_avaliou = $stmt->num_rows > 0; // Se for maior que 0, ele já avaliou
         $stmt->close();
         
         echo json_encode(["avaliou" => $ja_avaliou]);
@@ -59,7 +52,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
 }
 
 // =========================================================================
-// 3. ROTA PARA SALVAR A AVALIAÇÃO DA PLATAFORMA (1 POR USUÁRIO)
+// ROTA PARA SALVAR A AVALIAÇÃO DA PLATAFORMA (1 POR USUÁRIO)
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
     if (session_status() === PHP_SESSION_NONE) {
@@ -68,17 +61,18 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
 
     $data = json_decode(file_get_contents("php://input"), true);
     
+    // RESTAURADO: Capturamos o quiz_id normalmente. Não excluímos nada!
     $quiz_id = isset($data['quiz_id']) ? intval($data['quiz_id']) : 0;
     $nota = isset($data['nota']) ? intval($data['nota']) : 0;
     $id_usuario = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 0; 
 
     if ($id_usuario === 0) {
-        echo json_encode(["sucesso" => false, "erro" => "Sessão expirada ou usuário não autenticado."]);
+        echo json_encode(["sucesso" => false, "erro" => "Sessão expirada."]);
         exit;
     }
 
-    if ($quiz_id > 0 && $nota >= 1 && $nota <= 5) {
-        // Verifica se o usuário já realizou avaliação
+    if ($quiz_id > 0 && $nota > 0) {
+        // TRAVA MANTIDA: Verifica se o usuário já avaliou a plataforma antes
         $check_stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ?");
         $check_stmt->bind_param("i", $id_usuario);
         $check_stmt->execute();
@@ -86,118 +80,78 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
 
         if ($check_stmt->num_rows > 0) {
             $check_stmt->close();
-            echo json_encode(["sucesso" => true, "mensagem" => "Avaliação prévia detectada."]);
+            echo json_encode(["sucesso" => true]); // Finge que salvou para não travar a tela
             exit;
         }
         $check_stmt->close();
 
-        // Inserção da avaliação
+        // RESTAURADO: Inserimos com todas as 3 informações (id_quiz, id_usuario, nota)
         $stmt = $conn->prepare("INSERT INTO avaliacoes (id_quiz, id_usuario, nota) VALUES (?, ?, ?)");
         $stmt->bind_param("iii", $quiz_id, $id_usuario, $nota);
         
         if ($stmt->execute()) {
             echo json_encode(["sucesso" => true]);
         } else {
-            echo json_encode(["sucesso" => false, "erro" => "Falha no banco de dados: " . $stmt->error]);
+            echo json_encode(["sucesso" => false, "erro" => "Erro SQL: " . $stmt->error]);
         }
         $stmt->close();
     } else {
-        echo json_encode(["sucesso" => false, "erro" => "Parâmetros inválidos para avaliação."]);
+        echo json_encode(["sucesso" => false, "erro" => "Dados inválidos."]);
     }
     exit;
 }
 
-// =========================================================================
-// 4. ROTA PARA DETALHES DO QUIZ (EXECUÇÃO E EDIÇÃO)
-// =========================================================================
-if (isset($_GET['tipo']) && $_GET['tipo'] === 'detalhes_quiz') {
-    $id_quiz = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
+    if (isset($_GET['tipo']) && $_GET['tipo'] == 'detalhes_quiz') {
+        $id_quiz = intval($_GET['id']);
 
-    if (!$id_quiz) {
-        echo json_encode(["erro" => "ID de Quiz inválido."]);
+        $sql_quiz = "SELECT q.*, m.nome_materia, c.nome as conteudo 
+                     FROM quizzes q 
+                     JOIN conteudo c ON q.id_conteudo = c.id 
+                     JOIN materia m ON c.id_materia = m.id 
+                     WHERE q.id = $id_quiz";
+        
+        $res_quiz = $conn->query($sql_quiz);
+        $dados = $res_quiz->fetch_assoc();
+
+        if ($dados) {
+            $sql_perguntas = "SELECT id, descricao, id_tipo FROM perguntas WHERE id_quiz = $id_quiz";
+            $res_perguntas = $conn->query($sql_perguntas);
+            
+            $perguntas = [];
+            while ($p = $res_perguntas->fetch_assoc()) {
+                $id_p = $p['id'];
+                $id_tipo = intval($p['id_tipo']);
+
+                // Busca as respostas associadas à pergunta
+                $sql_resp = "SELECT id, descricao, certo, ordem, texto_alvo FROM respostas WHERE id_pergunta = $id_p";
+                $res_resp = $conn->query($sql_resp);
+                
+                $respostas = [];
+                while ($r = $res_resp->fetch_assoc()) {
+                    $respostas[] = $r;
+                }
+
+                // Cria uma cópia idêntica para gerar o embaralhamento dos elementos móveis
+                $respostas_embaralhadas = $respostas;
+
+                // Se a pergunta for do tipo Ordenar Itens (5) ou Drag and Drop (6), embaralha apenas a cópia móvel
+                if ($id_tipo === 5 || $id_tipo === 6) {
+                    shuffle($respostas_embaralhadas);
+                }
+
+                // Mantém a ordem original estática para as estruturas de validação e caixas alvo
+                $p['respostas'] = $respostas;
+                
+                // Envia a lista bagunçada em uma propriedade exclusiva para renderizar os botões/blocos arrastáveis
+                $p['respostas_embaralhadas'] = $respostas_embaralhadas;
+                
+                $perguntas[] = $p;
+            }
+            $dados['perguntas'] = $perguntas;
+            echo json_encode($dados);
+        } else {
+            echo json_encode(["erro" => "Quiz não encontrado"]);
+        }
         exit;
     }
-
-    // Busca os dados do Quiz incluindo capas e chaves estrangeiras
-    $sql_quiz = "SELECT 
-                    q.id,
-                    q.nome,
-                    q.id_dificuldade,
-                    q.id_conteudo,
-                    q.imagem_quiz,
-                    d.dificuldade,
-                    m.id AS id_materia,
-                    m.nome_materia, 
-                    c.nome AS conteudo 
-                 FROM quizzes q 
-                 INNER JOIN dificuldade d ON q.id_dificuldade = d.id
-                 INNER JOIN conteudo c ON q.id_conteudo = c.id 
-                 INNER JOIN materia m ON c.id_materia = m.id 
-                 WHERE q.id = ?";
-
-    $stmt_quiz = $conn->prepare($sql_quiz);
-    $stmt_quiz->bind_param("i", $id_quiz);
-    $stmt_quiz->execute();
-    $res_quiz = $stmt_quiz->get_result();
-    $dados = $res_quiz->fetch_assoc();
-    $stmt_quiz->close();
-
-    if ($dados) {
-        // Busca as Perguntas associadas ao Quiz
-        $sql_perguntas = "SELECT id, descricao, id_tipo, imagem_perguntas 
-                          FROM perguntas 
-                          WHERE id_quiz = ? 
-                          ORDER BY id ASC";
-        
-        $stmt_p = $conn->prepare($sql_perguntas);
-        $stmt_p->bind_param("i", $id_quiz);
-        $stmt_p->execute();
-        $res_perguntas = $stmt_p->get_result();
-        
-        $perguntas = [];
-        
-        while ($p = $res_perguntas->fetch_assoc()) {
-            $id_p = $p['id'];
-            $id_tipo = intval($p['id_tipo']);
-
-            // Busca as respostas da pergunta ordenadas pelo campo 'ordem'
-            $sql_resp = "SELECT id, descricao, certo, ordem, texto_alvo 
-                         FROM respostas 
-                         WHERE id_pergunta = ? 
-                         ORDER BY ordem ASC, id ASC";
-                         
-            $stmt_r = $conn->prepare($sql_resp);
-            $stmt_r->bind_param("i", $id_p);
-            $stmt_r->execute();
-            $res_resp = $stmt_r->get_result();
-            
-            $respostas = [];
-            while ($r = $res_resp->fetch_assoc()) {
-                $r['certo'] = (bool)$r['certo'];
-                $respostas[] = $r;
-            }
-            $stmt_r->close();
-
-            // Clona o array original para criar o vetor de elementos móveis embaralhados
-            $respostas_embaralhadas = $respostas;
-
-            // Se for do tipo 'Ordenar' (5) ou 'Arrastar e Soltar' (6), embaralha apenas o vetor alternativo
-            if ($id_tipo === 5 || $id_tipo === 6) {
-                shuffle($respostas_embaralhadas);
-            }
-
-            $p['respostas'] = $respostas;
-            $p['respostas_embaralhadas'] = $respostas_embaralhadas;
-            
-            $perguntas[] = $p;
-        }
-        $stmt_p->close();
-
-        $dados['perguntas'] = $perguntas;
-        echo json_encode($dados, JSON_UNESCAPED_UNICODE);
-    } else {
-        echo json_encode(["erro" => "Quiz não encontrado."]);
-    }
-    exit;
-}
 ?>

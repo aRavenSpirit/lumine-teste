@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Criar Quiz - LumineQuiz</title>
+    <title>Criar Quiz</title>
     <link rel="stylesheet" href="style/criar_quiz.css">
     <link rel="shortcut icon" href="img/LUMINEADM.ico" type="image/x-icon">
 </head>
@@ -26,12 +26,6 @@
             <div class="input-group">
                 Nome:
                 <input type="text" id="nome" placeholder="Nome do novo Quiz" class="custom-input main-input">
-            </div>
-
-            <!-- NOVO: Upload de Imagem de Capa do Quiz -->
-            <div class="input-group">
-                Capa do Quiz (Imagem):
-                <input type="file" id="imagem_quiz" accept="image/*" class="custom-input">
             </div>
 
             <div class="input-group select-wrapper">
@@ -62,6 +56,7 @@
     </main>
 
     <script>
+
         const api = "../config/criar_quiz.php";
 
         let perguntas = [];
@@ -79,7 +74,11 @@
                 .then(dados => {
                     let select = document.getElementById("dificuldade");
                     dados.forEach(d => {
-                        select.innerHTML += `<option value="${d.id}">${d.dificuldade}</option>`;
+                        select.innerHTML += `
+                            <option value="${d.id}">
+                                ${d.dificuldade}
+                            </option>
+                        `;
                     });
                 });
         }
@@ -87,7 +86,9 @@
         function carregarTipos() {
             fetch(api + "?tipo=tipos_perguntas")
                 .then(r => r.json())
-                .then(dados => { tipos = dados; });
+                .then(dados => {
+                    tipos = dados;
+                });
         }
 
         function carregarMaterias() {
@@ -96,7 +97,11 @@
                 .then(dados => {
                     let select = document.getElementById("materia");
                     dados.forEach(m => {
-                        select.innerHTML += `<option value="${m.id}">${m.nome_materia}</option>`;
+                        select.innerHTML += `
+                            <option value="${m.id}">
+                                ${m.nome_materia}
+                            </option>
+                        `;
                     });
                 });
         }
@@ -111,7 +116,11 @@
                 .then(dados => {
                     select.innerHTML = "<option value=''>Selecione...</option>";
                     dados.forEach(c => {
-                        select.innerHTML += `<option value="${c.id}">${c.nome}</option>`;
+                        select.innerHTML += `
+                            <option value="${c.id}">
+                                ${c.nome}
+                            </option>
+                        `;
                     });
                 });
         }
@@ -120,7 +129,6 @@
             perguntas.push({
                 descricao: "",
                 tipo: "",
-                imagem_perguntas: "",
                 respostas: []
             });
             render();
@@ -132,7 +140,10 @@
         }
 
         function addResposta(i) {
-            perguntas[i].respostas.push({ descricao: "", certo: false });
+            perguntas[i].respostas.push({
+                descricao: "",
+                certo: false
+            });
             render();
         }
 
@@ -141,18 +152,26 @@
             render();
         }
 
-        function updatePergunta(i, valor) { perguntas[i].descricao = valor; }
-        function updateTextoAlvo(i, j, valor) { perguntas[i].respostas[j].texto_alvo = valor; }
+        function updatePergunta(i, valor) {
+            perguntas[i].descricao = valor;
+        }
+
+        function updateTextoAlvo(i, j, valor) {
+            perguntas[i].respostas[j].texto_alvo = valor;
+        }
        
         function updateTipo(i, tipo) {
             perguntas[i].tipo = tipo;
             perguntas[i].respostas = [];
+            // Inicializações padrão para evitar propriedades undefined no JSON final
             if (tipo == 2) perguntas[i].resposta_texto = "";
             if (tipo == 3) perguntas[i].vf = true; 
             render();
         }
 
-        function updateResposta(i, j, valor) { perguntas[i].respostas[j].descricao = valor; }
+        function updateResposta(i, j, valor) {
+            perguntas[i].respostas[j].descricao = valor;
+        }
 
         function updateCorreta(i, j) {
             perguntas[i].respostas.forEach(r => r.certo = false);
@@ -160,29 +179,33 @@
             render();
         }
 
-        function marcarMultipla(i, j, valor) { perguntas[i].respostas[j].certo = valor; }
-        function setTexto(i, valor) { perguntas[i].resposta_texto = valor; }
-        function setVF(i, valor) { perguntas[i].vf = valor; render(); }
-
-        // Helper para converter imagem em Base64
-        function fileToBase64(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = error => reject(error);
-            });
+        function marcarMultipla(i, j, valor) {
+            perguntas[i].respostas[j].certo = valor;
         }
 
-        async function updateImagemPergunta(i, inputElement) {
-            if (inputElement.files && inputElement.files[0]) {
-                perguntas[i].imagem_perguntas = await fileToBase64(inputElement.files[0]);
-            }
+        function setTexto(i, valor) {
+            perguntas[i].resposta_texto = valor;
+        }
+
+        function setVF(i, valor) {
+            perguntas[i].vf = valor;
+            render();
+        }
+
+        function setOrdem(i, j, valor) {
+            perguntas[i].respostas[j].ordem = parseInt(valor);
         }
 
         let dragSourceIndex = null;
-        function dragStart(i, j) { dragSourceIndex = j; }
-        function allowDrop(ev) { ev.preventDefault(); }
+
+        function dragStart(i, j) {
+            dragSourceIndex = j;
+        }
+
+        function allowDrop(ev) {
+            ev.preventDefault();
+        }
+
         function drop(i, targetIndex) {
             const movido = perguntas[i].respostas.splice(dragSourceIndex, 1)[0];
             perguntas[i].respostas.splice(targetIndex, 0, movido);
@@ -202,21 +225,19 @@
                         </div>
                         <button class="btn-remove" onclick="removerPergunta(${i})">Remover</button>
                     </div>
-
-                    <!-- NOVO: Upload de Imagem para a Pergunta -->
-                    <div class="input-group" style="margin-top: 8px;">
-                        Imagem da Pergunta (Opcional):
-                        <input type="file" accept="image/*" class="custom-input" onchange="updateImagemPergunta(${i}, this)">
-                    </div>
                    
-                    <div class="select-wrapper type-select-wrapper" style="margin-top: 8px;">
+                    <div class="select-wrapper type-select-wrapper">
                         Tipo:
                         <select class="custom-select" onchange="updateTipo(${i}, this.value)">
                             <option value="">Selecione...</option>
                 `;
 
                 tipos.forEach(t => {
-                    html += `<option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>${t.nome_tipo}</option>`;
+                    html += `
+                        <option value="${t.id}" ${p.tipo == t.id ? "selected" : ""}>
+                            ${t.nome_tipo}
+                        </option>
+                    `;
                 });
 
                 html += `</select></div><br>`;
@@ -229,7 +250,9 @@
                             <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
                             <input class="inner-pill-input" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
                             <label class="custom-radio-checkbox">
-                                <input type="radio" name="correta_${i}" onchange="updateCorreta(${i}, ${j})" ${r.certo ? "checked" : ""}>
+                                <input type="radio" name="correta_${i}"
+                                    onchange="updateCorreta(${i}, ${j})"
+                                    ${r.certo ? "checked" : ""}>
                                 <span class="radio-mark"></span>
                             </label>
                         </div>
@@ -252,11 +275,11 @@
                     <div class="answers-container vf-container">
                         <label class="vf-label-wrapper">
                             <input type="radio" name="vf_${i}" onchange="setVF(${i}, true)" ${p.vf === true ? "checked" : ""}>
-                            <span class="vf-btn vf-true">Verdadeiro</span>
+                            <span class="vf-btn vf-true">Verdadeiro <span class="dot-indicator"></span></span>
                         </label>
                         <label class="vf-label-wrapper">
                             <input type="radio" name="vf_${i}" onchange="setVF(${i}, false)" ${p.vf === false ? "checked" : ""}>
-                            <span class="vf-btn vf-false">Falso</span>
+                            <span class="vf-btn vf-false">Falso <span class="dot-indicator"></span></span>
                         </label>
                     </div>
                     `;
@@ -269,16 +292,20 @@
                         <div class="answer-pill-box">
                             <button class="btn-inline-remove" onclick="removerResposta(${i}, ${j})">×</button>
                             <input class="inner-pill-input" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}">
-                            <input type="checkbox" onchange="marcarMultipla(${i}, ${j}, this.checked)" ${r.certo ? "checked" : ""}>
+                            <input type="checkbox"
+                                onchange="marcarMultipla(${i}, ${j}, this.checked)"
+                                ${r.certo ? "checked" : ""}>
                         </div>
                         `;
                     });
                     html += `</div>`;
                 }
 
+                // ✅ MUDANÇA: Adicionado os atributos e eventos nativos de Drag and Drop para que a ordenação visual funcione e chame as funções
                 if (p.tipo == 5) {
                     html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
-                    html += `<div class="answers-container drag-drop-container"><div class="drag-items-list">`;
+                    html += `<p style="margin: 5px 0;"><small><em>Arraste os itens para ordenar ou escreva de cima para baixo:</em></small></p>`;
+                    html += `<div class="answers-container drag-drop-container"><div class="drag-arrow-indicator"></div><div class="drag-items-list">`;
                     p.respostas.forEach((r, j) => {
                         html += `
                         <div class="answer-pill-box drag-pill" draggable="true" ondragstart="dragStart(${i}, ${j})" ondragover="allowDrop(event)" ondrop="drop(${i}, ${j})" style="cursor: move;">
@@ -298,6 +325,7 @@
                             <div class="match-box-left">
                                 <input class="inner-pill-input full-width" onchange="updateTextoAlvo(${i}, ${j}, this.value)" value="${r.texto_alvo ?? ''}" placeholder="Ex: Capital da França">
                             </div>
+                            <div class="match-arrow"></div>
                             <div class="match-box-right">
                                 <input class="inner-pill-input full-width" onchange="updateResposta(${i}, ${j}, this.value)" value="${r.descricao}" placeholder="Ex: Paris">
                                 <button class="btn-inline-remove margin-left" onclick="removerResposta(${i}, ${j})">×</button>
@@ -313,19 +341,15 @@
             document.getElementById("perguntas").innerHTML = html;
         }
 
-        async function salvarQuiz() {
+        function salvarQuiz() {
             let nome = document.getElementById("nome").value.trim();
             let difficulty = document.getElementById("dificuldade").value;
             let conteudo = document.getElementById("conteudo").value;
-            let imgInput = document.getElementById("imagem_quiz");
 
             if (!nome) return alert("Informe o nome");
             if (!difficulty) return alert("Informe a dificuldade");
             if (!conteudo) return alert("Selecione o conteúdo");
-            if (!imgInput.files || !imgInput.files[0]) return alert("Selecione uma imagem de capa para o quiz");
             if (perguntas.length === 0) return alert("Adicione perguntas");
-
-            let imagem_quiz = await fileToBase64(imgInput.files[0]);
 
             for (let i = 0; i < perguntas.length; i++) {
                 let p = perguntas[i];
@@ -339,11 +363,16 @@
                     if (corretas.length !== 1) return alert(`Pergunta ${i + 1} precisa de 1 correta`);
                 }
 
-                if (p.tipo == 2 && !p.resposta_texto) return alert(`Pergunta ${i + 1} precisa resposta`);
-                if (p.tipo == 3 && p.vf === undefined) return alert(`Pergunta ${i + 1} precisa VF`);
+                if (p.tipo == 2 && !p.resposta_texto)
+                    return alert(`Pergunta ${i + 1} precisa resposta`);
+
+                if (p.tipo == 3 && p.vf === undefined)
+                    return alert(`Pergunta ${i + 1} precisa VF`);
 
                 if (p.tipo == 5 || p.tipo == 6) {
-                    if (p.respostas.length < 2) return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
+                    if (p.respostas.length < 2)
+                        return alert(`Pergunta ${i + 1} precisa de pelo menos 2 itens.`);
+                    
                     p.respostas.forEach((r, idx) => r.ordem = idx + 1);
                 }
             }
@@ -353,7 +382,6 @@
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     nome,
-                    imagem_quiz,
                     dificuldade: difficulty,
                     id_conteudo: conteudo,
                     perguntas
@@ -372,6 +400,7 @@
                 alert("Erro ao conectar com o servidor ou processar os dados.");
             });
         }
+
     </script>
 
 </body>

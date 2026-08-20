@@ -383,22 +383,6 @@ h3 {
     transform: scale(0.9);
 }
 
-/* Container e Pré-visualização da imagem da pergunta */
-.preview-img-container {
-    margin-top: 8px;
-    margin-bottom: 12px;
-}
-
-.img-pergunta-preview {
-    max-width: 100%;
-    max-height: 150px; /* Resolução e altura fixas mantendo o aspecto */
-    object-fit: contain;
-    border-radius: 8px;
-    border: 2px solid #000;
-    background-color: #fff;
-    display: block;
-}
-
 /* INPUT TEXTO LIVRE */
 .text-answer-input {
     background-color: #ffffff !important;
