@@ -1,6 +1,6 @@
 <?php
-       include_once("../config/session.php");
-       include_once("../config/layout.php"); // Inclui o novo arquivo
+        include_once("../config/session.php");
+        include_once("../config/layout.php"); // Inclui o novo arquivo
 ?>
 
 <!DOCTYPE html>
@@ -119,6 +119,8 @@
         </div>
     </div>
 
+    <!-- Scripts da aplicação -->
+    <script src="js/sidebar_close.js"></script>
     <script src="js/resolucao_quiz.js"></script>
     <script>
         

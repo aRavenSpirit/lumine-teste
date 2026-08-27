@@ -1,30 +1,36 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // Busca todos os campos interativos dentro da área do formulário
-    const campos = Array.from(document.querySelectorAll("input:not([type='hidden']), select"));
+    // Seleciona apenas campos de texto/senha e selects (ignorando checkboxes e hidden)
+    const campos = Array.from(document.querySelectorAll("input:not([type='hidden']):not([type='checkbox']):not([type='radio']), select"));
 
     campos.forEach((campo, index) => {
         campo.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                // Tratamento especial para elemento SELECT
+                // Tratamento especial para SELECT
                 if (campo.tagName === "SELECT") {
-                    // Se o select não tiver um valor selecionado válido (opção padrão/vazia)
-                    // permite o comportamento nativo de abrir as opções com Enter
                     if (campo.value === "" || campo.selectedIndex === 0) {
                         return; // Deixa o navegador abrir o menu dropdown
                     }
                 }
 
-                e.preventDefault(); // Evita a submissão padrão do formulário
+                e.preventDefault(); // Evita a submissão padrão imediata do formulário
 
-                // Se houver um próximo campo na lista, move o foco para ele
-                if (index < campos.length - 1) {
-                    campos[index + 1].focus();
-                } else {
-                    // Se for o último campo, encontra o botão principal e simula o clique
-                    const botaoEnviar = document.querySelector(".botao-login, .botao-cadastrar");
+                // Se for um campo tipo PASSWORD ou se for o último campo da lista, envia o formulário
+                const ehCampoSenha = campo.type === "password";
+                const ehUltimoCampo = index === campos.length - 1;
+
+                if (ehCampoSenha || ehUltimoCampo) {
+                    // Busca o botão pelo tipo de submit ou pelas classes
+                    const botaoEnviar = document.querySelector("button[type='submit'], input[type='submit'], .botao-login, .botao-cadastrar");
+                    
                     if (botaoEnviar) {
                         botaoEnviar.click();
+                    } else {
+                        // Fallback: se não achar o botão, envia o formulário pai diretamente
+                        campo.closest("form")?.submit();
                     }
+                } else {
+                    // Move o foco para o próximo campo de texto/select
+                    campos[index + 1].focus();
                 }
             }
         });

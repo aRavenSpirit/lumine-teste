@@ -30,19 +30,22 @@
             <div class="container-principal">
 
                 <div class="container-aside">
-                    <h1>PERFIL</h1>
+                    <div class="titulo-perfil-aside">PERFIL</div>
 
                     <div class="container-aside-btn">
                         <div class="btn-aba active card-btn" onclick="carregarPerfil('usuario', event)">
-                            USUÁRIO
+                            <span class="btn-aba-title">USUÁRIO</span>
+                            <i class="fas fa-user-circle aba-icon"></i>
                         </div>
     
                         <div class="btn-aba card-btn" onclick="carregarPerfil('preferencias', event)">
-                            PREFERÊNCIAS
+                            <span class="btn-aba-title">PREFERÊNCIAS</span>
+                            <i class="fas fa-cogs aba-icon"></i>
                         </div>
     
                         <div class="btn-aba card-btn" onclick="carregarPerfil('historico', event)">
-                            HISTÓRICO
+                            <span class="btn-aba-title">HISTÓRICO</span>
+                            <i class="fas fa-file-alt aba-icon"></i>
                         </div>
                     </div>
                 </div>
@@ -71,11 +74,11 @@
 
     const api = "../config/home.php";
     let dadosUsuarioLocal = {};
+    let materiaSelecionadaAtual = 'portugues';
 
     async function carregarPerfil(tipo, event = null) {
 
         const cardOpcoes = document.getElementById('card-opcoes');
-        // CORREÇÃO: Agora pega o usuário da sessão PHP
         const id_usuario = <?php echo $_SESSION['usuario_id'] ?? 0; ?>;
         document.querySelectorAll('.btn-aba').forEach(btn => {
             btn.classList.remove('active');
@@ -85,17 +88,15 @@
         } else {
             const abas = document.querySelectorAll('.btn-aba');
             abas.forEach(btn => {
-                if (btn.textContent.toLowerCase() === tipo.toLowerCase()) {
+                if (btn.querySelector('.btn-aba-title') && btn.querySelector('.btn-aba-title').textContent.toLowerCase() === tipo.toLowerCase()) {
                     btn.classList.add('active');
                 }
             });
         }
 
-        cardOpcoes.innerHTML = "<p>Carregando...</p>";
+        cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; font-weight:bold;'>Carregando...</p>";
 
         try {
-            // CORREÇÃO: não envia mais id_conteudo.
-            // A API usa a sessão para identificar o usuário.
             const resData = await fetch(`${api}?tipo=${tipo}`);
             const data = await resData.json();
             let html = '';
@@ -106,69 +107,57 @@
                 const resEsc = await fetch(`${api}?tipo=lista_escolaridades`);
                 const listaEscolaridades = await resEsc.json();
                 let optionsHtml = listaEscolaridades.map(esc => `
-
                     <option value="${esc.id_escolaridade}" ${esc.id_escolaridade == data.escolaridade_id ? 'selected' : ''}>
                         ${esc.nome_escolaridade}
                     </option>
-
                 `).join('');
 
-                // 1. DEFINE O HTML DA FOTO
                 const fotoHtml = data.foto_perfil 
-                    ? `<img src="${data.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+                    ? `<img src="${data.foto_perfil}" class="avatar-preview-img" id="avatarImg">`
+                    : `<div class="avatar-preview-placeholder" id="avatarImg"><i class="fas fa-user"></i></div>`;
 
-                // 2. MONTA O HTML USANDO CLASSES CSS LIGADAS AO SEU ARQUIVO EXTERNO
                 html = `
                     <div class="perfil-discord-style perfil-container-flex">
                         
                         <div class="coluna-dados-perfil">
-                            <div class="campo-grupo">
-                                <label>NOME DE EXIBIÇÃO</label>
-                                <div class="campo-row">
-                                    <span>${data.nome || 'Não informado'}</span>
-                                    <button onclick="openModalPerfil('nome')" class="edit-btn">
-                                        Editar
-                                    </button>
-                                </div>
+                            <div class="input-pill-container">
+                                <input type="text" id="edit-nome-input" class="input-pill" value="${data.nome || ''}" placeholder="Novo nome de usuário">
                             </div>
 
-                            <div class="campo-grupo">
-                                <label>E-MAIL</label>
-                                <div class="campo-row">
-                                    <span>${data.email || 'Não informado'}</span>
-                                    <button onclick="openModalPerfil('email')" class="edit-btn">
-                                        Editar
-                                    </button>
-                                </div>
+                            <div class="input-pill-container">
+                                <input type="email" id="edit-email-input" class="input-pill" value="${data.email || ''}" placeholder="Novo e-mail">
                             </div>
 
-                            <div class="campo-grupo">
-                                <label>ESCOLARIDADE</label>
-                                <div class="campo-row">
-                                    <select id="edit-escolaridade" class="select-inline input-escolaridade-perfil">
-                                        ${optionsHtml}
-                                    </select>
-                                </div>
+                            <div class="input-pill-container">
+                                <select id="edit-escolaridade" class="select-pill">
+                                    <option value="" disabled ${!data.escolaridade_id ? 'selected' : ''}>Escolaridade</option>
+                                    ${optionsHtml}
+                                </select>
                             </div>
-                            
-                            <button class="save-btn btn-salvar-perfil" onclick="salvarGeral()">
-                                Salvar Alterações
+
+                            <div class="input-pill-container">
+                                <input type="password" id="edit-senha-input" class="input-pill" placeholder="Nova senha">
+                            </div>
+
+                            <div class="input-pill-container">
+                                <input type="password" id="edit-confirma-senha-input" class="input-pill" placeholder="Confirme a nova senha">
+                            </div>
+
+                            <div class="aviso-minimo">Mínimo: 8 caracteres.</div>
+
+                            <button class="btn-salvar-pill" onclick="salvarGeral()">
+                                Salvar
                             </button>
                         </div>
 
                         <div class="coluna-foto-perfil">
-                            <label class="titulo-foto-label">Foto de Perfil</label>
-                            
                             <div class="avatar-upload-container container-upload-pagina" onclick="document.getElementById('inputFotoPerfilPagina').click()">
                                 <div id="avatarWrapper">
                                     ${fotoHtml}
                                 </div>
-                                <div class="avatar-edit-badge">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </div>
                                 <input type="file" id="inputFotoPerfilPagina" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
                             </div>
+                            <span class="titulo-foto-label">ADICIONE SUA<br>FOTO AQUI</span>
                         </div>
 
                     </div>
@@ -186,100 +175,117 @@
                 }
                 cores = cores || {};
 
-                let cardsHtml = Object.keys(cores)
-                    .filter(key => !key.startsWith('bg_'))
-                    .map(materia => `
+                const listaMateriasPadrao = [
+                    { key: 'portugues', nome: 'Português', color: '#8fa8cb' },
+                    { key: 'matematica', nome: 'Matemática', color: '#1892be' },
+                    { key: 'historia', nome: 'História', color: '#cd71d8' },
+                    { key: 'geografia', nome: 'Geografia', color: '#fbb355' },
+                    { key: 'filosofia', nome: 'Filosofia', color: '#9ad0f5' },
+                    { key: 'sociologia', nome: 'Sociologia', color: '#b2f0a5' },
+                    { key: 'natureza', nome: 'Ciência das Naturezas', color: '#00c882' },
+                    { key: 'arte', nome: 'Arte', color: '#5b63f6' },
+                    { key: 'ingles', nome: 'Inglês', color: '#f3c246' },
+                    { key: 'fisica', nome: 'Física', color: '#ff5c5c' },
+                    { key: 'quimica', nome: 'Química', color: '#00cc7a' },
+                    { key: 'biologia', nome: 'Biologia', color: '#00d68f' },
+                    { key: 'educacao_fisica', nome: 'Educação Física', color: '#f7d363' }
+                ];
 
+                materiaSelecionadaAtual = listaMateriasPadrao[0].key;
+                let corInicial = cores[materiaSelecionadaAtual] || listaMateriasPadrao[0].color;
+
+                let cardsHtml = listaMateriasPadrao.map(item => {
+                    let corAtual = cores[item.key] || item.color;
+                    return `
                         <div class="materia-pill"
-                             id="pill-${materia}"
-                             style="background-color:${cores[materia]}"
-                             onclick="document.getElementById('picker-${materia}').click()">
+                             id="pill-${item.key}"
+                             style="background-color:${corAtual}"
+                             onclick="selecionarMateriaCor('${item.key}')">
 
-                            ${materia.replace('_', ' ')}
-
+                            ${item.nome}
 
                             <input type="color"
-                                   id="picker-${materia}"
-                                   value="${cores[materia]}"
+                                   id="picker-${item.key}"
+                                   value="${corAtual}"
                                    style="display:none"
-                                   onchange="alterarCorMateria('${materia}', this.value)">
+                                   onchange="alterarCorMateria('${item.key}', this.value)">
                         </div>
-                    `).join('');
-                    html = `
+                    `;
+                }).join('');
+
+                html = `
                     <div class="preferencias-container-visual">
                         <div class="sessao-cores-layout">
                             <div class="grid-materias-pills">
                                 ${cardsHtml}
                             </div>
-                            <div class="color-picker-preview">
-                                <div class="preview-box" id="preview-box" style="background-color:#ccc"></div>
+                            
+                            <div class="color-picker-box-real">
+                                <label for="picker-painel-real" class="color-picker-preview" id="preview-box" style="background-color: ${corInicial}; cursor: pointer;">
+                                    <div class="preview-overlay">
+                                        <i class="fas fa-palette"></i>
+                                        <span>Clique para alterar a cor</span>
+                                    </div>
+                                </label>
+                                <input type="color" id="picker-painel-real" value="${corInicial}" onchange="atualizarCorPainelPrincipal(this.value)" style="opacity: 0; width: 0; height: 0; position: absolute;">
                             </div>
                         </div>
 
                         <div class="container-controles-estilizados">
                             <div class="controles-estilizados">
-                                <div class="controle-item">
-                                    <span class="label-estilizada">Modo:</span>
-                                    <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
-                                        <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
-                                        <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
-                                    </select>
-                                </div>
+                                <span class="label-estilizada">Modo:</span>
+                                <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
+                                    <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
+                                    <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
+                                </select>
                             </div>
 
                             <div class="controles-estilizados">
-                                <div class="controle-item">
-                                    <span class="label-estilizada">Tamanho da letra:</span>
-                                    <select id="pref-fonte" class="select-arredondado">
-                                        <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
-                                        <option value="2" ${data.tamanho_fonte == 2 ? 'selected' : ''}>Médio</option>
-                                        <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
-                                    </select>
-                                </div>
+                                <span class="label-estilizada">Tamanho da letra:</span>
+                                <select id="pref-fonte" class="select-arredondado">
+                                    <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
+                                    <option value="2" ${data.tamanho_fonte == 2 || !data.tamanho_fonte ? 'selected' : ''}>Médio</option>
+                                    <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
+                                </select>
                             </div>
                         </div>
-                        <button class="btn-salvar-final" onclick="salvarConfiguracoesGerais()">Salvar</button>
+
+                        <button class="btn-salvar-pill btn-salvar-preferencias" onclick="salvarConfiguracoesGerais()">Salvar</button>
                     </div>
-                    `;
+                `;
             }
             else if (tipo === 'historico') {
-                let rows = data.map(h => `
-                    <tr id="tentativa-${h.id_tentativa}">
-                        <td>${h.nome_materia}</td>
-                        <td>${h.nome_conteudo}</td>
-                        <td><strong>${h.titulo_quiz}</strong></td>
-                        <td><span class="badge-dificuldade">${h.dificuldade}</span></td>
-                        <td>${h.data_resolucao}</td>
-                        <td><span class="badge-acerto">${h.acertos}/${h.total_questoes}</span></td>
-                        <td>
-                            <button onclick="excluirHistorico(${h.id_tentativa})" class="btn-excluir" title="Excluir">
-                                <i class="fas fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                `).join('');
+                let cardsHistorico = data.map(h => {
+                    let classeDificuldade = 'facil';
+                    let difUpper = (h.dificuldade || '').toUpperCase();
+                    if (difUpper.includes('MÉD') || difUpper.includes('MED')) classeDificuldade = 'medio';
+                    if (difUpper.includes('DIFÍ') || difUpper.includes('DIFI')) classeDificuldade = 'dificil';
+
+                    let matSigla = (h.nome_materia || 'MAT').substring(0, 3).toUpperCase();
+
+                    return `
+                        <div class="historico-card" id="tentativa-${h.id_tentativa}">
+                            <div class="historico-badges">
+                                <div class="badge-materia">${matSigla}</div>
+                                <div class="badge-dificuldade-pill ${classeDificuldade}">${difUpper || 'FÁCIL'}</div>
+                            </div>
+                            <div class="historico-detalhes">
+                                <h4>${h.titulo_quiz || h.nome_conteudo || 'Sem título'}</h4>
+                                <p>Conteúdo: <span>${h.nome_conteudo || ''}</span></p>
+                            </div>
+                            <div class="historico-acoes">
+                                <button onclick="excluirHistorico(${h.id_tentativa})" class="btn-lixeira" title="Excluir">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <span class="historico-data">${h.data_resolucao || ''}</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
 
                 html = `
-                    <div class="preferencias-container">
-                        <h3>Meu Histórico de Desempenho</h3>
-                        <div class="table-responsive">
-                            <table class="historico-table">
-                                <thead>
-                                    <tr>
-                                        <th>Matéria</th>
-                                        <th>Conteúdo</th>
-                                        <th>Quiz</th>
-                                        <th>Dificuldade</th>
-                                        <th>Data</th>
-                                        <th>Resultado</th>
-                                        <th>Ação</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    ${rows || '<tr><td colspan="7" style="text-align:center;">Você ainda não resolveu nenhum quiz.</td></tr>'}
-                                </tbody>
-                            </table>
-                        </div>
+                    <div class="historico-container-scroll">
+                        ${cardsHistorico || '<p style="text-align:center; padding: 20px;">Você ainda não resolveu nenhum quiz.</p>'}
                     </div>
                 `;
             }
@@ -288,8 +294,40 @@
 
         } catch (error) {
             console.error("Erro:", error);
-            cardOpcoes.innerHTML = "<p>Erro ao carregar dados.</p>";
+            cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
         }
+    }
+
+    function selecionarMateriaCor(materia) {
+        materiaSelecionadaAtual = materia;
+        const pickerOc = document.getElementById(`picker-${materia}`);
+        const pickerPainel = document.getElementById('picker-painel-real');
+        const previewBox = document.getElementById('preview-box');
+
+        if (pickerOc && pickerPainel && previewBox) {
+            pickerPainel.value = pickerOc.value;
+            previewBox.style.backgroundColor = pickerOc.value;
+            pickerPainel.click();
+        }
+    }
+
+    function atualizarCorPainelPrincipal(novaCor) {
+        if (!materiaSelecionadaAtual) return;
+        alterarCorMateria(materiaSelecionadaAtual, novaCor);
+    }
+
+    function alterarCorMateria(materia, novaCor) {
+        const pill = document.getElementById(`pill-${materia}`);
+        if(pill) pill.style.backgroundColor = novaCor;
+        
+        const pickerOc = document.getElementById(`picker-${materia}`);
+        if(pickerOc) pickerOc.value = novaCor;
+
+        const previewBox = document.getElementById('preview-box');
+        if(previewBox) previewBox.style.backgroundColor = novaCor;
+
+        const pickerPainel = document.getElementById('picker-painel-real');
+        if(pickerPainel) pickerPainel.value = novaCor;
     }
 
     async function excluirHistorico(idTentativa) {
@@ -319,19 +357,6 @@
 
         } catch (error) {
             console.error("Erro na exclusão:", error);
-        }
-    }
-
-    function alterarCorMateria(materia, novaCor) {
-        document.getElementById(`pill-${materia}`).style.backgroundColor = novaCor;
-        document.getElementById('preview-box').style.backgroundColor = novaCor;
-
-        if (materia === 'artes') {
-            const cardExemplo = document.querySelector('.card-exemplo-artes');
-
-            if (cardExemplo) {
-                cardExemplo.style.backgroundColor = novaCor;
-            }
         }
     }
 
@@ -382,6 +407,7 @@
             alert("Não foi possível conectar ao servidor.");
         }
     }
+
     function mudarTemaAoVivo(valor) {
         if (String(valor) === "1") {
             document.body.classList.add("dark-mode");
@@ -402,13 +428,13 @@
             inputHtml = `
                 <h3>Alterar seu nome</h3>
                 <label class="modal-label">NOME DE EXIBIÇÃO</label>
-                <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome}">
+                <input type="text" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.nome || ''}">
             `;
         } else if (campo === 'email') {
             inputHtml = `
                 <h3>Alterar seu e-mail</h3>
                 <label class="modal-label">E-MAIL</label>
-                <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email}">
+                <input type="email" id="edit-valor" class="modal-input" value="${dadosUsuarioLocal.email || ''}">
             `;
         }
 
@@ -452,13 +478,23 @@
     }
 
     function salvarGeral() {
-        const id_esc = document.getElementById('edit-escolaridade').value;
+        const nome = document.getElementById('edit-nome-input')?.value;
+        const email = document.getElementById('edit-email-input')?.value;
+        const id_esc = document.getElementById('edit-escolaridade')?.value;
+        const senha = document.getElementById('edit-senha-input')?.value;
+        const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
+
+        if (senha && senha !== confirmaSenha) {
+            alert("As senhas não coincidem!");
+            return;
+        }
 
         const formData = new FormData();
-
-        formData.append('acao', 'atualizar_perfil');
-        formData.append('campo', 'escolaridade');
-        formData.append('valor', id_esc);
+        formData.append('acao', 'atualizar_perfil_completo');
+        formData.append('nome', nome);
+        formData.append('email', email);
+        formData.append('escolaridade', id_esc);
+        if (senha) formData.append('senha', senha);
         formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
         fetch(api, {
@@ -468,11 +504,50 @@
         .then(r => r.json())
         .then(data => {
             if (data.success) {
+                alert("Perfil atualizado com sucesso!");
                 carregarPerfil('usuario');
             } else {
-                alert("Erro: " + data.error);
+                alert("Erro ao salvar: " + (data.error || "Erro desconhecido"));
             }
+        })
+        .catch(err => {
+            salvarCampoIndividual('nome', nome);
+            salvarCampoIndividual('email', email);
+            salvarCampoIndividual('escolaridade', id_esc);
         });
+    }
+
+    function salvarCampoIndividual(campo, valor) {
+        if(!valor) return;
+        const formData = new FormData();
+        formData.append('acao', 'atualizar_perfil');
+        formData.append('campo', campo);
+        formData.append('valor', valor);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+        fetch(api, { method: 'POST', body: formData });
+    }
+
+    async function uploadFotoPerfil(input) {
+        if (!input.files || !input.files[0]) return;
+        
+        const formData = new FormData();
+        formData.append('acao', 'upload_foto');
+        formData.append('foto', input.files[0]);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+        try {
+            const res = await fetch(api, { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.success) {
+                carregarPerfil('usuario');
+                carregarUsuario();
+            } else {
+                alert("Erro ao enviar imagem: " + (data.error || "Erro desconhecido"));
+            }
+        } catch (e) {
+            console.error("Erro no upload", e);
+        }
     }
 
     document.getElementById('cores-artes')?.addEventListener('input', function(e) {
@@ -510,10 +585,8 @@
                 dados.forEach(m => {
                     let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
                     
-                    // Link na Sidebar
                     menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
                     
-                    // Card inicial na tela
                     cardsIniciais += `
                         <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                             <div class="card-banner">
@@ -522,18 +595,16 @@
                             <div class="card-body"><p>${m.nome_materia}</p></div>
                         </div>`;
                 });
-                document.getElementById("menuMaterias").innerHTML = menuHTML;
-                document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-                document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+                if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
+                if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+                if(document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
             });
     }
-
 
     function carregarUsuario() {
         fetch(api + "?tipo=usuario")
             .then(r => r.json())
             .then(u => {
-                // 1. Atualiza a imagem no HEADER (Navbar superior Desktop)
                 const linkPerfilHeader = document.querySelector('.item-perfil a');
                 if (linkPerfilHeader && u.foto_perfil) {
                     const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
@@ -547,25 +618,20 @@
                     }
                 }
                 
-                // 2. Atualiza a foto no menu mobile (Navbar superior Mobile)
                 const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
                 if (linkPerfilMobile && u.foto_perfil) {
                     linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
                 }
 
-                // 3. MONTA E ADICIONA O DROPDOWN DO PERFIL (Igual ao da Home)
                 const itemPerfil = document.querySelector('.item-perfil');
                 if (itemPerfil) {
-                    // Remove um dropdown antigo se já existir para não duplicar
                     const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                     if (antigoDropdown) antigoDropdown.remove();
 
-                    // Define se exibe a foto real ou o ícone de rostinho padrão
                     const fotoHtml = u.foto_perfil 
                         ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
                         : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
 
-                    // Cria o elemento do dropdown
                     const dropdown = document.createElement('div');
                     dropdown.className = 'perfil-dropdown';
                     dropdown.innerHTML = `
@@ -590,21 +656,20 @@
                         </a>
                     `;
                     
-                    // Insere o dropdown montado dentro do item de perfil na barra de navegação
                     itemPerfil.appendChild(dropdown);
                 }
             });
     }
     
     window.onload = () => {
-        carregarUsuario();     // <--- Adicionado para carregar a foto no header
-        carregarMenuSidebar(); // Carrega a sidebar
+        carregarUsuario();
+        carregarMenuSidebar();
         carregarPerfil('usuario'); 
     };
 
-
-
 </script>
+
+<script src="js/sidebar_close.js" defer></script>
 
 </body>
 </html>

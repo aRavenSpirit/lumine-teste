@@ -65,6 +65,8 @@
     </div>
 </div>
 
+<script src="js/sidebar_close.js"></script>
+
 <script>
 const api = "../config/home.php";
 

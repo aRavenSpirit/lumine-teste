@@ -132,6 +132,9 @@
     </div>
 </div>
 
+<!-- Importação do script desacoplado da sidebar -->
+<script src="js/sidebar_close.js"></script>
+
 <script>
 const api = "../config/home.php";
 let urlDestinoQuiz = "";
@@ -208,9 +211,6 @@ function carregarUsuario() {
         });
 }
 
-// Processa o arquivo selecionado e atualiza a interface instantaneamente
-
-
 function carregarMenuSidebar() {
     fetch(api + "?tipo=materias")
         .then(r => r.json())
@@ -261,9 +261,6 @@ function carregarConteudos(idMateria, nomeMateria) {
                 html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
             } else {
                 dados.forEach(c => {
-                    // SEPARAÇÃO DA LÓGICA:
-                    // 1. Se houver imagem salva no banco (c.imagem_conteudo), usa ela.
-                    // 2. Fallback: Se não houver no banco, gera um nome limpo baseado no NOME DO CONTEÚDO (ex: "adicaoesubtracao.webp")
                     let imagemCard = "";
                     
                     if (c.imagem_conteudo && c.imagem_conteudo.trim() !== "") {
@@ -303,7 +300,6 @@ function abrirModalQuizzes(idConteudo, nomeConteudo) {
                 html = "<p>Sem quizzes para este conteúdo no momento.</p>";
             } else {
                 quizzes.forEach(q => {
-                    // Pega as primeiras 3 letras da matéria como sigla (ex: Matemática -> MAT)
                     let siglaMateria = q.nome_materia ? q.nome_materia.substring(0, 3).toUpperCase() : "QUIZ";
 
                     html += `
@@ -345,64 +341,9 @@ function fecharModal() {
     document.getElementById('meuModal').style.display = "none"; 
 }
 
-function fecharMenuMobile() {
-    const mobileMenu = document.getElementById('mobileMenu');
-    if (mobileMenu) {
-        mobileMenu.classList.remove('active');
-    }
-    document.body.classList.remove('no-scroll');
-}
-
-function toggleSidebar() {
-    // 900px é o limite exato que está configurado no seu arquivo home.css
-    if (window.innerWidth <= 900) {
-        
-        // ==================================================================
-        // COMPORTAMENTO MOBILE (Celular / Tablet)
-        // ==================================================================
-        const mobileMenu = document.getElementById('mobileMenu');
-        if (mobileMenu) {
-            mobileMenu.classList.toggle('active');
-            if (mobileMenu.classList.contains('active')) {
-                document.body.classList.add('no-scroll');
-            } else {
-                document.body.classList.remove('no-scroll');
-            }
-        }
-
-    } else {
-        
-        // ==================================================================
-        // COMPORTAMENTO DESKTOP (O seu código original intacto!)
-        // ==================================================================
-        const sidebar = document.getElementById('sidebar');
-        const main = document.getElementById('mainContainer');
-        
-        if (sidebar) {
-            sidebar.classList.toggle('open');
-            // Quando a sidebar é minimizada (perde a classe 'open'), resetamos a rolagem interna para o topo
-            if (!sidebar.classList.contains('open')) {
-                sidebar.scrollTop = 0;
-            }
-        }
-        if (main) main.classList.toggle('sidebar-open');
-        
-    }
-}
-
-// Fecha o menu mobile quando a tela for redimensionada para tamanho desktop
-window.onresize = () => {
-    if (window.innerWidth > 900) {
-        fecharMenuMobile();
-    }
-};
-
+// Mantém apenas os eventos específicos de modais nesta página
 window.onclick = (event) => {
     if (event.target == document.getElementById('meuModal')) fecharModal();
-    // Clique no botão X do menu mobile
-    if (event.target.classList.contains('mobile-menu-close') || event.target.closest('.mobile-menu-close')) {
-        fecharMenuMobile();
-    }
 };
 </script>
 

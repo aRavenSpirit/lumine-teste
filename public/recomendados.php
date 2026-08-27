@@ -63,6 +63,8 @@
     </div>
 </div>
 
+<script src="js/sidebar_close.js"></script>
+
 <script>
 const api = "../config/home.php";
 let listaQuizzesGlobal = [];
@@ -174,21 +176,6 @@ document.getElementById('btnConfirmarEntrada').onclick = () => {
 
 window.onclick = (e) => {
     if (e.target == document.getElementById('modalConfirmacao')) fecharConfirmacao();
-}
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.getElementById('mainContainer');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const body = document.body;
-    
-    if (window.innerWidth <= 900) {
-        mobileMenu.classList.toggle('active');
-        mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
-    } else {
-        sidebar.classList.toggle('open');
-        main.classList.toggle('sidebar-open');
-    }
 }
 
 function carregarUsuario() {

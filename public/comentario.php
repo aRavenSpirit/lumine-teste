@@ -1,7 +1,55 @@
 <?php
     require "../config/conexao.php";
     include_once("../config/session.php");
-    include_once("../config/layout.php"); // Inclui o novo arquivo
+    include_once("../config/layout.php");
+
+    // ==========================================================
+    // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
+    // ==========================================================
+    $id_usuario_logado = intval($_SESSION['usuario_id']);
+    $sql_pref = "SELECT cores_materia 
+                 FROM configuracoes 
+                 WHERE id_usuario = $id_usuario_logado";
+                 
+    $result_pref = $conn->query($sql_pref);
+
+    // ==========================================================
+    // CORES PADRÃO CASO O USUÁRIO AINDA NÃO TENHA CONFIGURAÇÕES
+    // ==========================================================
+    $cores_usuario = [
+        "bg_claro" => "#FFFFFF",
+        "bg_escuro" => "#121212",
+
+        "matematica" => "#3498db",
+        "portugues" => "#e74c3c",
+        "historia" => "#f1c40f",
+        "geografia" => "#2ecc71",
+        "biologia" => "#27ae60",
+        "fisica" => "#8e44ad",
+        "quimica" => "#d35400",
+        "ingles" => "#2980b9",
+        "artes" => "#e67e22",
+        "filosofia" => "#7f8c8d",
+        "sociologia" => "#16a085",
+        "educacao_fisica" => "#c0392b",
+    ];
+
+    // ==========================================================
+    // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
+    // ==========================================================
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
+        $cores_banco = json_decode(
+            $row_pref['cores_materia'],
+            true
+        );
+        if (is_array($cores_banco)) {
+            $cores_usuario = array_merge(
+                $cores_usuario,
+                $cores_banco
+            );
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -41,36 +89,174 @@
                 </div>
             </div>
         </section>
-
-        
     </main>
 
     <?php renderFooter(); ?>
 
-    
-</body>
-</html>
+  
+
+   
+
+
+</div>
+
+<div id="meuModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="tituloModal">Quizzes</h2>
+            <span onclick="fecharModal()" class="modal-close">&times;</span>
+        </div>
+        <hr>
+        <div class="modal-body">
+            <div id="corpoModal"></div>
+        </div>
+    </div>
+</div>
+
+<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content-confirm">
+        <p>Deseja entrar no quiz?</p>
+        <img src="img/LUMINE-5con.ico" alt="logo">
+        <div class="modal-buttons">
+            <button onclick="fecharModalConfirmacao()" class="btn-voltar">Não</button>
+            <button id="btnConfirmarEntrada" class="btn-entrar">Sim</button>
+        </div>
+    </div>
+</div>
+
+<!-- Importação do script desacoplado da sidebar -->
+<script src="js/sidebar_close.js"></script>
 
 <script>
-    const api =  "../config/comentario.php";
-    // Pegando o ID do usuário direto da sessão do PHP (ajuste o nome da variável se for diferente na sua sessão)
+    const apiComentario = "../config/comentario.php";
+    const apiHome = "../config/home.php";
+    let urlDestinoQuiz = "";
+
+    // Transforma o array do PHP em um objeto JavaScript utilizável
+    const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
     const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
 
     // Executa assim que a página carregar
     document.addEventListener("DOMContentLoaded", () => {
+        carregarUsuario();
+        carregarMenuSidebar();
         carregarComentarios();
         configurarFormulario();
     });
 
+    function carregarUsuario() {
+        fetch(apiHome + "?tipo=usuario")
+            .then(r => r.json())
+            .then(u => {
+                const nomeUsuario = u.nome ? u.nome.toUpperCase() : "ALUNO";
+                const elementoBemVindo = document.getElementById("bemvindo");
+                if (elementoBemVindo) {
+                    elementoBemVindo.innerHTML = `SEJA BEM-VINDO, <span class="nome-destaque">${nomeUsuario}</span>!!`;
+                }
+                
+                // Atualiza a imagem no HEADER (Navbar superior)
+                const linkPerfilHeader = document.querySelector('.item-perfil a');
+                if (linkPerfilHeader && u.foto_perfil) {
+                    const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
+                    if (iconeRoxo) {
+                        iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                    } else {
+                        const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
+                        if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
+                            imagemHeaderExistente.src = u.foto_perfil;
+                        }
+                    }
+                }
+
+                // Captura o item de perfil para montar o Dropdown
+                const itemPerfil = document.querySelector('.item-perfil');
+                
+                if (itemPerfil) {
+                    const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
+                    if (antigoDropdown) antigoDropdown.remove();
+
+                    const fotoHtml = u.foto_perfil 
+                        ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
+                        : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+
+                    const dropdown = document.createElement('div');
+                    dropdown.className = 'perfil-dropdown';
+                    dropdown.innerHTML = `
+                        <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
+                            <div id="avatarWrapper">
+                                ${fotoHtml}
+                            </div>
+                            <div class="avatar-edit-badge">
+                                <i class="fas fa-pencil-alt"></i>
+                            </div>
+                            <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
+                        </div>
+
+                        <h4 style="text-align: center;">Minha Conta</h4>
+                        <hr>
+                        <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
+                        <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
+                        <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
+                        <hr>
+                        <a href="../config/logout.php" class="btn-logout">
+                            <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                        </a>
+                    `;
+                    
+                    itemPerfil.appendChild(dropdown);
+                }
+            });
+    }
+
+    function carregarMenuSidebar() {
+        fetch(apiHome + "?tipo=materias")
+            .then(r => r.json())
+            .then(dados => {
+                let menuHTML = "";
+
+                dados.forEach(m => {
+                    // Link na Sidebar redirecionando para a home com a matéria selecionada ou executando visualização
+                    menuHTML += `<a href="home.php" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
+                });
+                
+                const menuDesk = document.getElementById("menuMaterias");
+                const menuMob = document.getElementById("menuMateriasMobile");
+
+                if (menuDesk) menuDesk.innerHTML = menuHTML;
+                if (menuMob) menuMob.innerHTML = menuHTML;
+            });
+    }
+
+    function uploadFotoPerfil(input) {
+        if (input.files && input.files[0]) {
+            const formData = new FormData();
+            formData.append('foto', input.files[0]);
+
+            fetch("../config/upload_foto.php", {
+                method: "POST",
+                body: formData
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.sucesso) {
+                    carregarUsuario();
+                } else {
+                    alert(res.erro || "Erro ao atualizar imagem de perfil.");
+                }
+            })
+            .catch(err => console.error("Erro no upload:", err));
+        }
+    }
+
     // 1. CARREGAR COMENTÁRIOS (GET)
-   function carregarComentarios() {
-        fetch(api)
+    function carregarComentarios() {
+        fetch(apiComentario)
             .then(response => response.json())
             .then(data => {
                 const respostasContainer = document.getElementById('respostas');
                 respostasContainer.innerHTML = ''; 
 
-                if (data.length === 0) {
+                if (!Array.isArray(data) || data.length === 0) {
                     respostasContainer.innerHTML = '<p>Nenhum comentário ainda. Seja o primeiro!</p>';
                     return;
                 }
@@ -86,7 +272,6 @@
                     // 1. Foto de Perfil
                     const imgPerfil = document.createElement('img');
                     imgPerfil.classList.add('comentario-avatar');
-                    // Se houver foto no banco, usa ela (seja URL ou Base64). Se não, usa uma imagem padrão vazia.
                     imgPerfil.src = comentario.foto_usuario ? comentario.foto_usuario : 'img/default-avatar.png';
                     imgPerfil.alt = "Foto de perfil";
 
@@ -153,7 +338,7 @@
                 comentario: textoComentario
             };
 
-            fetch(api, {
+            fetch(apiComentario, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -172,4 +357,26 @@
             .catch(error => console.error('Erro ao enviar comentário:', error));
         });
     }
+
+    function fecharModalConfirmacao() {
+        document.getElementById('modalConfirmacao').style.display = 'none';
+    }
+
+    const btnConfirmar = document.getElementById('btnConfirmarEntrada');
+    if (btnConfirmar) {
+        btnConfirmar.onclick = () => {
+            if (urlDestinoQuiz) window.location.href = urlDestinoQuiz;
+        };
+    }
+
+    function fecharModal() { 
+        document.getElementById('meuModal').style.display = "none"; 
+    }
+
+    window.onclick = (event) => {
+        if (event.target == document.getElementById('meuModal')) fecharModal();
+    };
 </script>
+
+</body>
+</html>
