@@ -15,6 +15,72 @@
     <link rel="stylesheet" href="./style/configuracoes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+    <style>
+        body {
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Container do botão único de tema */
+        .botoes-tema-container {
+            display: flex;
+            align-items: center;
+        }
+
+        /* Botão circular único */
+        .btn-tema-toggle {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            border: 2px solid #5b63f6;
+            background-color: var(--card-bg, #f0f0f0);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+            outline: none;
+            box-shadow: 0 0 10px rgba(91, 99, 246, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Ícone de Sol e Lua com Zoom */
+        .btn-tema-toggle i {
+            font-size: 1.5rem;
+            pointer-events: none;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+        }
+
+        /* Cores específicas dos ícones */
+        .btn-tema-toggle i.fa-sun {
+            color: #f39c12;
+        }
+
+        .btn-tema-toggle i.fa-moon {
+            color: #f1c40f;
+        }
+
+        /* Efeitos de interações */
+        .btn-tema-toggle:hover {
+            transform: scale(1.08);
+            box-shadow: 0 0 14px rgba(91, 99, 246, 0.6);
+        }
+
+        .btn-tema-toggle:hover i {
+            transform: scale(1.2) rotate(15deg);
+        }
+
+        .btn-tema-toggle:active {
+            transform: scale(0.90);
+        }
+
+        /* Animação disparada via JS durante a troca */
+        .btn-tema-toggle.animando i {
+            transform: rotate(360deg) scale(0);
+            opacity: 0;
+        }
+    </style>
 </head>
 
 <body>
@@ -213,6 +279,9 @@
                     `;
                 }).join('');
 
+                const temaAtual = localStorage.getItem("theme") === "dark" ? "1" : "0";
+                const classeIcone = temaAtual === "1" ? "fas fa-moon" : "fas fa-sun";
+
                 html = `
                     <div class="preferencias-container-visual">
                         <div class="sessao-cores-layout">
@@ -234,10 +303,17 @@
                         <div class="container-controles-estilizados">
                             <div class="controles-estilizados">
                                 <span class="label-estilizada">Modo:</span>
-                                <select id="pref-tema" class="select-arredondado" onchange="mudarTemaAoVivo(this.value)">
-                                    <option value="0" ${localStorage.getItem("theme") !== "dark" ? 'selected' : ''}>Claro</option>
-                                    <option value="1" ${localStorage.getItem("theme") === "dark" ? 'selected' : ''}>Escuro</option>
-                                </select>
+                                <input type="hidden" id="pref-tema" value="${temaAtual}">
+                                
+                                <div class="botoes-tema-container">
+                                    <button type="button" 
+                                            class="btn-tema-toggle" 
+                                            id="btn-tema-unico"
+                                            onclick="alternarTemaUnico()" 
+                                            title="Alternar Modo">
+                                        <i id="icone-tema-unico" class="${classeIcone}"></i>
+                                    </button>
+                                </div>
                             </div>
 
                             <div class="controles-estilizados">
@@ -296,6 +372,30 @@
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
         }
+    }
+
+    function alternarTemaUnico() {
+        const inputTema = document.getElementById('pref-tema');
+        const btn = document.getElementById('btn-tema-unico');
+        const icone = document.getElementById('icone-tema-unico');
+        
+        if (!inputTema || !btn || !icone) return;
+
+        const novoValor = inputTema.value === "1" ? "0" : "1";
+        inputTema.value = novoValor;
+
+        btn.classList.add('animando');
+
+        setTimeout(() => {
+            if (novoValor === "1") {
+                icone.className = "fas fa-moon";
+            } else {
+                icone.className = "fas fa-sun";
+            }
+            btn.classList.remove('animando');
+        }, 200);
+
+        mudarTemaAoVivo(novoValor);
     }
 
     function selecionarMateriaCor(materia) {
