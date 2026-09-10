@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="./style/index.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="js/tamanho_fonte.js"></script>
     <style>
         .main-container {
             padding-top: 120px;
@@ -36,7 +37,7 @@
 
         .title-sobre {
             font-family: 'gliker', sans-serif;
-            font-size: 50px;
+            font-size: 3.125rem;
             color: #1595C4;
             margin-bottom: 30px;
             text-transform: uppercase;
@@ -46,7 +47,7 @@
             font-family: 'Open_Sans', sans-serif;
             color: #333;
             line-height: 1.8;
-            font-size: 19px;
+            font-size: 1.1875rem;
             text-align: justify;
         }
 
@@ -77,7 +78,7 @@
         }
 
         .stat-item i {
-            font-size: 30px;
+            font-size: 1.875rem;
             margin-bottom: 10px;
         }
 
@@ -88,9 +89,9 @@
         }
 
         @media (max-width: 580px) {
-            .title-sobre { font-size: 35px; }
+            .title-sobre { font-size: 2.1875rem; }
             .content-card { padding: 30px 20px; }
-            .text-sobre { font-size: 17px; }
+            .text-sobre { font-size: 1.0625rem; }
         }
     </style>
 </head>

@@ -7,11 +7,14 @@
     // ==========================================================
     // O session.php já garante que existe usuário autenticado
     $id_usuario_logado = intval($_SESSION['usuario_id']);
-    $sql_pref = "SELECT cores_materia 
+    $sql_pref = "SELECT cores_materia, tamanho_fonte 
                  FROM configuracoes 
                  WHERE id_usuario = $id_usuario_logado";
                  
     $result_pref = $conn->query($sql_pref);
+    
+    $tamanho_fonte_salvo = 2; // Valor padrão (Médio)
+
     // ==========================================================
     // CORES PADRÃO CASO O USUÁRIO AINDA NÃO TENHA CONFIGURAÇÕES
     // ==========================================================
@@ -37,6 +40,11 @@
     // ==========================================================
     if ($result_pref && $result_pref->num_rows > 0) {
         $row_pref = $result_pref->fetch_assoc();
+        
+        if (isset($row_pref['tamanho_fonte'])) {
+            $tamanho_fonte_salvo = intval($row_pref['tamanho_fonte']);
+        }
+
         $cores_banco = json_decode(
             $row_pref['cores_materia'],
             true
@@ -132,6 +140,9 @@
     </div>
 </div>
 
+<!-- Importação do script de tamanho de fonte -->
+<script src="js/tamanho_fonte.js"></script>
+
 <!-- Importação do script desacoplado da sidebar -->
 <script src="js/sidebar_close.js"></script>
 
@@ -141,6 +152,12 @@ let urlDestinoQuiz = "";
 
 // Transforma o array do PHP em um objeto JavaScript utilizável
 const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
+const tamanhoFonteBanco = <?php echo json_encode($tamanho_fonte_salvo); ?>;
+
+// Aplica a preferência de tamanho de fonte vinda do banco de dados na inicialização
+if (typeof aplicarTamanhoFonteGlobal === "function") {
+    aplicarTamanhoFonteGlobal(tamanhoFonteBanco);
+}
 
 window.onload = () => {
     carregarUsuario();

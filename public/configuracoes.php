@@ -132,6 +132,9 @@
 
 </div>
 
+<!-- Script de controle global do tamanho de fonte -->
+<script src="js/tamanho_fonte.js"></script>
+
 <script>
 
     if (localStorage.getItem("theme") === "dark") {
@@ -165,6 +168,12 @@
         try {
             const resData = await fetch(`${api}?tipo=${tipo}`);
             const data = await resData.json();
+
+            // Aplica visualmente o tamanho da fonte salvo na sessão/localStorage apos carregar o json
+            if (typeof aplicarTamanhoFonteGlobal === "function" && data && data.tamanho_fonte) {
+                aplicarTamanhoFonteGlobal(data.tamanho_fonte);
+            }
+
             let html = '';
             
             if (tipo === 'usuario') {
@@ -317,8 +326,8 @@
                             </div>
 
                             <div class="controles-estilizados">
-                                <span class="label-estilizada">Tamanho da letra:</span>
-                                <select id="pref-fonte" class="select-arredondado">
+                                <label for="pref-fonte" class="label-estilizada">Tamanho da letra:</label>
+                                <select id="pref-fonte" class="select-arredondado" aria-label="Selecione o tamanho do texto" onchange="aplicarTamanhoFonteGlobal(this.value)">
                                     <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
                                     <option value="2" ${data.tamanho_fonte == 2 || !data.tamanho_fonte ? 'selected' : ''}>Médio</option>
                                     <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
@@ -470,6 +479,11 @@
 
         formData.append('tema', tema);
         formData.append('fonte', fonte);
+
+        // Aplica o tamanho da fonte globalmente no HTML no ato do salvamento
+        if (typeof aplicarTamanhoFonteGlobal === "function") {
+            aplicarTamanhoFonteGlobal(fonte);
+        }
 
         if (String(tema) === "1") {
             localStorage.setItem("theme", "dark");

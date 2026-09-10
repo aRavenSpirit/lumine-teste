@@ -31,6 +31,7 @@ body {
     color: #333;
 }
 
+
 /* ==================================================================
    1. BASE DA SIDEBAR DESKTOP
    ================================================================== */
@@ -145,7 +146,7 @@ body {
 
 /* Ícone de Hambúrguer */
 .menu-trigger {
-    font-size: 24px;
+    font-size: 1.5rem;
     color: #000000;
     cursor: pointer;
     height: 60px; 
@@ -188,7 +189,7 @@ body {
 
 /* Ícone da seta */
 .sidebar .btn-sair-flutuante i {
-    font-size: 16px;
+    font-size: 1rem;
     color: #ffffff;
 }
 
@@ -251,7 +252,7 @@ body {
     text-decoration: none;
     color: #444;
     font-weight: 700;
-    font-size: 16px;
+    font-size: 1rem;
     white-space: nowrap;
     visibility: hidden;
     pointer-events: none;
@@ -305,7 +306,7 @@ body {
 
 .hamburger-mobile {
     display: none;
-    font-size: 28px;
+    font-size: 1.75rem;
     cursor: pointer;
     color: #1595C4;
     padding-left: 25px;
@@ -328,7 +329,7 @@ body {
     color: #333; 
     font-weight: 700; 
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 0.875rem;
     letter-spacing: 1px;
     display: flex; 
     align-items: center; 
@@ -399,7 +400,7 @@ body {
 .perfil-dropdown h4 {
     font-family: 'gliker', sans-serif;
     color: #ff5757;
-    font-size: 16px;
+    font-size: 1rem;
     margin-bottom: 8px;
     text-transform: uppercase;
 }
@@ -411,7 +412,7 @@ body {
 }
 
 .perfil-dropdown p {
-    font-size: 13px;
+    font-size: 0.8125rem;
     color: #444;
     margin: 5px 0;
     line-height: 1.4;
@@ -436,7 +437,7 @@ body {
     text-decoration: none;
     border-radius: 8px;
     font-weight: bold;
-    font-size: 14px;
+    font-size: 0.875rem;
     transition: background 0.2s;
 }
 
@@ -466,7 +467,7 @@ body {
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 32px;
+    font-size: 2rem;
     border: 3px solid #ff5757;
     transition: filter 0.2s;
     box-sizing: border-box; /* Evita que a borda altere o tamanho final do círculo */
@@ -493,7 +494,7 @@ body {
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 12px;
+    font-size: 0.75rem;
     border: 2px solid white;
     box-shadow: 0px 2px 5px rgba(0,0,0,0.2);
     transition: transform 0.2s;
@@ -520,7 +521,7 @@ main {
 
 #bemvindo { 
     font-family: 'gliker', sans-serif;
-    font-size: 42px; 
+    font-size: 2.625rem; 
     color: #333; 
     text-align: center; 
     margin-bottom: 10px;
@@ -533,7 +534,7 @@ main {
 
 .subtitle { 
     text-align: center; 
-    font-size: 18px; 
+    font-size: 1.125rem; 
     font-weight: 800;
     color: #000000; 
     letter-spacing: 4px;
@@ -587,7 +588,7 @@ main {
 .card-body p {
     margin: 0;
     font-weight: 800;
-    font-size: 18px;
+    font-size: 1.125rem;
     text-transform: uppercase;
     color: #333;
 }
@@ -634,7 +635,7 @@ main {
 }
 
 .modal-close { 
-    font-size: 32px; 
+    font-size: 2rem; 
     cursor: pointer; 
     color: #bbb;
     transition: color 0.3s;
@@ -683,7 +684,7 @@ main {
 
 .modal-content-confirm p {
     background: #e3f0fe;
-    font-size: 20px;
+    font-size: 1.25rem;
     font-weight: 700;
     padding: 30px;
     border-radius: 20px;
@@ -714,7 +715,7 @@ main {
     width: 50%;
     height: 80px;
     color: #f0f7ff;
-    font-size: 35px;
+    font-size: 2.1875rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
@@ -791,7 +792,7 @@ footer {
 .footer-section { flex: 1 1 200px; }
 .footer-section h3 { 
     color: #1595C4; 
-    font-size: 16px;
+    font-size: 1rem;
     margin-bottom: 25px; 
     letter-spacing: 2px;
 }
@@ -802,7 +803,7 @@ footer {
     gap: 12px; 
     cursor: pointer; 
     color: #666;
-    font-size: 14px;
+    font-size: 0.875rem;
     font-weight: 600;
     transition: color 0.3s;
     text-decoration: none;
@@ -870,7 +871,7 @@ body.no-scroll {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 30px;
+    font-size: 1.875rem;
     color: #1595C4;
     cursor: pointer;
     z-index: 5001;
@@ -897,7 +898,7 @@ body.no-scroll {
 .nav-links-mobile a { 
     text-decoration: none; 
     color: rgb(21, 149, 196); 
-    font-size: 26px;
+    font-size: 1.625rem;
     font-weight: 800;
     font-family: 'gliker', sans-serif;
     display: block; 
@@ -937,7 +938,7 @@ body.no-scroll {
     padding: 16px 20px;
     text-decoration: none;
     color: #fff;
-    font-size: 18px;
+    font-size: 1.125rem;
     font-weight: 600;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
@@ -1001,7 +1002,7 @@ body.no-scroll {
     }
 
     /* Ajuste de escala para o Boas-vindas */
-    #bemvindo { font-size: 30px; }
+    #bemvindo { font-size: 1.875rem; }
     .group-cards { grid-template-columns: 1fr; }
     
     footer {
@@ -1083,7 +1084,7 @@ button {
     border: 3px solid #333;
     border-radius: 10px;
     color: #333; 
-    font-size: 1.5em;
+    font-size: 1.5rem;
     text-transform: uppercase;
 }
 
