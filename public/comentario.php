@@ -6,8 +6,7 @@
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
-    $id_usuario_logado = intval($_SESSION['usuario_id']);
-    $sql_pref = "SELECT cores_materia 
+    $id_usuario_logado = intval($_SESSION['usuario_id']);$sql_pref = "SELECT cores_materia 
                  FROM configuracoes 
                  WHERE id_usuario = $id_usuario_logado";
                  
@@ -37,16 +36,13 @@
     // ==========================================================
     // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
     // ==========================================================
-    if ($result_pref && $result_pref->num_rows > 0) {
-        $row_pref = $result_pref->fetch_assoc();
-        $cores_banco = json_decode(
-            $row_pref['cores_materia'],
+    if ($result_pref &&$result_pref->num_rows > 0) {
+        $row_pref =$result_pref->fetch_assoc();
+        $cores_banco = json_decode($row_pref['cores_materia'],
             true
         );
-        if (is_array($cores_banco)) {
-            $cores_usuario = array_merge(
-                $cores_usuario,
-                $cores_banco
+        if (is_array($cores_banco)) {$cores_usuario = array_merge(
+                $cores_usuario,$cores_banco
             );
         }
     }
@@ -68,7 +64,13 @@
 
 <body>
 <?php renderSidebar(); // Renderiza a sidebar ?>
-    
+
+<!-- BOTÃO VERMELHO FLUTUANTE DE VOLTAR -->
+<button class="btn-sair-flutuante" onclick="window.location.href='home.php'" title="Voltar para Home">
+    <i class="fas fa-arrow-left"></i>
+    <span class="btn-sair-text">Voltar</span>
+</button>
+
 <div class="main-container" id="mainContainer">
 
     <?php renderHeader(); ?>
@@ -93,11 +95,6 @@
     </main>
 
     <?php renderFooter(); ?>
-
-  
-
-   
-
 
 </div>
 
@@ -135,7 +132,7 @@
 
     // Transforma o array do PHP em um objeto JavaScript utilizável
     const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
-    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
+    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ?$_SESSION['usuario_id'] : 'null'; ?>;
 
     // Executa assim que a página carregar
     document.addEventListener("DOMContentLoaded", () => {

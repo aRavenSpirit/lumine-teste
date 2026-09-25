@@ -18,6 +18,51 @@
     font-weight: 700;
 }
 
+/* --- BOTÃO FLUTUANTE VERMELHO DE VOLTAR (ESTILO SIDEBAR / QUIZ) --- */
+.btn-sair-flutuante {
+    position: fixed;
+    top: 95px;          /* Fica posicionado logo abaixo da navbar superior de 80px */
+    left: 95px;         /* Fica do lado de fora da sidebar fechada de 80px */
+    width: 46px;
+    height: 46px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    z-index: 3000;
+    padding: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-sair-flutuante i {
+    font-size: 1.1rem;
+    color: #ffffff;
+}
+
+.btn-sair-flutuante .btn-sair-text {
+    display: none;
+    opacity: 0;
+    white-space: nowrap;
+    font-family: 'Open_Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.btn-sair-flutuante:hover {
+    background-color: #c0392b;
+    transform: scale(1.08);
+    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
+}
+
+.btn-sair-flutuante:active {
+    transform: scale(0.95);
+}
+
 /* --- ÁREA DE EXIBIÇÃO DOS COMENTÁRIOS (CARD-RESPOSTAS) --- */
 .card-respostas {
     background-color: #f8fbff; /* Fundo suave das seções do index */
@@ -103,7 +148,7 @@
     border-radius: 50px; /* Sua pílula arredondada original */
     padding: 4px 6px 4px 25px;
     
-    /* SOLUÇÃO: Bloqueia a pílula para nunca expandir verticalmente */
+    /* BLOQUEIO: Impede a pílula de expandir verticalmente */
     min-height: 56px;
     height: 56px; 
     overflow: hidden; /* Garante que nada quebre o contorno da pílula */
@@ -120,7 +165,6 @@
 .comentario-form textarea {
     flex: 1; /* Ocupa todo o espaço até chegar no botão */
     
-    /* SOLUÇÃO DO SCROLL INTERNO: Define uma altura fixa baseada no form */
     height: 36px; 
     max-height: 36px;
     overflow-y: auto; /* Ativa o scroll vertical apenas aqui dentro quando o texto crescer */
@@ -132,7 +176,6 @@
     font-size: 1rem;
     color: #333;
     
-    /* Mantém os bloqueios que você pediu anteriormente */
     resize: none; 
     outline: none;
     line-height: 1.5;
@@ -154,7 +197,6 @@
     transition: all 0.2s ease;
     white-space: nowrap;
     
-    /* Mantém os 3px exatos de respiro antes do início do botão */
     margin-left: 3px; 
     flex-shrink: 0; /* Impede o flexbox de esmagar o botão */
 }
@@ -185,12 +227,18 @@
 }
 
 /* --- RESPONSIVIDADE ADAPTATIVA --- */
+@media screen and (max-width: 900px) {
+    .btn-sair-flutuante {
+        top: 90px;
+        left: 20px;
+    }
+}
+
 @media screen and (max-width: 768px) {
     .container-comentarios {
         padding: 20px;
     }
 
-    /* Em telas mobile menores, desfazemos a pílula para o layout respirar */
     .comentario-form form {
         border-radius: 20px;
         flex-direction: column;

@@ -481,10 +481,12 @@ div[id^="drag_"] {
 #quiz-controls {
     width: 100%;
     max-width: 850px;
+    height: 85px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 10px;
+   
 }
 
 #btn-voltar, #btn-proximo, #btn-finalizar {
@@ -675,13 +677,22 @@ div[id^="drag_"] {
 }
 
 
-.btn-final {
-    padding: 8px 15px;
-    border-radius: 5px;
+#btn-final {
+    background-color: #000000;
+    color: #ffffff;
     border: none;
+    border-radius: 25px;
+    padding: 15px 50px;
+    font-size: 1.125rem;
+    font-weight: 800;
     cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 0 auto;
+    box-shadow: 0 6px 0 #333333;
+    transition: transform 0.1s ease, box-shadow 0.1s ease;
 }
 
 /* ==========================================================================
