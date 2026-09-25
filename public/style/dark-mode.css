@@ -6,6 +6,7 @@
 body.dark-mode {
     background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
                 url('../img/background-index-transparente.png') no-repeat center center;
+    
     color: #e0e0e0 !important;
 }
 
@@ -97,11 +98,6 @@ body.dark-mode .sidebar {
 
 body.dark-mode .sidebar a {
     color: #ffffff !important;
-}
-
-body.dark-mode .sidebar a:hover,
-body.dark-mode .sidebar li.active a {
-    background-color: #2d2d2d !important;
 }
 
 body.dark-mode .nav-links-home a {
