@@ -5,6 +5,26 @@
     box-sizing: border-box;
 }
 
+/* Oculta o olho nativo do Microsoft Edge/IE */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none !important;
+}
+
+/* Estilização dos ícones do olho */
+.olho-senha, 
+.olho-senha-confirmar {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #3b4d58;
+    z-index: 5;
+}
+
+
 /* =========================================
    CONTAINER PRINCIPAL E ESTRUTURA
    ========================================= */

@@ -212,11 +212,13 @@
 
                             <div class="input-pill-container" style="position: relative; width: 100%;">
                                 <input type="password" id="edit-senha-input" class="input-pill" placeholder="Nova senha (opcional)" oninput="validarSenhaConfiguracoes()">
+                                <i onclick="toggleSenhaConfig()" class="fas fa-eye olho-senha"></i>
                                 <div id="balao-aviso-config" class="balao-aviso" style="display:none;"></div>
                             </div>
 
-                            <div class="input-pill-container">
+                            <div class="input-pill-container" style="position: relative; width: 100%;">
                                 <input type="password" id="edit-confirma-senha-input" class="input-pill" placeholder="Confirme a nova senha">
+                                <i onclick="toggleConfirmarSenhaConfig()" class="fas fa-eye olho-senha-confirmar"></i>
                             </div>
 
                             <!-- Barra de Segurança de Senha -->
@@ -398,6 +400,34 @@
         } catch (error) {
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
+        }
+    }
+
+    function toggleSenhaConfig() {
+        const input = document.getElementById("edit-senha-input");
+        const icone = document.querySelector(".input-pill-container .olho-senha");
+        if (input && icone) {
+            if (input.type === "password") {
+                input.type = "text";
+                icone.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icone.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    }
+
+    function toggleConfirmarSenhaConfig() {
+        const input = document.getElementById("edit-confirma-senha-input");
+        const icone = document.querySelector(".input-pill-container .olho-senha-confirmar");
+        if (input && icone) {
+            if (input.type === "password") {
+                input.type = "text";
+                icone.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icone.classList.replace("fa-eye-slash", "fa-eye");
+            }
         }
     }
 
