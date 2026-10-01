@@ -1,3 +1,15 @@
+/* Remove o ícone de revelar senha nativo do Microsoft Edge */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none;
+}
+
+/* Oculta o olho nativo do Edge para não duplicar com o FontAwesome */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none !important;
+}
+
 /* --- FONTES --- */
 @font-face {
     font-family: 'Open_Sans';
@@ -100,6 +112,17 @@ input:focus, select:focus {
 }
 
 .olho-senha {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.2rem;
+    color: #3b4d58;
+    z-index: 5;
+}
+
+.olho-senha-confirmar {
     position: absolute;
     right: 20px;
     top: 50%;

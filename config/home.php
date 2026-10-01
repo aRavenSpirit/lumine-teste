@@ -1,4 +1,4 @@
-<?php
+    <?php
 
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -20,6 +20,66 @@ if ($id_usuario === 0) {
 $tipo = $_GET['tipo'] ?? '';
 
 $response = null;
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $acao = $_POST['acao'] ?? '';
+
+    if ($acao === 'atualizar_perfil_completo') {
+        $id = intval($_POST['id_usuario']);
+        $nome = $conn->real_escape_string($_POST['nome']);
+        $email = $conn->real_escape_string($_POST['email']);
+        $escolaridade = intval($_POST['escolaridade']);
+        $senhaRaw = $_POST['senha'] ?? '';
+
+        // valida campos
+        if (!$nome || !$email || !$escolaridade) {
+            echo json_encode(["erro" => "Campos obrigatórios não preenchidos"]);
+            exit;
+            
+        }
+
+        // Se informou uma nova senha, valida os requisitos antes de atualizar
+        if (!empty($senhaRaw)) {
+
+            // 1. Mínimo 8 caracteres
+            if (strlen($senhaRaw) < 8) {
+                echo json_encode(["success" => false, "error" => "A senha deve ter no mínimo 8 caracteres."]);
+                exit;
+            }
+
+            // 2. Pelo menos uma letra maiúscula
+            if (!preg_match('/[A-Z]/', $senhaRaw)) {
+                echo json_encode(["success" => false, "error" => "A senha deve conter pelo menos uma letra maiúscula."]);
+                exit;
+            }
+
+            // 3. Pelo menos um número
+            if (!preg_match('/[0-9]/', $senhaRaw)) {
+                echo json_encode(["success" => false, "error" => "A senha deve conter pelo menos um número."]);
+                exit;
+            }
+
+            // 4. Pelo menos um caractere especial
+            if (!preg_match('/[^A-Za-z0-9]/', $senhaRaw)) {
+                echo json_encode(["success" => false, "error" => "A senha deve conter pelo menos um caractere especial (ex: !@#$)."]);
+                exit;
+            }
+
+            $senha = password_hash($senhaRaw, PASSWORD_DEFAULT);
+            $sql = "UPDATE usuario SET nome='$nome', email='$email', escolaridade_id=$escolaridade, senha='$senha' WHERE id=$id";
+        } else {
+            $sql = "UPDATE usuario SET nome='$nome', email='$email', escolaridade_id=$escolaridade WHERE id=$id";
+        }
+
+        if ($conn->query($sql)) {
+            echo json_encode(["success" => true, "mensagem" => "Perfil atualizado!"]);
+        } else {
+            echo json_encode(["success" => false, "error" => $conn->error]);
+        }
+        exit;
+    }
+}   
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 

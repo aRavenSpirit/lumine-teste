@@ -26,7 +26,7 @@
     }
 
 // =========================================================================
-// ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU A PLATAFORMA (NOVA)
+// ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU O QUIZ ATUAL
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
     if (session_status() === PHP_SESSION_NONE) {
@@ -34,14 +34,16 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
     }
     
     $id_usuario = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 0; 
+    $quiz_id = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0;
 
-    if ($id_usuario > 0) {
-        $stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ?");
-        $stmt->bind_param("i", $id_usuario);
+    if ($id_usuario > 0 && $quiz_id > 0) {
+        // Altera a busca para validar id_usuario E id_quiz
+        $stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ? AND id_quiz = ?");
+        $stmt->bind_param("ii", $id_usuario, $quiz_id);
         $stmt->execute();
         $stmt->store_result();
         
-        $ja_avaliou = $stmt->num_rows > 0; // Se for maior que 0, ele já avaliou
+        $ja_avaliou = $stmt->num_rows > 0;
         $stmt->close();
         
         echo json_encode(["avaliou" => $ja_avaliou]);
@@ -52,7 +54,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
 }
 
 // =========================================================================
-// ROTA PARA SALVAR A AVALIAÇÃO DA PLATAFORMA (1 POR USUÁRIO)
+// ROTA PARA SALVAR A AVALIAÇÃO DO QUIZ
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
     if (session_status() === PHP_SESSION_NONE) {
@@ -61,7 +63,6 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
 
     $data = json_decode(file_get_contents("php://input"), true);
     
-    // RESTAURADO: Capturamos o quiz_id normalmente. Não excluímos nada!
     $quiz_id = isset($data['quiz_id']) ? intval($data['quiz_id']) : 0;
     $nota = isset($data['nota']) ? intval($data['nota']) : 0;
     $id_usuario = isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 0; 
@@ -72,20 +73,21 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
     }
 
     if ($quiz_id > 0 && $nota > 0) {
-        // TRAVA MANTIDA: Verifica se o usuário já avaliou a plataforma antes
-        $check_stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ?");
-        $check_stmt->bind_param("i", $id_usuario);
+        // Verifica se o usuário já avaliou ESTE quiz em específico
+        $check_stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ? AND id_quiz = ?");
+        $check_stmt->bind_param("ii", $id_usuario, $quiz_id);
         $check_stmt->execute();
         $check_stmt->store_result();
 
         if ($check_stmt->num_rows > 0) {
             $check_stmt->close();
-            echo json_encode(["sucesso" => true]); // Finge que salvou para não travar a tela
+            // Se já avaliou este quiz, retorna sucesso sem duplicar
+            echo json_encode(["sucesso" => true]); 
             exit;
         }
         $check_stmt->close();
 
-        // RESTAURADO: Inserimos com todas as 3 informações (id_quiz, id_usuario, nota)
+        // Insere a nova avaliação associada ao id_quiz
         $stmt = $conn->prepare("INSERT INTO avaliacoes (id_quiz, id_usuario, nota) VALUES (?, ?, ?)");
         $stmt->bind_param("iii", $quiz_id, $id_usuario, $nota);
         
@@ -100,6 +102,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
     }
     exit;
 }
+
 
     if (isset($_GET['tipo']) && $_GET['tipo'] == 'detalhes_quiz') {
         $id_quiz = intval($_GET['id']);

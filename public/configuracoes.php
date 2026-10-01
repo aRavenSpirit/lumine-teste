@@ -210,12 +210,21 @@
                                 </select>
                             </div>
 
-                            <div class="input-pill-container">
-                                <input type="password" id="edit-senha-input" class="input-pill" placeholder="Nova senha">
+                            <div class="input-pill-container" style="position: relative; width: 100%;">
+                                <input type="password" id="edit-senha-input" class="input-pill" placeholder="Nova senha (opcional)" oninput="validarSenhaConfiguracoes()">
+                                <div id="balao-aviso-config" class="balao-aviso" style="display:none;"></div>
                             </div>
 
                             <div class="input-pill-container">
                                 <input type="password" id="edit-confirma-senha-input" class="input-pill" placeholder="Confirme a nova senha">
+                            </div>
+
+                            <!-- Barra de Segurança de Senha -->
+                            <div class="barra-seguranca" style="margin-bottom: 15px;">
+                                <div id="seg-length" class="segmento" data-label="Comprimento"></div>
+                                <div id="seg-uppercase" class="segmento" data-label="Maiúscula"></div>
+                                <div id="seg-number" class="segmento" data-label="Número"></div>
+                                <div id="seg-special" class="segmento" data-label="Especial"></div>
                             </div>
 
                             <div class="aviso-minimo">Mínimo: 8 caracteres.</div>
@@ -288,8 +297,17 @@
                     `;
                 }).join('');
 
-                const temaAtual = localStorage.getItem("theme") === "dark" ? "1" : "0";
-                const classeIcone = temaAtual === "1" ? "fas fa-moon" : "fas fa-sun";
+                // Sincroniza o tema do Banco de Dados com o localStorage e com a página
+                const temaBanco = (data.tema !== undefined && data.tema !== null) ? String(data.tema) : (localStorage.getItem("theme") === "dark" ? "1" : "0");
+                if (temaBanco === "1") {
+                    localStorage.setItem("theme", "dark");
+                    document.body.classList.add("dark-mode");
+                } else {
+                    localStorage.setItem("theme", "light");
+                    document.body.classList.remove("dark-mode");
+                }
+
+                const classeIcone = temaBanco === "1" ? "fas fa-moon" : "fas fa-sun";
 
                 html = `
                     <div class="preferencias-container-visual">
@@ -312,7 +330,7 @@
                         <div class="container-controles-estilizados">
                             <div class="controles-estilizados">
                                 <span class="label-estilizada">Modo:</span>
-                                <input type="hidden" id="pref-tema" value="${temaAtual}">
+                                <input type="hidden" id="pref-tema" value="${temaBanco}">
                                 
                                 <div class="botoes-tema-container">
                                     <button type="button" 
@@ -525,8 +543,10 @@
     function mudarTemaAoVivo(valor) {
         if (String(valor) === "1") {
             document.body.classList.add("dark-mode");
+            localStorage.setItem("theme", "dark");
         } else {
             document.body.classList.remove("dark-mode");
+            localStorage.setItem("theme", "light");
         }
     }
 
@@ -592,44 +612,49 @@
     }
 
     function salvarGeral() {
-        const nome = document.getElementById('edit-nome-input')?.value;
-        const email = document.getElementById('edit-email-input')?.value;
-        const id_esc = document.getElementById('edit-escolaridade')?.value;
-        const senha = document.getElementById('edit-senha-input')?.value;
-        const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
+    const nome = document.getElementById('edit-nome-input')?.value;
+    const email = document.getElementById('edit-email-input')?.value;
+    const id_esc = document.getElementById('edit-escolaridade')?.value;
+    const senha = document.getElementById('edit-senha-input')?.value;
+    const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
 
-        if (senha && senha !== confirmaSenha) {
-            alert("As senhas não coincidem!");
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('acao', 'atualizar_perfil_completo');
-        formData.append('nome', nome);
-        formData.append('email', email);
-        formData.append('escolaridade', id_esc);
-        if (senha) formData.append('senha', senha);
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
-
-        fetch(api, {
-            method: 'POST',
-            body: formData
-        })
-        .then(r => r.json())
-        .then(data => {
-            if (data.success) {
-                alert("Perfil atualizado com sucesso!");
-                carregarPerfil('usuario');
-            } else {
-                alert("Erro ao salvar: " + (data.error || "Erro desconhecido"));
-            }
-        })
-        .catch(err => {
-            salvarCampoIndividual('nome', nome);
-            salvarCampoIndividual('email', email);
-            salvarCampoIndividual('escolaridade', id_esc);
-        });
+    // Se o usuário digitou algo no campo de senha mas os requisitos não foram atingidos
+    if (senha && !senhaValidaConfig) {
+        alert("A nova senha não cumpre todos os requisitos de segurança exigidos.");
+        return;
     }
+
+    if (senha && senha !== confirmaSenha) {
+        alert("As senhas não coincidem!");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('acao', 'atualizar_perfil_completo');
+    formData.append('nome', nome);
+    formData.append('email', email);
+    formData.append('escolaridade', id_esc);
+    if (senha) formData.append('senha', senha);
+    formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+    fetch(api, {
+        method: 'POST',
+        body: formData
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success || data.mensagem) {
+            alert("Perfil atualizado com sucesso!");
+            carregarPerfil('usuario');
+        } else {
+            alert("Erro ao salvar: " + (data.error || data.erro || "Verifique o backend PHP"));
+        }
+    })
+    .catch(err => {
+        console.error("Erro na requisição:", err);
+        alert("Erro na comunicação com o servidor.");
+    });
+}
 
     function salvarCampoIndividual(campo, valor) {
         if(!valor) return;
@@ -780,6 +805,63 @@
         carregarMenuSidebar();
         carregarPerfil('usuario'); 
     };
+
+    let senhaValidaConfig = true; // Verdadeiro por padrão, pois no perfil a alteração da senha é opcional
+
+    function validarSenhaConfiguracoes() {
+        const senhaInput = document.getElementById("edit-senha-input");
+        const balaoAviso = document.getElementById("balao-aviso-config");
+
+        const segLength = document.getElementById("seg-length");
+        const segUppercase = document.getElementById("seg-uppercase");
+        const segNumber = document.getElementById("seg-number");
+        const segSpecial = document.getElementById("seg-special");
+
+        if (!senhaInput || !balaoAviso) return;
+
+        const valor = senhaInput.value;
+
+        // Se o campo estiver vazio, a senha é válida (pois não haverá alteração de senha)
+        if (valor.length === 0) {
+            balaoAviso.style.display = "none";
+            segLength.className = "segmento";
+            segUppercase.className = "segmento";
+            segNumber.className = "segmento";
+            segSpecial.className = "segmento";
+            senhaValidaConfig = true;
+            return;
+        }
+
+        // Validações individuais
+        const temTamanho = valor.length >= 8;
+        const temMaiuscula = /[A-Z]/.test(valor);
+        const temNumero = /[0-9]/.test(valor);
+        const temEspecial = /[^A-Za-z0-9]/.test(valor);
+
+        segLength.className = "segmento " + (temTamanho ? "valido" : "invalido");
+        segUppercase.className = "segmento " + (temMaiuscula ? "valido" : "invalido");
+        segNumber.className = "segmento " + (temNumero ? "valido" : "invalido");
+        segSpecial.className = "segmento " + (temEspecial ? "valido" : "invalido");
+
+        senhaValidaConfig = temTamanho && temMaiuscula && temNumero && temEspecial;
+
+        // Gerenciador do Balão Flutuante
+        if (!temTamanho) {
+            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: No mínimo 8 caracteres`;
+            balaoAviso.style.display = "block";
+        } else if (!temMaiuscula) {
+            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Pelo menos uma letra maiúscula`;
+            balaoAviso.style.display = "block";
+        } else if (!temNumero) {
+            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Pelo menos um número`;
+            balaoAviso.style.display = "block";
+        } else if (!temEspecial) {
+            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Um caractere especial (!@#$)`;
+            balaoAviso.style.display = "block";
+        } else {
+            balaoAviso.style.display = "none";
+        }
+    }
 
 </script>
 

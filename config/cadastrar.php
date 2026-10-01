@@ -22,7 +22,13 @@
     if (!$nome || !$email || !$senhaRaw || !$escolaridade) {
         echo json_encode(["erro" => "Campos obrigatórios não preenchidos"]);
         exit;
-        
+            
+    }
+
+    // Valida se o e-mail tem um formato válido
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        echo json_encode(["erro" => "Por favor, insira um e-mail válido."]);
+        exit;
     }
 
     // ==========================================================

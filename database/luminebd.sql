@@ -346,7 +346,8 @@ CREATE TABLE avaliacoes (
     data_envio DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_usuario) REFERENCES usuario(id)
         ON DELETE CASCADE,
-    FOREIGN KEY (id_quiz) REFERENCES quizzes(id)
+    FOREIGN KEY (id_quiz) REFERENCES quizzes(id),
+    UNIQUE KEY uq_usuario_quiz (id_usuario, id_quiz)
 );
 
 CREATE TABLE conteudo_escolaridade (

@@ -203,48 +203,69 @@
             html += `</tbody></table>`;
         }
         else if (tipo === 'avaliacoes') {
-            let soma = 0;
-            dados.forEach(a => soma += parseFloat(a.nota || 0));
-            const media = dados.length > 0 ? (soma / dados.length).toFixed(1) : "0.0";
+            const dadosCompletos = detalhesModais['avaliacoes'] || [];
 
-            html = `<div class="container-split-modal">
+            // Extrai matérias únicas das avaliações
+            const materiasUnicas = [...new Set(dadosCompletos.map(a => a.nome_materia || 'Geral'))].sort();
+            
+            let opcoesMateriaHtml = `<option value="todas">-- Todas as Matérias --</option>`;
+            materiasUnicas.forEach(m => {
+                opcoesMateriaHtml += `<option value="${m}">${m}</option>`;
+            });
+
+            html = `
+            <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+                <!-- Filtro 1: Matéria -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="filtro-materia" style="font-weight: bold;">Matéria:</label>
+                    <select id="filtro-materia" onchange="aoSelecionarMateria()" style="padding: 6px 12px; border-radius: 6px; border: 2px solid #000; font-family: inherit; font-weight: bold; cursor: pointer;">
+                        ${opcoesMateriaHtml}
+                    </select>
+                </div>
+
+                <!-- Filtro 2: Conteúdo (Inicia desabilitado se "Todas" estiver selecionado) -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label for="filtro-conteudo" style="font-weight: bold;">Conteúdo:</label>
+                    <select id="filtro-conteudo" onchange="filtrarAvaliacoesEncadeado()" disabled style="padding: 6px 12px; border-radius: 6px; border: 2px solid #000; font-family: inherit; font-weight: bold; cursor: pointer; background-color: #eee;">
+                        <option value="todos">-- Selecione uma Matéria primeiro --</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="container-split-modal">
                 <div class="coluna-lista-avaliacoes">
                     <table class="admin-table">
                         <thead>
                             <tr>
                                 <th>Usuário</th>
-                                <th>Quiz Avaliado</th>
+                                <th>Matéria</th>
+                                <th>Quiz / Conteúdo</th>
                                 <th>Nota</th>
                             </tr>
                         </thead>
-                        <tbody>`;
-            
-            dados.forEach(a => {
-                let estrelasLinha = "";
-                for(let i = 1; i <= 5; i++) {
-                    estrelasLinha += i <= a.nota ? '<i class="fa-solid fa-star" style="color: #f1c40f;"></i>' : '<i class="fa-regular fa-star" style="color: #ccc;"></i>';
-                }
-                html += `<tr>
-                    <td>${a.nome_usuario || 'Anônimo'}</td>
-                    <td>${a.nome_quiz || 'Quiz Excluído'}</td>
-                    <td><div class="estrelas-celula">${estrelasLinha} <span class="num-nota">(${a.nota})</span></div></td>
-                </tr>`;
-            });
-
-            html += `    </tbody>
+                        <tbody id="tbody-avaliacoes">
+                            <!-- Preenchido dinamicamente -->
+                        </tbody>
                     </table>
                 </div>
                 <div class="coluna-card-media">
                     <div class="card-media-geral">
-                        <h4>Média Geral</h4>
-                        <div class="media-score">${media}</div>
+                        <h4 id="titulo-card-media">Média Geral</h4>
+                        <div class="media-score" id="valor-media-score">0.0</div>
                         <div class="media-estrela-grande">
                             <i class="fa-solid fa-star"></i>
                         </div>
-                        <p>Baseado em ${dados.length} avaliações</p>
+                        <p id="total-avaliacoes-card">Baseado em 0 avaliações</p>
                     </div>
                 </div>
             </div>`;
+
+            corpo.innerHTML = html;
+            document.getElementById('modal').style.display = 'flex';
+
+            // Carrega os dados iniciais sem filtros aplicados
+            filtrarAvaliacoesEncadeado();
+            return;
         }
         corpo.innerHTML = html || "<p>Nenhum registro.</p>";
         document.getElementById('modal').style.display = 'flex';
@@ -294,6 +315,97 @@
         document.getElementById('modal').style.display = 'none'; 
         document.getElementById('status-feedback').style.display = 'none';
     }
+
+
+    // Chamada quando a matéria selecionada muda
+function aoSelecionarMateria() {
+    const materiaSel = document.getElementById('filtro-materia').value;
+    const selectConteudo = document.getElementById('filtro-conteudo');
+    const dadosCompletos = detalhesModais['avaliacoes'] || [];
+
+    if (materiaSel === 'todas') {
+        selectConteudo.disabled = true;
+        selectConteudo.style.backgroundColor = '#eee';
+        selectConteudo.innerHTML = `<option value="todos">-- Selecione uma Matéria primeiro --</option>`;
+    } else {
+        // Popula apenas os conteúdos que pertencem à matéria escolhida
+        const conteudosDaMateria = [...new Set(
+            dadosCompletos
+                .filter(a => (a.nome_materia || 'Geral') === materiaSel)
+                .map(a => a.nome_conteudo || 'Sem Conteúdo')
+        )].sort();
+
+        let htmlConteudo = `<option value="todos">-- Todos os Conteúdos --</option>`;
+        conteudosDaMateria.forEach(c => {
+            htmlConteudo += `<option value="${c}">${c}</option>`;
+        });
+
+        selectConteudo.innerHTML = htmlConteudo;
+        selectConteudo.disabled = false;
+        selectConteudo.style.backgroundColor = '#fff';
+    }
+
+    // Executa a filtragem atualizada da tabela e cards
+    filtrarAvaliacoesEncadeado();
+}
+
+// Aplica o filtro encadeado na tabela e recalcula a média do card
+function filtrarAvaliacoesEncadeado() {
+    const materiaSel = document.getElementById('filtro-materia') ? document.getElementById('filtro-materia').value : 'todas';
+    const conteudoSel = document.getElementById('filtro-conteudo') ? document.getElementById('filtro-conteudo').value : 'todos';
+    const dadosCompletos = detalhesModais['avaliacoes'] || [];
+
+    // Aplica o filtro encadeado
+    const dadosFiltrados = dadosCompletos.filter(a => {
+        const mat = a.nome_materia || 'Geral';
+        const cont = a.nome_conteudo || 'Sem Conteúdo';
+
+        const atendeMateria = (materiaSel === 'todas' || mat === materiaSel);
+        const atendeConteudo = (conteudoSel === 'todos' || cont === conteudoSel);
+
+        return atendeMateria && atendeConteudo;
+    });
+
+    // Recalcula média e quantidade total
+    let soma = 0;
+    dadosFiltrados.forEach(a => soma += parseFloat(a.nota || 0));
+    const media = dadosFiltrados.length > 0 ? (soma / dadosFiltrados.length).toFixed(1) : "0.0";
+
+    document.getElementById('valor-media-score').innerText = media;
+    document.getElementById('total-avaliacoes-card').innerText = `Baseado em ${dadosFiltrados.length} avaliações`;
+
+    if (conteudoSel !== 'todos') {
+        document.getElementById('titulo-card-media').innerText = 'Média do Conteúdo';
+    } else if (materiaSel !== 'todas') {
+        document.getElementById('titulo-card-media').innerText = 'Média da Matéria';
+    } else {
+        document.getElementById('titulo-card-media').innerText = 'Média Geral';
+    }
+
+    // Renderiza a tabela
+    let htmlTabela = "";
+    dadosFiltrados.forEach(a => {
+        let estrelasLinha = "";
+        for(let i = 1; i <= 5; i++) {
+            estrelasLinha += i <= a.nota 
+                ? '<i class="fa-solid fa-star" style="color: #f1c40f;"></i>' 
+                : '<i class="fa-regular fa-star" style="color: #ccc;"></i>';
+        }
+        
+        const materia = a.nome_materia ? `<strong>${a.nome_materia}</strong>` : '<em style="color:#999;">Geral</em>';
+        const quizNome = a.nome_quiz || 'Quiz Excluído';
+        const conteudoNome = a.nome_conteudo ? `<br><small style="color:#666;">${a.nome_conteudo}</small>` : '';
+
+        htmlTabela += `<tr>
+            <td>${a.nome_usuario || 'Anônimo'}</td>
+            <td>${materia}</td>
+            <td>${quizNome}${conteudoNome}</td>
+            <td><div class="estrelas-celula">${estrelasLinha} <span class="num-nota">(${a.nota})</span></div></td>
+        </tr>`;
+    });
+
+    document.getElementById('tbody-avaliacoes').innerHTML = htmlTabela || `<tr><td colspan="4" align="center">Nenhuma avaliação encontrada para os filtros selecionados.</td></tr>`;
+}
     
     carregarDados();
 </script>

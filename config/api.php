@@ -78,7 +78,7 @@
 
         break;
 
-        case 'PUT':
+        case 'PUT': 
 
             $data = json_decode(file_get_contents("php://input"), true);
 

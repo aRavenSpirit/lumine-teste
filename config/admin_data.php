@@ -63,12 +63,19 @@
 
         // 2. Busca detalhada com os JOINs corretos para listar dentro da Modal
         $sqlDetAval = "SELECT 
-                        a.nota,
-                        u.nome AS nome_usuario,
-                        q.nome AS nome_quiz
-                    FROM avaliacoes a
-                    LEFT JOIN usuario u ON a.id_usuario = u.id
-                    LEFT JOIN quizzes q ON a.id_quiz = q.id";
+        a.id,
+        a.nota,
+        a.data_envio,
+        u.nome AS nome_usuario,
+        q.nome AS nome_quiz,
+        m.nome_materia,
+        c.nome AS nome_conteudo
+        FROM avaliacoes a
+        LEFT JOIN usuario u ON a.id_usuario = u.id
+        LEFT JOIN quizzes q ON a.id_quiz = q.id
+        LEFT JOIN conteudo c ON q.id_conteudo = c.id
+        LEFT JOIN materia m ON c.id_materia = m.id
+        ORDER BY a.data_envio DESC";
 
         // =========================================================================
         // A SOLUÇÃO ESTÁ AQUI: O código abaixo faltava para executar a busca!

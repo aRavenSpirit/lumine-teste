@@ -709,18 +709,18 @@ function confirmarSaida() {
 let notaSelecionada = 0;
 
 function inicializarSistemaEstrelas() {
-    const containerAvaliacao = document.getElementById('container-avaliacao'); // A div que envolve as estrelas
+    const containerAvaliacao = document.getElementById('container-avaliacao');
 
-    fetch('../config/quiz.php?tipo=checar_avaliacao')
+    // Envia o quizId atual no fetch para checar a avaliação DESTE quiz
+    fetch(`../config/quiz.php?tipo=checar_avaliacao&quiz_id=${quizId}`)
         .then(res => res.json())
         .then(data => {
             if (data.avaliou) {
-                // MÁGICA AQUI: O usuário já avaliou a plataforma. 
-                // Em vez de só esconder a caixa e travar no blur, voltamos direto pra home!
+                // Se o usuário já avaliou ESTE quiz especificamente, redireciona para a home
                 window.location.href = 'home.php';
                 return; 
             } else {
-                // Se não avaliou, prepara o evento das estrelas normalmente
+                // Caso contrário, abre a modal de estrelas normalmente
                 configurarEventosDasEstrelas();
             }
         })

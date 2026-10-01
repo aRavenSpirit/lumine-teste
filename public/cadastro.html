@@ -36,7 +36,10 @@
                     <div id="balao-aviso" class="balao-aviso"></div>
                 </div>
                 
-                <input type="password" id="confirmar" placeholder="Confirme a senha" required>
+                <div class="container-senha" style="position: relative; width: 100%;">
+                    <input type="password" id="confirmar" placeholder="Confirme a senha" required>
+                    <i onclick="toggleConfirmarSenha()" class="fas fa-eye olho-senha-confirmar"></i>
+                </div>
 
                 <div class="barra-seguranca">
                     <div id="seg-length" class="segmento" data-label="Comprimento"></div>
@@ -168,24 +171,34 @@
     }
 
     function cadastrar(){
-        // Impede o envio se os requisitos da senha inteligente falharem
-        if (!senhaValida) {
-            exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
-            return;
-        }
 
+       // 1. PRIMEIRO PEGAMOS OS VALORES DOS CAMPOS
         let nome = document.getElementById("nome").value.trim();
         let email = document.getElementById("email").value.trim();
         let senha = document.getElementById("senha").value;
         let confirmar = document.getElementById("confirmar").value;
         let escolaridade = document.getElementById("escolaridade").value;
 
-        // Validações básicas antes do fetch
+        // 2. VALIDAÇÃO DE CAMPOS VAZIOS
         if(!nome || !email || !escolaridade || !senha || !confirmar){
             exibirErro("Preencha todos os campos!");
             return;
         }
 
+        // 3. VALIDAÇÃO DO FORMATO DO E-MAIL (AGORA O EMAIL JÁ EXISTE)
+        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!regexEmail.test(email)) {
+            exibirErro("Por favor, insira um e-mail válido (ex: usuario@email.com)");
+            return;
+        }
+
+        // 4. REQUISITOS DA SENHA (BALÃO/BARRA DE SEGURANÇA)
+        if (!senhaValida) {
+            exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
+            return;
+        }
+
+        // 5. CONFIRMAÇÃO DE SENHA
         if(senha !== confirmar){
             exibirErro("As senhas não coincidem!");
             return;
@@ -239,6 +252,19 @@
             icone.classList.replace("fa-eye-slash", "fa-eye");
         }
     }
+
+    function toggleConfirmarSenha() {
+        const input = document.getElementById("confirmar");
+        const icone = document.querySelector(".olho-senha-confirmar");
+        if (input.type === "password") {
+            input.type = "text";
+            icone.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            icone.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
+
 </script>
 </body>
 </html>
