@@ -1,52 +1,39 @@
-function uploadFotoPerfil(input) {
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            const base64Image = e.target.result;
-            
-            const formData = new FormData();
-            formData.append('acao', 'atualizar_perfil');
-            formData.append('campo', 'foto_perfil');
-            formData.append('valor', base64Image);
+async function uploadFotoPerfil(input) {
+    if (!input.files || !input.files[0]) return;
 
-            fetch(api, {
-                method: 'POST',
-                body: formData
-            })
-            .then(res => res.json())
-            .then(data => {
-                if (data.success) {
-                    // 1. Atualiza dinamicamente a foto dentro do container do Dropdown
-                    const wrapper = document.getElementById('avatarWrapper');
-                    if (wrapper) {
-                        wrapper.innerHTML = `<img src="${base64Image}" class="avatar-preview" id="avatarImg">`;
-                    }
-                    
-                    // 2. Atualiza a foto na barra superior (Navbar) sem precisar dar F5 na página!
-                    const linkPerfilHeader = document.querySelector('.item-perfil a');
-                    if (linkPerfilHeader) {
-                        const iconHeader = linkPerfilHeader.querySelector('.profile-icon');
-                        if (iconHeader) {
-                            if (iconHeader.tagName === 'IMG') {
-                                iconHeader.src = base64Image;
-                            } else {
-                                iconHeader.outerHTML = `<img src="${base64Image}" class="profile-icon" style="object-fit: cover;">`;
-                            }
-                        }
-                    }
-                    
-                    
-                } else {
-                    alert("Erro ao salvar a foto: " + data.error);
-                }
-            })
-            .catch(err => {
-                console.error("Erro na requisição:", err);
-                alert("Erro de comunicação com o servidor.");
-            });
-        };
-        
-        reader.readAsDataURL(input.files[0]);
+    const arquivo = input.files[0];
+
+    // Limita a 2MB para não estourar o banco/PHP
+    if (arquivo.size > 2 * 1024 * 1024) {
+        alert("Escolha uma imagem com menos de 2MB.");
+        return;
     }
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+        const base64Image = e.target.result;
+
+        const formData = new FormData();
+        formData.append('acao', 'atualizar_perfil');
+        formData.append('campo', 'foto_perfil');
+        formData.append('valor', base64Image);
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+        try {
+            const res = await fetch(api, { method: 'POST', body: formData });
+            const data = await res.json();
+
+            if (data.success) {
+                carregarPerfil('usuario');
+                if (typeof carregarUsuario === "function") carregarUsuario();
+            } else {
+                alert("Erro ao salvar: " + (data.error || "Erro desconhecido"));
+            }
+        } catch (err) {
+            console.error("Erro no envio:", err);
+            alert("Erro de comunicação com o servidor.");
+        }
+    };
+
+    reader.readAsDataURL(arquivo);
 }

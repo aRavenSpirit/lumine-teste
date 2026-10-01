@@ -198,6 +198,60 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     }
+
+    if ($acao === 'upload_foto') {
+        $id_usuario = intval($_POST['id_usuario'] ?? $_SESSION['usuario_id'] ?? 0);
+
+        if (!isset($_FILES['foto']) || $_FILES['foto']['error'] !== UPLOAD_ERR_OK) {
+            echo json_encode(['success' => false, 'error' => 'Nenhum arquivo enviado ou erro no upload.']);
+            exit;
+        }
+
+        $foto = $_FILES['foto'];
+        $extensao = strtolower(pathinfo($foto['name'], PATHINFO_EXTENSION));
+        $extensoesPermitidas = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+
+        if (!in_array($extensao, $extensoesPermitidas)) {
+            echo json_encode(['success' => false, 'error' => 'Formato de imagem inválido. Use JPG, PNG ou WEBP.']);
+            exit;
+        }
+
+        // Cria a pasta uploads se não existir
+        $diretorioUploads = '../uploads/';
+        if (!is_dir($diretorioUploads)) {
+            mkdir($diretorioUploads, 0755, true);
+        }
+
+        // Gera um nome único para a imagem
+        $novoNome = 'perfil_' . $id_usuario . '_' . time() . '.' . $extensao;
+        $caminhoCompleto = $diretorioUploads . $novoNome;
+        $caminhoRelativoBD = '../uploads/' . $novoNome;
+
+        if (move_uploaded_file($foto['tmp_name'], $caminhoCompleto)) {
+            // Atualiza o caminho na tabela e colunas corretas usando MySQLi
+            $sql = "UPDATE usuario SET foto_perfil = ? WHERE id = ?";
+            $stmt = $conn->prepare($sql);
+
+            if ($stmt) {
+                $stmt->bind_param("si", $caminhoRelativoBD, $id_usuario);
+                if ($stmt->execute()) {
+                    echo json_encode([
+                        'success' => true, 
+                        'foto_perfil' => $caminhoRelativoBD,
+                        'mensagem' => 'Foto atualizada com sucesso!'
+                    ]);
+                } else {
+                    echo json_encode(['success' => false, 'error' => 'Erro ao guardar no banco de dados: ' . $stmt->error]);
+                }
+                $stmt->close();
+            } else {
+                echo json_encode(['success' => false, 'error' => 'Erro na preparação da consulta: ' . $conn->error]);
+            }
+        } else {
+            echo json_encode(['success' => false, 'error' => 'Falha ao mover a imagem para o servidor.']);
+        }
+        exit;
+    }
     echo json_encode(["success" => false, "error" => "Ação não reconhecida"]);
     exit;
 }
