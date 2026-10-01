@@ -25,10 +25,6 @@
 
                 <input type="email" id="email" placeholder="Insira seu email" required>
 
-                <select id="escolaridade">
-                    <option value="">Escolaridade</option>
-                </select>
-
                 <div class="container-senha" style="position: relative; width: 100%;">
                     <input type="password" id="senha" placeholder="Crie uma senha" required>
                     <i onclick="toggleSenha()" class="fas fa-eye olho-senha"></i>
@@ -59,7 +55,6 @@
         </div>
     </div>
 
-
     <script src="js/tamanho_fonte.js"></script>
 
     <script>
@@ -73,30 +68,23 @@
     const segNumber = document.getElementById("seg-number");
     const segSpecial = document.getElementById("seg-special");
 
-    // Lógica Inteligente de Validação Contínua (Progressiva)
     senhaInput.addEventListener("input", () => {
         const valor = senhaInput.value;
 
-        // 1. Validar tamanho mínimo
         const temTamanho = valor.length >= 8;
         segLength.className = "segmento " + (temTamanho ? "valido" : valor.length > 0 ? "invalido" : "");
 
-        // 2. Validar letra maiúscula
         const temMaiuscula = /[A-Z]/.test(valor);
         segUppercase.className = "segmento " + (temMaiuscula ? "valido" : valor.length > 0 ? "invalido" : "");
 
-        // 3. Validar número
         const temNumero = /[0-9]/.test(valor);
         segNumber.className = "segmento " + (temNumero ? "valido" : valor.length > 0 ? "invalido" : "");
 
-        // 4. Validar caractere especial
         const temEspecial = /[^A-Za-z0-9]/.test(valor);
         segSpecial.className = "segmento " + (temEspecial ? "valido" : valor.length > 0 ? "invalido" : "");
 
-        // Controle Global do Estado da Senha
         senhaValida = temTamanho && temMaiuscula && temNumero && temEspecial;
 
-        // GERENCIADOR AUTOMÁTICO DO BALÃO FLUTUANTE (Sequência de regras por prioridade)
         if (valor.length === 0) {
             balaoAviso.style.display = "none";
         } else if (!temTamanho) {
@@ -112,35 +100,11 @@
             balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Um caractere especial (!@#$)`;
             balaoAviso.style.display = "block";
         } else {
-            // Se cumpriu tudo, o balão oculta instantaneamente
             balaoAviso.style.display = "none";
         }
     });
 
-    function atualizarStatus(elemento, valido) {
-        const icone = elemento.querySelector("i");
-        if (valido) {
-            elemento.classList.add("valid");
-            elemento.classList.remove("invalid");
-            if(icone) icone.className = "fa-solid fa-circle-check";
-        } else if (senhaInput.value.length > 0) {
-            elemento.classList.add("invalid");
-            elemento.classList.remove("valid");
-            if(icone) icone.className = "fa-solid fa-circle-xmark";
-        } else {
-            elemento.classList.remove("valid", "invalid");
-            if(icone) icone.className = "fa-solid fa-circle";
-        }
-    }
-
-    const api = "../config/api.php";
-
-    window.onload = function () {
-        carregarEscolaridades();
-    }
-
-    // Faz a mensagem sumir ao digitar em qualquer campo
-    const campos = document.querySelectorAll('input, select');
+    const campos = document.querySelectorAll('input');
     campos.forEach(campo => {
         campo.addEventListener('input', () => {
             const msg = document.getElementById("mensagem");
@@ -153,17 +117,6 @@
         });
     });
 
-    function carregarEscolaridades() {
-        fetch(api + "?tipo=escolaridade")
-            .then(r => r.json())
-            .then(dados => {
-                let select = document.getElementById("escolaridade");
-                dados.forEach(e => {
-                    select.innerHTML += `<option value="${e.id_escolaridade}">${e.nome_escolaridade}</option>`;
-                });
-            });
-    }
-
     function exibirErro(texto) {
         const msg = document.getElementById("mensagem");
         msg.innerHTML = texto;
@@ -171,34 +124,27 @@
     }
 
     function cadastrar(){
-
-       // 1. PRIMEIRO PEGAMOS OS VALORES DOS CAMPOS
         let nome = document.getElementById("nome").value.trim();
         let email = document.getElementById("email").value.trim();
         let senha = document.getElementById("senha").value;
         let confirmar = document.getElementById("confirmar").value;
-        let escolaridade = document.getElementById("escolaridade").value;
 
-        // 2. VALIDAÇÃO DE CAMPOS VAZIOS
-        if(!nome || !email || !escolaridade || !senha || !confirmar){
+        if(!nome || !email || !senha || !confirmar){
             exibirErro("Preencha todos os campos!");
             return;
         }
 
-        // 3. VALIDAÇÃO DO FORMATO DO E-MAIL (AGORA O EMAIL JÁ EXISTE)
         const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!regexEmail.test(email)) {
             exibirErro("Por favor, insira um e-mail válido (ex: usuario@email.com)");
             return;
         }
 
-        // 4. REQUISITOS DA SENHA (BALÃO/BARRA DE SEGURANÇA)
         if (!senhaValida) {
             exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
             return;
         }
 
-        // 5. CONFIRMAÇÃO DE SENHA
         if(senha !== confirmar){
             exibirErro("As senhas não coincidem!");
             return;
@@ -210,18 +156,15 @@
             body:JSON.stringify({
                 nome: nome,
                 email: email,
-                senha: senha,
-                escolaridade_id: escolaridade
+                senha: senha
             })
         })
         .then(r=>r.json())
         .then(d=>{
             if(d.erro){
                 exibirErro(d.erro);
-                // Limpa campos sensíveis em caso de erro
                 document.getElementById("senha").value = "";
                 document.getElementById("confirmar").value = "";
-                // Dispara o evento input manualmente para resetar a barra de senha
                 senhaInput.dispatchEvent(new Event('input'));
                 return;
             }
@@ -264,7 +207,6 @@
             icone.classList.replace("fa-eye-slash", "fa-eye");
         }
     }
-
 </script>
 </body>
 </html>
