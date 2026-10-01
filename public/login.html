@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="./style/login.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <script src="https://accounts.google.com/gsi/client" async defer></script>
-    
 </head>
 <body>
     <div class="container-login">
@@ -61,9 +60,10 @@
 
         <p class="texto-cadastro">Ainda não tem cadastro? <a href="cadastro.html">Cadastre-se</a></p>
 
+        <!-- Modal de Escolaridade -->
         <div id="modal-escolaridade" class="modal-overlay">
             <div class="modal-content">
-                <h2>Quase lá! </h2>
+                <h2>Quase lá!</h2>
                 <p>Para adaptarmos a plataforma Lumine ao seu perfil, selecione o seu nível de escolaridade atual:</p>
                 
                 <select id="select-escolaridade">
@@ -78,16 +78,16 @@
     </div>
 
     <script>
-        // Função indispensável para exibir mensagens de aviso/erro na tela
         function exibirErro(texto) {
             const msg = document.getElementById("mensagem");
             if (msg) msg.innerText = texto;
         }
 
         function mostrarModalEscolaridade() {
-            document.getElementById("modal-escolaridade").classList.add("ativo");
+            const modal = document.getElementById("modal-escolaridade");
+            modal.classList.add("ativo");
             
-            // Procura dinamicamente as escolaridades cadastradas no sistema
+            // Subindo um nível com ../ para achar a pasta config fora de public
             fetch("../config/api.php?tipo=escolaridade")
                 .then(r => r.json())
                 .then(dados => {
@@ -97,7 +97,8 @@
                         select.innerHTML += `<option value="${e.id_escolaridade}">${e.nome_escolaridade}</option>`;
                     });
                 })
-                .catch(() => {
+                .catch(err => {
+                    console.error(err);
                     document.getElementById("msg-modal").innerText = "Erro ao carregar lista de escolaridades.";
                 });
         }
@@ -129,6 +130,7 @@
 
         function handleCredentialResponse(response) {
             exibirErro("A autenticar...");
+            
             fetch("../config/login_google.php", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -138,7 +140,7 @@
             .then(d => {
                 if (d.status) {
                     if(d.precisa_escolaridade) {
-                        exibirErro(""); // Limpa texto "A autenticar..."
+                        exibirErro(""); 
                         mostrarModalEscolaridade();
                     } else {
                         window.location = "home.php";
@@ -147,7 +149,10 @@
                     exibirErro("Erro Google: " + (d.erro || "Falha desconhecida"));
                 }
             })
-            .catch(() => exibirErro("Erro ao conectar com o servidor."));
+            .catch((err) => {
+                console.error(err);
+                exibirErro("Erro ao conectar com o servidor.");
+            });
         }
 
         function login() {
