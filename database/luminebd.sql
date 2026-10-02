@@ -271,7 +271,7 @@ create table perguntas(
     imagem_perguntas longtext default null,
     foreign key (id_tipo) references tipos_perguntas (id),
     foreign key (id_quiz) references quizzes (id),
-    descricao varchar(255)
+    descricao longtext default null
 );
 
 CREATE TABLE respostas (
