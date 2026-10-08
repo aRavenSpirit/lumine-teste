@@ -39,20 +39,21 @@ create table materia(
     imagem_materia longtext default null
 );
 
-insert into materia (nome_materia) values 
-('Matemática'),
-('Português'),
-('História'),
-('Geografia'),
-('Ciências da Natureza'),
-('Física'),
-('Química'),
-('Biologia'),
-('Inglês'),
-('Artes'),
-('Educação Física'),
-('Filosofia'),
-('Sociologia');
+-- ADIÇÃO DE MATÉRIAS COM IMAGENS (.webp)
+INSERT INTO materia (id, nome_materia, imagem_materia) VALUES
+    (1, 'Matemática', 'img/matematica.webp'),
+    (2, 'Português', 'img/portugues.webp'),
+    (3, 'História', 'img/historia.webp'),
+    (4, 'Geografia', 'img/geografia.webp'),
+    (5, 'Ciências da Natureza', 'img/cienciasdanatureza.webp'),
+    (6, 'Física', 'img/fisica.webp'),
+    (7, 'Química', 'img/quimica.webp'),
+    (8, 'Biologia', 'img/biologia.webp'),
+    (9, 'Inglês', 'img/ingles.webp'),
+    (10, 'Artes', 'img/artes.webp'),
+    (11, 'Educação Física', 'img/educacaofisica.webp'),
+    (12, 'Filosofia', 'img/filosofia.webp'),
+    (13, 'Sociologia', 'img/sociologia.webp');
 
 
 create table conteudo(
@@ -63,170 +64,158 @@ create table conteudo(
     foreign key (id_materia) references materia (id)
 );
 
--- ADIÇÃO DE CONTEÚDOS
+-- ADIÇÃO DE CONTEÚDOS COM IMAGENS MAPEADAS
 
-    -- MATEMÁTICA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Adição e Subtração', 1),
-        ('Multiplicação e Divisão', 1),
-        ('Frações', 1),
-        ('Números Decimais', 1),
-        ('Porcentagem', 1),
-        ('Regra de Três', 1),
-        ('Equações do 1º grau', 1),
-        ('Equações do 2º grau', 1),
-        ('Geometria Plana', 1),
-        ('Geometria Espacial', 1),
-        ('Potenciação', 1),
-        ('Radiciação', 1);
+    -- MATEMÁTICA (Sem imagens .webp na pasta)
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Adição e Subtração', 1, NULL),
+        ('Multiplicação e Divisão', 1, NULL),
+        ('Frações', 1, NULL),
+        ('Números Decimais', 1, NULL),
+        ('Porcentagem', 1, NULL),
+        ('Regra de Três', 1, NULL),
+        ('Equações do 1º grau', 1, NULL),
+        ('Equações do 2º grau', 1, NULL),
+        ('Geometria Plana', 1, NULL),
+        ('Geometria Espacial', 1, NULL),
+        ('Potenciação', 1, NULL),
+        ('Radiciação', 1, NULL);
 
-    -- PORTUGUÊS
-
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Interpretação de Texto', 2),
-        ('Ortografia', 2),
-        ('Pontuação', 2),
-        ('Classes Gramaticais', 2),
-        ('Verbos', 2),
-        ('Concordância Verbal', 2),
-        ('Concordância Nominal', 2),
-        ('Regência', 2),
-        ('Crase', 2),
-        ('Figuras de Linguagem', 2);
+    -- PORTUGUÊS (Sem imagens .webp na pasta)
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Interpretação de Texto', 2, NULL),
+        ('Ortografia', 2, NULL),
+        ('Pontuação', 2, NULL),
+        ('Classes Gramaticais', 2, NULL),
+        ('Verbos', 2, NULL),
+        ('Concordância Verbal', 2, NULL),
+        ('Concordância Nominal', 2, NULL),
+        ('Regência', 2, NULL),
+        ('Crase', 2, NULL),
+        ('Figuras de Linguagem', 2, NULL);
 
     -- HISTÓRIA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Pré-História', 3),
-        ('Antiguidade', 3),
-        ('Idade Média', 3),
-        ('Idade Moderna', 3),
-        ('Idade Contemporânea', 3),
-        ('Brasil Colônia', 3),
-        ('Brasil Império', 3),
-        ('Brasil República', 3),
-        ('Segunda Guerra Mundial', 3),
-        ('Guerra Fria', 3);
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Pré-História', 3, 'img/conteudos/pre-historia.webp'),
+        ('Antiguidade', 3, 'img/conteudos/antiguidade.webp'),
+        ('Idade Média', 3, 'img/conteudos/idademedia.webp'),
+        ('Idade Moderna', 3, 'img/conteudos/idademoderna.webp'),
+        ('Idade Contemporânea', 3, 'img/conteudos/idadecontemporanea.webp'),
+        ('Brasil Colônia', 3, 'img/conteudos/brasilcolonia.webp'),
+        ('Brasil Império', 3, 'img/conteudos/brasilimperio.webp'),
+        ('Brasil República', 3, 'img/conteudos/brasilrepublica.webp'),
+        ('Segunda Guerra Mundial', 3, 'img/conteudos/segundaguerramundial.webp'),
+        ('Guerra Fria', 3, 'img/conteudos/guerrafria.webp');
 
     -- GEOGRAFIA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Cartografia', 4),
-        ('Climas', 4),
-        ('Relevo', 4),
-        ('Vegetação', 4),
-        ('Hidrografia', 4),
-        ('Globalização', 4),
-        ('População', 4),
-        ('Urbanização', 4),
-        ('Geopolítica', 4);
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Cartografia', 4, 'img/conteudos/cartografia.webp'),
+        ('Climas', 4, 'img/conteudos/climas.webp'),
+        ('Relevo', 4, 'img/conteudos/relevo.webp'),
+        ('Vegetação', 4, 'img/conteudos/vegetacao.webp'),
+        ('Hidrografia', 4, 'img/conteudos/hidrografia.webp'),
+        ('Globalização', 4, 'img/conteudos/globalizacao.webp'),
+        ('População', 4, 'img/conteudos/populacao.webp'),
+        ('Urbanização', 4, 'img/conteudos/urbanizacao.webp'),
+        ('Geopolítica', 4, 'img/conteudos/geopolitica.webp');
 
     -- CIÊNCIAS DA NATUREZA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Sistema Solar', 5),
-        ('Corpo Humano', 5),
-        ('Ecossistemas', 5),
-        ('Cadeia Alimentar', 5),
-        ('Estados da Matéria', 5),
-        ('Energia', 5),
-        ('Água', 5);
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Sistema Solar', 5, 'img/conteudos/sistemasolar.webp'),
+        ('Corpo Humano', 5, 'img/conteudos/corpohumano.webp'),
+        ('Ecossistemas', 5, 'img/conteudos/ecossistemas.webp'),
+        ('Cadeia Alimentar', 5, 'img/conteudos/cadeiaalimentar.webp'),
+        ('Estados da Matéria', 5, 'img/conteudos/estadosdamateria.webp'),
+        ('Energia', 5, 'img/conteudos/energia.webp'),
+        ('Água', 5, 'img/conteudos/agua.webp');
 
     -- FÍSICA
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Cinemática', 6, 'img/conteudos/cinematica.webp'),
+        ('Dinâmica', 6, 'img/conteudos/dinamica.webp'),
+        ('Leis de Newton', 6, 'img/conteudos/leisdenewton.webp'),
+        ('Trabalho e Energia', 6, 'img/conteudos/trabalhoeenergia.webp'),
+        ('Termologia', 6, 'img/conteudos/termologia.webp'),
+        ('Óptica', 6, 'img/conteudos/optica.webp'),
+        ('Ondulatória', 6, 'img/conteudos/ondulatoria.webp'),
+        ('Eletricidade', 6, 'img/conteudos/eletricidade.webp');
 
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Cinemática', 6),
-        ('Dinâmica', 6),
-        ('Leis de Newton', 6),
-        ('Trabalho e Energia', 6),
-        ('Termologia', 6),
-        ('Óptica', 6),
-        ('Ondulatória', 6),
-        ('Eletricidade', 6);
-
-    -- QUÍMICA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Tabela Periódica', 7),
-        ('Ligações Químicas', 7),
-        ('Reações Químicas', 7),
-        ('Estequiometria', 7),
-        ('Soluções', 7),
-        ('Ácidos e Bases', 7),
-        ('Química Orgânica', 7);
+    -- QUÍMICA (Sem imagens .webp na pasta)
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Tabela Periódica', 7, NULL),
+        ('Ligações Químicas', 7, NULL),
+        ('Reações Químicas', 7, NULL),
+        ('Estequiometria', 7, NULL),
+        ('Soluções', 7, NULL),
+        ('Ácidos e Bases', 7, NULL),
+        ('Química Orgânica', 7, NULL);
 
     -- BIOLOGIA
-
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Célula', 8),
-        ('Genética', 8),
-        ('Evolução', 8),
-        ('Ecologia', 8),
-        ('Sistema Digestório', 8),
-        ('Sistema Respiratório', 8),
-        ('Sistema Nervoso', 8);
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Célula', 8, 'img/conteudos/celula.webp'),
+        ('Genética', 8, 'img/conteudos/genetica.webp'),
+        ('Evolução', 8, 'img/conteudos/evolucao.webp'),
+        ('Ecologia', 8, 'img/conteudos/ecologia.webp'),
+        ('Sistema Digestório', 8, 'img/conteudos/sistemadigestorio.webp'),
+        ('Sistema Respiratório', 8, 'img/conteudos/sistemarespiratorio.webp'),
+        ('Sistema Nervoso', 8, 'img/conteudos/sistemanervoso.webp');
 
     -- INGLÊS
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Verbo To Be', 9, 'img/conteudos/verbotobe.webp'),
+        ('Simple Present', 9, NULL),
+        ('Simple Past', 9, NULL),
+        ('Present Continuous', 9, NULL),
+        ('Vocabulary', 9, 'img/conteudos/vocabulary.webp'),
+        ('Reading', 9, 'img/conteudos/reading.webp'),
+        ('Listening', 9, 'img/conteudos/listening.webp');
 
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Verbo To Be', 9),
-        ('Simple Present', 9),
-        ('Simple Past', 9),
-        ('Present Continuous', 9),
-        ('Vocabulary', 9),
-        ('Reading', 9),
-        ('Listening', 9);
-        
     -- ARTES
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('História da Arte', 10),
-        ('Arte Rupestre', 10),
-        ('Arte Clássica', 10),
-        ('Renascimento', 10),
-        ('Arte Moderna', 10),
-        ('Arte Contemporânea', 10),
-        ('Elementos das Artes Visuais', 10),
-        ('Cores e Formas', 10),
-        ('Teatro', 10),
-        ('Música', 10);
-        
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('História da Arte', 10, 'img/conteudos/historiadaarte.webp'),
+        ('Arte Rupestre', 10, 'img/conteudos/arterupestre.webp'),
+        ('Arte Clássica', 10, 'img/conteudos/arteclassica.webp'),
+        ('Renascimento', 10, 'img/conteudos/renascimento.webp'),
+        ('Arte Moderna', 10, 'img/conteudos/artemoderna.webp'),
+        ('Arte Contemporânea', 10, 'img/conteudos/artecontemporanea.webp'),
+        ('Elementos das Artes Visuais', 10, 'img/conteudos/elementosdasartesvisuais.webp'),
+        ('Cores e Formas', 10, 'img/conteudos/coreseformas.webp'),
+        ('Teatro', 10, 'img/conteudos/teatro.webp'),
+        ('Música', 10, 'img/conteudos/musica.webp');
+
     -- EDUCAÇÃO FÍSICA
-        
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Esportes Coletivos', 11),
-        ('Esportes Individuais', 11),
-        ('Alongamento', 11),
-        ('Aquecimento', 11),
-        ('Capacidades Físicas', 11),
-        ('Coordenação Motora', 11),
-        ('Saúde e Qualidade de Vida', 11),
-        ('Jogos e Brincadeiras', 11),
-        ('Regras dos Esportes', 11);
-        
-    -- FILOSOFIA
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Esportes Coletivos', 11, 'img/conteudos/esportescoletivos.webp'),
+        ('Esportes Individuais', 11, 'img/conteudos/esportesindividuais.webp'),
+        ('Alongamento', 11, 'img/conteudos/alongamento.webp'),
+        ('Aquecimento', 11, 'img/conteudos/aquecimento.webp'),
+        ('Capacidades Físicas', 11, 'img/conteudos/capacidadesfisicas.webp'),
+        ('Coordenação Motora', 11, 'img/conteudos/coordenacaomotora.webp'),
+        ('Saúde e Qualidade de Vida', 11, 'img/conteudos/saudeequalidadedevida.webp'),
+        ('Jogos e Brincadeiras', 11, 'img/conteudos/jogosebrincadeiras.webp'),
+        ('Regras dos Esportes', 11, 'img/conteudos/regrasdosesportes.webp');
 
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('Mito e Filosofia', 12),
-        ('Filosofia Antiga (Pré-socráticos, Platão e Aristóteles)', 12),
-        ('Filosofia Medieval (Patrística e Escolástica)', 12),
-        ('Filosofia Moderna (Racionalismo e Empirismo)', 12),
-        ('Filosofia Contemporânea', 12),
-        ('Ética e Moral', 12),
-        ('Teoria do Conhecimento (Epistemologia)', 12),
-        ('Filosofia Política', 12);
+    -- FILOSOFIA (Sem imagens .webp na pasta)
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('Mito e Filosofia', 12, NULL),
+        ('Filosofia Antiga (Pré-socráticos, Platão e Aristóteles)', 12, NULL),
+        ('Filosofia Medieval (Patrística e Escolástica)', 12, NULL),
+        ('Filosofia Moderna (Racionalismo e Empirismo)', 12, NULL),
+        ('Filosofia Contemporânea', 12, NULL),
+        ('Ética e Moral', 12, NULL),
+        ('Teoria do Conhecimento (Epistemologia)', 12, NULL),
+        ('Filosofia Política', 12, NULL);
 
-    -- SOCIOLOGIA
-    INSERT INTO conteudo (nome, id_materia) VALUES
-        ('O que é Sociologia (Surgimento e Contexto)', 13),
-        ('Émile Durkheim', 13),
-        ('Max Weber', 13),
-        ('Karl Marx', 13),
-        ('Cultura e Ideologia', 13),
-        ('Desigualdade Social e Estratificação', 13),
-        ('Instituições Sociais (Família, Escola, Estado)', 13),
-        ('Movimentos Sociais e Direitos Humanos', 13);
+    -- SOCIOLOGIA (Sem imagens .webp na pasta)
+    INSERT INTO conteudo (nome, id_materia, imagem_conteudo) VALUES
+        ('O que é Sociologia (Surgimento e Contexto)', 13, NULL),
+        ('Émile Durkheim', 13, NULL),
+        ('Max Weber', 13, NULL),
+        ('Karl Marx', 13, NULL),
+        ('Cultura e Ideologia', 13, NULL),
+        ('Desigualdade Social e Estratificação', 13, NULL),
+        ('Instituições Sociais (Família, Escola, Estado)', 13, NULL),
+        ('Movimentos Sociais e Direitos Humanos', 13, NULL);
 
 create table dificuldade (
     id int primary key auto_increment,

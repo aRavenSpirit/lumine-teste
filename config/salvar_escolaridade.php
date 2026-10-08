@@ -1,9 +1,17 @@
 <?php
-    require "conexao.php";
+    if (session_status() === PHP_SESSION_NONE) {
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path' => '/',
+            'httponly' => true,
+            'samesite' => 'Lax'
+        ]);
+        session_start();
+    }
 
     header("Content-Type: application/json; charset=UTF-8");
 
-    session_start();
+    require_once __DIR__ . "/conexao.php";
 
     if (!isset($_SESSION['usuario_id'])) {
         echo json_encode(["status" => false, "erro" => "Sessão não encontrada."]);
@@ -18,14 +26,15 @@
         exit;
     }
 
-    $id_usuario = $_SESSION['usuario_id'];
+    $id_usuario = intval($_SESSION['usuario_id']);
 
     $sql = "UPDATE usuario SET escolaridade_id = $escolaridade_id WHERE id = $id_usuario";
 
     if ($conn->query($sql)) {
+        $_SESSION['escolaridade_id'] = $escolaridade_id;
         echo json_encode(["status" => true]);
     } else {
-        echo json_encode(["status" => false, "erro" => "Erro ao salvar: " . $conn->error]);
+        echo json_encode(["status" => false, "erro" => "Erro ao salvar no banco."]);
     }
 
     $conn->close();

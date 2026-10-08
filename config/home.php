@@ -336,7 +336,8 @@ switch ($tipo) {
 
         $sql = "SELECT 
                     id, 
-                    nome 
+                    nome,
+                    imagem_conteudo
                 FROM conteudo 
                 WHERE id_materia = ?
                 ORDER BY nome ASC";

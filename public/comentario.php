@@ -3,6 +3,10 @@
     include_once("../config/session.php");
     include_once("../config/layout.php");
 
+   
+    $quiz_id = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0;
+
+
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
@@ -66,10 +70,19 @@
 <?php renderSidebar(); // Renderiza a sidebar ?>
 
 <!-- BOTÃO VERMELHO FLUTUANTE DE VOLTAR -->
-<button class="btn-sair-flutuante" onclick="window.location.href='home.php'" title="Voltar para Home">
-    <i class="fas fa-arrow-left"></i>
-    <span class="btn-sair-text">Voltar</span>
-</button>
+<div class="rotas-buttons">
+    <button class="btn-sair-flutuante" onclick="window.location.href='home.php'" title="Voltar para Home">
+        <i class="fas fa-arrow-left"></i>
+        <span class="btn-sair-text">Voltar</span>
+    </button>
+    
+    <!-- Chamando a função via JavaScript em vez do href estático -->
+    <button class="btn-revisar" onclick="voltarParaRevisao()">
+        <i class="fas fa-redo"></i>
+        <span>Revisar respostas</span>
+    </button>
+</div>
+
 
 <div class="main-container" id="mainContainer">
 
@@ -374,6 +387,25 @@
     window.onclick = (event) => {
         if (event.target == document.getElementById('meuModal')) fecharModal();
     };
+
+    function voltarParaRevisao() {
+        // 1. Tenta pegar o ID vindo da URL (se existir)
+        const urlParams = new URLSearchParams(window.location.search);
+        let quizId = urlParams.get('quiz_id') || urlParams.get('id');
+
+        // 2. Se não estiver na URL, pega o último quiz salvo no navegador
+        if (!quizId || quizId === '0') {
+            quizId = localStorage.getItem('ultimo_quiz_id');
+        }
+
+        // 3. Se encontrou um ID válido, redireciona ativando o modo de revisão
+        if (quizId && quizId !== '0') {
+            window.location.href = `quiz.php?id=${quizId}&revisao=true`;
+        } else {
+            alert('Não foi possível identificar o quiz para revisão. Voltando para a Home.');
+            window.location.href = 'home.php';
+        }
+    }
 </script>
 
 </body>

@@ -46,6 +46,7 @@
                 <button id="btn-proximo" onclick="proximaPerguntaOpcao()">Próximo</button>
                 <button id="btn-finalizar" onclick="finalizarQuiz()" style="display:none;">Finalizar e Ver Resultado</button>
                 <button id="btn-home-revisao" onclick="window.location.href='home.php'" style="display:none; background-color: #3498db; color: white;">Voltar para a Home</button>
+                <button id="btn-comentarios-revisao" onclick="window.location.href='comentario.php'" style="display:none; background-color: #34db5e; color: white;">Ver comentários</button>
             </footer>
         </main>
 
@@ -115,7 +116,7 @@
 
             <div class="modal-buttons">
                 <button id="btn-enviar-avaliacao" class="btn-primary" disabled>Enviar Avaliação</button>
-                <button onclick="window.location.href='home.php'" class="btn-secondary">Pular</button>
+                <button id="btn-pular-avaliacao" class="btn-secondary">Pular</button>
             </div>
         </div>
     </div>

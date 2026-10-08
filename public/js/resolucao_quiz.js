@@ -1,6 +1,9 @@
 const params = new URLSearchParams(window.location.search);
 const quizId = params.get('id');
 
+// VERIFICA SE A URL POSSUI &revisao=true
+let emModoRevisao = params.get('revisao') === 'true';
+
 let dadosQuiz = null;
 let indicePergunta = 0;
 let respostasUsuario = {}; 
@@ -8,7 +11,7 @@ let respostasUsuario = {};
 // Variáveis do Cronômetro
 let segundos = 0;
 let intervaloCronometro;
-let emModoRevisao = false;
+let notaSelecionada = 0;
 
 async function carregarQuiz() {
     if (!quizId) return alert("Quiz não encontrado!");
@@ -16,13 +19,32 @@ async function carregarQuiz() {
     try {
         const response = await fetch(`../config/quiz.php?tipo=detalhes_quiz&id=${quizId}`);
         dadosQuiz = await response.json();
-        
+
+        // Salva o ID do quiz atual no localStorage
+        if (dadosQuiz && dadosQuiz.id) {
+            localStorage.setItem('ultimo_quiz_id', dadosQuiz.id);
+        }
+
+        // Se estiver em modo de revisão, desativa o aviso de saída da página
+        if (emModoRevisao) {
+            desativarAvisoSaida();
+        }
+
         document.getElementById('quiz-titulo').innerText = dadosQuiz.nome;
         document.getElementById('quiz-materia').innerText = dadosQuiz.nome_materia;
         document.getElementById('quiz-conteudo').innerText = dadosQuiz.conteudo;
 
         renderizarPergunta();
-        iniciarCronometro(); // <--- Liga o relógio aqui
+
+        // Só inicia o relógio se NÃO estiver revisando
+        if (!emModoRevisao) {
+            iniciarCronometro();
+        } else {
+            // Oculta o cronômetro visualmente na revisão se desejar
+            const elCronometro = document.getElementById('cronometro');
+            if (elCronometro) elCronometro.style.display = 'none';
+        }
+
     } catch (error) {
         console.error("Erro ao carregar quiz:", error);
     }
@@ -105,7 +127,7 @@ function renderizarPergunta() {
             });
             break;
 
-        case 5: { // MUDANÇA: Ordenação Estilo Duolingo consumindo listas separadas do PHP
+        case 5: { // Ordenação Estilo Duolingo
             if (!Array.isArray(respostasUsuario[p.id])) {
                 respostasUsuario[p.id] = [];
             }
@@ -113,38 +135,34 @@ function renderizarPergunta() {
 
             html += `<p><small>Clique nas opções abaixo para organizá-las na ordem correta (clique no item de cima para remover):</small></p>`;
             
-            // Área de Destino (Usa o array original 'respostas' para manter os slots na quantidade certa)
+            // Área de Destino
             html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; min-height: 50px; padding: 12px; background: #ebf5fb; border-radius: 8px; border: 2px dashed #3498db; align-items: center;">`;
             p.respostas.forEach((_, idx) => {
                 const idResp = ordenados[idx];
                 if (idResp) {
                     const respObj = p.respostas.find(r => r.id == idResp);
-                    // CONDIÇÃO PARA EVITAR CLIQUE DE REMOÇÃO SE ESTIVER EM REVISÃO
                     const acaoRemover = emModoRevisao ? '' : `onclick="removerOpcaoOrdem(${p.id}, ${idx})"`;
                     html += `
                         <div ${acaoRemover} style="padding: 8px 16px; background: #3498db; color: white; border-radius: 20px; cursor: ${emModoRevisao ? 'default' : 'pointer'}; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); user-select: none;">
                             ${respObj ? respObj.descricao : ''}
                         </div>`;
                 } else {
-                    // Slots vazios esperando o preenchimento
                     html += `<div style="width: 60px; height: 35px; background: #d6eaf8; border-radius: 20px; opacity: 0.5;"></div>`;
                 }
             });
             html += `</div>`;
 
-            // Banco de Opções Disponíveis para clique (Usa 'respostas_embaralhadas' isoladamente)
+            // Banco de Opções Disponíveis
             html += `<div style="display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px;">`;
             p.respostas_embaralhadas.forEach(resp => {
                 const jaSelecionado = ordenados.includes(resp.id.toString());
                 if (!jaSelecionado) {
-                    // CONDIÇÃO PARA EVITAR CLIQUE DE SELEÇÃO SE ESTIVER EM REVISÃO
                     const acaoSelecionar = emModoRevisao ? '' : `onclick="selecionarOpcaoOrdem(${p.id}, '${resp.id}')"`;
                     html += `
                         <button type="button" ${disabledSeRevisao} ${acaoSelecionar} style="padding: 10px 20px; background: white; border: 2px solid #bdc3c7; border-radius: 20px; cursor: ${emModoRevisao ? 'not-allowed' : 'pointer'}; font-weight: bold; transition: 0.2s;">
                             ${resp.descricao}
                         </button>`;
                 } else {
-                    // Botão desativado/opaco enquanto estiver selecionado lá em cima
                     html += `
                         <button type="button" disabled style="padding: 10px 20px; background: #eaecee; border: 2px dashed #bdc3c7; border-radius: 20px; color: #bdc3c7; cursor: not-allowed; opacity: 0.6;">
                             ${resp.descricao}
@@ -155,11 +173,9 @@ function renderizarPergunta() {
             break;
         }
 
-        case 6: // MUDANÇA: Arrastar e Soltar com banco de itens móveis e alvos fixos separados
+        case 6: // Arrastar e Soltar
             html += `<p><small>Arraste os itens para os campos correspondentes:</small></p>`;
             
-            // 1. Itens que o aluno vai arrastar (Usa exclusivamente a lista 'respostas_embaralhadas')
-            // TRAVA ADICIONADA PARA ESCONDER O BANCO DE ITENS CASO JÁ ESTEJA NA REVISÃO
             if (!emModoRevisao) {
                 html += `<div id="itens-disponiveis" style="display:flex; flex-wrap:wrap; gap:10px; margin-bottom:20px; padding:15px; background:#f4f4f4; border:1px solid #ccc; min-height:50px;">`;
                 p.respostas_embaralhadas.forEach(resp => {
@@ -171,25 +187,20 @@ function renderizarPergunta() {
                 html += `</div>`;
             }
 
-            // 2. Caixas de destino (Usa o array sequencial estável 'respostas' para não embaralhar os alvos de lugar)
             html += `<div id="caixas-destino" style="display:grid; grid-template-columns: 1fr 1fr; gap:15px;">`;
             
             p.respostas.forEach((respOriginal, index) => {
-                const posicaoAlvo = index + 1; // Ordem da caixa
+                const posicaoAlvo = index + 1;
                 const idRespostaSolta = (respostasUsuario[p.id] && respostasUsuario[p.id][posicaoAlvo]);
                 
-                // Se o aluno soltou algo, mostra a descrição do item. 
-                // SE NÃO, mostra o "texto_alvo" (ex: Lê um número decimal)
                 let conteudoCaixa;
                 if (idRespostaSolta) {
                     const itemSolto = p.respostas.find(r => r.id == idRespostaSolta);
                     conteudoCaixa = `<strong>${itemSolto.descricao}</strong>`;
                 } else {
-                    // Aqui pegamos o texto que você digitou no Criar Quiz!
                     conteudoCaixa = respOriginal.texto_alvo || `Nenhum item adicionado`;
                 }
                 
-                // CONDIÇÃO PARA REMOVER EVENTOS DE ARRASTAR (DROP) SE ESTIVER EM REVISÃO
                 const eventosArrastar = emModoRevisao ? '' : `ondragover="event.preventDefault()" ondrop="drop(event, ${p.id}, ${posicaoAlvo})"`;
 
                 html += `
@@ -200,7 +211,6 @@ function renderizarPergunta() {
             });
             html += `</div>`;
 
-            // SÓ EXIBE O BOTÃO DE LIMPAR SE NÃO ESTIVER REVISANDO
             if (!emModoRevisao) {
                 html += `<button onclick="limparDrag(${p.id})" style="margin-top:15px; padding:5px 10px; cursor:pointer;">Limpar Tudo</button>`;
             }
@@ -209,16 +219,13 @@ function renderizarPergunta() {
 
     container.innerHTML = html;
 
-    // =========================================================================
-    // NOVA LOGICA DE CORREÇÃO TEXTUAL EM MODO REVISÃO (UNIFICADA COM O GABARITO)
-    // =========================================================================
+    // LÓGICA DE CORREÇÃO EM MODO REVISÃO
     if (emModoRevisao) {
         let acertouGeral = false;
         let respostaCertaTexto = "";
 
-        // Identifica e valida dependendo do tipo da pergunta
         switch (parseInt(p.id_tipo)) {
-            case 1: { // Múltipla escolha simples
+            case 1: {
                 const respCorretaObj = p.respostas.find(r => r.certo == 1 || r.correta == 1);
                 if (respCorretaObj) {
                     respostaCertaTexto = respCorretaObj.descricao;
@@ -226,7 +233,7 @@ function renderizarPergunta() {
                 }
                 break;
             }
-            case 2: { // Resposta curta textual
+            case 2: {
                 const respCorretaObj = p.respostas[0];
                 if (respCorretaObj) {
                     respostaCertaTexto = respCorretaObj.descricao || respCorretaObj.texto_alvo;
@@ -234,7 +241,7 @@ function renderizarPergunta() {
                 }
                 break;
             }
-            case 3: { // Verdadeiro ou Falso
+            case 3: {
                 const respCorretaObj = p.respostas.find(r => r.certo == 1 || r.correta == 1);
                 if (respCorretaObj) {
                     respostaCertaTexto = respCorretaObj.descricao; 
@@ -242,7 +249,7 @@ function renderizarPergunta() {
                 }
                 break;
             }
-            case 4: { // Várias corretas
+            case 4: {
                 const idsCorretos = p.respostas.filter(r => r.certo == 1 || r.correta == 1).map(r => r.id.toString());
                 const selecionadas = Array.isArray(respostasUsuario[p.id]) ? respostasUsuario[p.id] : [];
                 
@@ -250,7 +257,7 @@ function renderizarPergunta() {
                 acertouGeral = idsCorretos.length === selecionadas.length && idsCorretos.every(id => selecionadas.includes(id));
                 break;
             }
-            case 5: { // Ordenação Duolingo
+            case 5: {
                 const rUser = respostasUsuario[p.id] || [];
                 respostaCertaTexto = [...p.respostas].sort((a, b) => parseInt(a.ordem) - parseInt(b.ordem)).map(r => r.descricao).join(' → ');
                 
@@ -265,7 +272,7 @@ function renderizarPergunta() {
                 }
                 break;
             }
-            case 6: { // Arrastar e Soltar (Drag and Drop)
+            case 6: {
                 const rUser = respostasUsuario[p.id] || {};
                 let detalheGabarito = [];
                 acertouGeral = true;
@@ -282,7 +289,6 @@ function renderizarPergunta() {
             }
         }
 
-        // Cria o elemento de feedback para exibir abaixo da questão
         const feedbackDiv = document.createElement('div');
         feedbackDiv.style.marginTop = '20px';
         feedbackDiv.style.padding = '10px';
@@ -298,8 +304,6 @@ function renderizarPergunta() {
         }
         container.appendChild(feedbackDiv);
     }
-    // =========================================================================
-    // =========================================================================
 
     atualizarControles();
 }
@@ -326,7 +330,7 @@ function limparDrag(perguntaId) {
 // --- FUNÇÕES DE SALVAMENTO ---
 function salvarResposta(perguntaId, valor) {
     respostasUsuario[perguntaId] = valor;
-    atualizarControles(); // <--- MUDANÇA AQUI: Atualiza o estado do botão na hora
+    atualizarControles();
 }
 
 function salvarRespostaMultipla(perguntaId, valor, marcado) {
@@ -336,10 +340,9 @@ function salvarRespostaMultipla(perguntaId, valor, marcado) {
     } else {
         respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
     }
-    atualizarControles(); // <--- MUDANÇA AQUI: Atualiza o estado do botão na hora
+    atualizarControles();
 }
 
-// MUDANÇA: Novas funções de controle para o fluxo de cliques ordenados (Case 5)
 function selecionarOpcaoOrdem(perguntaId, respostaId) {
     if (!Array.isArray(respostasUsuario[perguntaId])) {
         respostasUsuario[perguntaId] = [];
@@ -381,28 +384,23 @@ function perguntaAnterior() {
 function validouTodasRespostas() {
     if (!dadosQuiz || !dadosQuiz.perguntas) return false;
 
-    // Percorre cada pergunta do quiz para checar se foi respondida
     return dadosQuiz.perguntas.every(p => {
         const resp = respostasUsuario[p.id];
         const tipo = parseInt(p.id_tipo);
 
         switch (tipo) {
-            case 1: // Múltipla Escolha
-            case 2: // Resposta Curta
-            case 3: // Verdadeiro ou Falso
-                // Verifica se não está vazio, nulo ou indefinido
+            case 1:
+            case 2:
+            case 3:
                 return resp !== undefined && resp !== null && resp.toString().trim() !== '';
 
-            case 4: // Múltipla Escolha (Várias Corretas)
-                // Verifica se é uma array e se tem pelo menos 1 item selecionado
+            case 4:
                 return Array.isArray(resp) && resp.length > 0;
 
-            case 5: // Ordenação estilo Duolingo
-                // O usuário precisa ter ordenado TODOS os elementos disponíveis
+            case 5:
                 return Array.isArray(resp) && resp.length === p.respostas.length;
 
-            case 6: // Arrastar e Soltar
-                // Verifica se a quantidade de itens alocados é igual à quantidade de alvos fixos
+            case 6:
                 if (!resp || typeof resp !== 'object') return false;
                 const totalAlocados = Object.keys(resp).length;
                 return totalAlocados === p.respostas.length;
@@ -418,51 +416,46 @@ function atualizarControles() {
     const btnProximo = document.getElementById('btn-proximo');
     const btnFinalizar = document.getElementById('btn-finalizar');
     const btnHomeRevisao = document.getElementById('btn-home-revisao');
+    const btnComentariosRevisao = document.getElementById('btn-comentarios-revisao');
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
 
     if (emModoRevisao) {
-        // ====================================================================
-        // CORREÇÃO: Oculta o botão vermelho de sair (Desktop e Mobile) na revisão
-        // ====================================================================
         const btnSairDesktop = document.querySelector(".btn-sair-flutuante");
         if (btnSairDesktop) {
             btnSairDesktop.style.display = 'none';
         }
 
-        // Procura o link de sair do menu mobile baseado no clique do evento do quiz
         const btnSairMobile = document.querySelector(".nav-links-mobile a[onclick*='toggleModalSaida']");
         if (btnSairMobile) {
-            // Esconde o item de lista (li) que envelopa o link
             const liPai = btnSairMobile.closest('li');
             if (liPai) liPai.style.display = 'none';
         }
 
-        // Garante que o rodapé e os botões aceitem cliques
         const controles = document.getElementById('quiz-controls');
         if (controles) {
             controles.style.pointerEvents = 'auto';
             controles.style.opacity = '1';
         }
 
-        // Controle de navegação comum na revisão
         btnVoltar.style.display = indicePergunta > 0 ? 'inline' : 'none';
         btnVoltar.removeAttribute('disabled');
         
         btnProximo.style.display = final ? 'none' : 'inline';
         btnProximo.removeAttribute('disabled');
         
-        // Nunca mostra o botão de finalizar na revisão
         btnFinalizar.style.display = 'none';
 
-        // Exibe o botão de voltar para a Home APENAS na última pergunta da revisão
         if (btnHomeRevisao) {
             btnHomeRevisao.style.display = final ? 'inline' : 'none';
         }
         
-        return; // Corta a execução aqui para ignorar as regras de validação normais
+        if (btnComentariosRevisao) {
+            btnComentariosRevisao.style.display = final ? 'inline' : 'none';
+        }
+
+        return;
     }
 
-    // --- FLUXO NORMAL DO JOGO (Fora da revisão) ---
     if (btnHomeRevisao) btnHomeRevisao.style.display = 'none';
 
     btnVoltar.style.display = indicePergunta > 0 ? 'inline' : 'none';
@@ -487,25 +480,29 @@ function atualizarControles() {
     }
 }
 
-// --- FINALIZAÇÃO ---
-
-
-// Função para remover o bloqueio de saída da página
 function desativarAvisoSaida() {
     window.onbeforeunload = null;
-    // Remove o listener antigo caso tenha sido adicionado via addEventListener
-    const clonado = window.cloneNode ? window.cloneNode(true) : null; 
-    // Uma forma infalível de anular no fluxo atual:
     window.addEventListener('beforeunload', function (e) {
         delete e['returnValue'];
     });
 }
 
-// --- FINALIZAÇÃO ---
+function reativarQuiz() {
+    const container = document.getElementById('quiz-container');
+    if (container) {
+        container.style.pointerEvents = 'auto';
+        container.style.opacity = '1';
+    }
+    document.getElementById('quiz-controls').style.pointerEvents = 'auto';
+    document.getElementById('quiz-controls').style.opacity = '1';
+}
+
+// =========================================================================
+// FINALIZAÇÃO E NOVO FLUXO: QUIZ -> AVALIAÇÃO -> RESULTADOS
+// =========================================================================
 async function finalizarQuiz() {
     clearInterval(intervaloCronometro);
     
-    // Bloqueia interações na tela durante o envio
     const container = document.getElementById('quiz-container');
     if (container) {
         container.style.pointerEvents = 'none'; 
@@ -522,26 +519,12 @@ async function finalizarQuiz() {
         const tipo = parseInt(p.id_tipo);
 
         if (tipo === 1) {
-            const correta = p.respostas.find(
-                r => r.certo == 1 || r.correta == 1
-            );
-
-            if (correta && respostaUser == correta.id) {
-                acertos++;
-            }
+            const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
+            if (correta && respostaUser == correta.id) acertos++;
         }
         else if (tipo === 3) {
-            const correta = p.respostas.find(
-                r => r.certo == 1 || r.correta == 1
-            );
-
-            if (
-                correta &&
-                String(respostaUser).trim().toLowerCase() ===
-                String(correta.descricao).trim().toLowerCase()
-            ) {
-                acertos++;
-            }
+            const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
+            if (correta && String(respostaUser).trim().toLowerCase() === String(correta.descricao).trim().toLowerCase()) acertos++;
         }
         else if (tipo === 2) {
             const correta = p.respostas[0];
@@ -556,7 +539,6 @@ async function finalizarQuiz() {
         else if (tipo === 5) {
             const rUser = respostasUsuario[p.id] || [];
             let acertou = true;
-
             if (rUser.length !== p.respostas.length) {
                 acertou = false;
             } else {
@@ -566,7 +548,6 @@ async function finalizarQuiz() {
                     return posicaoUsuario === ordemCorreta;
                 });
             }
-
             if (acertou && p.respostas.length > 0) acertos++;
         }
         else if (tipo === 6) {
@@ -590,51 +571,27 @@ async function finalizarQuiz() {
         const resultado = await response.json();
         
         if (resultado.sucesso) {
-            desativarAvisoSaida(); // Libera o pop-up de saída do navegador
-
+            desativarAvisoSaida();
             reativarQuiz();
 
-            // Formata o tempo decorrido para exibir na modal
+            // Formata e carrega dados na modal de resultados
             const min = Math.floor(segundos / 60).toString().padStart(2, '0');
             const seg = (segundos % 60).toString().padStart(2, '0');
-
-            // CÁLCULO DE ERROS: Quantidade total menos o que o usuário acertou
             const erros = totalQuestoes - acertos;
 
-            // Alimenta os dados nos elementos do HTML
             document.getElementById('modal-acertos').innerText = `${acertos} / ${totalQuestoes}`;
             document.getElementById('modal-erros').innerText = `${erros} / ${totalQuestoes}`;
             document.getElementById('modal-tempo').innerText = `${min}:${seg}`;
 
-            // Configura a ação do botão único da modal para redirecionar para a Home
+            // Configura o botão "Avançar" da modal de resultados para ir diretamente para a Home
             document.getElementById('btn-modal-home').onclick = function() {
                 window.removeEventListener('beforeunload', gerenciarAvisoSaida);
                 window.onbeforeunload = null;
                 window.location.href = 'home.php'; 
             };
 
-            // Exibe a modal na tela (muda de display: none para flex)
-            document.getElementById('modal-resultado').style.display = 'flex';
-
-
-            //Modal de avaliações
-
-            // Alimenta os dados nos elementos do HTML
-            document.getElementById('modal-acertos').innerText = `${acertos} / ${totalQuestoes}`;
-
-            // Modificado para abrir a modal de avaliação em vez de ir direto para a home
-            document.getElementById('btn-modal-home').onclick = function() {
-                window.removeEventListener('beforeunload', gerenciarAvisoSaida);
-                window.onbeforeunload = null;
-                
-                document.getElementById('modal-resultado').style.display = 'none';
-                document.getElementById('modal-avaliacao').style.display = 'flex';
-                
-                inicializarSistemaEstrelas();
-            };
-
-            // Exibe a modal na tela (muda de display: none para flex)
-            document.getElementById('modal-resultado').style.display = 'flex';
+            // DISPARA O FLUXO: Avaliação primeiro -> Depois Resultado
+            iniciarFluxoPosQuiz();
 
         } else {
             alert("Erro ao salvar: " + resultado.erro);
@@ -648,90 +605,49 @@ async function finalizarQuiz() {
     emModoRevisao = true;
 }
 
-function reativarQuiz() {
-    const container = document.getElementById('quiz-container');
-    if (container) {
-        container.style.pointerEvents = 'auto';
-        container.style.opacity = '1';
-    }
-    document.getElementById('quiz-controls').style.pointerEvents = 'auto';
-    document.getElementById('quiz-controls').style.opacity = '1';
-}
-
-carregarQuiz();
-
-// Monitora quando o usuário tenta fechar a aba por acidente (durante o quiz)
-function gerenciarAvisoSaida(e) {
-    // SE ESTIVER EM REVISÃO, LIBERA TOTALMENTE A SAÍDA E NÃO MOSTRA NADA
-    if (emModoRevisao) {
-        return; 
-    }
-    
-    e.preventDefault();
-    e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
-    return e.returnValue;
-}
-window.addEventListener('beforeunload', gerenciarAvisoSaida);
-
-// Abre a modal mudando o display para FLEX
-function toggleModalSaida(event) {
-    if (event) {
-        event.preventDefault();
-        event.stopPropagation(); // Impede interferências com elementos do fundo
-    }
-    const modal = document.getElementById('modal-confirmar-saida');
-    if (modal) {
-        modal.style.display = 'flex'; 
-    } else {
-        console.error("Erro: A modal 'modal-confirmar-saida' não foi encontrada no HTML.");
-    }
-}
-
-// Fecha a modal voltando o display para NONE
-function fecharModalSaida() {
-    const modal = document.getElementById('modal-confirmar-saida');
-    if (modal) {
-        modal.style.display = 'none';
-    }
-}
-
-// Executa a saída real ao confirmar
-function confirmarSaida() {
-    // 1. CORREÇÃO: Remove o escutador usando o nome correto da sua função para destravar a aba
-    window.removeEventListener('beforeunload', gerenciarAvisoSaida);
-    
-    // 2. CORREÇÃO: Redireciona de forma direta. 
-    // Se home.php está na mesma pasta que quiz.php, use apenas 'home.php'
-    window.location.href = 'home.php';
-}
-
-
-let notaSelecionada = 0;
-
-function inicializarSistemaEstrelas() {
-    const containerAvaliacao = document.getElementById('container-avaliacao');
-
-    // Envia o quizId atual no fetch para checar a avaliação DESTE quiz
+function iniciarFluxoPosQuiz() {
+    // Checa se o usuário já avaliou este quiz específico
     fetch(`../config/quiz.php?tipo=checar_avaliacao&quiz_id=${quizId}`)
         .then(res => res.json())
         .then(data => {
             if (data.avaliou) {
-                // Se o usuário já avaliou ESTE quiz especificamente, redireciona para a home
-                window.location.href = 'home.php';
-                return; 
+                // Se já avaliou, exibe direto os resultados
+                exibirModalResultados();
             } else {
-                // Caso contrário, abre a modal de estrelas normalmente
+                // Se ainda não avaliou, abre a modal de avaliação primeiro
+                document.getElementById('modal-avaliacao').style.display = 'flex';
                 configurarEventosDasEstrelas();
             }
         })
-        .catch(err => console.error("Erro ao verificar avaliação", err));
+        .catch(err => {
+            console.error("Erro ao checar avaliação:", err);
+            exibirModalResultados();
+        });
+}
+
+function exibirModalResultados() {
+    document.getElementById('modal-avaliacao').style.display = 'none';
+    document.getElementById('modal-resultado').style.display = 'flex';
+}
+
+function inicializarSistemaEstrelas() {
+    iniciarFluxoPosQuiz();
 }
 
 function configurarEventosDasEstrelas() {
     const estrelas = document.querySelectorAll('.rating-stars i');
     const btnEnviarAvaliacao = document.getElementById('btn-enviar-avaliacao');
+    const btnPularAvaliacao = document.getElementById('btn-pular-avaliacao');
     const avaliacaoValor = document.getElementById('avaliacao-valor');
-    let notaSelecionada = 0;
+    
+    notaSelecionada = 0;
+
+    if (btnPularAvaliacao) {
+        btnPularAvaliacao.onclick = function(e) {
+            if (e) e.preventDefault();
+            exibirModalResultados();
+        };
+    }
 
     estrelas.forEach(estrela => {
         estrela.addEventListener('mouseover', function() {
@@ -752,23 +668,20 @@ function configurarEventosDasEstrelas() {
 
     if (btnEnviarAvaliacao) {
         btnEnviarAvaliacao.onclick = function() {
-            // RESTAURADO: Exigimos que a variável quizId exista.
             if (notaSelecionada === 0 || !quizId) return alert("Selecione uma nota antes de enviar.");
 
             fetch('../config/quiz.php?tipo=salvar_feedback', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                // RESTAURADO: Enviamos o quiz_id novamente!
                 body: JSON.stringify({ quiz_id: quizId, nota: notaSelecionada })
             })
             .then(res => res.json())
             .then(data => {
-                if (data.sucesso) window.location.href = 'home.php';
-                else alert("Falha: " + data.erro);
+                exibirModalResultados();
             })
             .catch(err => {
-                console.error("Erro:", err);
-                window.location.href = 'home.php';
+                console.error("Erro ao enviar avaliação:", err);
+                exibirModalResultados();
             });
         };
     }
@@ -785,3 +698,42 @@ function atualizarVisualEstrelas(listaEstrelas, valorLimite) {
         }
     });
 }
+
+// Monitora aviso de saída acidental
+function gerenciarAvisoSaida(e) {
+    if (emModoRevisao) return; 
+    
+    e.preventDefault();
+    e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
+    return e.returnValue;
+}
+window.addEventListener('beforeunload', gerenciarAvisoSaida);
+
+// Funções da modal de confirmação de saída
+function toggleModalSaida(event) {
+    if (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    }
+    const modal = document.getElementById('modal-confirmar-saida');
+    if (modal) {
+        modal.style.display = 'flex'; 
+    } else {
+        console.error("Erro: A modal 'modal-confirmar-saida' não foi encontrada no HTML.");
+    }
+}
+
+function fecharModalSaida() {
+    const modal = document.getElementById('modal-confirmar-saida');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+function confirmarSaida() {
+    window.removeEventListener('beforeunload', gerenciarAvisoSaida);
+    window.location.href = 'home.php';
+}
+
+// Inicializa a aplicação
+carregarQuiz();

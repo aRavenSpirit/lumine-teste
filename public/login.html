@@ -232,6 +232,7 @@
             .then(d => {
                 if (d.status) {
                     if (d.precisa_escolaridade) {
+                        exibirErro("");
                         mostrarModalEscolaridade();
                     } else {
                         window.location = "home.php";

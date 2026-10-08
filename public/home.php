@@ -2,6 +2,7 @@
     include_once("../config/session.php");
     include_once("../config/layout.php");
     include_once("../config/conexao.php");
+
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
@@ -58,6 +59,9 @@
 
         }
     }
+
+
+
 ?>
 
 <!DOCTYPE html>
