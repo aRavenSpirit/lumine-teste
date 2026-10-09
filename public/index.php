@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="./style/index.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="style/dark-mode.css">
     <script src="js/tamanho_fonte.js"></script>
 </head>
 <body>
@@ -177,10 +176,6 @@
     </footer>
 
     <script>
-
-        if (localStorage.getItem("theme") === "dark") {
-            document.body.classList.add("dark-mode");
-        }
         
         function toggleMenu() {
             const menu = document.getElementById("mobileMenu");

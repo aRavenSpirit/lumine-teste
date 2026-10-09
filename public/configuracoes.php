@@ -15,72 +15,6 @@
     <link rel="stylesheet" href="./style/configuracoes.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
-    <style>
-        body {
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
-        /* Container do botão único de tema */
-        .botoes-tema-container {
-            display: flex;
-            align-items: center;
-        }
-
-        /* Botão circular único */
-        .btn-tema-toggle {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid #5b63f6;
-            background-color: var(--card-bg, #f0f0f0);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
-            transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
-            outline: none;
-            box-shadow: 0 0 10px rgba(91, 99, 246, 0.4);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Ícone de Sol e Lua com Zoom */
-        .btn-tema-toggle i {
-            font-size: 1.5rem;
-            pointer-events: none;
-            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
-        }
-
-        /* Cores específicas dos ícones */
-        .btn-tema-toggle i.fa-sun {
-            color: #f39c12;
-        }
-
-        .btn-tema-toggle i.fa-moon {
-            color: #f1c40f;
-        }
-
-        /* Efeitos de interações */
-        .btn-tema-toggle:hover {
-            transform: scale(1.08);
-            box-shadow: 0 0 14px rgba(91, 99, 246, 0.6);
-        }
-
-        .btn-tema-toggle:hover i {
-            transform: scale(1.2) rotate(15deg);
-        }
-
-        .btn-tema-toggle:active {
-            transform: scale(0.90);
-        }
-
-        /* Animação disparada via JS durante a troca */
-        .btn-tema-toggle.animando i {
-            transform: rotate(360deg) scale(0);
-            opacity: 0;
-        }
-    </style>
 </head>
 
 <body>
@@ -135,11 +69,10 @@
 <!-- Script de controle global do tamanho de fonte -->
 <script src="js/tamanho_fonte.js"></script>
 
-<script>
+<!-- Script do Modo Escuro -->
+<script src="js/dark-mode.js"></script>
 
-    if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark-mode");
-    }
+<script>
 
     const api = "../config/home.php";
     let dadosUsuarioLocal = {};
@@ -431,30 +364,6 @@
         }
     }
 
-    function alternarTemaUnico() {
-        const inputTema = document.getElementById('pref-tema');
-        const btn = document.getElementById('btn-tema-unico');
-        const icone = document.getElementById('icone-tema-unico');
-        
-        if (!inputTema || !btn || !icone) return;
-
-        const novoValor = inputTema.value === "1" ? "0" : "1";
-        inputTema.value = novoValor;
-
-        btn.classList.add('animando');
-
-        setTimeout(() => {
-            if (novoValor === "1") {
-                icone.className = "fas fa-moon";
-            } else {
-                icone.className = "fas fa-sun";
-            }
-            btn.classList.remove('animando');
-        }, 200);
-
-        mudarTemaAoVivo(novoValor);
-    }
-
     function selecionarMateriaCor(materia) {
         materiaSelecionadaAtual = materia;
         const pickerOc = document.getElementById(`picker-${materia}`);
@@ -533,13 +442,7 @@
             aplicarTamanhoFonteGlobal(fonte);
         }
 
-        if (String(tema) === "1") {
-            localStorage.setItem("theme", "dark");
-            document.body.classList.add("dark-mode");
-        } else {
-            localStorage.setItem("theme", "light");
-            document.body.classList.remove("dark-mode");
-        }
+        mudarTemaAoVivo(tema);
 
         const objetoCores = {
             bg_claro: '#FFFFFF',
@@ -567,16 +470,6 @@
         } catch (e) {
             console.error("Erro ao salvar", e);
             alert("Não foi possível conectar ao servidor.");
-        }
-    }
-
-    function mudarTemaAoVivo(valor) {
-        if (String(valor) === "1") {
-            document.body.classList.add("dark-mode");
-            localStorage.setItem("theme", "dark");
-        } else {
-            document.body.classList.remove("dark-mode");
-            localStorage.setItem("theme", "light");
         }
     }
 

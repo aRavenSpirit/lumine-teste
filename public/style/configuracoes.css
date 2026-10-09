@@ -5,6 +5,67 @@
     box-sizing: border-box;
 }
 
+body {
+    transition: background-color 0.4s ease, color 0.4s ease;
+}
+
+/* Container do botão único de tema */
+.botoes-tema-container {
+    display: flex;
+    align-items: center;
+}
+
+.btn-tema-toggle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid #5b63f6;
+    background-color: var(--card-bg, #f0f0f0);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s ease;
+    outline: none;
+    box-shadow: 0 0 10px rgba(91, 99, 246, 0.4);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Ícone de Sol e Lua com Zoom */
+.btn-tema-toggle i {
+    font-size: 1.5rem;
+    pointer-events: none;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+}
+
+.btn-tema-toggle i.fa-sun {
+    color: #f39c12;
+}
+
+.btn-tema-toggle i.fa-moon {
+    color: #f1c40f;
+}
+
+.btn-tema-toggle:hover {
+    transform: scale(1.08);
+    box-shadow: 0 0 14px rgba(91, 99, 246, 0.6);
+}
+
+.btn-tema-toggle:hover i {
+    transform: scale(1.2) rotate(15deg);
+}
+
+.btn-tema-toggle:active {
+    transform: scale(0.90);
+}
+
+.btn-tema-toggle.animando i {
+    transform: rotate(360deg) scale(0);
+    opacity: 0;
+}
+
 /* Oculta o olho nativo do Microsoft Edge/IE */
 input[type="password"]::-ms-reveal,
 input[type="password"]::-ms-clear {
