@@ -11,6 +11,7 @@
             padding: 10px 80px;
             margin: 0 auto 10px auto;
         }
+        
         .search-container-main {
             margin-top: 20px;
             display: flex;
@@ -46,7 +47,7 @@
 
         /* Estilização da Dificuldade e Numeração */
         .card-materia {
-            position: relative; /* Necessário para posicionar o número */
+            position: relative; 
         }
 
         .quiz-numero {

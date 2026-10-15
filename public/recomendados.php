@@ -12,6 +12,7 @@
     <title>Recomendados - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
     <link rel="stylesheet" href="./style/novidades.css"> 
+    <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <script src="./js/update_foto.js"></script>
