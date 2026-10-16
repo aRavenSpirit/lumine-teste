@@ -68,6 +68,15 @@
     let chart1 = null;
     let chart2 = null;
 
+    // Atualiza a página quando a proporção/tamanho da tela for alterado
+    let timerRedimensionamento;
+    window.addEventListener('resize', () => {
+        clearTimeout(timerRedimensionamento);
+        timerRedimensionamento = setTimeout(() => {
+            window.location.reload();
+        }, 300);
+    });
+
     async function carregarDados() {
         try {
             const res = await fetch('../config/admin_data.php?t=' + Date.now());
@@ -119,7 +128,12 @@
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'left', labels: { font: { family: 'Fredoka', weight: 'bold' } } } }
+                    plugins: { 
+                        legend: { 
+                            position: window.innerWidth < 600 ? 'bottom' : 'left', 
+                            labels: { font: { family: 'Fredoka', weight: 'bold' } } 
+                        } 
+                    }
                 }
             });
         } catch (error) { 

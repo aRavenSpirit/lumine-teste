@@ -7,7 +7,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Resolvendo Quiz - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
     <link rel="stylesheet" href="style/quiz.css">
@@ -27,7 +27,7 @@
 
         <main class="quiz-main-section">
             <header id="quiz-header">
-                <div>
+                <div class="quiz-info-left">
                     <h1 id="quiz-titulo">Quiz Interativo</h1>
                     <p>Matéria: <span id="quiz-materia">Matemática</span> | Conteúdo: <span id="quiz-conteudo">Operações e Geometria</span></p>
                 </div>
@@ -38,7 +38,7 @@
 
             <div id="quiz-container">
                 <div id="pergunta-atual">
-                    </div>          
+                </div>          
             </div>
 
             <footer id="quiz-controls">
@@ -132,8 +132,24 @@
         window.addEventListener('load', () => {
             carregarMenuSidebarQuiz();
             carregarUsuario();     // <--- Adicionado para carregar a foto no header
-            
+            ajustarLayoutTela();
         });
+
+        // SISTEMA DE REATIVIDADE AO REDIMENSIONAR A TELA
+        let resizeTimer;
+        window.addEventListener('resize', () => {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(() => {
+                ajustarLayoutTela();
+            }, 100);
+        });
+
+        function ajustarLayoutTela() {
+            // Garante re-renderização suave da pergunta se a função do motor existir
+            if (typeof renderizarPergunta === "function") {
+                renderizarPergunta();
+            }
+        }
 
         // FUNÇÕES INTERMÉDIAS PARA DISPARAR AS ANIMAÇÕES LATERAIS ANTES DE MUDAR A QUESTÃO
         function proximaPerguntaOpcao() {

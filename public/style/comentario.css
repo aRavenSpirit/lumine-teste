@@ -18,51 +18,6 @@
     font-weight: 700;
 }
 
-/* --- BOTÃO FLUTUANTE VERMELHO DE VOLTAR (ESTILO SIDEBAR / QUIZ) --- */
-.btn-sair-flutuante {
-    position: fixed;
-    top: 95px;          /* Fica posicionado logo abaixo da navbar superior de 80px */
-    left: 95px;         /* Fica do lado de fora da sidebar fechada de 80px */
-    width: 46px;
-    height: 46px;
-    background-color: #e74c3c;
-    color: #ffffff;
-    border: none;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-    z-index: 3000;
-    padding: 0;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.btn-sair-flutuante i {
-    font-size: 1.1rem;
-    color: #ffffff;
-}
-
-.btn-sair-flutuante .btn-sair-text {
-    display: none;
-    opacity: 0;
-    white-space: nowrap;
-    font-family: 'Open_Sans', sans-serif;
-    font-size: 0.95rem;
-    font-weight: 600;
-}
-
-.btn-sair-flutuante:hover {
-    background-color: #c0392b;
-    transform: scale(1.08);
-    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
-}
-
-.btn-sair-flutuante:active {
-    transform: scale(0.95);
-}
-
 /* --- ÁREA DE EXIBIÇÃO DOS COMENTÁRIOS (CARD-RESPOSTAS) --- */
 .card-respostas {
     background-color: #f8fbff; /* Fundo suave das seções do index */
@@ -226,90 +181,136 @@
     border-radius: 10px;
 }
 
-/* --- CONTAINER DOS BOTÕES DE ROTA --- */
+/* --- CONTAINER DOS BOTÕES DE ROTA (APROXIMADO DO CABEÇALHO) --- */
 .rotas-buttons {
-    position: fixed;
-    top: 95px;
-    left: 95px; /* Posição inicial (sidebar fechada ~80px) */
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
-    z-index: 3000;
-    transition: left 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Animação idêntica à sidebar */
+    gap: 12px;
+    max-width: 800px;
+    margin: -30px auto 15px auto; /* Margin-top negativa (-30px) faz os botões subirem bem para perto do teto/cabeçalho */
+    padding: 0 10px;
+    z-index: 10;
+    box-sizing: border-box;
 }
 
-/* Quando a sidebar está aberta (ajuste a classe se o seu JS usar .active ou .open no body/sidebar) */
-body.sidebar-open .rotas-buttons,
-.sidebar.active ~ .rotas-buttons,
-.sidebar.open ~ .rotas-buttons {
-    left: 270px; /* Empurra os botões para fora da sidebar aberta */
-}
-
-/* --- BOTÃO CIRCULAR VERMELHO --- */
+/* --- BOTÃO CIRCULAR VERMELHO (BOLINHA QUE EXPANDE NO HOVER) --- */
 .rotas-buttons .btn-sair-flutuante {
-    position: static;
+    position: relative;
+    top: auto;
+    left: auto;
     width: 46px;
     height: 46px;
     background-color: #e74c3c;
     color: #ffffff;
     border: none;
-    border-radius: 50%;
-    display: flex;
-    justify-content: center;
+    border-radius: 50px;
+    display: inline-flex;
+    justify-content: flex-start;
     align-items: center;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-    padding: 0;
-    transition: all 0.3s ease;
+    padding: 0 15px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
     flex-shrink: 0;
 }
 
-.rotas-buttons .btn-sair-flutuante:hover {
-    background-color: #c0392b;
-    transform: scale(1.05);
+.rotas-buttons .btn-sair-flutuante i {
+    font-size: 1.1rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
 }
 
 .rotas-buttons .btn-sair-flutuante .btn-sair-text {
-    display: none;
+    display: inline-block;
+    opacity: 0;
+    visibility: hidden;
+    white-space: nowrap;
+    font-family: 'Open_Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-left: 10px;
+    color: #ffffff;
+    transition: opacity 0.25s ease 0.05s, visibility 0.25s ease 0.05s;
 }
 
-/* --- BOTÃO AZUL DE REVISAR --- */
+.rotas-buttons .btn-sair-flutuante:hover,
+.rotas-buttons .btn-sair-flutuante:active,
+.rotas-buttons .btn-sair-flutuante:focus {
+    width: 110px;
+    background-color: #c0392b;
+    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
+}
+
+.rotas-buttons .btn-sair-flutuante:hover .btn-sair-text,
+.rotas-buttons .btn-sair-flutuante:active .btn-sair-text,
+.rotas-buttons .btn-sair-flutuante:focus .btn-sair-text {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* --- BOTÃO AZUL DE REVISAR (SEMPRE ABERTO E COM ANIMAÇÃO HOVER) --- */
 .rotas-buttons .btn-revisar {
+    position: relative;
+    width: 210px; /* Já fica aberto por padrão */
     height: 46px;
     background-color: #3498db;
     color: #ffffff;
     border: none;
-    border-radius: 25px;
+    border-radius: 50px;
     padding: 0 18px;
     font-size: 0.9rem;
     font-weight: 600;
     cursor: pointer;
     display: inline-flex;
+    justify-content: flex-start;
     align-items: center;
-    gap: 8px;
     box-shadow: 0 4px 10px rgba(52, 152, 219, 0.3);
-    transition: all 0.3s ease;
+    overflow: hidden;
     white-space: nowrap;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    flex-shrink: 0;
 }
 
-.rotas-buttons .btn-revisar:hover {
+.rotas-buttons .btn-revisar i {
+    font-size: 1.1rem;
+    color: #ffffff;
+    flex-shrink: 0;
+    width: 16px;
+    text-align: center;
+}
+
+.rotas-buttons .btn-revisar .btn-revisar-text {
+    display: inline-block;
+    opacity: 1; /* Texto visível por padrão */
+    visibility: visible;
+    white-space: nowrap;
+    font-family: 'Open_Sans', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-left: 10px;
+    color: #ffffff;
+}
+
+.rotas-buttons .btn-revisar:hover,
+.rotas-buttons .btn-revisar:active,
+.rotas-buttons .btn-revisar:focus {
     background-color: #2980b9;
-    transform: translateY(-2px);
+    transform: translateY(-2px); /* Efeito suave de levitação */
+    box-shadow: 0 6px 15px rgba(41, 128, 185, 0.4);
 }
 
-/* --- RESPONSIVIDADE PARA TELAS MENORES --- */
+/* --- RESPONSIVIDADE MELHORADA --- */
 @media screen and (max-width: 900px) {
     .rotas-buttons {
-        top: 90px;
-        left: 20px;
-    }
-}
-
-/* --- RESPONSIVIDADE ADAPTATIVA --- */
-@media screen and (max-width: 900px) {
-    .btn-sair-flutuante {
-        top: 90px;
-        left: 20px;
+        top: auto;
+        left: auto;
+        margin: -20px auto 15px auto;
+        padding: 0 15px;
     }
 }
 
@@ -341,6 +342,11 @@ body.sidebar-open .rotas-buttons,
 }
 
 @media screen and (max-width: 480px) {
+    .rotas-buttons {
+        gap: 8px;
+        margin-top: -15px;
+    }
+
     .comentario-texto {
         padding-left: 0;
         margin-top: 8px;

@@ -44,7 +44,7 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 30px 20px;
+    padding: 20px 12px;
     width: 100%;
 }
 
@@ -59,7 +59,7 @@ body {
     justify-content: space-between;
     gap: 15px;
     background: #ffffff;
-    padding: 20px 25px;
+    padding: 15px 20px;
     border-radius: 22px;
     border: 3px solid var(--card-border);
     box-shadow: 0 8px 20px rgba(162, 219, 255, 0.15);
@@ -72,7 +72,7 @@ body {
 }
 
 #quiz-titulo {
-    font-size: 1.625rem;
+    font-size: clamp(1.25rem, 4vw, 1.625rem);
     font-weight: 800;
     color: var(--color-dark-blue);
     margin: 0;
@@ -83,6 +83,7 @@ body {
     font-size: 0.875rem;
     color: #7f8c8d;
     font-weight: 600;
+    word-break: break-word;
 }
 
 /* Badges para Matéria e Conteúdo */
@@ -93,6 +94,7 @@ body {
     border-radius: 8px;
     font-weight: 700;
     display: inline-block;
+    margin: 2px 0;
 }
 
 #quiz-conteudo {
@@ -106,13 +108,14 @@ body {
     color: #e67e22;
     font-size: 1rem;
     background: #fff5eb;
-    padding: 10px 18px;
+    padding: 8px 16px;
     border-radius: 14px;
     border: 2px solid #fde3cf;
     display: flex;
     align-items: center;
     gap: 8px;
     box-shadow: 0 4px 0 #fde3cf;
+    white-space: nowrap;
 }
 
 #cronometro::before {
@@ -134,8 +137,8 @@ body {
     border-radius: 35px;
     width: 100%;
     max-width: 850px;
-    min-height: 520px;
-    padding: 35px;
+    min-height: auto;
+    padding: 25px 20px;
     box-shadow: 0 10px 25px rgba(162, 219, 255, 0.25);
     margin-bottom: 25px;
     display: flex;
@@ -151,16 +154,17 @@ body {
     background-color: var(--header-blue);
     color: #000000;
     font-weight: bold;
-    font-size: 1.375rem;
+    font-size: clamp(1rem, 3.5vw, 1.375rem);
     text-transform: uppercase;
     text-align: center;
-    padding: 18px 25px;
+    padding: 15px 18px;
     border-radius: 20px;
     width: 100%;
     margin-top: 0;
     margin-bottom: 25px;
     border: 3px solid #000000;
     box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+    word-break: break-word;
 }
 
 /* Alinhamento de textos menores/informativos injetados dentro do card */
@@ -168,6 +172,7 @@ body {
     font-size: 1rem;
     font-weight: bold;
     color: var(--color-dark-blue);
+    word-break: break-word;
 }
 
 /* Evita quebras de linha (<br>) feias bagunçarem o grid de labels */
@@ -188,14 +193,15 @@ body {
     background: #ffffff;
     border: 3px solid var(--card-border);
     border-radius: 20px;
-    padding: 16px 22px;
+    padding: 14px 18px;
     margin-bottom: 12px !important;
-    font-size: 1.125rem;
+    font-size: clamp(0.95rem, 3vw, 1.125rem);
     font-weight: bold;
     cursor: pointer;
     transition: transform 0.2s, background 0.2s;
     user-select: none;
     box-shadow: 0 4px 0 var(--card-border);
+    word-break: break-word;
 }
 
 #pergunta-atual label:hover {
@@ -210,6 +216,7 @@ body {
     -webkit-appearance: none;
     width: 26px;
     height: 26px;
+    min-width: 26px;
     border: 3px solid var(--color-dark-blue);
     background: #fff;
     cursor: pointer;
@@ -236,13 +243,13 @@ body {
 #pergunta-atual input[type="text"] {
     width: 100%;
     max-width: 550px;
-    padding: 16px 24px;
+    padding: 14px 18px;
     border: 4px solid var(--card-border);
     border-radius: 20px;
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: bold;
     outline: none;
-    margin: 30px auto;
+    margin: 20px auto;
     display: block;
     text-align: center;
     transition: border-color 0.2s;
@@ -255,13 +262,14 @@ body {
 
 /* --- CASE 3: Verdadeiro ou Falso --- */
 #pergunta-atual button[onclick*="'Falso'"] {
-    position: absolute !important;
-    bottom: 80px !important;
-    left: 4% !important;
-    width: 44% !important;
-    height: 180px !important;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    width: 48% !important;
+    max-width: 300px !important;
+    height: 140px !important;
     border: 4px solid #000000 !important;
-    border-radius: 40px !important;
+    border-radius: 30px !important;
     cursor: pointer;
     background-color: var(--color-red) !important;
     box-shadow: 0 8px 0 #bc4b4b !important;
@@ -270,23 +278,25 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    margin: 10px auto !important;
 }
 #pergunta-atual button[onclick*="'Falso'"]::before {
     content: "✕" !important;
     font-family: 'Open_Sans', sans-serif !important;
     color: #ffffff !important;
-    font-size: 5.625rem !important;
+    font-size: 4rem !important;
     font-weight: 300 !important;
 }
 
 #pergunta-atual button[onclick*="'Verdadeiro'"] {
-    position: absolute !important;
-    bottom: 80px !important;
-    right: 4% !important;
-    width: 44% !important;
-    height: 180px !important;
+    position: relative !important;
+    bottom: auto !important;
+    right: auto !important;
+    width: 48% !important;
+    max-width: 300px !important;
+    height: 140px !important;
     border: 4px solid #000000 !important;
-    border-radius: 40px !important;
+    border-radius: 30px !important;
     cursor: pointer;
     background-color: var(--color-green) !important;
     box-shadow: 0 8px 0 #009353 !important;
@@ -295,12 +305,13 @@ body {
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
+    margin: 10px auto !important;
 }
 #pergunta-atual button[onclick*="'Verdadeiro'"]::before {
     content: "✓" !important;
     font-family: 'Open_Sans', sans-serif !important;
     color: #ffffff !important;
-    font-size: 5.625rem !important;
+    font-size: 4rem !important;
     font-weight: bold !important;
 }
 
@@ -326,12 +337,12 @@ body {
 }
 
 #pergunta-atual p[id*="selecionado"] {
-    position: absolute !important;
-    bottom: 25px !important;
-    left: 0 !important;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
     width: 100% !important;
     text-align: center !important;
-    margin: 0 !important;
+    margin: 15px 0 0 0 !important;
 }
 
 
@@ -340,34 +351,35 @@ body {
     background-color: #eaf6ff !important;
     border: 3px dashed #229df5 !important;
     border-radius: 20px !important;
-    padding: 20px 25px 20px 85px !important;
+    padding: 15px 15px 15px 15px !important;
     box-shadow: inset 0 4px 8px rgba(0,0,0,0.03);
     position: relative !important;
     display: flex !important;
     flex-wrap: wrap !important;
     align-items: center !important;
-    gap: 12px !important;
-    min-height: 90px !important;
+    gap: 10px !important;
+    min-height: 80px !important;
 }
 
 #pergunta-atual div[style*="background: #ebf5fb"]::before {
     content: "Início ➔" !important;
-    position: absolute !important;
-    left: 15px !important;
-    top: 50% !important;
-    transform: translateY(-50%) !important;
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    transform: none !important;
     font-family: 'Open_Sans', sans-serif !important;
-    font-size: 0.9375rem !important;
+    font-size: 0.85rem !important;
     font-weight: bold !important;
     color: #229df5 !important;
     text-transform: uppercase !important;
     letter-spacing: 0.5px !important;
+    width: 100%;
 }
 
 #pergunta-atual div[style*="background: #ebf5fb"]::after {
     content: "• Fim" !important;
     font-family: 'Open_Sans', sans-serif !important;
-    font-size: 0.9375rem !important;
+    font-size: 0.85rem !important;
     font-weight: bold !important;
     color: #a3dbff !important;
     text-transform: uppercase !important;
@@ -379,9 +391,9 @@ body {
     background: var(--color-dark-blue) !important;
     color: #ffffff !important;
     border: 3px solid #000000 !important;
-    border-radius: 16px !important;
-    font-size: 1.125rem !important;
-    padding: 10px 20px !important;
+    border-radius: 14px !important;
+    font-size: 1rem !important;
+    padding: 8px 16px !important;
     box-shadow: 0 4px 0 #071224 !important;
     margin: 0 !important;
 }
@@ -389,20 +401,20 @@ body {
 #pergunta-atual div[style*="background: #d6eaf8"] {
     background: #d4ecff !important;
     border: 2px dashed var(--card-border) !important;
-    border-radius: 16px !important;
-    width: 75px !important;
-    height: 44px !important;
+    border-radius: 14px !important;
+    width: 65px !important;
+    height: 40px !important;
     margin: 0 !important;
 }
 
 #pergunta-atual button[onclick*="selecionarOpcaoOrdem"] {
     background: #ffffff !important;
     border: 3px solid var(--card-border) !important;
-    border-radius: 18px !important;
-    font-size: 1.125rem !important;
+    border-radius: 16px !important;
+    font-size: 1rem !important;
     font-weight: bold !important;
-    padding: 12px 24px !important;
-    box-shadow: 0 5px 0 var(--card-border) !important;
+    padding: 10px 18px !important;
+    box-shadow: 0 4px 0 var(--card-border) !important;
     transition: all 0.1s;
 }
 #pergunta-atual button[onclick*="selecionarOpcaoOrdem"]:active {
@@ -413,7 +425,7 @@ body {
 #pergunta-atual button[disabled][style*="opacity: 0.6"] {
     background: #eaecee !important;
     border: 3px dashed #bdc3c7 !important;
-    border-radius: 18px !important;
+    border-radius: 16px !important;
     color: #bdc3c7 !important;
     box-shadow: none !important;
 }
@@ -424,27 +436,34 @@ body {
     background: #fff9f2 !important;
     border: 3px dashed var(--color-orange) !important;
     border-radius: 20px !important;
-    padding: 16px !important;
+    padding: 12px !important;
+    display: flex !important;
+    flex-wrap: wrap !important;
+    gap: 10px !important;
 }
 
 div[id^="drag_"] {
     background: #ffffff !important;
     border: 3px solid var(--color-dark-blue) !important;
-    border-radius: 16px !important;
-    padding: 12px 22px !important;
+    border-radius: 14px !important;
+    padding: 10px 16px !important;
     font-weight: bold !important;
-    font-size: 1rem !important;
+    font-size: 0.95rem !important;
     box-shadow: 0 4px 0 var(--color-dark-blue) !important;
+    touch-action: none;
 }
 
 .box-target {
     border: 3px dashed #a6b1b2 !important;
     background-color: #fdfdfd !important;
-    border-radius: 20px !important;
-    font-size: 1rem !important;
+    border-radius: 18px !important;
+    padding: 12px !important;
+    font-size: 0.95rem !important;
     font-weight: bold !important;
     color: #4a5556 !important;
     transition: all 0.2s ease;
+    min-height: 60px;
+    margin-bottom: 10px;
 }
 
 .box-target[style*="background:#d1f2eb"], 
@@ -460,12 +479,12 @@ div[id^="drag_"] {
     color: white;
     border: 3px solid #d68910;
     border-radius: 14px;
-    padding: 10px 20px;
+    padding: 10px 18px;
     font-weight: bold;
-    font-size: 0.9375rem;
+    font-size: 0.9rem;
     cursor: pointer;
     box-shadow: 0 4px 0 #b37005;
-    margin-top: 20px;
+    margin-top: 15px;
     align-self: flex-start;
     transition: transform 0.1s;
 }
@@ -481,25 +500,28 @@ div[id^="drag_"] {
 #quiz-controls {
     width: 100%;
     max-width: 850px;
-    height: 85px;
+    min-height: 85px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
-    padding: 0 10px;
-   
+    padding: 10px 5px;
+    gap: 10px;
 }
 
 #btn-voltar, #btn-proximo, #btn-finalizar {
     background-color: #ffffff;
     border: 3px solid var(--card-border);
-    padding: 14px 35px;
+    padding: 12px 24px;
     border-radius: 20px;
     font-weight: bold;
-    font-size: 1.125rem;
+    font-size: 1rem;
     cursor: pointer;
     box-shadow: 0 5px 0 var(--card-border);
     transition: transform 0.1s, background 0.2s;
     font-family: 'Open_Sans', sans-serif !important;
+    white-space: normal;
+    text-align: center;
 }
 
 #btn-voltar:hover, #btn-proximo:hover {
@@ -526,9 +548,10 @@ div[id^="drag_"] {
 }
 
 #progresso {
-    font-size: 1.125rem;
+    font-size: 1rem;
     color: var(--color-dark-blue);
     font-weight: bold;
+    text-align: center;
 }
 
 
@@ -547,8 +570,9 @@ div[id^="drag_"] {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 20px;
+    padding: 15px;
     animation: fadeInBg 0.4s ease forwards;
+    overflow-y: auto;
 }
 
 .modal-resultado-card {
@@ -557,63 +581,65 @@ div[id^="drag_"] {
     max-width: 850px;
     border: 4px solid #000000;
     border-radius: 35px;
-    padding: 40px 30px;
+    padding: 30px 20px;
     text-align: center;
     box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     animation: feedbackPopIn 0.55s cubic-bezier(0.34, 1.7, 0.64, 1) forwards;
+    max-height: 90vh;
+    overflow-y: auto;
 }
 
 .modal-resultado-topo {
     background-color: #e2f0fe;
     border: 3px solid #ffffff;
     border-radius: 25px;
-    padding: 15px 35px;
+    padding: 12px 25px;
     display: inline-block;
-    margin-bottom: 25px;
+    margin-bottom: 20px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
 
 .modal-resultado-topo h2 {
     margin: 0;
-    font-size: 1.375rem;
+    font-size: clamp(1.1rem, 3.5vw, 1.375rem);
     font-weight: 800;
     color: #000000;
     letter-spacing: 0.5px;
 }
 
 .modal-resultado-subtitulo {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     font-weight: 800;
     color: #000000;
-    margin: 0 0 35px 0;
+    margin: 0 0 25px 0;
     letter-spacing: 1px;
 }
 
 .modal-resultado-grid {
     display: flex;
     justify-content: center;
-    gap: 20px;
+    gap: 15px;
     flex-wrap: wrap;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     width: 100%;
 }
 
 .resultado-box {
-    flex: 1;
-    min-width: 200px;
+    flex: 1 1 140px;
+    min-width: 140px;
     max-width: 240px;
     border: 4px solid #000000;
     border-radius: 22px;
-    padding: 20px 12px 12px 12px;
+    padding: 15px 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
 .resultado-label {
-    font-size: 1rem; /* Letras Brancas maiores */
+    font-size: 0.875rem; /* Letras Brancas maiores */
     font-weight: 800;
     color: #ffffff;
     text-transform: uppercase;
@@ -626,8 +652,8 @@ div[id^="drag_"] {
     background-color: #e2f0fe;
     width: 100%;
     border-radius: 14px;
-    padding: 18px 10px;
-    font-size: 2.625rem;
+    padding: 12px 8px;
+    font-size: clamp(1.8rem, 5vw, 2.625rem);
     font-weight: 800;
     color: #000000;
     display: flex;
@@ -653,17 +679,19 @@ div[id^="drag_"] {
     color: #ffffff;
     border: none;
     border-radius: 25px;
-    padding: 15px 50px;
-    font-size: 1.125rem;
+    padding: 12px 35px;
+    font-size: 1rem;
     font-weight: 800;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin: 0 auto;
+    margin: 8px auto;
     box-shadow: 0 6px 0 #333333;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    width: 100%;
+    max-width: 280px;
 }
 
 #btn-modal-home:active {
@@ -682,17 +710,19 @@ div[id^="drag_"] {
     color: #ffffff;
     border: none;
     border-radius: 25px;
-    padding: 15px 50px;
-    font-size: 1.125rem;
+    padding: 12px 35px;
+    font-size: 1rem;
     font-weight: 800;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    margin: 0 auto;
+    margin: 8px auto;
     box-shadow: 0 6px 0 #333333;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
+    width: 100%;
+    max-width: 280px;
 }
 
 /* ==========================================================================
@@ -725,7 +755,7 @@ div[id^="drag_"] {
         display: flex;
         align-items: center;
         justify-content: center;
-        padding: 20px;
+        padding: 15px;
         animation: fadeInBg 0.4s ease forwards;
         
    }
@@ -733,15 +763,19 @@ div[id^="drag_"] {
    
 #modal-avaliacao .modal-content {
     text-align: center;     
-    padding: 30px;
+    padding: 20px;
+    width: 100%;
+    max-width: 450px;
+    background: #ffffff;
+    border-radius: 20px;
 }
 
 #modal-avaliacao h2 {
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     color:#f0f9ff;
     background-color: #229df5;
-    padding: 20px;
-    border-radius: 30px;
+    padding: 15px;
+    border-radius: 25px;
     width: fit-content;
     text-align: center;
     margin: 0 auto;
@@ -758,13 +792,13 @@ div[id^="drag_"] {
 .rating-stars {
     display: flex;
     justify-content: center;
-    gap: 15px;
-    margin: 25px 0;
+    gap: 12px;
+    margin: 20px 0;
 }
 
 /* Estilo individual de cada estrela */
 .rating-stars i {
-    font-size: 2.6rem;
+    font-size: clamp(2rem, 6vw, 2.6rem);
     cursor: pointer;
     color: #ccc;
     transition: transform 0.2s ease, color 0.2s ease;
@@ -778,8 +812,8 @@ div[id^="drag_"] {
 /* Estilização do Botão Sair / Voltar */
 .btn-sair {
     position: absolute;
-    top: 125px;      /* Distância do topo */
-    left: 125px;     /* Distância da esquerda */
+    top: 20px;      /* Distância do topo */
+    left: 20px;     /* Distância da esquerda */
     width: 45px;    /* Largura idêntica à altura para fazer um círculo perfeito */
     height: 45px;   /* Altura idêntica */
     background-color: #e74c3c; /* Vermelho moderno (Alizarin) */
@@ -825,14 +859,15 @@ div[id^="drag_"] {
     justify-content: center;
     align-items: center;
     z-index: 99999; /* Garante que fique por cima de absolutamente tudo */
+    padding: 15px;
 }
 
 /* O card centralizado */
 .modal-confirmar-saida-card {
     background-color: #ffffff;
-    padding: 30px 40px;
+    padding: 25px 20px;
     border-radius: 16px;
-    width: 90%;
+    width: 100%;
     max-width: 450px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
@@ -844,7 +879,7 @@ div[id^="drag_"] {
 /* Título da Modal */
 .modal-confirmar-saida-card h2 {
     color: #2c3e50;
-    font-size: 1.5rem;
+    font-size: 1.3rem;
     margin-bottom: 12px;
     font-weight: 700;
 }
@@ -852,7 +887,7 @@ div[id^="drag_"] {
 /* Subtítulo / Texto explicativo */
 .modal-confirmar-saida-card p {
     color: #7f8c8d;
-    font-size: 1rem;
+    font-size: 0.95rem;
     line-height: 1.5;
     margin-bottom: 25px;
 }
@@ -861,19 +896,20 @@ div[id^="drag_"] {
 .modal-buttons {
     display: flex;
     justify-content: center;
-    gap: 15px; /* Espaçamento entre os botões */
+    gap: 10px; /* Espaçamento entre os botões */
+    flex-wrap: wrap;
 }
 
 /* Estilização Geral dos Botões da Modal */
 .modal-buttons button {
-    padding: 12px 24px;
-    font-size: 0.95rem;
+    padding: 12px 20px;
+    font-size: 0.9rem;
     font-weight: 600;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1; /* Faz os dois botões terem exatamente o mesmo tamanho */
+    flex: 1 1 120px; /* Faz os dois botões responderem proporcionalmente */
 }
 
 /* Botão Principal (Não, Continuar) - Destacado para o usuário não sair sem querer */
@@ -924,7 +960,7 @@ div[id^="drag_"] {
 @keyframes dropFromTop {
     0% {
         opacity: 0;
-        transform: translateY(-80px) scale(0.96);
+        transform: translateY(-50px) scale(0.96);
     }
     100% {
         opacity: 1;
@@ -936,11 +972,11 @@ div[id^="drag_"] {
 @keyframes slideFromRight {
     0% {
         opacity: 0;
-        transform: translateX(120px) rotateY(-8deg);
+        transform: translateX(80px);
     }
     100% {
         opacity: 1;
-        transform: translateX(0) rotateY(0);
+        transform: translateX(0);
     }
 }
 
@@ -948,11 +984,11 @@ div[id^="drag_"] {
 @keyframes slideFromLeft {
     0% {
         opacity: 0;
-        transform: translateX(-120px) rotateY(8deg);
+        transform: translateX(-80px);
     }
     100% {
         opacity: 1;
-        transform: translateX(0) rotateY(0);
+        transform: translateX(0);
     }
 }
 
@@ -966,13 +1002,46 @@ div[id^="drag_"] {
 @keyframes feedbackPopIn {
     0% {
         opacity: 0;
-        transform: scale(0.7) translateY(50px) rotateX(-15deg);
+        transform: scale(0.8) translateY(30px);
     }
     70% {
-        transform: scale(1.04) translateY(-5px) rotateX(2deg);
+        transform: scale(1.02) translateY(-3px);
     }
     100% {
         opacity: 1;
-        transform: scale(1) translateY(0) rotateX(0);
+        transform: scale(1) translateY(0);
+    }
+}
+
+/* ==========================================================================
+   REGRAS ESPECÍFICAS DE AJUSTE PARA TELAS MENORES (RESPONSIVIDADE EXTRA)
+   ========================================================================== */
+@media (max-width: 600px) {
+    #quiz-controls {
+        flex-direction: column;
+        height: auto;
+    }
+
+    #progresso {
+        order: -1;
+        margin-bottom: 5px;
+    }
+
+    #btn-voltar, #btn-proximo, #btn-finalizar {
+        width: 100%;
+    }
+
+    #pergunta-atual button[onclick*="'Falso'"],
+    #pergunta-atual button[onclick*="'Verdadeiro'"] {
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .btn-sair {
+        top: 10px;
+        left: 10px;
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
     }
 }

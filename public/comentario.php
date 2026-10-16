@@ -70,26 +70,24 @@
 <body>
 <?php renderSidebar(); // Renderiza a sidebar ?>
 
-<!-- BOTÃO VERMELHO FLUTUANTE DE VOLTAR -->
-<div class="rotas-buttons">
-    <button class="btn-sair-flutuante" onclick="window.location.href='home.php'" title="Voltar para Home">
-        <i class="fas fa-arrow-left"></i>
-        <span class="btn-sair-text">Voltar</span>
-    </button>
-    
-    <!-- Chamando a função via JavaScript em vez do href estático -->
-    <button class="btn-revisar" onclick="voltarParaRevisao()">
-        <i class="fas fa-redo"></i>
-        <span>Revisar respostas</span>
-    </button>
-</div>
-
-
 <div class="main-container" id="mainContainer">
 
     <?php renderHeader(); ?>
 
     <main>
+        <!-- BOTÕES FIXADOS NO SITE (NÃO NA TELA) -->
+        <div class="rotas-buttons">
+            <button class="btn-sair-flutuante" onclick="window.location.href='home.php'" title="Sair" aria-label="Sair">
+                <i class="fas fa-arrow-left"></i>
+                <span class="btn-sair-text">sair</span>
+            </button>
+            
+            <button class="btn-revisar" onclick="voltarParaRevisao()" title="Revisar respostas" aria-label="Revisar respostas">
+                <i class="fas fa-undo"></i>
+                <span class="btn-revisar-text">revisar respostas</span>
+            </button>
+        </div>
+
         <section class="welcome-section">
             <div class="container-comentarios">
                 <h2>Comente sobre nosso site!</h2>
