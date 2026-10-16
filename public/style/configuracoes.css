@@ -637,6 +637,173 @@ body.dark-mode .aviso-minimo {
     color: #ffffff;
 }
 
+/* Excluir conta*/
+
+/* Container de ações e botão de exclusão de conta */
+.acoes-perfil-botoes {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 15px;
+    width: 100%;
+}
+
+.btn-excluir-conta {
+    height: 48px;
+    padding: 0 20px;
+    background-color: #ff5c5c;
+    border: 3px solid #000000;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ffffff;
+    cursor: pointer;
+    box-shadow: 2px 4px 0px #000000;
+    transition: transform 0.1s, background-color 0.2s;
+}
+
+.btn-excluir-conta:hover {
+    background-color: #e04343;
+}
+
+.btn-excluir-conta:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
+@media screen and (max-width: 600px) {
+    .acoes-perfil-botoes {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-salvar-pill, 
+    .btn-excluir-conta {
+        width: 100%;
+    }
+}
+
+
+/* =========================================
+   SISTEMA DE SELEÇÃO MÚLTIPLA DO HISTÓRICO
+   ========================================= */
+.historico-header-acoes {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 12px;
+    width: 100%;
+}
+
+.grupo-botoes-historico {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-selecionar-todos, 
+.btn-excluir-selecionados {
+    border: 2px solid #000000;
+    border-radius: 20px;
+    padding: 8px 16px;
+    font-size: 0.8125rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 2px 3px 0px #000000;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+}
+
+.btn-selecionar-todos {
+    background-color: #2bb3ff;
+    color: #000000;
+}
+
+.btn-excluir-selecionados {
+    background-color: #ff5c5c;
+    color: #ffffff;
+}
+
+.btn-excluir-selecionados:disabled {
+    background-color: #cccccc;
+    color: #888888;
+    cursor: not-allowed;
+    box-shadow: none;
+    border-color: #888888;
+}
+
+.btn-selecionar-todos:hover:not(:disabled),
+.btn-excluir-selecionados:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.btn-selecionar-todos:active,
+.btn-excluir-selecionados:active:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
+/* Ajustes nos Cards para Suportar o Círculo */
+.historico-card {
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
+    padding-top: 16px; /* Espaço interno ajustado */
+}
+
+.historico-card:hover {
+    border-color: #1b8fb9;
+}
+
+.historico-card.selecionado {
+    border-color: #1595c4;
+    background-color: #d8f0ff;
+}
+
+body.dark-mode .historico-card.selecionado {
+    background-color: #1a3d52;
+}
+
+/* Círculo de Seleção (Canto Superior Direito) */
+.checkbox-circulo {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #777777;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    z-index: 2;
+}
+
+.checkbox-circulo i {
+    font-size: 0.75rem;
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+}
+
+.checkbox-circulo.ativo {
+    background-color: #1595c4;
+    border-color: #000000;
+}
+
+.checkbox-circulo.ativo i {
+    opacity: 1;
+}
+
+/* Ajuste na lixeira individual para dar espaço ao círculo */
+.historico-acoes {
+    padding-top: 18px;
+}
+
+
 /* =========================================
    ADAPTAÇÃO RESPONSIVA E CORREÇÕES (MEDIA QUERIES)
    ========================================= */

@@ -125,6 +125,7 @@
                     ? `<img src="${data.foto_perfil}" class="avatar-preview-img" id="avatarImg">`
                     : `<div class="avatar-preview-placeholder" id="avatarImg"><i class="fas fa-user"></i></div>`;
 
+                // Dentro da função carregarPerfil(tipo), no bloco "if (tipo === 'usuario')":
                 html = `
                     <div class="perfil-discord-style perfil-container-flex">
                         
@@ -165,9 +166,10 @@
 
                             <div class="aviso-minimo">Mínimo: 8 caracteres.</div>
 
-                            <button class="btn-salvar-pill" onclick="salvarGeral()">
-                                Salvar
-                            </button>
+                            <div class="acoes-perfil-botoes">
+                                <button class="btn-salvar-pill" onclick="salvarGeral()">Salvar</button>
+                                <button class="btn-excluir-conta" onclick="excluirConta()">Excluir Conta</button>
+                            </div>
                         </div>
 
                         <div class="coluna-foto-perfil">
@@ -303,7 +305,12 @@
                     let matSigla = (h.nome_materia || 'MAT').substring(0, 3).toUpperCase();
 
                     return `
-                        <div class="historico-card" id="tentativa-${h.id_tentativa}">
+                        <div class="historico-card" id="tentativa-${h.id_tentativa}" onclick="toggleSelecaoCard(${h.id_tentativa}, event)">
+                            <!-- Círculo de seleção no canto superior direito -->
+                            <div class="checkbox-circulo" id="check-${h.id_tentativa}">
+                                <i class="fas fa-check"></i>
+                            </div>
+
                             <div class="historico-badges">
                                 <div class="badge-materia">${matSigla}</div>
                                 <div class="badge-dificuldade-pill ${classeDificuldade}">${difUpper || 'FÁCIL'}</div>
@@ -313,7 +320,7 @@
                                 <p>Conteúdo: <span>${h.nome_conteudo || ''}</span></p>
                             </div>
                             <div class="historico-acoes">
-                                <button onclick="excluirHistorico(${h.id_tentativa})" class="btn-lixeira" title="Excluir">
+                                <button onclick="excluirHistorico(${h.id_tentativa}); event.stopPropagation();" class="btn-lixeira" title="Excluir">
                                     <i class="fas fa-trash-alt"></i>
                                 </button>
                                 <span class="historico-data">${h.data_resolucao || ''}</span>
@@ -322,9 +329,23 @@
                     `;
                 }).join('');
 
+                const possuiRegistros = Array.isArray(data) && data.length > 0;
+
                 html = `
+                    <div class="historico-header-acoes">
+                        ${possuiRegistros ? `
+                            <div class="grupo-botoes-historico">
+                                <button class="btn-selecionar-todos" onclick="alternarSelecionarTodos()">
+                                    <i class="far fa-check-square"></i> Selecionar Todos
+                                </button>
+                                <button class="btn-excluir-selecionados" id="btnExcluirSelecionados" onclick="excluirSelecionados()" disabled>
+                                    <i class="fas fa-trash-alt"></i> Excluir Selecionados (<span id="countSelecionados">0</span>)
+                                </button>
+                            </div>
+                        ` : ''}
+                    </div>
                     <div class="historico-container-scroll">
-                        ${cardsHistorico || '<p style="text-align:center; padding: 20px;">Você ainda não resolveu nenhum quiz.</p>'}
+                        ${cardsHistorico || '<p style="text-align:center; padding: 20px; font-weight: bold;">Você ainda não resolveu nenhum quiz.</p>'}
                     </div>
                 `;
             }
@@ -334,6 +355,93 @@
         } catch (error) {
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
+        }
+    }
+
+    let selecionadosHistorico = new Set();
+
+    function toggleSelecaoCard(idTentativa, event) {
+        // Evita disparar a seleção ao clicar diretamente na lixeira individual
+        if (event.target.closest('.btn-lixeira')) return;
+
+        const card = document.getElementById(`tentativa-${idTentativa}`);
+        const check = document.getElementById(`check-${idTentativa}`);
+
+        if (selecionadosHistorico.has(idTentativa)) {
+            selecionadosHistorico.delete(idTentativa);
+            card.classList.remove('selecionado');
+            check.classList.remove('ativo');
+        } else {
+            selecionadosHistorico.add(idTentativa);
+            card.classList.add('selecionado');
+            check.classList.add('ativo');
+        }
+
+        atualizarContadorSelecao();
+    }
+
+    function alternarSelecionarTodos() {
+        const todosCards = document.querySelectorAll('.historico-card');
+        
+        // Se todos já estão selecionados, desseleciona tudo
+        if (selecionadosHistorico.size === todosCards.length && todosCards.length > 0) {
+            selecionadosHistorico.clear();
+            todosCards.forEach(card => {
+                card.classList.remove('selecionado');
+                const check = card.querySelector('.checkbox-circulo');
+                if (check) check.classList.remove('ativo');
+            });
+        } else {
+            // Seleciona todos
+            todosCards.forEach(card => {
+                const id = parseInt(card.id.replace('tentativa-', ''));
+                selecionadosHistorico.add(id);
+                card.classList.add('selecionado');
+                const check = card.querySelector('.checkbox-circulo');
+                if (check) check.classList.add('ativo');
+            });
+        }
+
+        atualizarContadorSelecao();
+    }
+
+    function atualizarContadorSelecao() {
+        const total = selecionadosHistorico.size;
+        const countSpan = document.getElementById('countSelecionados');
+        const btnExcluir = document.getElementById('btnExcluirSelecionados');
+
+        if (countSpan) countSpan.textContent = total;
+        if (btnExcluir) {
+            btnExcluir.disabled = total === 0;
+        }
+    }
+
+    async function excluirSelecionados() {
+        if (selecionadosHistorico.size === 0) return;
+
+        const quantidade = selecionadosHistorico.size;
+        if (!confirm(`Deseja realmente apagar ${quantidade} item(ns) selecionado(s) do histórico?`)) {
+            return;
+        }
+
+        const arrayIds = Array.from(selecionadosHistorico);
+        const formData = new FormData();
+        formData.append('acao', 'excluir_historicos_selecionados');
+        formData.append('ids', JSON.stringify(arrayIds));
+
+        try {
+            const response = await fetch(api, { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (result.success) {
+                selecionadosHistorico.clear();
+                carregarPerfil('historico');
+            } else {
+                alert("Erro ao excluir itens: " + (result.error || "Erro desconhecido."));
+            }
+        } catch (error) {
+            console.error("Erro na exclusão em lote:", error);
+            alert("Erro na comunicação com o servidor.");
         }
     }
 
@@ -784,6 +892,31 @@
             balaoAviso.style.display = "block";
         } else {
             balaoAviso.style.display = "none";
+        }
+    }
+
+    async function excluirConta() {
+        const confirmacao = confirm("ATENÇÃO: Deseja realmente excluir sua conta? Esta ação é permanente e todos os seus históricos e dados serão apagados.");
+        
+        if (!confirmacao) return;
+
+        const formData = new FormData();
+        formData.append('acao', 'excluir_conta');
+        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+        try {
+            const response = await fetch(api, { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (result.success) {
+                alert("Sua conta foi excluída com sucesso.");
+                window.location.href = "login.html";
+            } else {
+                alert("Erro ao excluir conta: " + (result.error || "Erro desconhecido."));
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao se comunicar com o servidor.");
         }
     }
 

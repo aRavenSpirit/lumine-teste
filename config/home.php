@@ -177,6 +177,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         exit;
     }
+
+    if (isset($_POST['acao']) && $_POST['acao'] === 'excluir_conta') {
+        $id_usuario = intval($_POST['id_usuario'] ?? 0);
+        $id_sessao = intval($_SESSION['usuario_id'] ?? 0);
+
+        // Validação de segurança para garantir que o usuário só exclua a própria conta
+        if ($id_usuario <= 0 || $id_usuario !== $id_sessao) {
+            echo json_encode(["success" => false, "error" => "Ação não autorizada."]);
+            exit;
+        }
+
+        // Exclui o registro na tabela 'usuario'
+        // Como as tabelas 'tentativas', 'configuracoes', 'feedbacks_usuarios' e 'avaliacoes' 
+        // possuem ON DELETE CASCADE, os dados associados serão removidos automaticamente pelo MySQL.
+        $stmt = $conn->prepare("DELETE FROM usuario WHERE id = ?");
+        $stmt->bind_param("i", $id_usuario);
+
+        if ($stmt->execute()) {
+            // Encerra a sessão e limpa os cookies
+            session_unset();
+            session_destroy();
+
+            echo json_encode(["success" => true, "mensagem" => "Conta excluída com sucesso."]);
+        } else {
+            echo json_encode(["success" => false, "error" => "Erro ao excluir conta: " . $stmt->error]);
+        }
+        $stmt->close();
+        exit;
+    }
+
     if ($acao === 'excluir_historico') {
         $id_tentativa = intval($_POST['id_tentativa'] ?? 0);
         $sql = "DELETE FROM tentativas 
@@ -196,6 +226,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             echo json_encode(["success" => false, "error" => $conn->error]);
         }
+        exit;
+    }
+
+    // Adicione no config/home.php
+    if (isset($_POST['acao']) && $_POST['acao'] === 'excluir_historicos_selecionados') {
+        $id_usuario = intval($_SESSION['usuario_id'] ?? 0);
+        $ids = json_decode($_POST['ids'] ?? '[]', true);
+
+        if ($id_usuario <= 0 || empty($ids)) {
+            echo json_encode(["success" => false, "error" => "Parâmetros inválidos ou nenhum item selecionado."]);
+            exit;
+        }
+
+        // Cria placeholders (?) dinâmicos para a query IN (?, ?, ...)
+        $placeholders = implode(',', array_fill(0, count($ids), '?'));
+        $tipos = str_repeat('i', count($ids) + 1); // +1 para o id_usuario
+
+        $sql = "DELETE FROM tentativas WHERE id_usuario = ? AND id IN ($placeholders)";
+        $stmt = $conn->prepare($sql);
+
+        // Une o id_usuario com o array de IDs para o bind_param
+        $params = array_merge([$id_usuario], array_map('intval', $ids));
+        $stmt->bind_param($tipos, ...$params);
+
+        if ($stmt->execute()) {
+            echo json_encode(["success" => true, "mensagem" => "Itens excluídos com sucesso."]);
+        } else {
+            echo json_encode(["success" => false, "error" => "Erro ao excluir itens: " . $stmt->error]);
+        }
+        $stmt->close();
         exit;
     }
 
