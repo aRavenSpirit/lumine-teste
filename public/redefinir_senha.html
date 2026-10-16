@@ -5,72 +5,83 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Redefinir Senha</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to left, rgb(227, 240, 254, 0.65), rgb(227, 240, 254, 0.65));
-        }
-        .container {
-            background-color: #fff;
-            width: 100%;
-            max-width: 450px;
-            border-radius: 20px;
-            border: 4px solid #1595c4;
-            padding: 40px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        h2 { color: #333; margin-bottom: 20px; text-align: center; }
-        .input-box {
-            display: flex;
-            align-items: center;
-            border: 1px solid #bdbdbd;
-            border-radius: 4px;
-            padding-left: 10px;
-            height: 40px;
-            margin-bottom: 15px;
-        }
-        .input-box input {
-            border: none;
-            outline: none;
-            width: 100%;
-            padding: 10px;
-        }
-        .btn {
-            background-color: #a3e1ff;
-            border: 2px solid #1595c4;
-            padding: 12px;
-            width: 100%;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .btn:hover { background-color: #8bd8ff; }
-        #mensagem { text-align: center; margin-top: 15px; font-weight: bold; }
-    </style>
+    <link rel="stylesheet" href="./style/cadastro.css">
+    <link rel="stylesheet" href="../public/style/esqueceu_senha.css">
+    <link rel="stylesheet" href="../public/style/cadastro.css">
+    <!-- redefinir_senha.css por ÚLTIMO para sobrepor regras -->
+    <link rel="stylesheet" href="../public/style/redefinir_senha.css">
 </head>
-<body>
+<body class="body-redefinir">
     <div class="container">
-        <h2>Nova Senha</h2>
-        <form id="formNovaSenha" onsubmit="atualizarSenha(event)">
-            <div class="input-box">
-                <i class="fas fa-lock"></i>
+        <h2 class="titulo-senha">Nova Senha</h2>
+        <form class="formNovaSenha" id="formNovaSenha" onsubmit="atualizarSenha(event)">
+            
+            <!-- Campo de senha idêntico ao do cadastro.html -->
+            <div class="container-senha" style="position: relative; width: 100%;">
                 <input type="password" id="novaSenha" placeholder="Digite sua nova senha" required>
+                <i onclick="toggleSenha()" class="fas fa-eye olho-senha"></i>
+                
+                <!-- Balão de aviso de requisitos -->
+                <div id="balao-aviso" class="balao-aviso"></div>
             </div>
-            <p id="mensagem"></p>
+
+            <!-- Barra de segurança -->
+            <div class="barra-seguranca">
+                <div id="seg-length" class="segmento" data-label="Comprimento"></div>
+                <div id="seg-uppercase" class="segmento" data-label="Maiúscula"></div>
+                <div id="seg-number" class="segmento" data-label="Número"></div>
+                <div id="seg-special" class="segmento" data-label="Especial"></div>
+            </div>
+
+            <div id="mensagem"></div>
             <button class="btn" type="submit">Salvar Nova Senha</button>
         </form>
     </div>
 
+    <script src="js/validar-senha.js"></script>
+
     <script>
-    // Obtém o token enviado via URL na Query String (?token=...)
+    inicializarValidacaoSenha({ senhaInputId: "novaSenha" });
+
     const urlParams = new URLSearchParams(window.location.search);
     const token = urlParams.get('token');
+
+    // Limpa a caixa de erro ao digitar (igual ao cadastro)
+    const campos = document.querySelectorAll('input');
+    campos.forEach(campo => {
+        campo.addEventListener('input', () => {
+            const msg = document.getElementById("mensagem");
+            msg.className = ""; 
+            setTimeout(() => {
+                if(!msg.classList.contains('caixa-erro')) {
+                    msg.innerHTML = "";
+                    msg.style.color = "";
+                    msg.style.borderColor = "";
+                }
+            }, 400);
+        });
+    });
+
+    // Função de exibição de erro idêntica ao cadastro
+    function exibirErro(texto) {
+        const msg = document.getElementById("mensagem");
+        msg.style.color = "";
+        msg.style.borderColor = "";
+        msg.innerHTML = texto;
+        msg.className = "caixa-erro";
+    }
+
+    function toggleSenha() {
+        const input = document.getElementById("novaSenha");
+        const icone = document.querySelector(".olho-senha");
+        if (input.type === "password") {
+            input.type = "text";
+            icone.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+            input.type = "password";
+            icone.classList.replace("fa-eye-slash", "fa-eye");
+        }
+    }
 
     function atualizarSenha(e) {
         e.preventDefault();
@@ -78,11 +89,16 @@
         const senha = document.getElementById('novaSenha').value;
 
         if (!token) {
-            msg.style.color = "#ff3636";
-            msg.innerHTML = "Token inválido ou ausente.";
+            exibirErro("Token inválido ou ausente.");
             return;
         }
 
+        if (!senhaValida) {
+            exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
+            return;
+        }
+
+        msg.className = "";
         msg.style.color = "#1595c4";
         msg.innerHTML = "Atualizando...";
 
@@ -94,19 +110,19 @@
         .then(r => r.json())
         .then(d => {
             if (d.status) {
-                msg.style.color = "#28a745";
                 msg.innerHTML = d.msg;
+                msg.className = "caixa-erro"; 
+                msg.style.color = "#28a745";
+                msg.style.borderColor = "#28a745";
                 setTimeout(() => {
                     window.location.href = "login.html";
                 }, 2500);
             } else {
-                msg.style.color = "#ff3636";
-                msg.innerHTML = d.msg;
+                exibirErro(d.msg || "Erro ao redefinir a senha.");
             }
         })
         .catch(err => {
-            msg.style.color = "#ff3636";
-            msg.innerHTML = "Erro de conexão com o servidor.";
+            exibirErro("Erro de conexão com o servidor.");
         });
     }
     </script>

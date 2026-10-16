@@ -1,0 +1,96 @@
+* { 
+    box-sizing: border-box; 
+    margin: 0; 
+    padding: 0; 
+}
+
+.body-redefinir {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    font-family: 'Open_Sans', sans-serif;
+    background: linear-gradient(to left, rgba(227, 240, 254, 0.65), rgba(227, 240, 254, 0.65)), url('../img/background-index.jpg');
+}
+
+.container {
+    background-color: #fff;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    border: 4px solid #1595c4;
+    padding: 40px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.formNovaSenha {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.titulo-senha {
+    color: #333;
+    font-size: 2em;
+}
+
+.titulo-senha::after {
+    content: '';
+    display: block;
+    width: 185px;
+    height: 5px;
+    background-color: #a3e1ff;
+    border-radius: 10px;
+    margin-top: 8px;
+}
+
+/* Sobrescreve e remove a borda azul curvada trazida pelo cadastro.css */
+.formNovaSenha .input-box {
+    border: 1px solid #bdbdbd !important;
+    border-radius: 4px !important;
+    box-shadow: none !important;
+    background-color: transparent !important;
+    height: 40px !important;
+    padding-left: 10px !important;
+    margin-bottom: 15px !important;
+}
+
+.formNovaSenha .input-box input {
+    border: none !important;
+    outline: none !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 10px !important;
+}
+
+/* Configuração do #mensagem para suportar a caixa-erro do cadastro */
+#mensagem {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+
+.btn {
+    background-color: #a3e1ff;
+    padding: 10px 55px;
+    border-radius: 100px;
+    box-shadow: 6px 6px 0px #1595c4;
+    border: 3px solid #495861;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 20px;
+}
+
+.btn:hover { 
+    background-color: #8bd8ff;
+    transform: scale(1.05); 
+}

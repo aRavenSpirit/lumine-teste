@@ -56,53 +56,11 @@
     </div>
 
     <script src="js/tamanho_fonte.js"></script>
+    <script src="js/validar-senha.js"></script>
 
     <script>
-    let senhaValida = false;
 
-    const senhaInput = document.getElementById("senha");
-    const balaoAviso = document.getElementById("balao-aviso");
-
-    const segLength = document.getElementById("seg-length");
-    const segUppercase = document.getElementById("seg-uppercase");
-    const segNumber = document.getElementById("seg-number");
-    const segSpecial = document.getElementById("seg-special");
-
-    senhaInput.addEventListener("input", () => {
-        const valor = senhaInput.value;
-
-        const temTamanho = valor.length >= 8;
-        segLength.className = "segmento " + (temTamanho ? "valido" : valor.length > 0 ? "invalido" : "");
-
-        const temMaiuscula = /[A-Z]/.test(valor);
-        segUppercase.className = "segmento " + (temMaiuscula ? "valido" : valor.length > 0 ? "invalido" : "");
-
-        const temNumero = /[0-9]/.test(valor);
-        segNumber.className = "segmento " + (temNumero ? "valido" : valor.length > 0 ? "invalido" : "");
-
-        const temEspecial = /[^A-Za-z0-9]/.test(valor);
-        segSpecial.className = "segmento " + (temEspecial ? "valido" : valor.length > 0 ? "invalido" : "");
-
-        senhaValida = temTamanho && temMaiuscula && temNumero && temEspecial;
-
-        if (valor.length === 0) {
-            balaoAviso.style.display = "none";
-        } else if (!temTamanho) {
-            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: No mínimo 8 caracteres`;
-            balaoAviso.style.display = "block";
-        } else if (!temMaiuscula) {
-            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Pelo menos uma letra maiúscula`;
-            balaoAviso.style.display = "block";
-        } else if (!temNumero) {
-            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Pelo menos um número`;
-            balaoAviso.style.display = "block";
-        } else if (!temEspecial) {
-            balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: Um caractere especial (!@#$)`;
-            balaoAviso.style.display = "block";
-        } else {
-            balaoAviso.style.display = "none";
-        }
-    });
+    inicializarValidacaoSenha();
 
     const campos = document.querySelectorAll('input');
     campos.forEach(campo => {
