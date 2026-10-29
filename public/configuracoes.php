@@ -736,6 +736,7 @@
                 cropBoxMovable: true,
                 cropBoxResizable: true,
                 toggleDragModeOnDblclick: false,
+                checkOrientation: true
             });
         };
 
@@ -974,6 +975,35 @@
 </script>
 
 <script src="js/sidebar_close.js" defer></script>
+
+<script>
+    let resizeTimer;
+
+    window.addEventListener('resize', () => {
+        // Cancela o timer anterior para evitar múltiplas chamadas consecutivas
+        clearTimeout(resizeTimer);
+
+        // Aguarda 250ms após o término do redimensionamento
+        resizeTimer = setTimeout(() => {
+            // Recarrega os componentes visuais sem perder o estado
+            if (typeof carregarMenuSidebar === 'function') {
+                carregarMenuSidebar();
+            }
+            
+            // Reajusta o layout da CropperJS se o modal estiver aberto
+            if (typeof cropperInstance !== 'undefined' && cropperInstance) {
+                cropperInstance.resize();
+            }
+
+            // Garante que o scroll no mobile seja redefinido se a tela for ampliada
+            if (window.innerWidth > 900) {
+                document.body.classList.remove('no-scroll');
+                const mobileMenu = document.getElementById('mobileMenu');
+                if (mobileMenu) mobileMenu.classList.remove('active');
+            }
+        }, 250);
+    });
+</script>
 
 </body>
 </html>

@@ -737,6 +737,30 @@ input[type="password"]::-ms-clear {
     color: #999999;
 }
 
+/* Centraliza a foto no topo do card de perfil e alinha com os dados */
+.perfil-dropdown .avatar-upload-container {
+    position: relative;
+    width: 90px !important;
+    height: 90px !important;
+    margin: 0 auto 15px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.perfil-dropdown .avatar-preview,
+.perfil-dropdown .avatar-preview-img {
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    max-width: 90px !important;
+    max-height: 90px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 3px solid #ff3333 !important;
+}
+
 /* =========================================
    MODO ESCURO
    ========================================= */
@@ -1118,5 +1142,292 @@ body.dark-mode .historico-card.selecionado {
 
     .select-arredondado {
         width: 100%;
+    }
+}
+
+/* =========================================
+   MEDIA QUERIES - RESPONSIVIDADE COMPLETA
+   ========================================= */
+
+/* --- TELAS GRANDES E ULTRAWIDE (Acima de 1440px) --- */
+@media screen and (min-width: 1440px) {
+    .cards-section {
+        max-width: 1200px;
+    }
+
+    .container-aside {
+        width: 280px;
+    }
+
+    .coluna-dados-perfil {
+        max-width: 450px;
+    }
+
+    .avatar-preview-placeholder,
+    .avatar-preview-img,
+    .coluna-foto-perfil img,
+    .container-upload-pagina,
+    #avatarWrapper {
+        width: 250px !important;
+        height: 250px !important;
+        min-width: 250px !important;
+        min-height: 250px !important;
+    }
+}
+
+/* --- DESKTOPS MÉDIOS E TABLETS LANDSCAPE (Até 1200px) --- */
+@media screen and (max-width: 1200px) {
+    .cards-section {
+        width: 98%;
+        margin: 20px auto;
+    }
+
+    .perfil-container-flex {
+        gap: 20px;
+    }
+
+    .coluna-dados-perfil {
+        max-width: 320px;
+    }
+
+    .avatar-preview-placeholder,
+    .avatar-preview-img,
+    .coluna-foto-perfil img,
+    .container-upload-pagina,
+    #avatarWrapper {
+        width: 190px !important;
+        height: 190px !important;
+        min-width: 190px !important;
+        min-height: 190px !important;
+    }
+
+    .avatar-preview-placeholder i {
+        font-size: 9.5rem !important;
+    }
+}
+
+/* --- TABLETS PORTRAIT E DISPOSITIVOS MÉDIOS (Até 900px) --- */
+@media screen and (max-width: 900px) {
+    .cards-section {
+        width: 98%;
+        margin: 15px auto;
+        border-radius: 20px;
+    }
+
+    .container-principal {
+        flex-direction: column;
+        min-height: auto;
+    }
+
+    .container-aside {
+        width: 100%;
+        border-right: none;
+        border-bottom: 3px solid #000000;
+        padding: 12px;
+    }
+
+    .titulo-perfil-aside {
+        margin-bottom: 12px;
+        font-size: 1.125rem;
+        padding: 8px 0;
+    }
+
+    .container-aside-btn {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .card-btn {
+        height: 75px;
+        border-radius: 14px;
+        gap: 4px;
+    }
+
+    .aba-icon {
+        font-size: 1.5rem;
+    }
+
+    .btn-aba-title {
+        font-size: 0.75rem;
+    }
+
+    #card-opcoes {
+        padding: 20px 15px;
+    }
+
+    .perfil-container-flex {
+        flex-direction: column-reverse;
+        align-items: center;
+        gap: 20px;
+    }
+
+    .coluna-foto-perfil,
+    .coluna-dados-perfil {
+        max-width: 100%;
+        width: 100%;
+    }
+
+    .sessao-cores-layout {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .color-picker-box-real {
+        max-width: 100%;
+    }
+
+    .color-picker-preview {
+        height: 120px;
+    }
+
+    .container-controles-estilizados {
+        flex-direction: column;
+    }
+}
+
+/* --- SMARTPHONES GRANDES (Até 768px) --- */
+@media screen and (max-width: 768px) {
+    .historico-header-acoes {
+        justify-content: center;
+    }
+
+    .grupo-botoes-historico {
+        width: 100%;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .btn-selecionar-todos,
+    .btn-excluir-selecionados {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* --- SMARTPHONES PADRÃO (Até 600px) --- */
+@media screen and (max-width: 600px) {
+    .cards-section {
+        width: 100%;
+        margin: 0;
+        border-radius: 0;
+        border-left: none;
+        border-right: none;
+    }
+
+    #card-opcoes {
+        padding: 15px 10px;
+    }
+
+    .container-aside-btn {
+        gap: 6px;
+    }
+
+    .card-btn {
+        height: 60px;
+        padding: 4px;
+        border-radius: 10px;
+    }
+
+    .btn-aba-title {
+        font-size: 0.625rem;
+    }
+
+    .aba-icon {
+        font-size: 1.125rem;
+    }
+
+    .avatar-preview-placeholder,
+    .avatar-preview-img,
+    .coluna-foto-perfil img,
+    .container-upload-pagina,
+    #avatarWrapper {
+        width: 140px !important;
+        height: 140px !important;
+        min-width: 140px !important;
+        min-height: 140px !important;
+        max-width: 140px !important;
+        max-height: 140px !important;
+    }
+
+    .avatar-preview-placeholder i {
+        font-size: 7rem !important;
+    }
+
+    .grid-materias-pills {
+        grid-template-columns: 1fr;
+    }
+
+    .materia-pill {
+        font-size: 0.75rem;
+        min-height: 38px;
+    }
+
+    .historico-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+
+    .historico-badges {
+        width: 100%;
+        flex-direction: row;
+    }
+
+    .badge-materia, 
+    .badge-dificuldade-pill {
+        flex: 1;
+    }
+
+    .historico-acoes {
+        width: 100%;
+        flex-direction: row-reverse;
+        align-items: center;
+        min-height: auto;
+        padding-top: 8px;
+        border-top: 1px dashed #cccccc;
+    }
+
+    .controles-estilizados {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .select-arredondado {
+        width: 100%;
+    }
+
+    .modal-cropper-content {
+        width: 95%;
+        padding: 15px;
+    }
+
+    .botoes-cropper {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .btn-cancelar-cropper,
+    .btn-confirmar-cropper {
+        width: 100%;
+    }
+}
+
+/* --- SMARTPHONES PEQUENOS (Até 360px) --- */
+@media screen and (max-width: 360px) {
+    .btn-aba-title {
+        font-size: 0.55rem;
+        letter-spacing: 0;
+    }
+
+    .input-pill, .select-pill {
+        font-size: 0.8125rem;
+        padding: 0 12px;
+    }
+
+    .btn-salvar-pill, 
+    .btn-excluir-conta {
+        font-size: 0.875rem;
+        height: 42px;
     }
 }
