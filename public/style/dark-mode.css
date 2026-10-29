@@ -117,8 +117,8 @@ body.dark-mode .comentario-form {
 
 body.dark-mode textarea,
 body.dark-mode select {
-    background-color: #2d2d2d !important;
-    color: #ffffff !important;
+    
+    color: #333 !important;
     border: 1px solid #444444 !important;
 }
 
@@ -126,9 +126,12 @@ body.dark-mode select {
 body.dark-mode .subtitle, 
 body.dark-mode .section-title,
 body.dark-mode .search-box-wrapper,
-body.dark-mode .card-body,
-#bemvindo {
+body.dark-mode .card-body {
     color: #ffffff;
+}
+
+body.dark-mode #bemvindo {
+    color: #ffffff !important;
 }
 
 body.dark-mode .welcome-text h1{
