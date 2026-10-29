@@ -9,7 +9,9 @@ body {
     transition: background-color 0.4s ease, color 0.4s ease;
 }
 
-/* Container do botão único de tema */
+/* =========================================
+   BOTÃO DE TEMA E ÍCONES
+   ========================================= */
 .botoes-tema-container {
     display: flex;
     align-items: center;
@@ -81,7 +83,6 @@ input[type="password"]::-ms-clear {
     color: #3b4d58;
     z-index: 5;
 }
-
 
 /* =========================================
    CONTAINER PRINCIPAL E ESTRUTURA
@@ -198,26 +199,28 @@ input[type="password"]::-ms-clear {
     justify-content: flex-start;
     width: 100%;
     min-width: 0;
+    overflow-x: hidden;
 }
 
 /* =========================================
-   ESTILO DA ABA: USUÁRIO (ALINHADO AO TOPO)
+   ESTILO DA ABA: USUÁRIO
    ========================================= */
 .perfil-container-flex {
     display: flex;
     width: 100%;
     justify-content: space-between;
-    align-items: flex-start; /* Alinha o topo da foto com a reta do primeiro input */
-    gap: 30px;
+    align-items: flex-start;
+    gap: 20px;
 }
 
 .coluna-dados-perfil {
-    flex: 1;
+    flex: 1 1 300px;
     width: 100%;
     max-width: 380px;
     display: flex;
     flex-direction: column;
     gap: 14px;
+    min-width: 0;
 }
 
 .input-pill-container {
@@ -260,21 +263,34 @@ input[type="password"]::-ms-clear {
     margin-left: 5px;
 }
 
+.acoes-perfil-botoes {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: flex-start;
+    margin-top: 15px;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
 .btn-salvar-pill {
-    margin-top: 10px;
-    width: 160px;
-    max-width: 100%;
+    margin: 0;
+    padding: 0 25px;
     height: 48px;
     background-color: #a3e2ff;
     border: 3px solid #000000;
     border-radius: 25px;
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 800;
     color: #000000;
     cursor: pointer;
     box-shadow: 2px 4px 0px #000000;
-    align-self: center;
-    transition: transform 0.1s;
+    transition: transform 0.1s, background-color 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
 }
 
 .btn-salvar-pill:active {
@@ -282,16 +298,47 @@ input[type="password"]::-ms-clear {
     box-shadow: 0px 0px 0px #000000;
 }
 
+.btn-excluir-conta {
+    margin: 0;
+    height: 48px;
+    padding: 0 20px;
+    background-color: #ff5c5c;
+    border: 3px solid #000000;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 800;
+    color: #ffffff;
+    cursor: pointer;
+    box-shadow: 2px 4px 0px #000000;
+    transition: transform 0.1s, background-color 0.2s;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.btn-excluir-conta:hover {
+    background-color: #e04343;
+}
+
+.btn-excluir-conta:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
 /* =========================================
-   COLUNA DA FOTO DO PERFIL (TAMANHO 225PX = -10%)
+   COLUNA DA FOTO DO PERFIL
    ========================================= */
 .coluna-foto-perfil {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
-    flex: 1;
+    flex: 0 1 210px;
     width: 100%;
+    max-width: 210px;
+    min-width: 130px;
 }
 
 .container-upload-pagina {
@@ -300,8 +347,10 @@ input[type="password"]::-ms-clear {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 225px !important;
-    height: 225px !important;
+    width: 100% !important;
+    max-width: 210px !important;
+    aspect-ratio: 1 / 1;
+    height: auto !important;
 }
 
 .container-upload-pagina:hover {
@@ -309,19 +358,16 @@ input[type="password"]::-ms-clear {
 }
 
 #avatarWrapper {
-    width: 225px !important;
-    height: 225px !important;
+    width: 100% !important;
+    height: 100% !important;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* PLACEHOLDER 225PX */
 .avatar-preview-placeholder {
-    width: 225px !important;
-    height: 225px !important;
-    min-width: 225px !important;
-    min-height: 225px !important;
+    width: 100% !important;
+    height: 100% !important;
     border-radius: 50% !important;
     background-color: #3bb3ff !important;
     border: 4px solid #000000 !important;
@@ -333,20 +379,17 @@ input[type="password"]::-ms-clear {
 }
 
 .avatar-preview-placeholder i {
-    font-size: 11rem !important;
+    font-size: 8vw !important;
     color: #000000 !important;
     margin-bottom: -15px !important;
 }
 
-/* IMAGEM DA FOTO 225PX */
 .avatar-preview-img,
 .coluna-foto-perfil img {
-    width: 225px !important;
-    height: 225px !important;
-    min-width: 225px !important;
-    min-height: 225px !important;
-    max-width: 225px !important;
-    max-height: 225px !important;
+    width: 100% !important;
+    height: 100% !important;
+    max-width: 210px !important;
+    max-height: 210px !important;
     border-radius: 50% !important;
     object-fit: cover !important;
     border: 4px solid #000000 !important;
@@ -355,13 +398,14 @@ input[type="password"]::-ms-clear {
 
 .titulo-foto-label {
     margin-top: 15px;
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     font-weight: 800;
     color: #000000;
     text-align: center;
     letter-spacing: 0.5px;
     cursor: pointer;
     transition: color 0.2s ease;
+    white-space: nowrap;
 }
 
 .titulo-foto-label:hover {
@@ -369,7 +413,7 @@ input[type="password"]::-ms-clear {
 }
 
 /* =========================================
-   MODAL DO CROPPER (Ajustar Foto)
+   MODAL DO CROPPER
    ========================================= */
 .modal-cropper {
     position: fixed;
@@ -476,12 +520,13 @@ input[type="password"]::-ms-clear {
     flex-direction: column;
     gap: 20px;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .sessao-cores-layout {
     display: flex;
     gap: 20px;
-    align-items: flex-start;
+    align-items: stretch;
     width: 100%;
 }
 
@@ -493,6 +538,7 @@ input[type="password"]::-ms-clear {
     width: 100%;
 }
 
+/* REGRA ANTI-QUEBRA DE PALAVRAS NAS PÍLULAS */
 .materia-pill {
     min-height: 40px;
     border-radius: 20px;
@@ -505,10 +551,26 @@ input[type="password"]::-ms-clear {
     color: #000000;
     cursor: pointer;
     box-shadow: 2px 2px 0px #000000;
-    padding: 6px 12px;
+    padding: 6px 10px;
     text-align: center;
-    word-break: break-word;
+    
+    /* PREVINE QUE AS PALAVRAS QUEBREM AO MEIO */
+    white-space: nowrap;
+    word-break: normal;
+    overflow-wrap: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
+    -ms-hyphens: none;
+    
     transition: transform 0.1s;
+}
+
+.materia-pill span {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: inline-block;
+    max-width: 100%;
 }
 
 .materia-pill:hover {
@@ -556,51 +618,116 @@ input[type="password"]::-ms-clear {
     font-size: 1.5rem;
 }
 
+/* --- CONTROLES ESTILIZADOS E RESPONSIVOS --- */
 .container-controles-estilizados {
     display: flex;
+    flex-direction: row; /* Força ficar lado a lado no desktop */
+    align-items: center;
     gap: 15px;
     width: 100%;
+    flex-wrap: nowrap; /* Evita quebras desnecessárias */
 }
 
 .controles-estilizados {
     flex: 1;
+    min-width: 0;
+    height: 58px; /* Altura fixa confortável para evitar crescimento vertical */
+    min-height: 58px;
+    max-height: 58px;
     background-color: #1da0d0;
     border: 3px solid #000000;
     border-radius: 25px;
-    padding: 8px 15px;
+    padding: 0 16px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     box-shadow: 2px 3px 0px #000000;
     gap: 10px;
+    box-sizing: border-box;
+}
+
+body.fonte-nivel-3 .label-estilizada {
+    font-size: 0.95rem; /* Ajusta o texto para não empurrar o layout no desktop */
+}
+
+body.fonte-nivel-3 .select-arredondado {
+    padding: 5px 22px 5px 10px;
+    font-size: 0.85rem;
+}
+
+/* Aplica o empilhamento (coluna) APENAS em telas menores/mobile */
+@media screen and (max-width: 900px) {
+    .container-controles-estilizados {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .controles-estilizados {
+        width: 100%;
+    }
 }
 
 .label-estilizada {
     color: #ffffff;
-    font-size: 1rem;
+    font-size: 0.95rem;
     font-weight: 800;
     white-space: nowrap;
 }
 
 .select-arredondado {
+    min-width: 65px;
+    max-width: 130px;
+    width: auto;
     background-color: #ffffff;
     border: 2px solid #000000;
     border-radius: 15px;
-    padding: 4px 22px 4px 10px;
-    font-size: 0.8125rem;
+    padding: 5px 28px 5px 14px;
+    font-size: 0.85rem;
     font-weight: 700;
     color: #000000;
     outline: none;
     cursor: pointer;
     appearance: none;
     -webkit-appearance: none;
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23000" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23000" height="20" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
     background-repeat: no-repeat;
-    background-position: right 5px center;
+    background-position: right 8px center;
+    box-shadow: 1px 2px 0px #000000;
+    text-align: center;
+}
+
+.select-arredondado:focus {
+    box-shadow: 2px 3px 0px #000000;
 }
 
 .btn-salvar-preferencias {
     margin: 10px auto 0 auto;
+}
+
+/* =========================================
+   AJUSTES ESPECÍFICOS PARA TAMANHO DE FONTE GRANDE (NÍVEL 3)
+   ========================================= */
+body.fonte-nivel-3 .controles-estilizados {
+    padding: 6px 10px;
+    gap: 6px;
+}
+
+body.fonte-nivel-3 .select-arredondado {
+    padding: 4px 22px 4px 10px;
+    min-width: 58px;
+}
+
+body.fonte-nivel-3 .container-controles-estilizados {
+    flex-direction: column;
+    gap: 10px;
+}
+
+body.fonte-nivel-3 .controles-estilizados {
+    width: 100%;
+}
+
+body.fonte-nivel-3 .materia-pill {
+    padding: 4px 6px;
 }
 
 /* =========================================
@@ -640,6 +767,19 @@ input[type="password"]::-ms-clear {
     box-shadow: 2px 3px 0px #000000;
     position: relative;
     gap: 12px;
+    cursor: pointer;
+    user-select: none;
+    transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
+    padding-top: 16px;
+}
+
+.historico-card:hover {
+    border-color: #1b8fb9;
+}
+
+.historico-card.selecionado {
+    border-color: #1595c4;
+    background-color: #d8f0ff;
 }
 
 .historico-badges {
@@ -716,6 +856,7 @@ input[type="password"]::-ms-clear {
     height: 100%;
     min-height: 60px;
     flex-shrink: 0;
+    padding-top: 18px;
 }
 
 .btn-lixeira {
@@ -737,122 +878,37 @@ input[type="password"]::-ms-clear {
     color: #999999;
 }
 
-/* Centraliza a foto no topo do card de perfil e alinha com os dados */
-.perfil-dropdown .avatar-upload-container {
-    position: relative;
-    width: 90px !important;
-    height: 90px !important;
-    margin: 0 auto 15px auto;
+.checkbox-circulo {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid #777777;
+    background-color: #ffffff;
     display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.perfil-dropdown .avatar-preview,
-.perfil-dropdown .avatar-preview-img {
-    width: 90px !important;
-    height: 90px !important;
-    min-width: 90px !important;
-    min-height: 90px !important;
-    max-width: 90px !important;
-    max-height: 90px !important;
-    border-radius: 50% !important;
-    object-fit: cover !important;
-    border: 3px solid #ff3333 !important;
-}
-
-/* =========================================
-   MODO ESCURO
-   ========================================= */
-body.dark-mode .cards-section,
-body.dark-mode #card-opcoes {
-    background-color: #1a1a1a;
-}
-
-body.dark-mode .container-aside {
-    background-color: #262626;
-}
-
-body.dark-mode .titulo-perfil-aside {
-    background-color: #333333;
-    color: #ffffff;
-}
-
-body.dark-mode .card-btn {
-    background-color: #333333;
-    color: #ffffff;
-}
-
-body.dark-mode .card-btn.active {
-    background-color: #1da0d0;
-}
-
-body.dark-mode .historico-card {
-    background-color: #2a2a2a;
-    color: #ffffff;
-}
-
-body.dark-mode .historico-detalhes h4,
-body.dark-mode .historico-detalhes p,
-body.dark-mode .aviso-minimo,
-body.dark-mode .titulo-foto-label {
-    color: #ffffff;
-}
-
-body.dark-mode .modal-cropper-content {
-    background: #2a2a2a;
-    color: #ffffff;
-}
-
-body.dark-mode .modal-cropper-content h3 {
-    color: #ffffff;
-}
-
-/* Container de ações e botão de exclusão de conta */
-.acoes-perfil-botoes {
-    display: flex;
-    gap: 15px;
     align-items: center;
     justify-content: center;
-    margin-top: 15px;
-    width: 100%;
+    transition: all 0.2s ease;
+    z-index: 2;
 }
 
-.btn-excluir-conta {
-    height: 48px;
-    padding: 0 20px;
-    background-color: #ff5c5c;
-    border: 3px solid #000000;
-    border-radius: 25px;
-    font-size: 1rem;
-    font-weight: 800;
+.checkbox-circulo i {
+    font-size: 0.75rem;
     color: #ffffff;
-    cursor: pointer;
-    box-shadow: 2px 4px 0px #000000;
-    transition: transform 0.1s, background-color 0.2s;
+    opacity: 0;
+    transition: opacity 0.15s ease;
 }
 
-.btn-excluir-conta:hover {
-    background-color: #e04343;
+.checkbox-circulo.ativo {
+    background-color: #1595c4;
+    border-color: #000000;
 }
 
-.btn-excluir-conta:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px #000000;
+.checkbox-circulo.ativo i {
+    opacity: 1;
 }
-
-@media screen and (max-width: 600px) {
-    .acoes-perfil-botoes {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    .btn-salvar-pill, 
-    .btn-excluir-conta {
-        width: 100%;
-    }
-}
-
 
 /* =========================================
    SISTEMA DE SELEÇÃO MÚLTIPLA DO HISTÓRICO
@@ -913,300 +969,128 @@ body.dark-mode .modal-cropper-content h3 {
     box-shadow: 0px 0px 0px #000000;
 }
 
-.historico-card {
-    cursor: pointer;
-    user-select: none;
-    transition: border-color 0.2s, background-color 0.2s, transform 0.1s;
-    padding-top: 16px;
+/* =========================================
+   DROPDOWN DO PERFIL
+   ========================================= */
+.perfil-dropdown .avatar-upload-container {
+    position: relative;
+    width: 90px !important;
+    height: 90px !important;
+    margin: 0 auto 15px auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.historico-card:hover {
-    border-color: #1b8fb9;
+.perfil-dropdown .avatar-preview,
+.perfil-dropdown .avatar-preview-img {
+    width: 90px !important;
+    height: 90px !important;
+    min-width: 90px !important;
+    min-height: 90px !important;
+    max-width: 90px !important;
+    max-height: 90px !important;
+    border-radius: 50% !important;
+    object-fit: cover !important;
+    border: 3px solid #ff3333 !important;
 }
 
-.historico-card.selecionado {
-    border-color: #1595c4;
-    background-color: #d8f0ff;
+/* =========================================
+   MODO ESCURO
+   ========================================= */
+body.dark-mode .cards-section,
+body.dark-mode #card-opcoes {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .container-aside {
+    background-color: #262626;
+}
+
+body.dark-mode .titulo-perfil-aside {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .card-btn {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .card-btn.active {
+    background-color: #1da0d0;
+}
+
+body.dark-mode .historico-card {
+    background-color: #2a2a2a;
+    color: #ffffff;
 }
 
 body.dark-mode .historico-card.selecionado {
     background-color: #1a3d52;
 }
 
-.checkbox-circulo {
-    position: absolute;
-    top: 10px;
-    right: 12px;
-    width: 22px;
-    height: 22px;
-    border-radius: 50%;
-    border: 2px solid #777777;
-    background-color: #ffffff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    z-index: 2;
-}
-
-.checkbox-circulo i {
-    font-size: 0.75rem;
+body.dark-mode .historico-detalhes h4,
+body.dark-mode .historico-detalhes p,
+body.dark-mode .aviso-minimo,
+body.dark-mode .titulo-foto-label {
     color: #ffffff;
-    opacity: 0;
-    transition: opacity 0.15s ease;
 }
 
-.checkbox-circulo.ativo {
-    background-color: #1595c4;
-    border-color: #000000;
+body.dark-mode .modal-cropper-content {
+    background: #2a2a2a;
+    color: #ffffff;
 }
 
-.checkbox-circulo.ativo i {
-    opacity: 1;
+body.dark-mode .modal-cropper-content h3 {
+    color: #ffffff;
 }
-
-.historico-acoes {
-    padding-top: 18px;
-}
-
 
 /* =========================================
-   ADAPTAÇÃO RESPONSIVA E CORREÇÕES (MEDIA QUERIES)
+   MEDIA QUERIES - RESPONSIVIDADE
    ========================================= */
 
-@media screen and (max-width: 900px) {
-    .cards-section {
-        width: 98%;
-        margin: 15px auto;
-        border-radius: 20px;
-    }
-
-    .container-principal {
-        flex-direction: column;
-        min-height: auto;
-    }
-
-    .container-aside {
-        width: 100%;
-        border-right: none;
-        border-bottom: 3px solid #000000;
-        padding: 12px;
-    }
-
-    .titulo-perfil-aside {
-        margin-bottom: 12px;
-        font-size: 1.125rem;
-        padding: 8px 0;
-    }
-
-    .container-aside-btn {
-        flex-direction: row;
-        justify-content: center;
-        gap: 10px;
-    }
-
-    .card-btn {
-        height: 70px;
-        border-radius: 14px;
-        gap: 4px;
-    }
-
-    .aba-icon {
-        font-size: 1.5rem;
-    }
-
-    .btn-aba-title {
-        font-size: 0.75rem;
-    }
-
-    #card-opcoes {
-        padding: 20px 15px;
-    }
-
+@media screen and (max-width: 1050px) {
     .perfil-container-flex {
         flex-direction: column-reverse;
         align-items: center;
-        gap: 20px;
+        gap: 25px;
+    }
+
+    .coluna-dados-perfil {
+        max-width: 100%;
+        width: 100%;
     }
 
     .coluna-foto-perfil {
-        max-width: 100%;
+        max-width: 180px;
+        flex: 0 0 180px;
     }
 
-    .coluna-dados-perfil {
-        max-width: 100%;
-    }
-
-    .sessao-cores-layout {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .color-picker-box-real {
-        max-width: 100%;
-    }
-
-    .color-picker-preview {
-        height: 120px;
-    }
-
-    .container-controles-estilizados {
-        flex-direction: column;
+    .container-upload-pagina {
+        max-width: 180px !important;
     }
 }
 
-@media screen and (max-width: 600px) {
-    .cards-section {
-        width: 100%;
-        margin: 5px 0;
-        border-radius: 0;
-        border-left: none;
-        border-right: none;
-    }
-
-    #card-opcoes {
-        padding: 15px 10px;
-    }
-
-    .container-aside-btn {
-        gap: 6px;
-    }
-
-    .card-btn {
-        height: 60px;
-        padding: 4px;
-        border-radius: 10px;
-    }
-
-    .btn-aba-title {
-        font-size: 0.625rem;
-    }
-
-    .aba-icon {
-        font-size: 1.125rem;
-    }
-
-    .avatar-preview-placeholder,
-    .avatar-preview-img,
-    .coluna-foto-perfil img {
-        width: 150px !important;
-        height: 150px !important;
-        min-width: 150px !important;
-        min-height: 150px !important;
-        max-width: 150px !important;
-        max-height: 150px !important;
-    }
-
-    .avatar-preview-placeholder i {
-        font-size: 7.5rem !important;
-    }
-
-    .grid-materias-pills {
-        grid-template-columns: 1fr;
-    }
-
+/* --- NOVO BREAKPOINT: TELAS A PARTIR DE 1016PX --- */
+@media screen and (max-width: 1016px) {
     .materia-pill {
         font-size: 0.75rem;
-        min-height: 38px;
-    }
-
-    .historico-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-
-    .historico-badges {
-        width: 100%;
-        flex-direction: row;
-    }
-
-    .badge-materia, 
-    .badge-dificuldade-pill {
-        flex: 1;
-    }
-
-    .historico-acoes {
-        width: 100%;
-        flex-direction: row-reverse;
-        align-items: center;
-        min-height: auto;
-        padding-top: 5px;
-        border-top: 1px dashed #cccccc;
-    }
-
-    .controles-estilizados {
-        flex-direction: column;
-        align-items: flex-start;
+        padding: 5px 6px;
     }
 
     .select-arredondado {
-        width: 100%;
+        padding: 5px 24px 5px 12px;
+        font-size: 0.8125rem;
+        min-width: 58px;
+    }
+
+    .label-estilizada {
+        font-size: 0.875rem;
     }
 }
 
-/* =========================================
-   MEDIA QUERIES - RESPONSIVIDADE COMPLETA
-   ========================================= */
-
-/* --- TELAS GRANDES E ULTRAWIDE (Acima de 1440px) --- */
-@media screen and (min-width: 1440px) {
-    .cards-section {
-        max-width: 1200px;
-    }
-
-    .container-aside {
-        width: 280px;
-    }
-
-    .coluna-dados-perfil {
-        max-width: 450px;
-    }
-
-    .avatar-preview-placeholder,
-    .avatar-preview-img,
-    .coluna-foto-perfil img,
-    .container-upload-pagina,
-    #avatarWrapper {
-        width: 250px !important;
-        height: 250px !important;
-        min-width: 250px !important;
-        min-height: 250px !important;
-    }
-}
-
-/* --- DESKTOPS MÉDIOS E TABLETS LANDSCAPE (Até 1200px) --- */
-@media screen and (max-width: 1200px) {
-    .cards-section {
-        width: 98%;
-        margin: 20px auto;
-    }
-
-    .perfil-container-flex {
-        gap: 20px;
-    }
-
-    .coluna-dados-perfil {
-        max-width: 320px;
-    }
-
-    .avatar-preview-placeholder,
-    .avatar-preview-img,
-    .coluna-foto-perfil img,
-    .container-upload-pagina,
-    #avatarWrapper {
-        width: 190px !important;
-        height: 190px !important;
-        min-width: 190px !important;
-        min-height: 190px !important;
-    }
-
-    .avatar-preview-placeholder i {
-        font-size: 9.5rem !important;
-    }
-}
-
-/* --- TABLETS PORTRAIT E DISPOSITIVOS MÉDIOS (Até 900px) --- */
+/* --- TABLETS E DISPOSITIVOS MÉDIOS (Até 900px) --- */
 @media screen and (max-width: 900px) {
     .cards-section {
         width: 98%;
@@ -1256,18 +1140,6 @@ body.dark-mode .historico-card.selecionado {
         padding: 20px 15px;
     }
 
-    .perfil-container-flex {
-        flex-direction: column-reverse;
-        align-items: center;
-        gap: 20px;
-    }
-
-    .coluna-foto-perfil,
-    .coluna-dados-perfil {
-        max-width: 100%;
-        width: 100%;
-    }
-
     .sessao-cores-layout {
         flex-direction: column;
         align-items: center;
@@ -1283,10 +1155,20 @@ body.dark-mode .historico-card.selecionado {
 
     .container-controles-estilizados {
         flex-direction: column;
+        gap: 12px;
+    }
+
+    .controles-estilizados {
+        width: 100%;
+        flex: 1 1 100%;
+    }
+
+    .acoes-perfil-botoes {
+        justify-content: center;
     }
 }
 
-/* --- SMARTPHONES GRANDES (Até 768px) --- */
+/* --- SMARTPHONES (Até 768px) --- */
 @media screen and (max-width: 768px) {
     .historico-header-acoes {
         justify-content: center;
@@ -1305,7 +1187,7 @@ body.dark-mode .historico-card.selecionado {
     }
 }
 
-/* --- SMARTPHONES PADRÃO (Até 600px) --- */
+/* --- MOBILE COMPACTO (Até 600px) --- */
 @media screen and (max-width: 600px) {
     .cards-section {
         width: 100%;
@@ -1337,21 +1219,25 @@ body.dark-mode .historico-card.selecionado {
         font-size: 1.125rem;
     }
 
-    .avatar-preview-placeholder,
-    .avatar-preview-img,
-    .coluna-foto-perfil img,
-    .container-upload-pagina,
-    #avatarWrapper {
-        width: 140px !important;
-        height: 140px !important;
-        min-width: 140px !important;
-        min-height: 140px !important;
-        max-width: 140px !important;
-        max-height: 140px !important;
+    .coluna-foto-perfil {
+        max-width: 140px;
+        flex: 0 0 140px;
     }
 
-    .avatar-preview-placeholder i {
-        font-size: 7rem !important;
+    .container-upload-pagina {
+        max-width: 140px !important;
+    }
+
+    .acoes-perfil-botoes {
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+    }
+
+    .btn-salvar-pill, 
+    .btn-excluir-conta {
+        width: 100%;
+        justify-content: center;
     }
 
     .grid-materias-pills {
@@ -1389,12 +1275,18 @@ body.dark-mode .historico-card.selecionado {
     }
 
     .controles-estilizados {
-        flex-direction: column;
-        align-items: flex-start;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 10px 12px;
+    }
+
+    .label-estilizada {
+        font-size: 0.85rem;
     }
 
     .select-arredondado {
-        width: 100%;
+        font-size: 0.8rem;
+        padding: 5px 20px 5px 8px;
     }
 
     .modal-cropper-content {
@@ -1413,8 +1305,8 @@ body.dark-mode .historico-card.selecionado {
     }
 }
 
-/* --- SMARTPHONES PEQUENOS (Até 360px) --- */
-@media screen and (max-width: 360px) {
+/* --- TELAS MUITO PEQUENAS (Até 380px) --- */
+@media screen and (max-width: 380px) {
     .btn-aba-title {
         font-size: 0.55rem;
         letter-spacing: 0;
@@ -1429,5 +1321,16 @@ body.dark-mode .historico-card.selecionado {
     .btn-excluir-conta {
         font-size: 0.875rem;
         height: 42px;
+    }
+
+    .controles-estilizados {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .select-arredondado {
+        width: 100%;
+        text-align: center;
     }
 }

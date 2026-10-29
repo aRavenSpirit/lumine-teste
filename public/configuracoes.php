@@ -102,6 +102,28 @@
     let cropperInstance = null;
     let arquivoSelecionado = null;
 
+    // Função para alterar Pequeno/Médio/Grande para P/M/G dinamicamente
+    function atualizarTextoSelectFonte() {
+        const selectFonte = document.getElementById('pref-fonte');
+        if (!selectFonte) return;
+
+        const eTelaReduzida = window.innerWidth <= 1016;
+
+        const opt1 = selectFonte.querySelector('option[value="1"]');
+        const opt2 = selectFonte.querySelector('option[value="2"]');
+        const opt3 = selectFonte.querySelector('option[value="3"]');
+
+        if (opt1) opt1.textContent = eTelaReduzida ? 'P' : 'Pequeno';
+        if (opt2) opt2.textContent = eTelaReduzida ? 'M' : 'Médio';
+        if (opt3) opt3.textContent = eTelaReduzida ? 'G' : 'Grande';
+    }
+
+    // Aplica classe auxiliar no body ao mudar a fonte para ajustar o layout no tamanho Grande
+    function aplicarClasseTamanhoFonteBody(nivel) {
+        document.body.classList.remove('fonte-nivel-1', 'fonte-nivel-2', 'fonte-nivel-3');
+        document.body.classList.add(`fonte-nivel-${nivel}`);
+    }
+
     async function carregarPerfil(tipo, event = null) {
 
         const cardOpcoes = document.getElementById('card-opcoes');
@@ -128,6 +150,7 @@
 
             if (typeof aplicarTamanhoFonteGlobal === "function" && data && data.tamanho_fonte) {
                 aplicarTamanhoFonteGlobal(data.tamanho_fonte);
+                aplicarClasseTamanhoFonteBody(data.tamanho_fonte);
             }
 
             let html = '';
@@ -249,7 +272,7 @@
                              style="background-color:${corAtual}"
                              onclick="selecionarMateriaCor('${item.key}')">
 
-                            ${item.nome}
+                            <span>${item.nome}</span>
 
                             <input type="color"
                                    id="picker-${item.key}"
@@ -307,7 +330,7 @@
 
                             <div class="controles-estilizados">
                                 <label for="pref-fonte" class="label-estilizada">Tamanho da letra:</label>
-                                <select id="pref-fonte" class="select-arredondado" aria-label="Selecione o tamanho do texto" onchange="aplicarTamanhoFonteGlobal(this.value)">
+                                <select id="pref-fonte" class="select-arredondado" aria-label="Selecione o tamanho do texto" onchange="mudarFonteLocal(this.value)">
                                     <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
                                     <option value="2" ${data.tamanho_fonte == 2 || !data.tamanho_fonte ? 'selected' : ''}>Médio</option>
                                     <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
@@ -375,10 +398,21 @@
 
             cardOpcoes.innerHTML = html;
 
+            if (tipo === 'preferencias') {
+                atualizarTextoSelectFonte();
+            }
+
         } catch (error) {
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
         }
+    }
+
+    function mudarFonteLocal(val) {
+        if (typeof aplicarTamanhoFonteGlobal === "function") {
+            aplicarTamanhoFonteGlobal(val);
+        }
+        aplicarClasseTamanhoFonteBody(val);
     }
 
     let selecionadosHistorico = new Set();
@@ -980,7 +1014,8 @@
     let resizeTimer;
 
     window.addEventListener('resize', () => {
-        // Cancela o timer anterior para evitar múltiplas chamadas consecutivas
+        atualizarTextoSelectFonte();
+
         clearTimeout(resizeTimer);
 
         // Aguarda 250ms após o término do redimensionamento
