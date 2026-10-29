@@ -16,6 +16,10 @@
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+
+    <!-- CropperJS CSS & JS para o Mini-Sistema de Recorte 1:1 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 </head>
 
 <body>
@@ -55,9 +59,26 @@
                     <h3>Selecione uma opção ao lado</h3>
                 </div>
 
+                <!-- Modal de Edição Básica de Perfil -->
                 <div id="modalPerfil" class="modal" style="display:none;">
                     <div class="modal-content">
                         <div id="modal-form-content"></div>
+                    </div>
+                </div>
+
+                <!-- MODAL DO MINI-SISTEMA DE CORTE DE FOTO -->
+                <div id="modalCropperFoto" class="modal-cropper" style="display:none;">
+                    <div class="modal-cropper-content">
+                        <h3>Ajustar Foto</h3>
+                        
+                        <div class="img-container-cropper">
+                            <img id="imagemParaCorte" src="" alt="Imagem para cortar">
+                        </div>
+
+                        <div class="botoes-cropper">
+                            <button type="button" class="btn-cancelar-cropper" onclick="fecharModalCropper()">Cancelar</button>
+                            <button type="button" class="btn-confirmar-cropper" onclick="confirmarCorteEUpload()">Salvar Foto</button>
+                        </div>
                     </div>
                 </div>
 
@@ -78,6 +99,8 @@
     const api = "../config/home.php";
     let dadosUsuarioLocal = {};
     let materiaSelecionadaAtual = 'portugues';
+    let cropperInstance = null;
+    let arquivoSelecionado = null;
 
     async function carregarPerfil(tipo, event = null) {
 
@@ -103,7 +126,6 @@
             const resData = await fetch(`${api}?tipo=${tipo}`);
             const data = await resData.json();
 
-            // Aplica visualmente o tamanho da fonte salvo na sessão/localStorage apos carregar o json
             if (typeof aplicarTamanhoFonteGlobal === "function" && data && data.tamanho_fonte) {
                 aplicarTamanhoFonteGlobal(data.tamanho_fonte);
             }
@@ -121,11 +143,14 @@
                     </option>
                 `).join('');
 
-                const fotoHtml = data.foto_perfil 
+                const possuiFoto = !!data.foto_perfil;
+
+                const fotoHtml = possuiFoto 
                     ? `<img src="${data.foto_perfil}" class="avatar-preview-img" id="avatarImg">`
                     : `<div class="avatar-preview-placeholder" id="avatarImg"><i class="fas fa-user"></i></div>`;
 
-                // Dentro da função carregarPerfil(tipo), no bloco "if (tipo === 'usuario')":
+                const textoFoto = possuiFoto ? "Altere a foto" : "Adicione uma foto";
+
                 html = `
                     <div class="perfil-discord-style perfil-container-flex">
                         
@@ -177,9 +202,9 @@
                                 <div id="avatarWrapper">
                                     ${fotoHtml}
                                 </div>
-                                <input type="file" id="inputFotoPerfilPagina" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
+                                <input type="file" id="inputFotoPerfilPagina" accept="image/*" style="display: none;" onchange="iniciarCropperPerfil(this)">
                             </div>
-                            <span class="titulo-foto-label">ADICIONE SUA<br>FOTO AQUI</span>
+                            <span class="titulo-foto-label" onclick="document.getElementById('inputFotoPerfilPagina').click()">${textoFoto}</span>
                         </div>
 
                     </div>
@@ -235,7 +260,6 @@
                     `;
                 }).join('');
 
-                // Sincroniza o tema do Banco de Dados com o localStorage e com a página
                 const temaBanco = (data.tema !== undefined && data.tema !== null) ? String(data.tema) : (localStorage.getItem("theme") === "dark" ? "1" : "0");
                 if (temaBanco === "1") {
                     localStorage.setItem("theme", "dark");
@@ -306,7 +330,6 @@
 
                     return `
                         <div class="historico-card" id="tentativa-${h.id_tentativa}" onclick="toggleSelecaoCard(${h.id_tentativa}, event)">
-                            <!-- Círculo de seleção no canto superior direito -->
                             <div class="checkbox-circulo" id="check-${h.id_tentativa}">
                                 <i class="fas fa-check"></i>
                             </div>
@@ -361,7 +384,6 @@
     let selecionadosHistorico = new Set();
 
     function toggleSelecaoCard(idTentativa, event) {
-        // Evita disparar a seleção ao clicar diretamente na lixeira individual
         if (event.target.closest('.btn-lixeira')) return;
 
         const card = document.getElementById(`tentativa-${idTentativa}`);
@@ -383,7 +405,6 @@
     function alternarSelecionarTodos() {
         const todosCards = document.querySelectorAll('.historico-card');
         
-        // Se todos já estão selecionados, desseleciona tudo
         if (selecionadosHistorico.size === todosCards.length && todosCards.length > 0) {
             selecionadosHistorico.clear();
             todosCards.forEach(card => {
@@ -392,7 +413,6 @@
                 if (check) check.classList.remove('ativo');
             });
         } else {
-            // Seleciona todos
             todosCards.forEach(card => {
                 const id = parseInt(card.id.replace('tentativa-', ''));
                 selecionadosHistorico.add(id);
@@ -546,7 +566,6 @@
         formData.append('tema', tema);
         formData.append('fonte', fonte);
 
-        // Aplica o tamanho da fonte globalmente no HTML no ato do salvamento
         if (typeof aplicarTamanhoFonteGlobal === "function") {
             aplicarTamanhoFonteGlobal(fonte);
         }
@@ -644,92 +663,127 @@
     }
 
     function salvarGeral() {
-    const nome = document.getElementById('edit-nome-input')?.value;
-    const email = document.getElementById('edit-email-input')?.value;
-    const id_esc = document.getElementById('edit-escolaridade')?.value;
-    const senha = document.getElementById('edit-senha-input')?.value;
-    const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
+        const nome = document.getElementById('edit-nome-input')?.value;
+        const email = document.getElementById('edit-email-input')?.value;
+        const id_esc = document.getElementById('edit-escolaridade')?.value;
+        const senha = document.getElementById('edit-senha-input')?.value;
+        const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
 
-    // Se o usuário digitou algo no campo de senha mas os requisitos não foram atingidos
-    if (senha && !senhaValidaConfig) {
-        alert("A nova senha não cumpre todos os requisitos de segurança exigidos.");
-        return;
-    }
-
-    if (senha && senha !== confirmaSenha) {
-        alert("As senhas não coincidem!");
-        return;
-    }
-
-    const formData = new FormData();
-    formData.append('acao', 'atualizar_perfil_completo');
-    formData.append('nome', nome);
-    formData.append('email', email);
-    formData.append('escolaridade', id_esc);
-    if (senha) formData.append('senha', senha);
-    formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
-
-    fetch(api, {
-        method: 'POST',
-        body: formData
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success || data.mensagem) {
-            alert("Perfil atualizado com sucesso!");
-            carregarPerfil('usuario');
-        } else {
-            alert("Erro ao salvar: " + (data.error || data.erro || "Verifique o backend PHP"));
+        if (senha && !senhaValidaConfig) {
+            alert("A nova senha não cumpre todos os requisitos de segurança exigidos.");
+            return;
         }
-    })
-    .catch(err => {
-        console.error("Erro na requisição:", err);
-        alert("Erro na comunicação com o servidor.");
-    });
-}
 
-    function salvarCampoIndividual(campo, valor) {
-        if(!valor) return;
-        const formData = new FormData();
-        formData.append('acao', 'atualizar_perfil');
-        formData.append('campo', campo);
-        formData.append('valor', valor);
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
-        fetch(api, { method: 'POST', body: formData });
-    }
+        if (senha && senha !== confirmaSenha) {
+            alert("As senhas não coincidem!");
+            return;
+        }
 
-    async function uploadFotoPerfil(input) {
-        if (!input.files || !input.files[0]) return;
-        
         const formData = new FormData();
-        formData.append('acao', 'upload_foto');
-        formData.append('foto', input.files[0]);
+        formData.append('acao', 'atualizar_perfil_completo');
+        formData.append('nome', nome);
+        formData.append('email', email);
+        formData.append('escolaridade', id_esc);
+        if (senha) formData.append('senha', senha);
         formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        try {
-            const res = await fetch(api, { method: 'POST', body: formData });
-            const data = await res.json();
-
-            if (data.success) {
+        fetch(api, {
+            method: 'POST',
+            body: formData
+        })
+        .then(r => r.json())
+        .then(data => {
+            if (data.success || data.mensagem) {
+                alert("Perfil atualizado com sucesso!");
                 carregarPerfil('usuario');
-                carregarUsuario();
             } else {
-                alert("Erro ao enviar imagem: " + (data.error || "Erro desconhecido"));
+                alert("Erro ao salvar: " + (data.error || data.erro || "Verifique o backend PHP"));
             }
-        } catch (e) {
-            console.error("Erro no upload", e);
+        })
+        .catch(err => {
+            console.error("Erro na requisição:", err);
+            alert("Erro na comunicação com o servidor.");
+        });
+    }
+
+    /* MINI-SISTEMA DE RECORTE DE FOTO */
+    function iniciarCropperPerfil(input) {
+        if (!input.files || !input.files[0]) return;
+
+        arquivoSelecionado = input.files[0];
+        const reader = new FileReader();
+
+        reader.onload = function (e) {
+            const imgElement = document.getElementById('imagemParaCorte');
+            imgElement.src = e.target.result;
+
+            const modal = document.getElementById('modalCropperFoto');
+            modal.style.display = 'flex';
+
+            if (cropperInstance) {
+                cropperInstance.destroy();
+            }
+
+            cropperInstance = new Cropper(imgElement, {
+                aspectRatio: 1, // Recorte quadrado / circular 1:1
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 0.9,
+                restore: false,
+                guides: true,
+                center: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false,
+            });
+        };
+
+        reader.readAsDataURL(arquivoSelecionado);
+        input.value = '';
+    }
+
+    function fecharModalCropper() {
+        document.getElementById('modalCropperFoto').style.display = 'none';
+        if (cropperInstance) {
+            cropperInstance.destroy();
+            cropperInstance = null;
         }
     }
 
-    document.getElementById('cores-artes')?.addEventListener('input', function(e) {
-        const novaCor = e.target.value;
+    function confirmarCorteEUpload() {
+        if (!cropperInstance) return;
 
-        const cardExemplo = document.querySelector('.card-exemplo-artes');
+        const canvas = cropperInstance.getCroppedCanvas({
+            width: 400,
+            height: 400,
+            imageSmoothingEnabled: true,
+            imageSmoothingQuality: 'high',
+        });
 
-        if (cardExemplo) {
-            cardExemplo.style.backgroundColor = novaCor;
-        }
-    });
+        canvas.toBlob(async function (blob) {
+            const formData = new FormData();
+            formData.append('acao', 'upload_foto');
+            formData.append('foto', blob, 'avatar_perfil.png');
+            formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+
+            try {
+                const res = await fetch(api, { method: 'POST', body: formData });
+                const data = await res.json();
+
+                if (data.success) {
+                    fecharModalCropper();
+                    carregarPerfil('usuario');
+                    carregarUsuario();
+                } else {
+                    alert("Erro ao enviar imagem: " + (data.error || "Erro desconhecido"));
+                }
+            } catch (e) {
+                console.error("Erro no upload", e);
+                alert("Falha de conexão ao enviar imagem.");
+            }
+        }, 'image/png');
+    }
 
     function toggleSidebar() {
         const sidebar = document.getElementById('sidebar');
@@ -813,7 +867,7 @@
                             <div class="avatar-edit-badge">
                                 <i class="fas fa-pencil-alt"></i>
                             </div>
-                            <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
+                            <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="iniciarCropperPerfil(this)">
                         </div>
 
                         <h4 style="text-align: center;">Minha Conta</h4>
@@ -838,7 +892,7 @@
         carregarPerfil('usuario'); 
     };
 
-    let senhaValidaConfig = true; // Verdadeiro por padrão, pois no perfil a alteração da senha é opcional
+    let senhaValidaConfig = true;
 
     function validarSenhaConfiguracoes() {
         const senhaInput = document.getElementById("edit-senha-input");
@@ -853,7 +907,6 @@
 
         const valor = senhaInput.value;
 
-        // Se o campo estiver vazio, a senha é válida (pois não haverá alteração de senha)
         if (valor.length === 0) {
             balaoAviso.style.display = "none";
             segLength.className = "segmento";
@@ -864,7 +917,6 @@
             return;
         }
 
-        // Validações individuais
         const temTamanho = valor.length >= 8;
         const temMaiuscula = /[A-Z]/.test(valor);
         const temNumero = /[0-9]/.test(valor);
@@ -877,7 +929,6 @@
 
         senhaValidaConfig = temTamanho && temMaiuscula && temNumero && temEspecial;
 
-        // Gerenciador do Balão Flutuante
         if (!temTamanho) {
             balaoAviso.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i> Falta: No mínimo 8 caracteres`;
             balaoAviso.style.display = "block";
