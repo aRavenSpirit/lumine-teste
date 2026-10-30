@@ -51,13 +51,10 @@ body {
     border-right: 1px solid rgba(0, 0, 0, 0.05);
     display: flex;
     flex-direction: column;
-    
-    /* Importante: Impede que o conteúdo "vaze" ao fechar */
     overflow-x: hidden; 
     overflow-y: hidden;
 }
 
-/* Ativa scroll apenas quando aberta */
 .sidebar.open {
     width: 250px; 
     overflow-y: auto; 
@@ -65,7 +62,7 @@ body {
 
 
 /* ==================================================================
-   2. CUSTOMIZAÇÃO DA SCROLLBAR (SÓ APARECE QUANDO ABERTA)
+   2. CUSTOMIZAÇÃO DA SCROLLBAR
    ================================================================== */
 .sidebar.open::-webkit-scrollbar {
     width: 10px;
@@ -95,7 +92,7 @@ body {
 
 
 /* ==================================================================
-   3. CONTAINER HEADER (LOGO E HAMBURGUER)
+   3. CONTAINER HEADER
    ================================================================== */
 .sidebar-header {
     width: 100%;
@@ -104,20 +101,17 @@ body {
     align-items: center;
     padding-top: 15px; 
     transition: padding 0.4s ease;
-    /* Impede que o header mude de tamanho ou suma ao fechar */
     flex-shrink: 0; 
 }
 
-/* Quando a Sidebar abre, o recuo do topo aumenta */
 .sidebar.open .sidebar-header {
     padding-top: 40px; 
 }
 
 
 /* ==================================================================
-   4. COMPONENTES INTERNOS DO HEADER (LOGO E MENU TRIGGER)
+   4. COMPONENTES INTERNOS DO HEADER
    ================================================================== */
-/* Bloco do Logotipo */
 .logo-container {
     height: 60px;
     display: flex;
@@ -133,7 +127,6 @@ body {
     transform: scale(1.1);
 }
 
-/* Imagem do Logo */
 .sidebar-logo {
     width: 50px; 
     height: auto;
@@ -144,7 +137,6 @@ body {
     width: 100px; 
 }
 
-/* Ícone de Hambúrguer */
 .menu-trigger {
     font-size: 1.5rem;
     color: #000000;
@@ -163,14 +155,13 @@ body {
 }
 
 /* ==================================================================
-   5. SISTEMA DE BOTÃO FIXO ALINHADO À SIDEBAR
+   5. BOTÃO FIXO DA SIDEBAR
    ================================================================== */
 
-/* SIDEBAR FECHADA: Fica centralizado nos 80px e abaixo da logo pequena */
 .sidebar .btn-sair-flutuante {
     position: fixed;
-    top: 140px;         /* Mantém a altura atual que deu certo na barra fechada */
-    left: 17px;         /* Centralizado horizontalmente nos 80px */
+    top: 140px;         
+    left: 17px;         
     width: 46px;
     height: 46px;
     background-color: #e74c3c;
@@ -182,18 +173,16 @@ body {
     align-items: center;
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
-    z-index: 3000;      /* Passa por cima do overflow da sidebar */
+    z-index: 3000;      
     padding: 0;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Ícone da seta */
 .sidebar .btn-sair-flutuante i {
     font-size: 1rem;
     color: #ffffff;
 }
 
-/* Texto oculto na barra fechada */
 .sidebar .btn-sair-flutuante .btn-sair-text {
     display: none;
     opacity: 0;
@@ -203,17 +192,15 @@ body {
     font-weight: 600;
 }
 
-/* SIDEBAR ABERTA: O botão desce e expande para não cobrir o hambúrguer */
 .sidebar.open .btn-sair-flutuante {
-    top: 230px;         /* CORREÇÃO: Desce o botão para abrir espaço para o Header/Hambúrguer */
-    left: 20px;         /* Margem elegante da borda da tela */
-    width: 210px;       /* Vira o retângulo */
+    top: 230px;         
+    left: 20px;         
+    width: 210px;       
     border-radius: 8px;
     justify-content: flex-start;
     padding-left: 20px;
 }
 
-/* Revela o texto quando a barra abrir */
 .sidebar.open .btn-sair-flutuante .btn-sair-text {
     display: inline-block;
     opacity: 1;
@@ -221,15 +208,11 @@ body {
     color: #ffffff;
 }
 
-/* Hover */
 .sidebar .btn-sair-flutuante:hover {
     background-color: #c0392b;
     transform: scale(1.05);
 }
 
-/* ==================================================================
-   CONTROLE PARA DISPOSITIVOS MÓVEIS (Abaixo de 900px)
-   ================================================================== */
 @media (max-width: 900px) {
     .sidebar .btn-sair-flutuante {
         display: none !important;
@@ -238,7 +221,7 @@ body {
 
 
 /* ==================================================================
-   6. MENU DE NAVEGAÇÃO / LINKS DA SIDEBAR
+   6. MENU DE NAVEGAÇÃO
    ================================================================== */
 .sidebar nav {
     margin-top: 30px;
@@ -260,7 +243,6 @@ body {
     transition: all 0.3s ease;
 }
 
-/* Revela os links normais quando a sidebar abre */
 .sidebar.open nav a {
     visibility: visible;
     pointer-events: all;
@@ -296,10 +278,9 @@ body {
     width: 100%;
     box-shadow: 0 2px 10px rgba(0,0,0,0.05);
     z-index: 1000;
-    position: relative; /* Para posicionar elementos mobile */
+    position: relative;
 }
 
-/* Escondidos por padrão no Desktop */
 .mobile-logo-central, .mobile-profile-right {
     display: none;
 }
@@ -355,24 +336,22 @@ body {
     margin-left: 12px;
 }
 
-/* --- DROPDOWN DE PERFIL (MOUSEDOWN / HOVER) --- */
+/* --- DROPDOWN DE PERFIL --- */
 
-/* Garante o posicionamento relativo no item de perfil original */
 .item-perfil {
     position: relative;
 }
 
-/* A caixinha de informações (escondida por padrão) */
 .perfil-dropdown {
     display: none;
     position: absolute;
     right: 10px;
-    top: 80%; /* Alinha logo abaixo da sua navbar de 80px */
+    top: 80%;
     background-color: #ffffff;
     min-width: 240px;
     box-shadow: 0px 8px 24px rgba(0, 0, 0, 0.15);
     border-radius: 15px;
-    border: 2px solid #ff5757; /* Combinando com a cor vermelha do seu hover de perfil */
+    border: 2px solid #ff5757;
     padding: 15px;
     z-index: 9999;
     text-align: left;
@@ -380,7 +359,6 @@ body {
     animation: fadeInDown 0.3s ease;
 }
 
-/* Mini seta apontando para cima */
 .perfil-dropdown::before {
     content: '';
     position: absolute;
@@ -391,12 +369,10 @@ body {
     border-color: transparent transparent #ff5757 transparent;
 }
 
-/* Mostra a caixinha quando passa o mouse sobre o elemento pai */
 .item-perfil:hover .perfil-dropdown {
     display: block;
 }
 
-/* Conteúdo interno da caixinha */
 .perfil-dropdown h4 {
     font-family: 'gliker', sans-serif;
     color: #ff5757;
@@ -422,7 +398,6 @@ body {
     color: #111;
 }
 
-/* Botão de Logout personalizado */
 .btn-logout {
     display: flex;
     align-items: center;
@@ -445,24 +420,22 @@ body {
     background-color: #d94545;
 }
 
-/* Garante que o contêiner limite tudo que está dentro dele como um círculo perfeito */
 .avatar-upload-container {
     position: relative;
     width: 80px;
     height: 80px;
     margin: 0 auto 15px auto;
     cursor: pointer;
-    border-radius: 50%; /* Mantém o contêiner redondo */
+    border-radius: 50%;
 }
 
-/* Força tanto a DIV do rostinho quanto a IMG a ocuparem o espaço perfeitamente */
 .avatar-preview {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    object-fit: cover; /* Recorta as laterais da imagem mantendo a proporção original, sem distorcer! */
-    object-position: center; /* Centraliza o foco do corte no meio da imagem */
-    background-color: #8A4FFF; /* Roxo padrão */
+    object-fit: cover;
+    object-position: center;
+    background-color: #8A4FFF;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -470,10 +443,9 @@ body {
     font-size: 2rem;
     border: 3px solid #ff5757;
     transition: filter 0.2s;
-    box-sizing: border-box; /* Evita que a borda altere o tamanho final do círculo */
+    box-sizing: border-box;
 }
 
-/* Garante o comportamento correto caso o seletor procure diretamente pela tag img */
 #avatarImg {
     width: 80px;
     height: 80px;
@@ -481,7 +453,6 @@ body {
     object-fit: cover;
 }
 
-/* O badge do lápis indicador */
 .avatar-edit-badge {
     position: absolute;
     bottom: 0;
@@ -500,7 +471,6 @@ body {
     transition: transform 0.2s;
 }
 
-/* Efeito de hover ao passar o mouse na foto */
 .avatar-upload-container:hover .avatar-preview {
     filter: brightness(0.8);
 }
@@ -593,7 +563,9 @@ main {
     color: #333;
 }
 
-/* --- MODAL --- */
+/* ==================================================================
+   MODAL E ESTILIZAÇÃO DOS QUIZZES (2 COLUNAS 1:1)
+   ================================================================== */
 
 .modal { 
     display: none; 
@@ -606,67 +578,235 @@ main {
 }
 
 .modal-content { 
-    background: #fff; 
-    margin: 5vh auto; 
-    padding: 0; /* Removido padding para a barra de scroll encostar na direita */
-    width: 90%; 
-    max-width: 700px; 
-    border-radius: 25px; 
+    background: #ffffff; 
+    margin: 4vh auto; 
+    padding: 0;
+    width: 92%; 
+    max-width: 820px; 
+    border-radius: 24px; 
     position: relative;
-    box-shadow: 0 25px 50px rgba(0,0,0,0.3);
-    max-height: 85vh;
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+    max-height: 88vh;
     display: flex;
-    flex-direction: column; /* Alinha header e body verticalmente */
-    overflow: hidden; /* Garante que o conteúdo não saia das bordas arredondadas */
+    flex-direction: column;
+    overflow: hidden;
+    border: 2px solid #e2e8f0;
 }
 
-/* Novo estilo para manter o topo fixo */
 .modal-header {
-    padding: 25px 30px 10px 30px;
+    padding: 24px 30px 18px 30px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background-color: #ffffff;
 }
 
 .modal-header h2 {
     font-family: 'gliker', sans-serif;
     color: #1595C4;
+    font-size: 1.75rem;
     margin: 0;
+    letter-spacing: 0.5px;
 }
 
 .modal-close { 
     font-size: 2rem; 
     cursor: pointer; 
-    color: #bbb;
-    transition: color 0.3s;
+    color: #a0aec0;
+    transition: all 0.2s ease;
+    line-height: 1;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
 }
 
-.modal-close:hover { color: #ff5757; }
+.modal-close:hover { 
+    color: #ff5757; 
+    background-color: #fff0f0;
+}
 
-/* A mágica acontece aqui: só o corpo tem scroll */
+.modal-divider {
+    border: 0;
+    height: 1px;
+    background: linear-gradient(to right, #1595C4, #0cc0df, transparent);
+    margin: 0 30px;
+    opacity: 0.3;
+}
+
 .modal-body {
-    padding: 10px 30px 30px 30px;
+    padding: 24px 30px 30px 30px;
     overflow-y: auto;
     flex-grow: 1;
+    background-color: #f8fafc;
 }
 
-/* Scrollbar fina para não tapar o conteúdo */
-.modal-body::-webkit-scrollbar {
-    width: 8px;
+/* Mensagens de estado */
+.loading-quiz-msg, .no-quiz-msg {
+    text-align: center;
+    padding: 30px;
+    font-size: 1.1rem;
+    color: #64748b;
+    font-weight: 600;
 }
 
-.modal-body::-webkit-scrollbar-thumb {
+/* --- GRID DE QUIZZES (2 COLUNAS 1:1) --- */
+.quizzes-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+    width: 100%;
+}
+
+.quiz-card-link { 
+    text-decoration: none; 
+    color: inherit; 
+    display: block;
+}
+
+.quiz-card {
+    background: #ffffff;
+    border: 2px solid #e2e8f0;
+    padding: 18px 20px;
+    border-radius: 16px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+    position: relative;
+    overflow: hidden;
+}
+
+.quiz-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 5px;
+    height: 100%;
     background: #1595C4;
-    border-radius: 10px;
+    border-radius: 16px 0 0 16px;
+    transition: background 0.25s ease;
 }
 
+.quiz-card:hover {
+    border-color: #1595C4;
+    background: #ffffff;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 25px rgba(21, 149, 196, 0.15);
+}
+
+.quiz-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.quiz-questoes-badge {
+    background-color: #f1f5f9;
+    color: #475569;
+    font-size: 0.78rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.quiz-title {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: #1e293b;
+    margin-bottom: 6px;
+    line-height: 1.3;
+}
+
+.quiz-conteudo {
+    font-size: 0.82rem;
+    color: #64748b;
+    margin-bottom: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.quiz-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: auto;
+    padding-top: 10px;
+    border-top: 1px dashed #e2e8f0;
+}
+
+.badge-materia {
+    background-color: #e0f2fe;
+    color: #0369a1;
+    font-weight: 800;
+    font-size: 0.75rem;
+    padding: 4px 10px;
+    border-radius: 8px;
+    letter-spacing: 0.5px;
+}
+
+.badge-dificuldade {
+    font-size: 0.72rem;
+    font-weight: 800;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+}
+
+.dif-facil {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.dif-medio, .dif-intermediario {
+    background-color: #fef9c3;
+    color: #a16207;
+}
+
+.dif-dificil {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+.btn-play-icon {
+    width: 32px;
+    height: 32px;
+    background-color: #1595C4;
+    color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.25s ease;
+}
+
+.quiz-card:hover .btn-play-icon {
+    background-color: #ffbd59;
+    color: #333;
+    transform: scale(1.1);
+}
+
+/* --- MODAL CONFIRMAÇÃO --- */
 .modal-overlay {
     display: none; 
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    z-index: 9999; /* Valor bem alto para ficar acima do outro modal */
+    z-index: 9999;
     justify-content: center;
     align-items: center;
 }
@@ -740,43 +880,6 @@ main {
     border-color: #00a14b;
 }
 
-.conteudo-item {
-    background: #f0f7ff;
-    padding: 15px 20px;
-    margin: 10px 0;
-    border-radius: 12px;
-    cursor: pointer;
-    font-weight: 700;
-    transition: background 0.3s;
-    border-left: 5px solid #1595C4;
-}
-
-.conteudo-item:hover { background: #e3f0fe; }
-
-.quizzes-box {
-    padding-left: 20px;
-    margin-bottom: 15px;
-    border-left: 2px dashed #ccc;
-    margin-left: 10px;
-}
-
-.quiz-card {
-    background: #fff;
-    border: 1px solid #eee;
-    padding: 12px;
-    margin: 8px 0;
-    border-radius: 10px;
-    transition: all 0.2s;
-}
-
-.quiz-card:hover {
-    border-color: #ffbd59;
-    background: #fffcf5;
-    transform: translateX(5px);
-}
-
-.quiz-card-link { text-decoration: none; color: inherit; }
-
 /* --- FOOTER --- */
 footer {
     width: 100%;
@@ -825,7 +928,6 @@ body.no-scroll {
     width: 100%;
     height: 100%;
     z-index: 5000;
-    /* Fundo mais escuro para destacar o conteúdo e a imagem */
     background: linear-gradient(to bottom, rgb(227, 240, 254, 1), rgba(21, 149, 196, 0.8)), 
                 url('../img/background-index.jpg') no-repeat center center;
     background-size: cover;
@@ -841,7 +943,6 @@ body.no-scroll {
     left: 0;
 }
 
-/* ÁREA INTERNA COM SCROLL */
 .mobile-menu-scroll {
     flex: 1;
     padding: 90px 30px 40px 30px;
@@ -850,7 +951,6 @@ body.no-scroll {
     -webkit-overflow-scrolling: touch;
 }
 
-/* Customização Scrollbar (Lumine Style) */
 .mobile-menu-scroll::-webkit-scrollbar {
     width: 5px;
 }
@@ -859,14 +959,13 @@ body.no-scroll {
     border-radius: 10px;
 }
 
-/* BOTÃO FECHAR */
 .mobile-menu-close {
     position: absolute;
     top: 25px;
     right: 25px;
     width: 45px;
     height: 45px;
-    background: rgb(21, 149, 196, 0.2);;
+    background: rgb(21, 149, 196, 0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -876,7 +975,7 @@ body.no-scroll {
     cursor: pointer;
     z-index: 5001;
     transition: all 0.3s ease;
-    border: 1px solid rgb(21, 149, 196, 1);;
+    border: 1px solid rgb(21, 149, 196, 1);
 }
 
 .mobile-menu-close:active {
@@ -884,7 +983,6 @@ body.no-scroll {
     background: rgba(255, 255, 255, 0.2);
 }
 
-/* OS 4 ITENS PRINCIPAIS */
 .nav-links-mobile { 
     list-style: none; 
     width: 100%;
@@ -908,7 +1006,6 @@ body.no-scroll {
     border: 1px solid transparent;
 }
 
-/* HOVER DOS ITENS PRINCIPAIS (Azul Lumine) */
 .nav-links-mobile a:hover,
 .nav-links-mobile a:active {
     background: #1595C4;
@@ -917,7 +1014,6 @@ body.no-scroll {
     box-shadow: 0 10px 20px rgba(21, 149, 196, 0.4);
 }
 
-/* DIVISOR */
 .mobile-menu hr {
     width: 100%;
     border: 0;
@@ -925,7 +1021,6 @@ body.no-scroll {
     margin: 25px 0;
 }
 
-/* LISTA DE MATÉRIAS (Cards Modernos) */
 #menuMateriasMobile {
     width: 100%;
     display: flex;
@@ -953,24 +1048,18 @@ body.no-scroll {
     border-color: rgba(255, 255, 255, 0.4);
 }
 
-/* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
-body.no-scroll {
-    overflow: hidden;
-}
-
 /* --- ANIMAÇÕES --- */
 @keyframes fadeInDown {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* --- RESPONSIVIDADE (FOCO NA MUDANÇA DO HEADER) --- */
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 900px) {
     .sidebar { display: none; } 
     .main-container { margin-left: 0; width: 100%; }
     .main-container.sidebar-open { margin-left: 0; width: 100%; }
     
-    /* Configuração do Header Mobile de 3 colunas */
     .navbar-home {
         justify-content: space-between;
         padding: 0 20px;
@@ -981,13 +1070,13 @@ body.no-scroll {
     .hamburger-mobile { 
         display: block; 
         padding-left: 0;
-        flex: 1; /* Coluna 1 */
+        flex: 1; 
     }
 
     .mobile-logo-central {
         display: flex;
         justify-content: center;
-        flex: 2; /* Coluna 2 (Centro) */
+        flex: 2; 
     }
 
     .mobile-logo-central img {
@@ -998,16 +1087,15 @@ body.no-scroll {
     .mobile-profile-right {
         display: flex;
         justify-content: flex-end;
-        flex: 1; /* Coluna 3 */
+        flex: 1; 
     }
 
-    /* Ajuste de escala para o Boas-vindas */
     #bemvindo { font-size: 1.875rem; }
     .group-cards { grid-template-columns: 1fr; }
     
     footer {
         flex-direction: column;
-        align-items: center; /* Centraliza as seções no meio da tela */
+        align-items: center; 
         text-align: center;
         gap: 50px;
     }
@@ -1017,7 +1105,7 @@ body.no-scroll {
         width: 100%;
         display: flex;
         flex-direction: column;
-        align-items: center; /* Alinha o conteúdo da seção ao centro */
+        align-items: center; 
     }
 
     .footer-section div, 
@@ -1025,197 +1113,43 @@ body.no-scroll {
         width: 100%;
     }
 
-    /* O segredo está aqui: centralizamos o "bloco" de itens, 
-       mas os itens dentro do bloco ficam alinhados à esquerda (ícone com ícone) */
     .footer-section p {
-        width: fit-content;      /* Ocupa apenas o espaço necessário */
-        margin-left: auto;       /* Margens automáticas nas laterais */
-        margin-right: auto;      /* fazem o item centralizar mantendo o alinhamento interno */
+        width: fit-content;      
+        margin-left: auto;       
+        margin-right: auto;      
         justify-content: flex-start;
-        min-width: 140px;        /* Define uma largura mínima para que os ícones fiquem um sob o outro */
+        min-width: 140px;        
     }
 }
 
-
-/* O Banner */
-#cookieBanner {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: #1595C4;
-    color: #fff;
-    padding: 15px 25px;
-    border-radius: 10px;
-    border: 3px solid #333;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 9999;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-
-    /* Animação Simples: Nome, Tempo, Tipo de movimento */
-    animation: entrarSuave 0.5s ease-out forwards;
-}
-
-/* Os Botões */
-.cookie-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-button {
-    padding: 8px 15px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    transition: 0.2s;
-}
-
-.options-button {
-    display: flex;
-    gap: 10px;
-}
-.btn-box {
-    padding: 20px 40px;
-    border-radius: 5px;
-    border: 3px solid #333;
-    border-radius: 10px;
-    color: #333; 
-    font-size: 1.5rem;
-    text-transform: uppercase;
-}
-
-.btn-ok { 
-    background: #2ecc71; 
+/* Ajuste das 2 colunas do modal em telas pequenas */
+@media (max-width: 640px) {
+    .quizzes-grid {
+        grid-template-columns: 1fr; /* Vira 1 coluna no celular para não comprimir texto */
+    }
     
-}
-
-.btn-no { 
-    background: #c0392b; 
-}
-
-.politica {
-    text-align: right;
-}
-.politica a {
-    color: #fff;
-}
-
-button:hover { opacity: 0.8; }
-
-/* Regra da Animação: Só Opacidade e Subida leve */
-@keyframes entrarSuave {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    .modal-content {
+        width: 95%;
+        margin: 2vh auto;
     }
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    
+    .modal-header, .modal-body {
+        padding-left: 18px;
+        padding-right: 18px;
     }
 }
 
-/* Ajuste para Celular */
-@media (max-width: 600px) {
-    #cookieBanner {
-        flex-direction: column;
-        text-align: center;
-        gap: 15px;
-    }
-}
-
-/* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-
+/* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
     width: 10px; 
 }
 
 ::-webkit-scrollbar-track {
-    /* Deixando transparente o fundo da barra, ela parece estar mais 'dentro' */
     background: transparent; 
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #1595C4, #0cc0df); 
     border-radius: 10px;
-    /* Adiciona uma borda invisível para criar margem entre a barra e a borda do modal */
     border: 3px solid #fff; 
-}
-
-
-/* =========================================
-   MODO ESCURO - HEADER (NAVBAR)
-========================================= */
-body.dark-mode .navbar-home {
-    background-color: #1a1a1a !important; /* Fundo cinza escuro */
-    border-bottom: 1px solid #333; /* Linha sutil para separar do conteúdo */
-}
-
-/* Cor dos links do menu no topo */
-body.dark-mode .nav-links-home a,
-body.dark-mode .nav-links-home .perfil-link span {
-    color: #e0e0e0 !important; 
-}
-
-/* Efeito ao passar o mouse nos links do topo */
-body.dark-mode .nav-links-home a:hover {
-    color: #ffffff !important;
-    background-color: #333; /* Fundo levemente mais claro no hover, se houver */
-}
-
-/* Ícone do usuário e menu hambúrguer mobile */
-body.dark-mode .profile-icon,
-body.dark-mode .hamburger-mobile {
-    color: #ffffff !important;
-}
-
-
-/* =========================================
-   MODO ESCURO - SIDEBAR (MENU LATERAL)
-========================================= */
-body.dark-mode .sidebar {
-    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
-                url('../img/background-index-transparente.png') no-repeat center center;
-    border-right: 1px solid #333;
-}
-
-
-body.dark-mode .menu-trigger {
-    color: #ffffff !important;
-}
-
-/* Links das matérias na sidebar */
-body.dark-mode .sidebar nav a {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .sidebar nav a:hover {
-    background-color: #333 !important;
-    color: #ffffff !important;
-}
-
-
-/* CARDS*/
-
-.card-materia{
-    border: none;
-}
-/* =========================================
-   MODO ESCURO - MENU MOBILE (SE HOUVER)
-========================================= */
-body.dark-mode .mobile-menu,
-body.dark-mode .mobile-menu-scroll {
-    background-color: #1a1a1a !important;
-}
-
-body.dark-mode .nav-links-mobile a,
-body.dark-mode .mobile-menu-close {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .nav-links-mobile a:hover {
-    background-color: #333 !important;
 }

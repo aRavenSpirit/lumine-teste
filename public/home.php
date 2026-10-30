@@ -7,11 +7,13 @@
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
     // O session.php já garante que existe usuário autenticado
-    $id_usuario_logado = intval($_SESSION['usuario_id']);$sql_pref = "SELECT cores_materia, tamanho_fonte, tema_escuro 
+    $id_usuario_logado = intval($_SESSION['usuario_id']);
+    $sql_pref = "SELECT cores_materia, tamanho_fonte, tema_escuro 
                  FROM configuracoes 
                  WHERE id_usuario = $id_usuario_logado";
                  
-    $result_pref =$conn->query($sql_pref);$tamanho_fonte_salvo = 2; // Valor padrão (Médio)
+    $result_pref = $conn->query($sql_pref);
+    $tamanho_fonte_salvo = 2; // Valor padrão (Médio)
     $tema_escuro_salvo = 0;   // Valor padrão (Claro)
 
     // ==========================================================
@@ -37,8 +39,8 @@
     // ==========================================================
     // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
     // ==========================================================
-    if ($result_pref &&$result_pref->num_rows > 0) {
-        $row_pref =$result_pref->fetch_assoc();
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
         
         if (isset($row_pref['tamanho_fonte'])) {
             $tamanho_fonte_salvo = intval($row_pref['tamanho_fonte']);
@@ -48,20 +50,11 @@
             $tema_escuro_salvo = intval($row_pref['tema_escuro']);
         }
 
-        $cores_banco = json_decode($row_pref['cores_materia'],
-            true
-        );
+        $cores_banco = json_decode($row_pref['cores_materia'], true);
         if (is_array($cores_banco)) {
-
-            $cores_usuario = array_merge(
-                $cores_usuario,$cores_banco
-            );
-
+            $cores_usuario = array_merge($cores_usuario, $cores_banco);
         }
     }
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -72,11 +65,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
+    <link rel="stylesheet" href="./style/cookie.css">
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
-
-    
 </head>
 
 <body>
@@ -96,28 +88,14 @@
 
         <section class="cards-section">
             <div class="group-cards" id="cardsConteudos">
-                </div>
+            </div>
         </section>
     </main>
 
     <?php renderFooter(); ?>
 
-    <div id="cookieBanner" style="display: none;">
-        <div class="cookie-text">
-            <h3>Aceita cookies?</h3>
-            <p>Usamos cookies para deixar sua experiência por aqui mais brilhante e personalizada. Aceita que sejam guardadas umas migalhas digitais para melhorar sua navegação?</p>
-        </div>
-        <div class="cookie-buttons">
-            <div class="options-button">
-                <button class="btn-ok btn-box" onclick="interagirCookie('accept')">Aceitar</button>
-                <button class="btn-no btn-box" onclick="interagirCookie('decline')">Recusar</button>
-            </div>
-            <div class="politica"><a href="">politica de privacidade</a></div>
-        </div>
-    </div>
-
+    <!-- Importação do script desacoplado de cookies (cria e gerencia o HTML) -->
     <script src="js/cookies.js"></script>
-
 
 </div>
 

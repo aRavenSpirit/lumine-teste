@@ -3,9 +3,9 @@
  */
 
 const ESCALAS_FONTE = {
-    "1": "85%",   // Pequeno (~13.6px)
-    "2": "100%",  // Médio (~16px - Padrão)
-    "3": "115%"   // Grande (~18.4px)
+    "1": "100%",   
+    "2": "115%",  
+    "3": "130%"  
 };
 
 function aplicarTamanhoFonteGlobal(nivel) {

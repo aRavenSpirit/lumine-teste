@@ -1,0 +1,127 @@
+/* ==================================================================
+   BANNER DE COOKIES (ESTILO PADRÃO / MODULARIZADO)
+   ================================================================== */
+#cookieBanner {
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: auto;
+    max-width: 400px;
+    background: #ffffff; /* Fundo todo azul */
+    color: #ffffff; /* Textos em branco */
+    padding: 20px;
+    border-radius: 12px;
+    border: 2px solid #0b506b; /* Borda em azul escuro */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    z-index: 9999;
+    /* Sombrinha fixa em azul escuro */
+    box-shadow: 8px 8px 0px #0b506b; 
+    font-family: 'Open_Sans', sans-serif;
+    
+    /* Transição suave de subida mantendo a relação com a sombra */
+    transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    
+    /* Animação de surgimento via opacidade */
+    animation: aparecerSuave 0.4s ease-out forwards;
+}
+
+/* Animação ao passar o mouse: Sobe exatamente igual ao modo escuro mantendo a distância exata da sombra */
+#cookieBanner:hover {
+    bottom: 26px; /* Sobe suavemente sem esticar a sombra */
+    box-shadow: 8px 8px 0px #1595C4; /* Mantém a sombra fixa exatamente na mesma proporção */
+}
+
+.cookie-text h3 {
+    font-family: 'gliker', sans-serif;
+    color: #1595C4;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+    letter-spacing: 0.8px;
+}
+
+.cookie-text p {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #334155;
+}
+
+.cookie-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.options-button {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-box {
+    flex: 1;
+    padding: 10px 15px;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.2s ease;
+}
+
+.btn-ok {
+    background: #2ecc71;
+    color: #ffffff;
+}
+
+.btn-ok:hover {
+    background: #27ae60;
+    transform: translateY(-2px);
+}
+
+.btn-no {
+    background: #e74c3c;
+    color: #ffffff;
+}
+
+.btn-no:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+}
+
+.politica {
+    text-align: center;
+}
+
+.politica a {
+    color: #1595C4;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.politica a:hover {
+    opacity: 1;
+}
+
+/* ==================================================================
+   ANIMAÇÃO DE ENTRADA E RESPONSIVIDADE
+   ================================================================== */
+@keyframes aparecerSuave {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 600px) {
+    #cookieBanner {
+        left: 15px;
+        right: 15px;
+        max-width: none;
+    }
+}

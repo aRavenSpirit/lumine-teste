@@ -139,4 +139,145 @@ body.dark-mode .welcome-text h1{
     border: 3px solid #d2e8ff;
 }
 
+/* Estilo do dropdown de perfil no Modo Escuro */
+body.dark-mode .perfil-dropdown {
+    background-color: #2a2a2a !important;
+    color: #ffffff !important;
+    border: 1px solid #444444 !important;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .perfil-dropdown h4,
+body.dark-mode .perfil-dropdown p,
+body.dark-mode .perfil-dropdown strong {
+    color: #ffffff !important;
+}
+
+body.dark-mode .perfil-dropdown hr {
+    border-color: #444444 !important;
+}
+
+/* Card Quiz */
+
+body.dark-mode .navbar-home {
+    background-color: #1a1a1a !important; 
+    border-bottom: 1px solid #333; 
+}
+
+body.dark-mode .nav-links-home a,
+body.dark-mode .nav-links-home .perfil-link span {
+    color: #e0e0e0 !important; 
+}
+
+body.dark-mode .nav-links-home a:hover {
+    color: #ffffff !important;
+    background-color: #333; 
+}
+
+body.dark-mode .profile-icon,
+body.dark-mode .hamburger-mobile {
+    color: #ffffff !important;
+}
+
+body.dark-mode .sidebar {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center;
+    border-right: 1px solid #333;
+}
+
+body.dark-mode .menu-trigger {
+    color: #ffffff !important;
+}
+
+body.dark-mode .sidebar nav a {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .sidebar nav a:hover {
+    background-color: #333 !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .modal-header {
+    background-color: #1e293b;
+}
+
+body.dark-mode .modal-body {
+    background-color: #0f172a;
+}
+
+body.dark-mode .quiz-card {
+    background-color: #1e293b;
+    border-color: #334155;
+}
+
+body.dark-mode .quiz-card:hover {
+    background-color: #1e293b;
+    border-color: #1595C4;
+}
+
+body.dark-mode .quiz-title {
+    color: #f1f5f9;
+}
+
+body.dark-mode .quiz-conteudo {
+    color: #94a3b8;
+}
+
+body.dark-mode .quiz-questoes-badge {
+    background-color: #334155;
+    color: #cbd5e1;
+}
+
+body.dark-mode .card-materia{
+    border: none;
+}
+
+body.dark-mode .mobile-menu,
+body.dark-mode .mobile-menu-scroll {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode .nav-links-mobile a,
+body.dark-mode .mobile-menu-close {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .nav-links-mobile a:hover {
+    background-color: #333 !important;
+}
+
+
+/* ==================================================================
+   BANNER DE COOKIES - MODO ESCURO (body.dark-mode)
+   ================================================================== */
+body.dark-mode #cookieBanner {
+    background: #1595C4; /* Fundo todo azul */
+    color: #ffffff; /* Textos em branco */
+    border: 2px solid #0b506b;
+    box-shadow: 8px 8px 0px #0b506b; /* Sombrinha azul escuro na direita/baixo */
+}
+
+body.dark-mode .cookie-text h3 {
+    color: #ffffff;
+    letter-spacing: 0.8px; /* Mantém o leve espaçamento entre as letras no modo escuro */
+}
+
+body.dark-mode .cookie-text p {
+    color: #ffffff;
+}
+
+body.dark-mode .politica a {
+    color: #ffffff;
+    opacity: 0.9;
+}
+
+body.dark-mode .politica a:hover {
+    opacity: 1;
+}
 
