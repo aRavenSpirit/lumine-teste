@@ -6,7 +6,6 @@
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
-    // O session.php já garante que existe usuário autenticado
     $id_usuario_logado = intval($_SESSION['usuario_id']);
     $sql_pref = "SELECT cores_materia, tamanho_fonte, tema_escuro 
                  FROM configuracoes 
@@ -36,6 +35,7 @@
         "sociologia" => "#16a085",
         "educacao_fisica" => "#c0392b",
     ];
+
     // ==========================================================
     // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
     // ==========================================================
@@ -94,7 +94,7 @@
 
     <?php renderFooter(); ?>
 
-    <!-- Importação do script desacoplado de cookies (cria e gerencia o HTML) -->
+    <!-- Importação do script desacoplado de cookies -->
     <script src="js/cookies.js"></script>
 
 </div>
@@ -105,7 +105,7 @@
             <h2 id="tituloModal">Quizzes</h2>
             <span onclick="fecharModal()" class="modal-close">&times;</span>
         </div>
-        <hr>
+        <hr class="modal-divider">
         <div class="modal-body">
             <div id="corpoModal"></div>
         </div>
@@ -164,15 +164,12 @@ function carregarUsuario() {
             const nomeUsuario = u.nome ? u.nome.toUpperCase() : "ALUNO";
             document.getElementById("bemvindo").innerHTML = `SEJA BEM-VINDO, <span class="nome-destaque">${nomeUsuario}</span>!!`;
             
-            // --- NOVO: Se o usuário já tiver foto, atualiza a imagem no HEADER (Navbar superior) ---
             const linkPerfilHeader = document.querySelector('.item-perfil a');
             if (linkPerfilHeader && u.foto_perfil) {
                 const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
                 if (iconeRoxo) {
-                    // Substitui o círculo roxo com o ícone de usuário por uma imagem circular correspondente
                     iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
                 } else {
-                    // Caso já seja uma imagem, apenas updates o src
                     const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
                     if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
                         imagemHeaderExistente.src = u.foto_perfil;
@@ -180,14 +177,12 @@ function carregarUsuario() {
                 }
             }
 
-            // Captura o item de perfil para montar o Dropdown
             const itemPerfil = document.querySelector('.item-perfil');
             
             if (itemPerfil) {
                 const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                 if (antigoDropdown) antigoDropdown.remove();
 
-                // Define se exibe a foto real em formato <img> ou o layout do rostinho original
                 const fotoHtml = u.foto_perfil 
                     ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
                     : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
@@ -230,17 +225,11 @@ function carregarMenuSidebar() {
 
             dados.forEach(m => {
                 let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                
-                // Normaliza o nome da matéria para buscar a cor correta mapeada (Ex: "Matemática" vira "matematica")
                 let chaveMateria = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
-                
-                // Busca a cor correspondente do banco ou usa o azul padrão como fallback
                 let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
 
-                // Link na Sidebar
                 menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
                 
-                // Card inicial na tela - Agora injetando dinamicamente a cor do banco na parte branca (.card-body)
                 cardsIniciais += `
                     <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
                         <div class="card-banner">
@@ -256,7 +245,6 @@ function carregarMenuSidebar() {
 }
 
 function carregarConteudos(idMateria, nomeMateria) {
-    // Fecha menus mobile se abertos
     fecharMenuMobile();
     
     document.querySelector(".subtitle").innerText = `CONTEÚDOS DE: ${nomeMateria.toUpperCase()}`;
@@ -300,36 +288,60 @@ function abrirModalQuizzes(idConteudo, nomeConteudo) {
     const corpo = document.getElementById('corpoModal');
     document.getElementById('tituloModal').innerText = nomeConteudo;
     modal.style.display = "block";
-    corpo.innerHTML = "<p>Buscando quizzes...</p>";
+    corpo.innerHTML = "<div class='loading-quiz-msg'>Buscando quizzes...</div>";
 
     fetch(api + `?tipo=quizzes&id_conteudo=${idConteudo}`)
         .then(res => res.json())
         .then(quizzes => {
-            let html = "";
             if (quizzes.length === 0) {
-                html = "<p>Sem quizzes para este conteúdo no momento.</p>";
+                corpo.innerHTML = "<div class='no-quiz-msg'>Sem quizzes para este conteúdo no momento.</div>";
             } else {
+                let html = "<div class='quizzes-grid'>";
                 quizzes.forEach(q => {
                     let siglaMateria = q.nome_materia ? q.nome_materia.substring(0, 3).toUpperCase() : "QUIZ";
+                    let difClasse = "dif-facil";
+                    let difNome = (q.dificuldade || "Fácil").toLowerCase();
+
+                    if (difNome.includes("médio") || difNome.includes("medio") || difNome.includes("intermed")) {
+                        difClasse = "dif-medio";
+                    } else if (difNome.includes("difícil") || difNome.includes("dificil")) {
+                        difClasse = "dif-dificil";
+                    }
 
                     html += `
                         <a href="quiz.php?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
                             <div class="quiz-card">
-                                <span class="quiz-numero">${q.total_questoes}</span>
+                                <div>
+                                    <div class="quiz-card-header">
+                                        <span class="quiz-questoes-badge">
+                                            <i class="fas fa-question-circle"></i> ${q.total_questoes} ${q.total_questoes == 1 ? 'questão' : 'questões'}
+                                        </span>
+                                    </div>
 
-                                <h4>${q.nome}</h4>
+                                    <h4 class="quiz-title">${q.nome}</h4>
+                                    <p class="quiz-conteudo">
+                                        <i class="fas fa-book-open"></i> ${nomeConteudo}
+                                    </p>
+                                </div>
 
-                                <p class="quiz-conteudo">Conteúdo: ${nomeConteudo}</p>
-
-                                <div class="quiz-badges">
-                                    <span class="badge-materia">${siglaMateria}</span>
-                                    <span class="badge-dificuldade">${q.dificuldade.toUpperCase()}</span>
+                                <div class="quiz-footer">
+                                    <div class="quiz-badges">
+                                        <span class="badge-materia">${siglaMateria}</span>
+                                        <span class="badge-dificuldade ${difClasse}">${q.dificuldade.toUpperCase()}</span>
+                                    </div>
+                                    <div class="btn-play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
                                 </div>
                             </div>
                         </a>`;
                 });
+                html += "</div>";
+                corpo.innerHTML = html;
+                
+                // Força recálculo imediato de layout do CSS ao abrir o modal
+                forcarAtualizacaoCSSModal();
             }
-            corpo.innerHTML = html;
         });
 }
 
@@ -351,10 +363,36 @@ function fecharModal() {
     document.getElementById('meuModal').style.display = "none"; 
 }
 
-// Mantém apenas os eventos específicos de modais nesta página
 window.onclick = (event) => {
     if (event.target == document.getElementById('meuModal')) fecharModal();
 };
+
+// ==========================================================
+// SISTEMA DE REFRESH DINÂMICO PARA EVITAR BUGS DE CSS NO RESIZE
+// ==========================================================
+function forcarAtualizacaoCSSModal() {
+    const modalContent = document.querySelector('.modal-content');
+    if (modalContent) {
+        modalContent.style.transform = 'translateZ(0)';
+        requestAnimationFrame(() => {
+            modalContent.style.transform = 'none';
+        });
+    }
+}
+
+// Atualização suave via ResizeObserver e evento de Window Resize
+window.addEventListener('resize', () => {
+    forcarAtualizacaoCSSModal();
+});
+
+const observerResize = new ResizeObserver(() => {
+    forcarAtualizacaoCSSModal();
+});
+
+const modalElem = document.getElementById('meuModal');
+if (modalElem) {
+    observerResize.observe(modalElem);
+}
 </script>
 
 </body>

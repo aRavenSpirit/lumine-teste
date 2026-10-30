@@ -139,6 +139,10 @@ body.dark-mode .welcome-text h1{
     border: 3px solid #d2e8ff;
 }
 
+body.dark-mode #tituloModal {
+    color: #ffffff;
+}
+
 /* Estilo do dropdown de perfil no Modo Escuro */
 body.dark-mode .perfil-dropdown {
     background-color: #2a2a2a !important;
