@@ -61,6 +61,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
+    <link rel="stylesheet" href="./style/cookie.css">
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
@@ -85,22 +86,8 @@
 
     <?php renderFooter(); ?>
 
-    <div id="cookieBanner" style="display: none;">
-        <div class="cookie-text">
-            <h3>Aceita cookies?</h3>
-            <p>Usamos cookies para deixar sua experiência por aqui mais brilhante e personalizada. Aceita que sejam guardadas umas migalhas digitais para melhorar sua navegação?</p>
-        </div>
-        <div class="cookie-buttons">
-            <div class="options-button">
-                <button class="btn-ok btn-box" onclick="interagirCookie('accept')">Aceitar</button>
-                <button class="btn-no btn-box" onclick="interagirCookie('decline')">Recusar</button>
-            </div>
-            <div class="politica"><a href="">politica de privacidade</a></div>
-        </div>
-    </div>
-
+    <!-- Importação do script desacoplado de cookies -->
     <script src="js/cookies.js"></script>
-
 
 </div>
 

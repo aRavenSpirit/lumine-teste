@@ -11,6 +11,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Recomendados - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
+    <link rel="stylesheet" href="./style/cookie.css">
     <link rel="stylesheet" href="./style/novidades.css"> 
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
@@ -51,9 +52,12 @@
     </main>
 
     <?php renderFooter(); ?>
+
+    <script src="js/cookies.js"></script>
 </div>
 
-<div id="modalConfirmacao" class="modal-overlay">
+<!-- Forçado style="display: none;" garantindo que o modal não abra no carregamento da página -->
+<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
     <div class="modal-content-confirm">
         <p>deseja entrar no quiz?</p>
         <img src="img/LUMINE-5con.ico" alt="logo">
@@ -75,7 +79,7 @@ let urlDestinoQuiz = "";
 window.onload = () => {
     carregarMenuSidebarFixo();
     carregarQuizzesRecomendados();
-    carregarUsuario();     // <--- Adicionado para carregar a foto no header
+    carregarUsuario();
 };
 
 function carregarMenuSidebarFixo() {
@@ -83,8 +87,8 @@ function carregarMenuSidebarFixo() {
         .then(r => r.json())
         .then(dados => {
             const menu = dados.map(m => `<a href="home.php"><span>${m.nome_materia}</span></a>`).join("");
-            document.getElementById("menuMaterias").innerHTML = menu;
-            document.getElementById("menuMateriasMobile").innerHTML = menu;
+            if (document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menu;
+            if (document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menu;
         })
         .catch(e => console.error("Erro na sidebar:", e));
 }
@@ -119,13 +123,13 @@ function renderizarCards(lista) {
     const container = document.getElementById("containerCards");
     let html = "";
     
-    if (lista.length === 0) { 
+    if (!lista || lista.length === 0) { 
         container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Nenhum quiz encontrado para a sua escolaridade no momento.</p>"; 
         return; 
     }
 
     lista.forEach((q, index) => {
-        let imgNome = q.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
+        let imgNome = (q.nome_materia || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
         
         let difTexto = "Não definido";
         let difClasse = "dif-padrao";
@@ -134,16 +138,18 @@ function renderizarCards(lista) {
         else if (q.id_dificuldade == 2) { difTexto = "Médio"; difClasse = "dif-media"; }
         else if (q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
-        // 🎯 Correção aqui: Trocado q.nome_conteudo por q.conteudo para bater com o AS conteudo do PHP
+        // Sanitize do nome do quiz para evitar quebra do atributo HTML/JS
+        const nomeQuizSanitizado = (q.nome || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+
         html += `
-            <div onclick="prepararEntrada('${q.nome.replace(/'/g, "\\'")}', ${q.id})" class="card-materia">
+            <div onclick="prepararEntrada('${nomeQuizSanitizado}', ${q.id})" class="card-materia" style="cursor: pointer;">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
                     <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
                 </div>
                 <div class="card-body">
                     <p>${q.nome}</p>
-                    <span class="card-subtexto">${q.nome_materia} • ${q.conteudo}</span>
+                    <span class="card-subtexto">${q.nome_materia} • ${q.conteudo || ''}</span>
                     <span class="tag-dificuldade ${difClasse}">${difTexto}</span>
                 </div>
             </div>`;
@@ -154,10 +160,9 @@ function renderizarCards(lista) {
 function filtrarGeral() {
     const termo = document.getElementById('inputBusca').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const filtrados = listaQuizzesGlobal.filter(q => 
-        q.nome.toLowerCase().includes(termo) || 
-        q.nome_materia.toLowerCase().includes(termo) || 
-        // 🎯 Correção aqui também: Trocado q.nome_conteudo por q.conteudo
-        q.conteudo.toLowerCase().includes(termo)
+        (q.nome && q.nome.toLowerCase().includes(termo)) || 
+        (q.nome_materia && q.nome_materia.toLowerCase().includes(termo)) || 
+        (q.conteudo && q.conteudo.toLowerCase().includes(termo))
     );
     renderizarCards(filtrados);
 }
@@ -176,47 +181,37 @@ document.getElementById('btnConfirmarEntrada').onclick = () => {
     if (urlDestinoQuiz) window.location.href = urlDestinoQuiz;
 };
 
-window.onclick = (e) => {
-    if (e.target == document.getElementById('modalConfirmacao')) fecharConfirmacao();
-}
+window.addEventListener('click', (e) => {
+    const modal = document.getElementById('modalConfirmacao');
+    if (e.target === modal) fecharConfirmacao();
+});
 
 function carregarUsuario() {
     fetch(api + "?tipo=usuario")
         .then(r => r.json())
         .then(u => {
-            // 1. Atualiza a imagem no HEADER (Navbar superior Desktop)
             const linkPerfilHeader = document.querySelector('.item-perfil a');
             if (linkPerfilHeader && u.foto_perfil) {
                 const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
                 if (iconeUsuario) {
                     iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                } else {
-                    const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                    if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                        imagemHeaderExistente.src = u.foto_perfil;
-                    }
                 }
             }
             
-            // 2. Atualiza a foto no menu mobile (Navbar superior Mobile)
             const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
             if (linkPerfilMobile && u.foto_perfil) {
                 linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
             }
 
-            // 3. MONTA E ADICIONA O DROPDOWN DO PERFIL (Igual ao da Home)
             const itemPerfil = document.querySelector('.item-perfil');
             if (itemPerfil) {
-                // Remove um dropdown antigo se já existir para não duplicar
                 const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                 if (antigoDropdown) antigoDropdown.remove();
 
-                // Define se exibe a foto real ou o ícone de rostinho padrão
                 const fotoHtml = u.foto_perfil 
                     ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
                     : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
 
-                // Cria o elemento do dropdown
                 const dropdown = document.createElement('div');
                 dropdown.className = 'perfil-dropdown';
                 dropdown.innerHTML = `
@@ -241,12 +236,11 @@ function carregarUsuario() {
                     </a>
                 `;
                 
-                // Insere o dropdown montado dentro do item de perfil na barra de navegação
                 itemPerfil.appendChild(dropdown);
             }
-        });
+        })
+        .catch(e => console.error("Erro ao carregar usuário:", e));
 }
-
 </script>
 
 </body>

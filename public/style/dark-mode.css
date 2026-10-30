@@ -285,3 +285,40 @@ body.dark-mode .politica a:hover {
     opacity: 1;
 }
 
+/* --- REGRAS DO MODO ESCURO PARA O MODAL --- */
+
+/* Aplica o estilo se a classe .dark-mode estiver no body ou direto no modal */
+body.dark-mode .modal-content-confirm,
+.modal-content-confirm.dark-mode {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode .modal-content-confirm .modal-titulo,
+.modal-content-confirm.dark-mode .modal-titulo {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+/* Ajustes nos botões para o modo escuro (opcional) */
+body.dark-mode .btn-voltar, 
+body.dark-mode .btn-entrar,
+.modal-content-confirm.dark-mode .btn-voltar,
+.modal-content-confirm.dark-mode .btn-entrar {
+    border-color: #000 !important;
+}
+
+/* --- MODO ESCURO (DARK MODE) --- */
+
+/* Suporte manual via classe .dark-mode */
+body.dark-mode .modal-content-confirm {
+    background: #1e293b;
+    border-color: #475569;
+}
+
+body.dark-mode .modal-content-confirm .modal-titulo {
+    background: #0f172a;
+    color: #f8fafc;
+    border-color: #475569;
+}

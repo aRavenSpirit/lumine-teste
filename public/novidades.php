@@ -1,6 +1,60 @@
 <?php
     include_once("../config/session.php");
-    include_once("../config/layout.php"); // Inclui o novo arquivo
+    include_once("../config/layout.php");
+    include_once("../config/conexao.php");
+
+    // ==========================================================
+    // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
+    // ==========================================================
+    $id_usuario_logado = intval($_SESSION['usuario_id']);
+    $sql_pref = "SELECT cores_materia, tamanho_fonte, tema_escuro 
+                 FROM configuracoes 
+                 WHERE id_usuario = $id_usuario_logado";
+                 
+    $result_pref = $conn->query($sql_pref);
+    $tamanho_fonte_salvo = 2; // Valor padrão (Médio)
+    $tema_escuro_salvo = 0;   // Valor padrão (Claro)
+
+    // ==========================================================
+    // CORES PADRÃO CASO O USUÁRIO AINDA NÃO TENHA CONFIGURAÇÕES
+    // ==========================================================
+    $cores_usuario = [
+        "bg_claro" => "#FFFFFF",
+        "bg_escuro" => "#121212",
+
+        "matematica" => "#3498db",
+        "portugues" => "#e74c3c",
+        "historia" => "#f1c40f",
+        "geografia" => "#2ecc71",
+        "biologia" => "#27ae60",
+        "fisica" => "#8e44ad",
+        "quimica" => "#d35400",
+        "ingles" => "#2980b9",
+        "artes" => "#e67e22",
+        "filosofia" => "#7f8c8d",
+        "sociologia" => "#16a085",
+        "educacao_fisica" => "#c0392b",
+    ];
+
+    // ==========================================================
+    // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
+    // ==========================================================
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
+        
+        if (isset($row_pref['tamanho_fonte'])) {
+            $tamanho_fonte_salvo = intval($row_pref['tamanho_fonte']);
+        }
+
+        if (isset($row_pref['tema_escuro'])) {
+            $tema_escuro_salvo = intval($row_pref['tema_escuro']);
+        }
+
+        $cores_banco = json_decode($row_pref['cores_materia'], true);
+        if (is_array($cores_banco)) {
+            $cores_usuario = array_merge($cores_usuario, $cores_banco);
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -12,10 +66,10 @@
     <title>Novidades - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
     <link rel="stylesheet" href="./style/novidades.css">
+    <link rel="stylesheet" href="./style/cookie.css">
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
-    <script src="js/tamanho_fonte.js"></script>
 </head>
 
 <body>
@@ -50,24 +104,39 @@
     </main>
 
     <?php renderFooter(); ?>
+
+    <!-- Importação do script desacoplado de cookies -->
+    <script src="js/cookies.js"></script>
+
 </div>
 
-<div id="modalConfirmacao" class="modal-overlay">
-    <div class="modal-content-confirm">
-        <p>deseja entrar no quiz?</p>
-        <img src="img/LUMINE-5con.ico" alt="logo">
-        <p id="nomeQuizConfirmacao"></p>
-        <div class="modal-buttons">
-            <button onclick="fecharConfirmacao()" class="btn-confirm btn-voltar">não</button>
-            <button id="btnConfirmarEntrada" class="btn-confirm btn-entrar">sim</button>
-        </div>
-    </div>
-</div>
+<!-- Importação do script de tamanho de fonte -->
+<script src="js/tamanho_fonte.js"></script>
 
+<!-- Importação do script desacoplado da sidebar -->
 <script src="js/sidebar_close.js"></script>
 
 <script>
 const api = "../config/home.php";
+
+// Transforma o array do PHP em um objeto JavaScript utilizável
+const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
+const tamanhoFonteBanco = <?php echo json_encode($tamanho_fonte_salvo); ?>;
+const temaEscuroBanco = <?php echo json_encode($tema_escuro_salvo); ?>;
+
+// Aplica a preferência de Tema do Banco de Dados
+if (temaEscuroBanco == 1) {
+    localStorage.setItem("theme", "dark");
+    document.body.classList.add("dark-mode");
+} else {
+    localStorage.setItem("theme", "light");
+    document.body.classList.remove("dark-mode");
+}
+
+// Aplica a preferência de tamanho de fonte vinda do banco de dados na inicialização
+if (typeof aplicarTamanhoFonteGlobal === "function") {
+    aplicarTamanhoFonteGlobal(tamanhoFonteBanco);
+}
 
 function carregarMenuSidebar() {
     fetch(api + "?tipo=materias")
@@ -98,12 +167,10 @@ function carregarMenuSidebar() {
 }
 
 let listaQuizzesGlobal = [];
-let urlDestinoQuiz = "";
 
 window.onload = () => {
     carregarQuizzesRecentes();
-    carregarUsuario();     // <--- Adicionado para carregar a foto no header
-   
+    carregarUsuario();     // Carrega a foto e dados no header/dropdown
 };
 
 function toggleSidebar() {
@@ -178,7 +245,7 @@ function renderizarCards(lista) {
         else if(q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
         html += `
-            <div onclick="prepararEntrada('${q.nome}', ${q.id})" class="card-materia">
+            <div onclick="window.location.href='quiz.php?id=${q.id}'" class="card-materia">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
                     <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
@@ -200,25 +267,6 @@ function filtrarGeral() {
     );
     renderizarCards(filtrados);
 }
-
-function prepararEntrada(nomeQuiz, idQuiz) {
-    urlDestinoQuiz = `quiz.php?id=${idQuiz}`;
-    document.getElementById('nomeQuizConfirmacao').innerText = nomeQuiz;
-    document.getElementById('modalConfirmacao').style.display = 'flex';
-}
-
-function fecharConfirmacao() {
-    document.getElementById('modalConfirmacao').style.display = 'none';
-}
-
-document.getElementById('btnConfirmarEntrada').onclick = () => {
-    if (urlDestinoQuiz) window.location.href = urlDestinoQuiz;
-};
-
-window.onclick = (e) => {
-    if (e.target == document.getElementById('modalConfirmacao')) fecharConfirmacao();
-}
-
 
 function carregarUsuario() {
     fetch(api + "?tipo=usuario")
@@ -286,7 +334,6 @@ function carregarUsuario() {
             }
         });
 }
-
 </script>
 
 </body>

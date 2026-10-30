@@ -102,26 +102,26 @@
     let cropperInstance = null;
     let arquivoSelecionado = null;
 
-    // Função para alterar Pequeno/Médio/Grande para P/M/G dinamicamente
-    function atualizarTextoSelectFonte() {
-        const selectFonte = document.getElementById('pref-fonte');
-        if (!selectFonte) return;
-
-        const eTelaReduzida = window.innerWidth <= 1016;
-
-        const opt1 = selectFonte.querySelector('option[value="1"]');
-        const opt2 = selectFonte.querySelector('option[value="2"]');
-        const opt3 = selectFonte.querySelector('option[value="3"]');
-
-        if (opt1) opt1.textContent = eTelaReduzida ? 'P' : 'Pequeno';
-        if (opt2) opt2.textContent = eTelaReduzida ? 'M' : 'Médio';
-        if (opt3) opt3.textContent = eTelaReduzida ? 'G' : 'Grande';
+    // Função para ajustar texto no header conforme a fonte/tamanho da tela
+    function ajustarTextoHeaderQuizzes(nivelFonte) {
+        const linksNav = document.querySelectorAll('header nav a, header .menu-item a, header a');
+        linksNav.forEach(link => {
+            const texto = link.textContent.trim().toUpperCase();
+            if (texto.includes('TODOS OS QUIZZES') || texto.includes('TODOS QUIZZES')) {
+                if (nivelFonte == 3 || window.innerWidth <= 1016) {
+                    link.textContent = 'TODOS QUIZZES';
+                } else {
+                    link.textContent = 'TODOS OS QUIZZES';
+                }
+            }
+        });
     }
 
-    // Aplica classe auxiliar no body ao mudar a fonte para ajustar o layout no tamanho Grande
+    // Aplica classe auxiliar no body ao mudar a fonte para ajustar o layout
     function aplicarClasseTamanhoFonteBody(nivel) {
         document.body.classList.remove('fonte-nivel-1', 'fonte-nivel-2', 'fonte-nivel-3');
         document.body.classList.add(`fonte-nivel-${nivel}`);
+        ajustarTextoHeaderQuizzes(nivel);
     }
 
     async function carregarPerfil(tipo, event = null) {
@@ -398,10 +398,6 @@
 
             cardOpcoes.innerHTML = html;
 
-            if (tipo === 'preferencias') {
-                atualizarTextoSelectFonte();
-            }
-
         } catch (error) {
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
@@ -604,7 +600,9 @@
             aplicarTamanhoFonteGlobal(fonte);
         }
 
-        mudarTemaAoVivo(tema);
+        if (typeof mudarTemaAoVivo === "function") {
+            mudarTemaAoVivo(tema);
+        }
 
         const objetoCores = {
             bg_claro: '#FFFFFF',
@@ -827,11 +825,15 @@
         const body = document.body;
         
         if (window.innerWidth <= 900) {
-            mobileMenu.classList.toggle('active');
-            mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
+            if (mobileMenu) {
+                mobileMenu.classList.toggle('active');
+                mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
+            }
         } else {
-            sidebar.classList.toggle('open');
-            main.classList.toggle('sidebar-open');
+            if (sidebar && main) {
+                sidebar.classList.toggle('open');
+                main.classList.toggle('sidebar-open');
+            }
         }
     }
 
@@ -944,10 +946,10 @@
 
         if (valor.length === 0) {
             balaoAviso.style.display = "none";
-            segLength.className = "segmento";
-            segUppercase.className = "segmento";
-            segNumber.className = "segmento";
-            segSpecial.className = "segmento";
+            if (segLength) segLength.className = "segmento";
+            if (segUppercase) segUppercase.className = "segmento";
+            if (segNumber) segNumber.className = "segmento";
+            if (segSpecial) segSpecial.className = "segmento";
             senhaValidaConfig = true;
             return;
         }
@@ -957,10 +959,10 @@
         const temNumero = /[0-9]/.test(valor);
         const temEspecial = /[^A-Za-z0-9]/.test(valor);
 
-        segLength.className = "segmento " + (temTamanho ? "valido" : "invalido");
-        segUppercase.className = "segmento " + (temMaiuscula ? "valido" : "invalido");
-        segNumber.className = "segmento " + (temNumero ? "valido" : "invalido");
-        segSpecial.className = "segmento " + (temEspecial ? "valido" : "invalido");
+        if (segLength) segLength.className = "segmento " + (temTamanho ? "valido" : "invalido");
+        if (segUppercase) segUppercase.className = "segmento " + (temMaiuscula ? "valido" : "invalido");
+        if (segNumber) segNumber.className = "segmento " + (temNumero ? "valido" : "invalido");
+        if (segSpecial) segSpecial.className = "segmento " + (temEspecial ? "valido" : "invalido");
 
         senhaValidaConfig = temTamanho && temMaiuscula && temNumero && temEspecial;
 
@@ -1014,23 +1016,22 @@
     let resizeTimer;
 
     window.addEventListener('resize', () => {
-        atualizarTextoSelectFonte();
+        const selectFonte = document.getElementById('pref-fonte');
+        if (selectFonte) {
+            ajustarTextoHeaderQuizzes(selectFonte.value);
+        }
 
         clearTimeout(resizeTimer);
 
-        // Aguarda 250ms após o término do redimensionamento
         resizeTimer = setTimeout(() => {
-            // Recarrega os componentes visuais sem perder o estado
             if (typeof carregarMenuSidebar === 'function') {
                 carregarMenuSidebar();
             }
             
-            // Reajusta o layout da CropperJS se o modal estiver aberto
             if (typeof cropperInstance !== 'undefined' && cropperInstance) {
                 cropperInstance.resize();
             }
 
-            // Garante que o scroll no mobile seja redefinido se a tela for ampliada
             if (window.innerWidth > 900) {
                 document.body.classList.remove('no-scroll');
                 const mobileMenu = document.getElementById('mobileMenu');

@@ -114,8 +114,10 @@
 
 <div id="modalConfirmacao" class="modal-overlay" style="display: none;">
     <div class="modal-content-confirm">
-        <p>Deseja entrar no quiz?</p>
-        <img src="img/LUMINE-5con.ico" alt="logo">
+        <p class="modal-titulo">Deseja entrar no quiz?</p>
+        
+        <img src="img/luminequestoes.png" alt="logo" class="modal-imagem-centro">
+        
         <div class="modal-buttons">
             <button onclick="fecharModalConfirmacao()" class="btn-voltar">Não</button>
             <button id="btnConfirmarEntrada" class="btn-entrar">Sim</button>
