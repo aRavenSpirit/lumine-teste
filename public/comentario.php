@@ -397,7 +397,7 @@
             quizId = localStorage.getItem('ultimo_quiz_id');
         }
 
-        // 3. Se encontrou um ID válido, redireciona ativando o modo de revisão
+        // 3. Redireciona passando o ID correto na URL
         if (quizId && quizId !== '0') {
             window.location.href = `quiz.php?id=${quizId}&revisao=true`;
         } else {

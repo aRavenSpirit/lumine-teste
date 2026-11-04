@@ -25,10 +25,15 @@ async function carregarQuiz() {
             localStorage.setItem('ultimo_quiz_id', dadosQuiz.id);
         }
 
-        // Se estiver em modo de revisão, desativa o aviso de saída da página
+        // Se estiver revisando, recupera as respostas gravadas anteriormente
         if (emModoRevisao) {
             desativarAvisoSaida();
+            const salvas = localStorage.getItem(`respostas_quiz_${quizId}`);
+            if (salvas) {
+                respostasUsuario = JSON.parse(salvas);
+            }
         }
+        // ----------------------
 
         document.getElementById('quiz-titulo').innerText = dadosQuiz.nome;
         document.getElementById('quiz-materia').innerText = dadosQuiz.nome_materia;
@@ -40,7 +45,6 @@ async function carregarQuiz() {
         if (!emModoRevisao) {
             iniciarCronometro();
         } else {
-            // Oculta o cronômetro visualmente na revisão se desejar
             const elCronometro = document.getElementById('cronometro');
             if (elCronometro) elCronometro.style.display = 'none';
         }
@@ -574,6 +578,8 @@ async function finalizarQuiz() {
             desativarAvisoSaida();
             reativarQuiz();
 
+            localStorage.setItem(`respostas_quiz_${quizId}`, JSON.stringify(respostasUsuario));
+            
             // Formata e carrega dados na modal de resultados
             const min = Math.floor(segundos / 60).toString().padStart(2, '0');
             const seg = (segundos % 60).toString().padStart(2, '0');
