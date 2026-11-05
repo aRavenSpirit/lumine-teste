@@ -5,6 +5,7 @@ if (localStorage.getItem("theme") === "dark") {
 
 // Altera a classe do body e atualiza o localStorage
 function mudarTemaAoVivo(valor) {
+
     if (String(valor) === "1") {
         document.body.classList.add("dark-mode");
         localStorage.setItem("theme", "dark");
@@ -12,10 +13,12 @@ function mudarTemaAoVivo(valor) {
         document.body.classList.remove("dark-mode");
         localStorage.setItem("theme", "light");
     }
+
 }
 
 // Controla o clique no botão e a animação do ícone
 function alternarTemaUnico() {
+
     const inputTema = document.getElementById('pref-tema');
     const btn = document.getElementById('btn-tema-unico');
     const icone = document.getElementById('icone-tema-unico');
@@ -37,4 +40,5 @@ function alternarTemaUnico() {
     }, 200);
 
     mudarTemaAoVivo(novoValor);
+    
 }

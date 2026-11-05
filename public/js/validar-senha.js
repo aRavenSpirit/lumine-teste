@@ -1,6 +1,7 @@
 let senhaValida = false;
 
 function inicializarValidacaoSenha(config) {
+    
     const {
         senhaInputId = "senha",
         balaoAvisoId = "balao-aviso",

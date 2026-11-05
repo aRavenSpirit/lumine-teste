@@ -55,6 +55,7 @@ async function carregarQuiz() {
 }
 
 function iniciarCronometro() {
+
     // Garante que não existam dois cronômetros rodando
     clearInterval(intervaloCronometro); 
     
@@ -69,9 +70,11 @@ function iniciarCronometro() {
         
         document.getElementById('cronometro').innerText = `Tempo: ${tempoFormatado}`;
     }, 1000);
+
 }
 
 function renderizarPergunta() {
+
     const container = document.getElementById('pergunta-atual');
     const p = dadosQuiz.perguntas[indicePergunta];
     
@@ -225,6 +228,7 @@ function renderizarPergunta() {
 
     // LÓGICA DE CORREÇÃO EM MODO REVISÃO
     if (emModoRevisao) {
+
         let acertouGeral = false;
         let respostaCertaTexto = "";
 
@@ -301,12 +305,15 @@ function renderizarPergunta() {
         if (acertouGeral) {
             feedbackDiv.innerHTML = `<p style="color: #27ae60; font-weight: bold;"><i class="fas fa-check-circle"></i> Resposta correta</p>`;
         } else {
+
             feedbackDiv.innerHTML = `
                 <p style="color: #c0392b; font-weight: bold;"><i class="fas fa-times-circle"></i> Resposta incorreta</p>
                 <p><em>A resposta correta era:</em> <strong>${respostaCertaTexto}</strong></p>
             `;
+
         }
         container.appendChild(feedbackDiv);
+
     }
 
     atualizarControles();
@@ -319,11 +326,13 @@ function drag(e) {
 }
 
 function drop(e, perguntaId, ordemAlvo) {
+
     e.preventDefault();
     const respostaId = e.dataTransfer.getData("text");
     if (!respostasUsuario[perguntaId]) respostasUsuario[perguntaId] = {};
     respostasUsuario[perguntaId][ordemAlvo] = respostaId;
     renderizarPergunta();
+
 }
 
 function limparDrag(perguntaId) {
@@ -338,6 +347,7 @@ function salvarResposta(perguntaId, valor) {
 }
 
 function salvarRespostaMultipla(perguntaId, valor, marcado) {
+    
     if (!respostasUsuario[perguntaId]) respostasUsuario[perguntaId] = [];
     if (marcado) {
         if (!respostasUsuario[perguntaId].includes(valor)) respostasUsuario[perguntaId].push(valor);
@@ -345,9 +355,11 @@ function salvarRespostaMultipla(perguntaId, valor, marcado) {
         respostasUsuario[perguntaId] = respostasUsuario[perguntaId].filter(id => id !== valor);
     }
     atualizarControles();
+
 }
 
 function selecionarOpcaoOrdem(perguntaId, respostaId) {
+
     if (!Array.isArray(respostasUsuario[perguntaId])) {
         respostasUsuario[perguntaId] = [];
     }
@@ -355,13 +367,16 @@ function selecionarOpcaoOrdem(perguntaId, respostaId) {
         respostasUsuario[perguntaId].push(respostaId.toString());
         renderizarPergunta();
     }
+
 }
 
 function removerOpcaoOrdem(perguntaId, index) {
+
     if (Array.isArray(respostasUsuario[perguntaId])) {
         respostasUsuario[perguntaId].splice(index, 1);
         renderizarPergunta();
     }
+
 }
 
 function salvarOrdemManual(perguntaId, respostaId, valor) {
@@ -371,21 +386,26 @@ function salvarOrdemManual(perguntaId, respostaId, valor) {
 
 // --- NAVEGAÇÃO ---
 function proximaPergunta() {
+
     if (indicePergunta < dadosQuiz.perguntas.length - 1) {
         indicePergunta++;
         renderizarPergunta();
     }
+
 }
 
 function perguntaAnterior() {
+
     if (indicePergunta > 0) {
         indicePergunta--;
         renderizarPergunta();
     }
+
 }
 
 // --- VALIDAÇÃO DE PREENCHIMENTO ---
 function validouTodasRespostas() {
+
     if (!dadosQuiz || !dadosQuiz.perguntas) return false;
 
     return dadosQuiz.perguntas.every(p => {
@@ -413,9 +433,11 @@ function validouTodasRespostas() {
                 return false;
         }
     });
+
 }
 
 function atualizarControles() {
+
     const btnVoltar = document.getElementById('btn-voltar');
     const btnProximo = document.getElementById('btn-proximo');
     const btnFinalizar = document.getElementById('btn-finalizar');
@@ -424,18 +446,21 @@ function atualizarControles() {
     const final = indicePergunta === dadosQuiz.perguntas.length - 1;
 
     if (emModoRevisao) {
+
         const btnSairDesktop = document.querySelector(".btn-sair-flutuante");
         if (btnSairDesktop) {
             btnSairDesktop.style.display = 'none';
         }
 
         const btnSairMobile = document.querySelector(".nav-links-mobile a[onclick*='toggleModalSaida']");
+
         if (btnSairMobile) {
             const liPai = btnSairMobile.closest('li');
             if (liPai) liPai.style.display = 'none';
         }
 
         const controles = document.getElementById('quiz-controls');
+
         if (controles) {
             controles.style.pointerEvents = 'auto';
             controles.style.opacity = '1';
@@ -456,8 +481,8 @@ function atualizarControles() {
         if (btnComentariosRevisao) {
             btnComentariosRevisao.style.display = final ? 'inline' : 'none';
         }
-
         return;
+
     }
 
     if (btnHomeRevisao) btnHomeRevisao.style.display = 'none';
@@ -466,6 +491,7 @@ function atualizarControles() {
     btnProximo.style.display = final ? 'none' : 'inline';
     
     if (final) {
+
         btnFinalizar.style.display = 'inline';
         
         if (validouTodasRespostas()) {
@@ -479,19 +505,23 @@ function atualizarControles() {
             btnFinalizar.style.cursor = 'not-allowed';
             btnFinalizar.innerText = "Responda todas as questões para finalizar";
         }
+
     } else {
         btnFinalizar.style.display = 'none';
     }
 }
 
 function desativarAvisoSaida() {
+
     window.onbeforeunload = null;
     window.addEventListener('beforeunload', function (e) {
         delete e['returnValue'];
     });
+
 }
 
 function reativarQuiz() {
+
     const container = document.getElementById('quiz-container');
     if (container) {
         container.style.pointerEvents = 'auto';
@@ -499,19 +529,22 @@ function reativarQuiz() {
     }
     document.getElementById('quiz-controls').style.pointerEvents = 'auto';
     document.getElementById('quiz-controls').style.opacity = '1';
+
 }
 
 // =========================================================================
 // FINALIZAÇÃO E NOVO FLUXO: QUIZ -> AVALIAÇÃO -> RESULTADOS
 // =========================================================================
 async function finalizarQuiz() {
+
     clearInterval(intervaloCronometro);
-    
     const container = document.getElementById('quiz-container');
+
     if (container) {
         container.style.pointerEvents = 'none'; 
         container.style.opacity = '0.6';
     }
+
     document.getElementById('quiz-controls').style.pointerEvents = 'none';
     document.getElementById('quiz-controls').style.opacity = '0.6';
 
@@ -519,6 +552,7 @@ async function finalizarQuiz() {
     const totalQuestoes = dadosQuiz.perguntas.length;
 
     dadosQuiz.perguntas.forEach(p => {
+
         const respostaUser = respostasUsuario[p.id];
         const tipo = parseInt(p.id_tipo);
 
@@ -526,55 +560,70 @@ async function finalizarQuiz() {
             const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
             if (correta && respostaUser == correta.id) acertos++;
         }
+
         else if (tipo === 3) {
             const correta = p.respostas.find(r => r.certo == 1 || r.correta == 1);
             if (correta && String(respostaUser).trim().toLowerCase() === String(correta.descricao).trim().toLowerCase()) acertos++;
         }
+
         else if (tipo === 2) {
             const correta = p.respostas[0];
             const textoCorreto = correta ? (correta.descricao || correta.texto_alvo) : "";
             if (textoCorreto && respostaUser?.trim().toLowerCase() === textoCorreto.trim().toLowerCase()) acertos++;
         }
+
         else if (tipo === 4) {
             const rUser = respostaUser || [];
             const idsCorretos = p.respostas.filter(r => r.certo == 1 || r.correta == 1).map(r => r.id.toString());
             if (rUser.length === idsCorretos.length && idsCorretos.every(id => rUser.includes(id))) acertos++;
         }
+
         else if (tipo === 5) {
+
             const rUser = respostasUsuario[p.id] || [];
             let acertou = true;
+
             if (rUser.length !== p.respostas.length) {
                 acertou = false;
             } else {
+
                 acertou = p.respostas.every(r => {
                     const posicaoUsuario = rUser.indexOf(r.id.toString()) + 1;
                     const ordemCorreta = parseInt(r.ordem);
                     return posicaoUsuario === ordemCorreta;
                 });
+
             }
+
             if (acertou && p.respostas.length > 0) acertos++;
         }
+
         else if (tipo === 6) {
+
             const rUser = respostaUser || {};
             let acertouTudo = true;
             p.respostas.forEach(r => {
                 if (rUser[r.ordem] != r.id) acertouTudo = false;
             });
             if (acertouTudo) acertos++;
+
         }
     });
 
     const dadosParaSalvar = { id_quiz: quizId, acertos: acertos, total: totalQuestoes, segundos: segundos };
 
     try {
+
         const response = await fetch('../config/salvar_tentativa.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(dadosParaSalvar)
         });
+
         const resultado = await response.json();
         
         if (resultado.sucesso) {
+
             desativarAvisoSaida();
             reativarQuiz();
 
@@ -603,6 +652,7 @@ async function finalizarQuiz() {
             alert("Erro ao salvar: " + resultado.erro);
             reativarQuiz();
         }
+
     } catch (error) {
         console.error("Erro:", error);
         reativarQuiz();
@@ -625,6 +675,7 @@ function iniciarFluxoPosQuiz() {
                 configurarEventosDasEstrelas();
             }
         })
+
         .catch(err => {
             console.error("Erro ao checar avaliação:", err);
             exibirModalResultados();
@@ -641,6 +692,7 @@ function inicializarSistemaEstrelas() {
 }
 
 function configurarEventosDasEstrelas() {
+
     const estrelas = document.querySelectorAll('.rating-stars i');
     const btnEnviarAvaliacao = document.getElementById('btn-enviar-avaliacao');
     const btnPularAvaliacao = document.getElementById('btn-pular-avaliacao');
@@ -649,10 +701,12 @@ function configurarEventosDasEstrelas() {
     notaSelecionada = 0;
 
     if (btnPularAvaliacao) {
+
         btnPularAvaliacao.onclick = function(e) {
             if (e) e.preventDefault();
             exibirModalResultados();
         };
+
     }
 
     estrelas.forEach(estrela => {
@@ -673,6 +727,7 @@ function configurarEventosDasEstrelas() {
     });
 
     if (btnEnviarAvaliacao) {
+
         btnEnviarAvaliacao.onclick = function() {
             if (notaSelecionada === 0 || !quizId) return alert("Selecione uma nota antes de enviar.");
 
@@ -690,10 +745,12 @@ function configurarEventosDasEstrelas() {
                 exibirModalResultados();
             });
         };
+
     }
 }
 
 function atualizarVisualEstrelas(listaEstrelas, valorLimite) {
+
     listaEstrelas.forEach(est => {
         if (est.getAttribute('data-value') <= valorLimite) {
             est.classList.replace('fa-regular', 'fa-solid');
@@ -703,20 +760,25 @@ function atualizarVisualEstrelas(listaEstrelas, valorLimite) {
             est.style.color = '#ccc';
         }
     });
+
 }
 
 // Monitora aviso de saída acidental
 function gerenciarAvisoSaida(e) {
+
     if (emModoRevisao) return; 
     
     e.preventDefault();
     e.returnValue = 'Tem certeza que deseja sair? Suas respostas não serão salvas.';
     return e.returnValue;
+
 }
+
 window.addEventListener('beforeunload', gerenciarAvisoSaida);
 
 // Funções da modal de confirmação de saída
 function toggleModalSaida(event) {
+
     if (event) {
         event.preventDefault();
         event.stopPropagation();
@@ -727,13 +789,16 @@ function toggleModalSaida(event) {
     } else {
         console.error("Erro: A modal 'modal-confirmar-saida' não foi encontrada no HTML.");
     }
+
 }
 
 function fecharModalSaida() {
+
     const modal = document.getElementById('modal-confirmar-saida');
     if (modal) {
         modal.style.display = 'none';
     }
+    
 }
 
 function confirmarSaida() {

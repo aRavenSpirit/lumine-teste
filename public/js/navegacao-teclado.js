@@ -3,8 +3,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const campos = Array.from(document.querySelectorAll("input:not([type='hidden']):not([type='checkbox']):not([type='radio']), select"));
 
     campos.forEach((campo, index) => {
+
         campo.addEventListener("keydown", (e) => {
+
             if (e.key === "Enter") {
+
                 // Tratamento especial para SELECT
                 if (campo.tagName === "SELECT") {
                     if (campo.value === "" || campo.selectedIndex === 0) {
@@ -28,9 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
                         // Fallback: se não achar o botão, envia o formulário pai diretamente
                         campo.closest("form")?.submit();
                     }
+
                 } else {
+
                     // Move o foco para o próximo campo de texto/select
                     campos[index + 1].focus();
+                    
                 }
             }
         });

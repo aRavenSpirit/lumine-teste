@@ -9,6 +9,7 @@ const ESCALAS_FONTE = {
 };
 
 function aplicarTamanhoFonteGlobal(nivel) {
+
     if (!nivel) return;
     
     const nivelStr = String(nivel);
@@ -19,10 +20,13 @@ function aplicarTamanhoFonteGlobal(nivel) {
     
     // Salva no localStorage para persistência local
     localStorage.setItem("tamanho_fonte", nivelStr);
+
 }
 
 // Aplica a preferência assim que o DOM carregar
 document.addEventListener("DOMContentLoaded", () => {
+
     const nivelSalvo = localStorage.getItem("tamanho_fonte") || "2";
     aplicarTamanhoFonteGlobal(nivelSalvo);
+    
 });

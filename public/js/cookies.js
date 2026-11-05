@@ -8,6 +8,7 @@ window.addEventListener('load', () => {
                 renderizarBannerCookie();
             }
         })
+
         .catch(() => {
             // Fallback caso a API falhe: verifica cookie local[cite: 2]
             if (!getCookie("user_consent")) {
@@ -17,6 +18,7 @@ window.addEventListener('load', () => {
 });
 
 function renderizarBannerCookie() {
+
     const banner = document.createElement('div');
     banner.id = 'cookieBanner';
 
@@ -40,6 +42,7 @@ function renderizarBannerCookie() {
 }
 
 function interagirCookie(acao) {
+
     if (acao === 'decline') {
         // Se recusar, apaga o cookie no cliente[cite: 2]
         document.cookie = "user_consent=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
@@ -52,22 +55,28 @@ function interagirCookie(acao) {
                 removerBanner();
             }
         })
+
         .catch(erro => {
             console.error("Erro ao processar consentimento:", erro);
             removerBanner();
         });
+
 }
 
 function removerBanner() {
+
     const banner = document.getElementById('cookieBanner');
     if (banner) {
         banner.style.animation = 'entrarSuave 0.3s ease-in reverse';
         setTimeout(() => banner.remove(), 300);
     }
+
 }
 
 function getCookie(name) {
+
     let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]*)'));
     if (match) return match[2];
     return null;
+    
 }

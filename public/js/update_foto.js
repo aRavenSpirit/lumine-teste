@@ -1,4 +1,5 @@
 async function uploadFotoPerfil(input) {
+    
     if (!input.files || !input.files[0]) return;
 
     const arquivo = input.files[0];
