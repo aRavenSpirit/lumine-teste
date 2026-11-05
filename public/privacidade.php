@@ -8,26 +8,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumine - Privacidade</title>
     <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="./style/privacidade.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="js/tamanho_fonte.js"></script>
-    <style>
-        body { padding-top: 100px; }
-        .main-container { display: flex; justify-content: center; padding: 40px 20px; }
-        .legal-card { 
-            width: 100%; max-width: 850px; 
-            background: rgba(255, 255, 255, 0.9); 
-            border-radius: 35px; padding: 45px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-        }
-        .title { 
-            font-family: 'gliker', sans-serif; 
-            color: #cb6ce6; font-size: 35px; 
-            margin-bottom: 25px; text-transform: uppercase; 
-            display: flex; align-items: center; gap: 15px; 
-        }
-        .content { font-family: 'Open_Sans', sans-serif; color: #444; line-height: 1.8; font-size: 17px; }
-    </style>
 </head>
 <body>
     <nav class="navbar">

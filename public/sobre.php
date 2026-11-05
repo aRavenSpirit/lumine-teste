@@ -1,35 +1,23 @@
 <?php
     include_once("../config/session.php");
 ?>
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lumine - Termos de Uso</title>
+    <title>Lumine - Sobre Nós</title>
     <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="./style/dark-mode.css">
+    <link rel="stylesheet" href="./style/sobre.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <script src="js/tamanho_fonte.js"></script>
-    <style>
-        body { padding-top: 100px; }
-        .main-container { display: flex; justify-content: center; padding: 40px 20px; }
-        .legal-card { 
-            width: 100%; max-width: 850px; 
-            background: rgba(255, 255, 255, 0.9); 
-            border-radius: 35px; padding: 45px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
-        }
-        .title { 
-            font-family: 'gliker', sans-serif; 
-            color: #ffbd59; font-size: 35px; 
-            margin-bottom: 25px; text-transform: uppercase; 
-            display: flex; align-items: center; gap: 15px; 
-        }
-        .content { font-family: 'Open_Sans', sans-serif; color: #444; line-height: 1.8; font-size: 17px; }
-    </style>
 </head>
 <body>
+
     <nav class="navbar">
         <div class="logo-section">
             <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
@@ -40,22 +28,49 @@
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-acessar">
-                <?php if (isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0): ?>
-                    <a href="home.php" class="btn-acessar">Início</a>
-                <?php else: ?>
-                    <a href="login.html" class="btn-acessar">Acessar</a>
-                <?php endif; ?>
+                <a href="home.php" class="btn-acessar">Acessar</a>
             </li>
         </ul>
 
         <div class="hamburger" onclick="toggleMenu()">☰</div>
     </nav>
 
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="item-sobre"><a href="index.php">Início</a></div>
+        <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
+        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
+    </div>
+
     <main class="main-container">
-        <div class="legal-card">
-            <h2 class="title"><i class="fa-solid fa-file-contract"></i> Termos de Uso</h2>
-            <div class="content">
-                <p>Ao usar a Lumine, você concorda com nossos termos de serviço e licença de uso educacional.</p>
+        <div class="content-card">
+            <h1 class="title-sobre">Conheça a Lumine</h1>
+            
+            <div class="text-sobre">
+                <p>Na <strong>LUMINE</strong>, acreditamos que o conhecimento não precisa de ser uma tarefa árdua, mas sim um desafio estimulante. Somos uma plataforma focada em transformar a educação através da interatividade e da gamificação.</p>
+                <p>O nosso objetivo é oferecer conteúdos de qualidade para todas as matérias, desde as Ciências Exatas até às Humanidades, proporcionando uma experiência onde cada estudante pode testar a sua rapidez, superar limites e dominar qualquer assunto de forma leve e divertida.</p>
+            </div>
+
+            <div class="highlight-box">
+                "Desafie a sua mente no melhor site de quizzes interativos. Entre no jogo e prove que está pronto!"
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fa-solid fa-bolt" style="color: #ffbd59;"></i>
+                    <h4>Dinâmico</h4>
+                    <p>Quizzes rápidos e diretos.</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-graduation-cap" style="color: #0cc0df;"></i>
+                    <h4>Educativo</h4>
+                    <p>Focado na sua evolução.</p>
+                </div>
+                <div class="stat-item">
+                    <i class="fa-solid fa-trophy" style="color: #00bf63;"></i>
+                    <h4>Interativo</h4>
+                    <p>Aprenda jogando.</p>
+                </div>
             </div>
         </div>
     </main>
@@ -63,7 +78,7 @@
     <script>
         function toggleMenu() {
             const menu = document.getElementById("mobileMenu");
-            if (menu) menu.classList.toggle("active");
+            menu.classList.toggle("active");
         }
     </script>
 </body>

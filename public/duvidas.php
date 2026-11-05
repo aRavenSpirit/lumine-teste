@@ -10,94 +10,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lumine - Dúvidas</title>
     <link rel="stylesheet" href="./style/index.css">
+    <link rel="stylesheet" href="./style/duvidas.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .main-container {
-            padding-top: 120px;
-            padding-bottom: 50px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 80vh;
-        }
-
-        .duvidas-title {
-            font-family: 'gliker', sans-serif;
-            font-size: 50px;
-            color: #1595C4;
-            margin-bottom: 40px;
-            text-align: center;
-            text-transform: uppercase;
-        }
-
-        .accordion {
-            width: 90%;
-            max-width: 800px;
-            background: rgba(255, 255, 255, 0.85);
-            border-radius: 25px;
-            overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-
-        .accordion-item {
-            border-bottom: 1px solid rgba(0,0,0,0.1);
-        }
-
-        .accordion-item:last-child {
-            border-bottom: none;
-        }
-
-        .accordion-header {
-            width: 100%;
-            padding: 25px;
-            background: none;
-            border: none;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            text-align: left;
-            transition: 0.3s;
-        }
-
-        .accordion-header h3 {
-            font-family: 'gliker', sans-serif;
-            font-size: 20px;
-            color: #333;
-            margin: 0;
-        }
-
-        .accordion-header i {
-            color: #00bf63;
-            font-size: 20px;
-            transition: 0.4s;
-        }
-
-        .accordion-header.active i {
-            transform: rotate(180deg);
-        }
-
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
-            background: rgba(255, 255, 255, 0.5);
-        }
-
-        .accordion-content p {
-            padding: 0 25px 25px 25px;
-            font-family: 'Open_Sans', sans-serif;
-            color: #555;
-            line-height: 1.6;
-            font-size: 17px;
-        }
-
-        @media (max-width: 580px) {
-            .duvidas-title { font-size: 35px; }
-            .main-container { padding-top: 100px; }
-        }
-    </style>
 </head>
 <body>
 
