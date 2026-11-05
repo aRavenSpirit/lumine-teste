@@ -78,7 +78,8 @@ body {
     flex-direction: column;
 }
 
-input[type="email"], input[type="password"] {
+input[type="email"], 
+input[type="password"] {
     background-color: #a3e1ff;
     padding: 18px 25px;
     border-radius: 50px;
@@ -233,10 +234,25 @@ input:focus {
 
 /* --- RESPONSIVIDADE --- */
 @media screen and (max-width: 600px) {
-    .container-login { padding: 40px 25px; width: 95%; }
-    .area-icone { position: relative; top: 0; right: 0; margin-bottom: 20px; display: flex; justify-content: center; }
-    .titulo-log { text-align: center; font-size: 2.2rem; }
-    .titulo-log::after { margin: 0 auto; }
+    .container-login { 
+        padding: 40px 25px; 
+        width: 95%; 
+    }
+    .area-icone { 
+        position: relative; 
+        top: 0; 
+        right: 0; 
+        margin-bottom: 20px; 
+        display: flex; 
+        justify-content: center; 
+    }
+    .titulo-log { 
+        text-align: center; 
+        font-size: 2.2rem; 
+    }
+    .titulo-log::after { 
+        margin: 0 auto; 
+    }
 }
 
 /* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */

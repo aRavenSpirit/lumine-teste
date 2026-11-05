@@ -159,7 +159,6 @@ input:focus, select:focus {
     background-color: #fff;
 }
 
-
 /* Container da única linha inteligente */
 .barra-seguranca {
     display: flex;
@@ -180,8 +179,13 @@ input:focus, select:focus {
 }
 
 /* Modificações dinâmicas feitas pelo JS */
-.segmento.valido { background-color: #2ecc71; }   /* Verde */
-.segmento.invalido { background-color: #e74c3c; } /* Vermelho */
+.segmento.valido { 
+    background-color: #2ecc71; 
+}   /* Verde */
+
+.segmento.invalido { 
+    background-color: #e74c3c; 
+} /* Vermelho */
 
 /* Rótulo descritivo automático posicionado abaixo da barra de segurança */
 .segmento::after {
@@ -194,8 +198,14 @@ input:focus, select:focus {
     font-weight: 700;
     transition: color 0.3s ease;
 }
-.segmento.valido::after { color: #2ecc71; }
-.segmento.invalido::after { color: #e74c3c; }
+
+.segmento.valido::after { 
+    color: #2ecc71; 
+}
+
+.segmento.invalido::after { 
+    color: #e74c3c; 
+}
 
 /* Balão Alerta Flutuante (Tooltip) */
 .balao-aviso {
@@ -229,13 +239,22 @@ input:focus, select:focus {
 }
 
 @keyframes tremerAviso {
-    0% { transform: translate(1px, 1px); }
-    20% { transform: translate(-2px, -1px); }
-    40% { transform: translate(-1px, 1px); }
-    60% { transform: translate(2px, -1px); }
-    100% { transform: translate(0, 0); }
+    0% { 
+        transform: translate(1px, 1px); 
+    }
+    20% { 
+        transform: translate(-2px, -1px); 
+    }
+    40% { 
+        transform: translate(-1px, 1px); 
+    }
+    60% { 
+        transform: translate(2px, -1px); 
+    }
+    100% { 
+        transform: translate(0, 0); 
+    }
 }
-
 
 /* --- BOTÃO CADASTRAR --- */
 .area-botao {
@@ -258,7 +277,10 @@ input:focus, select:focus {
     margin: 0 auto;
 }
 
-.botao-cadastrar:hover { background-color: #89d4f8; }
+.botao-cadastrar:hover { 
+    background-color: #89d4f8; 
+}
+
 .botao-cadastrar:active {
     transform: translateY(4px);
     box-shadow: 0px 2px 0px #1595c4;
@@ -279,14 +301,28 @@ input:focus, select:focus {
 
 /* --- RESPONSIVIDADE --- */
 @media screen and (max-width: 600px) {
-    .container-cadastro { padding: 40px 25px; width: 95%; }
-    .area-icone { position: relative; top: 0; right: 0; margin-bottom: 20px; display: flex; justify-content: center; }
-    .titulo-cad { text-align: center; font-size: 2.2rem; }
-    .titulo-cad::after { margin: 0 auto; }
+    .container-cadastro { 
+        padding: 40px 25px; 
+        width: 95%; 
+    }
+    .area-icone { 
+        position: relative; 
+        top: 0; 
+        right: 0; 
+        margin-bottom: 20px; 
+        display: flex; 
+        justify-content: center; 
+    }
+    .titulo-cad { 
+        text-align: center; 
+        font-size: 2.2rem; 
+    }
+    .titulo-cad::after { 
+        margin: 0 auto; 
+    }
 }
 
 /* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-
 ::-webkit-scrollbar {
     width: 10px; 
 }

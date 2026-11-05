@@ -102,10 +102,21 @@ body {
 }
 
 /* Cores de Fundo dos Itens */
-.item-sobre { background-color: #00bf63; }
-.item-novidades { background-color: #0cc0df; }
-.item-quizzes { background-color: #ffbd59; }
-.item-acessar { background-color: #ff5757; }
+.item-sobre { 
+    background-color: #00bf63; 
+}
+
+.item-novidades { 
+    background-color: #0cc0df; 
+}
+
+.item-quizzes { 
+    background-color: #ffbd59; 
+}
+
+.item-acessar { 
+    background-color: #ff5757; 
+}
 
 /* EFEITO DE ESTENDER PARA BAIXO NO HOVER */
 .nav-links li:not(.item-acessar):hover {
@@ -225,10 +236,21 @@ body {
     letter-spacing: 1px;
 }
 
-.item-sobre-mob { background-color: #00bf63; }
-.item-novidades-mob { background-color: #0cc0df; }
-.item-quizzes-mob { background-color: #ffbd59; }
-.item-acessar-mob { background-color: #ff5757; }
+.item-sobre-mob { 
+    background-color: #00bf63; 
+}
+
+.item-novidades-mob { 
+    background-color: #0cc0df; 
+}
+
+.item-quizzes-mob { 
+    background-color: #ffbd59; 
+}
+
+.item-acessar-mob { 
+    background-color: #ff5757; 
+}
 
 /* --- HERO --- */
 .hero {
@@ -288,10 +310,14 @@ body {
     font-weight: 500;
 }
 
-.melhor-subtitulo { font-weight: bold; }
+.melhor-subtitulo { 
+    font-weight: bold; 
+}
 
 /* --- SEÇÕES --- */
-.secao-apresentacao1, .secao-apresentacao3, .secao-apresentacao4 {
+.secao-apresentacao1, 
+.secao-apresentacao3, 
+.secao-apresentacao4 {
     display: flex;
     justify-content: space-evenly;
     align-items: center;
@@ -305,24 +331,32 @@ body {
     z-index: 10;
 }
 
-.container-text1, .container-text3, .container-text4 {
+.container-text1, 
+.container-text3, 
+.container-text4 {
     flex: 1;
     max-width: 520px;
 }
 
-.container-text1 h1, .container-text3 h1, .container-text4 h1 {
+.container-text1 h1, 
+.container-text3 h1, 
+.container-text4 h1 {
     font-size: clamp(1.2rem, 3vw, 1.5rem);
     margin-bottom: 20px;
     text-align: center;
 }
 
-.container-text1 p, .container-text3 p, .container-text4 p {
+.container-text1 p, 
+.container-text3 p, 
+.container-text4 p {
     font-size: clamp(1rem, 2.5vw, 1.3rem);
     line-height: 1.6;
     text-align: justify;
 }
 
-.texto-negrito { font-weight: bold; }
+.texto-negrito { 
+    font-weight: bold; 
+}
 
 .container-animacao {
     flex: 1;
@@ -453,8 +487,12 @@ body {
 }
 
 @keyframes scroll-infinito {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    0% { 
+        transform: translateX(0); 
+    }
+    100% { 
+        transform: translateX(-50%); 
+    }
 }
 
 /* --- FOOTER --- */
@@ -469,13 +507,17 @@ footer {
     border-top: 2px solid #1595C4;
 }
 
-.footer-section { flex: 1 1 200px; }
+.footer-section { 
+    flex: 1 1 200px; 
+}
+
 .footer-section h3 { 
     color: #1595C4; 
     font-size: 1rem;
     margin-bottom: 25px; 
     letter-spacing: 2px;
 }
+
 .footer-section a { 
     margin: 15px 0; 
     display: flex; 
@@ -510,14 +552,22 @@ footer {
     transform: translateX(5px);
     cursor: pointer;
 }
-.footer-section p i { color: #1595C4; width: 20px; }
+
+.footer-section p i { 
+    color: #1595C4; 
+    width: 20px; 
+}
 
 /* --- SISTEMA DE ANIMAÇÕES DE ENTRADA (Surgir) --- */
 
 /* 1. Animação simples do Topo (Navbar) */
 @keyframes slideDownNav {
-    from { transform: translateY(-100%); }
-    to { transform: translateY(0); }
+    from { 
+        transform: translateY(-100%); 
+    }
+    to { 
+        transform: translateY(0); 
+    }
 }
 
 /* 2. Fade In Inicial (Usado no Hero principal) */
@@ -527,8 +577,14 @@ footer {
 }
 
 @keyframes fadeInEffect {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
+    from { 
+        opacity: 0; 
+        transform: scale(0.95); 
+    }
+    to { 
+        opacity: 1; 
+        transform: scale(1); 
+    }
 }
 
 /* 3. Subida Leve (Usada nos textos do Hero) */
@@ -539,13 +595,22 @@ footer {
 }
 
 @keyframes slideUpEffect {
-    to { opacity: 1; transform: translateY(0); }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 /* 4. Efeito Onda/Bounce no Título Principal ao dar Hover */
 @keyframes waveBounce {
-    0% { transform: translateY(0); filter: brightness(1); }
-    100% { transform: translateY(-15px); filter: brightness(1.15) drop-shadow(0 8px 4px rgba(0,0,0,0.15)); }
+    0% { 
+        transform: translateY(0); 
+        filter: brightness(1); 
+    }
+    100% { 
+        transform: translateY(-15px); 
+        filter: brightness(1.15) drop-shadow(0 8px 4px rgba(0,0,0,0.15)); 
+    }
 }
 
 /* 5. Efeito Scroll Reveal (Surgir ao arrastar a tela para baixo) */
@@ -561,25 +626,43 @@ footer {
     transform: translateY(0);
 }
 
-
 /* --- RESPONSIVIDADE --- */
 @media screen and (min-width: 1025px) {
-    .secao-apresentacao3 { flex-direction: row-reverse; } 
+    .secao-apresentacao3 { 
+        flex-direction: row-reverse; 
+    } 
 }
 
 @media screen and (max-width: 1024px) {
-    .secao-apresentacao1, .secao-apresentacao3, .secao-apresentacao4 { 
+    .secao-apresentacao1, 
+    .secao-apresentacao3, 
+    .secao-apresentacao4 { 
         flex-direction: column; 
         text-align: center;
     }
-    .container-text1 p, .container-text3 p, .container-text4 p { text-align: center; }
+    .container-text1 p, 
+    .container-text3 p, 
+    .container-text4 p { 
+        text-align: center; 
+    }
 }
 
 @media screen and (max-width: 580px) {
-    .nav-links { display: none; }
-    .hamburger { display: flex; }
-    .logo-section { flex: none; width: 130px; margin-right: auto; margin-left: 20px;}
-    .letras-lumine { font-size: 3.75rem; }
+    .nav-links { 
+        display: none; 
+    }
+    .hamburger { 
+        display: flex; 
+    }
+    .logo-section { 
+        flex: none; 
+        width: 130px; 
+        margin-right: auto; 
+        margin-left: 20px;
+    }
+    .letras-lumine { 
+        font-size: 3.75rem; 
+    }
     footer {
         flex-direction: column;
         align-items: center; 

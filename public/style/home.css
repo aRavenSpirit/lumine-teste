@@ -31,7 +31,6 @@ body {
     color: #333;
 }
 
-
 /* ==================================================================
    1. BASE DA SIDEBAR DESKTOP
    ================================================================== */
@@ -59,7 +58,6 @@ body {
     width: 250px; 
     overflow-y: auto; 
 }
-
 
 /* ==================================================================
    2. CUSTOMIZAÇÃO DA SCROLLBAR
@@ -90,7 +88,6 @@ body {
     background: #0043af; 
 }
 
-
 /* ==================================================================
    3. CONTAINER HEADER
    ================================================================== */
@@ -107,7 +104,6 @@ body {
 .sidebar.open .sidebar-header {
     padding-top: 40px; 
 }
-
 
 /* ==================================================================
    4. COMPONENTES INTERNOS DO HEADER
@@ -157,7 +153,6 @@ body {
 /* ==================================================================
    5. BOTÃO FIXO DA SIDEBAR
    ================================================================== */
-
 .sidebar .btn-sair-flutuante {
     position: fixed;
     top: 140px;         
@@ -218,7 +213,6 @@ body {
         display: none !important;
     }
 }
-
 
 /* ==================================================================
    6. MENU DE NAVEGAÇÃO
@@ -281,7 +275,8 @@ body {
     position: relative;
 }
 
-.mobile-logo-central, .mobile-profile-right {
+.mobile-logo-central, 
+.mobile-profile-right {
     display: none;
 }
 
@@ -320,15 +315,35 @@ body {
     transition: all 0.3s ease;
 }
 
-.item-sobre:hover a { background-color: #00bf63; color: white; }
-.item-novidades:hover a { background-color: #0cc0df; color: white; }
-.item-quizzes:hover a { background-color: #ffbd59; color: white; }
-.item-perfil:hover a { background-color: #ff5757; color: white; }
+.item-sobre:hover a { 
+    background-color: #00bf63; 
+    color: white; 
+}
+
+.item-novidades:hover a { 
+    background-color: #0cc0df; 
+    color: white; 
+}
+
+.item-quizzes:hover a { 
+    background-color: #ffbd59; 
+    color: white; 
+}
+
+.item-perfil:hover a { 
+    background-color: #ff5757; 
+    color: white; 
+}
 
 .profile-icon {
-    width: 35px; height: 35px; background-color: #cb6ce6;
-    border-radius: 50%; display: flex; 
-    align-items: center; justify-content: center; color: white;
+    width: 35px; 
+    height: 35px; 
+    background-color: #cb6ce6;
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: white;
     box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
@@ -337,7 +352,6 @@ body {
 }
 
 /* --- DROPDOWN DE PERFIL --- */
-
 .item-perfil {
     position: relative;
 }
@@ -474,6 +488,7 @@ body {
 .avatar-upload-container:hover .avatar-preview {
     filter: brightness(0.8);
 }
+
 .avatar-upload-container:hover .avatar-edit-badge {
     transform: scale(1.1);
 }
@@ -566,13 +581,14 @@ main {
 /* ==================================================================
    MODAL E ESTILIZAÇÃO COMPACTA DOS QUIZZES (2 COLUNAS)
    ================================================================== */
-
 .modal { 
     display: none; 
     position: fixed; 
     z-index: 6000; 
-    left: 0; top: 0; 
-    width: 100%; height: 100%; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
     background: rgba(0, 32, 63, 0.6); 
     backdrop-filter: blur(5px);
     will-change: transform, opacity;
@@ -646,7 +662,8 @@ main {
 }
 
 /* Mensagens de estado */
-.loading-quiz-msg, .no-quiz-msg {
+.loading-quiz-msg, 
+.no-quiz-msg {
     text-align: center;
     padding: 30px 20px;
     font-size: 1.05rem;
@@ -789,7 +806,8 @@ main {
     border: 1px solid #16a34a;
 }
 
-.dif-medio, .dif-intermediario {
+.dif-medio, 
+.dif-intermediario {
     background-color: #eab308;
     color: #ffffff;
     border: 1px solid #ca8a04;
@@ -841,20 +859,6 @@ main {
 }
 
 /* --- ESTILO BASE DO MODAL (MODO CLARO) --- */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999999 !important;
-    isolation: isolate;
-}
-
 .modal-content-confirm {
     background: #a3e1ff;
     padding: 30px;
@@ -900,7 +904,8 @@ main {
     width: 100%;
 }
 
-.btn-voltar, .btn-entrar {
+.btn-voltar, 
+.btn-entrar {
     padding: 12px 36px;
     font-size: 1.1rem;
     font-weight: 800;
@@ -926,7 +931,8 @@ main {
 }
 
 /* Efeitos de Hover (Passar o Mouse) */
-.btn-voltar:hover, .btn-entrar:hover {
+.btn-voltar:hover, 
+.btn-entrar:hover {
     transform: translateY(-3px);
     box-shadow: 0 7px 0 #000;
 }
@@ -940,7 +946,8 @@ main {
 }
 
 /* Efeitos de Click (Pressionar) */
-.btn-voltar:active, .btn-entrar:active {
+.btn-voltar:active, 
+.btn-entrar:active {
     transform: translateY(2px);
     box-shadow: 0 2px 0 #000;
 }
@@ -951,7 +958,8 @@ main {
     gap: 10px;
 }
 
-.btn-voltar, .btn-entrar {
+.btn-voltar, 
+.btn-entrar {
     padding: 12px 30px;
     border-radius: 10px;
     border: 2px solid #333;
@@ -975,7 +983,7 @@ main {
 }
 
 .btn-entrar {
-    background-color:#00bf63;
+    background-color: #00bf63;
 }
 
 .btn-entrar:hover { 
@@ -995,13 +1003,17 @@ footer {
     border-top: 2px solid #1595C4;
 }
 
-.footer-section { flex: 1 1 200px; }
+.footer-section { 
+    flex: 1 1 200px; 
+}
+
 .footer-section h3 { 
     color: #1595C4; 
     font-size: 1rem;
     margin-bottom: 25px; 
     letter-spacing: 2px;
 }
+
 .footer-section a { 
     margin: 15px 0; 
     display: flex; 
@@ -1014,8 +1026,15 @@ footer {
     transition: color 0.3s;
     text-decoration: none;
 }
-.footer-section p:hover { color: #1595C4; }
-.footer-section p i { color: #1595C4; width: 20px; }
+
+.footer-section p:hover { 
+    color: #1595C4; 
+}
+
+.footer-section p i { 
+    color: #1595C4; 
+    width: 20px; 
+}
 
 /* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
 body.no-scroll {
@@ -1057,6 +1076,7 @@ body.no-scroll {
 .mobile-menu-scroll::-webkit-scrollbar {
     width: 5px;
 }
+
 .mobile-menu-scroll::-webkit-scrollbar-thumb {
     background: #fff;
     border-radius: 10px;
@@ -1153,22 +1173,38 @@ body.no-scroll {
 
 /* --- ANIMAÇÕES --- */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 /* --- RESPONSIVIDADE --- */
 @media (max-width: 900px) {
-    .sidebar { display: none; } 
-    .main-container { margin-left: 0; width: 100%; }
-    .main-container.sidebar-open { margin-left: 0; width: 100%; }
+    .sidebar { 
+        display: none; 
+    } 
+    .main-container { 
+        margin-left: 0; 
+        width: 100%; 
+    }
+    .main-container.sidebar-open { 
+        margin-left: 0; 
+        width: 100%; 
+    }
     
     .navbar-home {
         justify-content: space-between;
         padding: 0 20px;
     }
 
-    .nav-links-home { display: none; } 
+    .nav-links-home { 
+        display: none; 
+    } 
     
     .hamburger-mobile { 
         display: block; 
@@ -1193,8 +1229,13 @@ body.no-scroll {
         flex: 1; 
     }
 
-    #bemvindo { font-size: 1.875rem; }
-    .group-cards { grid-template-columns: 1fr; }
+    #bemvindo { 
+        font-size: 1.875rem; 
+    }
+
+    .group-cards { 
+        grid-template-columns: 1fr; 
+    }
     
     footer {
         flex-direction: column;
@@ -1246,7 +1287,8 @@ body.no-scroll {
         margin: 2vh auto;
     }
     
-    .modal-header, .modal-body {
+    .modal-header, 
+    .modal-body {
         padding-left: 16px;
         padding-right: 16px;
     }
@@ -1270,7 +1312,6 @@ body.no-scroll {
 /* ==========================================================
    ESTILOS DAS MODAIS GLOBAIS
    ========================================================== */
-
 .modal-overlay-global {
     position: fixed;
     top: 0;
@@ -1303,16 +1344,27 @@ body.no-scroll {
 }
 
 @keyframes popupModal {
-    from { transform: scale(0.8); opacity: 0; }
-    to { transform: scale(1); opacity: 1; }
+    from { 
+        transform: scale(0.8); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
 }
 
 .modal-icon-wrapper {
     font-size: 3rem;
 }
 
-.icon-sucesso { color: #00bf63; }
-.icon-perigo { color: #ff5c5c; }
+.icon-sucesso { 
+    color: #00bf63; 
+}
+
+.icon-perigo { 
+    color: #ff5c5c; 
+}
 
 .modal-titulo-global {
     font-family: 'gliker', sans-serif;
@@ -1352,9 +1404,23 @@ body.no-scroll {
     text-transform: uppercase;
 }
 
-.btn-global-ok { background-color: #00bf63; color: #ffffff; width: 100%; }
-.btn-global-cancelar { background-color: #e0e0e0; color: #000000; flex: 1; }
-.btn-global-confirmar { background-color: #ff5c5c; color: #ffffff; flex: 1; }
+.btn-global-ok { 
+    background-color: #00bf63; 
+    color: #ffffff; 
+    width: 100%; 
+}
+
+.btn-global-cancelar { 
+    background-color: #e0e0e0; 
+    color: #000000; 
+    flex: 1; 
+}
+
+.btn-global-confirmar { 
+    background-color: #ff5c5c; 
+    color: #ffffff; 
+    flex: 1; 
+}
 
 .btn-global-ok:active, 
 .btn-global-cancelar:active, 

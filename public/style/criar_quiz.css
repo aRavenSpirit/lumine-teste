@@ -139,7 +139,8 @@ body {
     font-weight: 700;
 }
 
-.custom-input, .custom-select {
+.custom-input, 
+.custom-select {
     background-color: #a3e1ff; /* Azul sutil combinando com as caixas do dash */
     border: 3px solid #000000;
     border-radius: 20px;
@@ -152,7 +153,8 @@ body {
     transition: 0.2s ease;
 }
 
-.custom-input:focus, .custom-select:focus {
+.custom-input:focus, 
+.custom-select:focus {
     transform: translateY(2px);
     box-shadow: 0px 2px 0px #000000;
 }
@@ -448,7 +450,8 @@ body {
     gap: 12px;
 }
 
-.match-box-left, .match-box-right {
+.match-box-left, 
+.match-box-right {
     background-color: #ffffff;
     border: 3px solid #000000;
     border-radius: 12px;
@@ -520,7 +523,8 @@ body {
         flex-direction: column;
         align-items: flex-start;
     }
-    .question-title-input, .type-select-wrapper select {
+    .question-title-input, 
+    .type-select-wrapper select {
         width: 100%;
     }
     .flex-row {

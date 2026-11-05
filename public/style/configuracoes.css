@@ -1,7 +1,9 @@
 /* =========================================
    RESET DE BOX-SIZING GLOBAL
    ========================================= */
-*, *::before, *::after {
+*, 
+*::before, 
+*::after {
     box-sizing: border-box;
 }
 
@@ -237,7 +239,8 @@ input[type="password"]::-ms-clear {
     width: 100%;
 }
 
-.input-pill, .select-pill {
+.input-pill, 
+.select-pill {
     width: 100%;
     height: 42px;
     background-color: #9bd7ff;
@@ -1300,7 +1303,8 @@ body.dark-mode .modal-cropper-content h3 {
         letter-spacing: 0;
     }
 
-    .input-pill, .select-pill {
+    .input-pill, 
+    .select-pill {
         font-size: 0.8125rem;
         padding: 0 12px;
     }

@@ -62,12 +62,11 @@ body {
     overflow-y: auto; 
 }
 
-
 /* ==================================================================
    2. CUSTOMIZAÇÃO DA SCROLLBAR (SÓ APARECE QUANDO ABERTA)
    ================================================================== */
 .sidebar.open::-webkit-scrollbar {
-    width: 10px;
+    width: 100px;
 }
 
 .sidebar.open::-webkit-scrollbar-track {
@@ -92,7 +91,6 @@ body {
     background: #0043af; 
 }
 
-
 /* ==================================================================
    3. CONTAINER HEADER (LOGO E HAMBURGUER)
    ================================================================== */
@@ -111,7 +109,6 @@ body {
 .sidebar.open .sidebar-header {
     padding-top: 40px; 
 }
-
 
 /* ==================================================================
    4. COMPONENTES INTERNOS DO HEADER (LOGO E MENU TRIGGER)
@@ -235,7 +232,6 @@ body {
     }
 }
 
-
 /* ==================================================================
    6. MENU DE NAVEGAÇÃO / LINKS DA SIDEBAR
    ================================================================== */
@@ -299,7 +295,8 @@ body {
 }
 
 /* Escondidos por padrão no Desktop */
-.mobile-logo-central, .mobile-profile-right {
+.mobile-logo-central, 
+.mobile-profile-right {
     display: none;
 }
 
@@ -338,15 +335,35 @@ body {
     transition: all 0.3s ease;
 }
 
-.item-sobre:hover a { background-color: #00bf63; color: white; }
-.item-novidades:hover a { background-color: #0cc0df; color: white; }
-.item-quizzes:hover a { background-color: #ffbd59; color: white; }
-.item-perfil:hover a { background-color: #ff5757; color: white; }
+.item-sobre:hover a { 
+    background-color: #00bf63; 
+    color: white; 
+}
+
+.item-novidades:hover a { 
+    background-color: #0cc0df; 
+    color: white; 
+}
+
+.item-quizzes:hover a { 
+    background-color: #ffbd59; 
+    color: white; 
+}
+
+.item-perfil:hover a { 
+    background-color: #ff5757; 
+    color: white; 
+}
 
 .profile-icon {
-    width: 35px; height: 35px; background-color: #cb6ce6;
-    border-radius: 50%; display: flex; 
-    align-items: center; justify-content: center; color: white;
+    width: 35px; 
+    height: 35px; 
+    background-color: #cb6ce6;
+    border-radius: 50%; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center; 
+    color: white;
     box-shadow: 0 3px 6px rgba(0,0,0,0.1);
 }
 
@@ -503,6 +520,7 @@ body {
 .avatar-upload-container:hover .avatar-preview {
     filter: brightness(0.8);
 }
+
 .avatar-upload-container:hover .avatar-edit-badge {
     transform: scale(1.1);
 }
@@ -593,13 +611,14 @@ main {
 }
 
 /* --- MODAL --- */
-
 .modal { 
     display: none; 
     position: fixed; 
     z-index: 6000; 
-    left: 0; top: 0; 
-    width: 100%; height: 100%; 
+    left: 0; 
+    top: 0; 
+    width: 100%; 
+    height: 100%; 
     background: rgba(0, 32, 63, 0.6); 
     backdrop-filter: blur(5px);
 }
@@ -640,7 +659,9 @@ main {
     transition: color 0.3s;
 }
 
-.modal-close:hover { color: #ff5757; }
+.modal-close:hover { 
+    color: #ff5757; 
+}
 
 /* A mágica acontece aqui: só o corpo tem scroll */
 .modal-body {
@@ -662,15 +683,17 @@ main {
 .modal-overlay {
     display: none; 
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
+    top: 0; 
+    left: 0;
+    width: 100%; 
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
     z-index: 9999; /* Valor bem alto para ficar acima do outro modal */
     justify-content: center;
     align-items: center;
 }
 
-.modal-content-confirm{
+.modal-content-confirm {
     background: #a3e1ff;
     padding: 30px;
     border-radius: 20px;
@@ -707,7 +730,8 @@ main {
     gap: 10px;
 }
 
-.btn-voltar, .btn-entrar {
+.btn-voltar, 
+.btn-entrar {
     padding: 12px 30px;
     border-radius: 10px;
     border: 2px solid #333;
@@ -731,7 +755,7 @@ main {
 }
 
 .btn-entrar {
-    background-color:#00bf63;
+    background-color: #00bf63;
 }
 
 .btn-entrar:hover { 
@@ -750,7 +774,9 @@ main {
     border-left: 5px solid #1595C4;
 }
 
-.conteudo-item:hover { background: #e3f0fe; }
+.conteudo-item:hover { 
+    background: #e3f0fe; 
+}
 
 .quizzes-box {
     padding-left: 20px;
@@ -774,7 +800,10 @@ main {
     transform: translateX(5px);
 }
 
-.quiz-card-link { text-decoration: none; color: inherit; }
+.quiz-card-link { 
+    text-decoration: none; 
+    color: inherit; 
+}
 
 /* --- FOOTER --- */
 footer {
@@ -788,13 +817,17 @@ footer {
     border-top: 2px solid #1595C4;
 }
 
-.footer-section { flex: 1 1 200px; }
+.footer-section { 
+    flex: 1 1 200px; 
+}
+
 .footer-section h3 { 
     color: #1595C4; 
     font-size: 1rem;
     margin-bottom: 25px; 
     letter-spacing: 2px;
 }
+
 .footer-section a { 
     margin: 15px 0; 
     display: flex; 
@@ -807,8 +840,15 @@ footer {
     transition: color 0.3s;
     text-decoration: none;
 }
-.footer-section p:hover { color: #1595C4; }
-.footer-section p i { color: #1595C4; width: 20px; }
+
+.footer-section p:hover { 
+    color: #1595C4; 
+}
+
+.footer-section p i { 
+    color: #1595C4; 
+    width: 20px; 
+}
 
 /* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
 body.no-scroll {
@@ -853,6 +893,7 @@ body.no-scroll {
 .mobile-menu-scroll::-webkit-scrollbar {
     width: 5px;
 }
+
 .mobile-menu-scroll::-webkit-scrollbar-thumb {
     background: #fff;
     border-radius: 10px;
@@ -865,7 +906,7 @@ body.no-scroll {
     right: 25px;
     width: 45px;
     height: 45px;
-    background: rgb(21, 149, 196, 0.2);;
+    background: rgb(21, 149, 196, 0.2);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -875,7 +916,7 @@ body.no-scroll {
     cursor: pointer;
     z-index: 5001;
     transition: all 0.3s ease;
-    border: 1px solid rgb(21, 149, 196, 1);;
+    border: 1px solid rgb(21, 149, 196, 1);
 }
 
 .mobile-menu-close:active {
@@ -959,15 +1000,29 @@ body.no-scroll {
 
 /* --- ANIMAÇÕES --- */
 @keyframes fadeInDown {
-    from { opacity: 0; transform: translateY(-20px); }
-    to { opacity: 1; transform: translateY(0); }
+    from { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
 }
 
 /* --- RESPONSIVIDADE (FOCO NA MUDANÇA DO HEADER) --- */
 @media (max-width: 900px) {
-    .sidebar { display: none; } 
-    .main-container { margin-left: 0; width: 100%; }
-    .main-container.sidebar-open { margin-left: 0; width: 100%; }
+    .sidebar { 
+        display: none; 
+    } 
+    .main-container { 
+        margin-left: 0; 
+        width: 100%; 
+    }
+    .main-container.sidebar-open { 
+        margin-left: 0; 
+        width: 100%; 
+    }
     
     /* Configuração do Header Mobile de 3 colunas */
     .navbar-home {
@@ -975,7 +1030,9 @@ body.no-scroll {
         padding: 0 20px;
     }
 
-    .nav-links-home { display: none; } 
+    .nav-links-home { 
+        display: none; 
+    } 
     
     .hamburger-mobile { 
         display: block; 
@@ -1001,8 +1058,13 @@ body.no-scroll {
     }
 
     /* Ajuste de escala para o Boas-vindas */
-    #bemvindo { font-size: 1.875rem; }
-    .group-cards { grid-template-columns: 1fr; }
+    #bemvindo { 
+        font-size: 1.875rem; 
+    }
+
+    .group-cards { 
+        grid-template-columns: 1fr; 
+    }
     
     footer {
         flex-direction: column;
@@ -1034,7 +1096,6 @@ body.no-scroll {
         min-width: 140px;        /* Define uma largura mínima para que os ícones fiquem um sob o outro */
     }
 }
-
 
 /* O Banner */
 #cookieBanner {
@@ -1077,9 +1138,9 @@ button {
     display: flex;
     gap: 10px;
 }
+
 .btn-box {
     padding: 20px 40px;
-    border-radius: 5px;
     border: 3px solid #333;
     border-radius: 10px;
     color: #333; 
@@ -1089,7 +1150,6 @@ button {
 
 .btn-ok { 
     background: #2ecc71; 
-    
 }
 
 .btn-no { 
@@ -1099,11 +1159,14 @@ button {
 .politica {
     text-align: right;
 }
+
 .politica a {
     color: #fff;
 }
 
-button:hover { opacity: 0.8; }
+button:hover { 
+    opacity: 0.8; 
+}
 
 /* Regra da Animação: Só Opacidade e Subida leve */
 @keyframes entrarSuave {
@@ -1127,7 +1190,6 @@ button:hover { opacity: 0.8; }
 }
 
 /* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-
 ::-webkit-scrollbar {
     width: 10px; 
 }
@@ -1143,7 +1205,6 @@ button:hover { opacity: 0.8; }
     /* Adiciona uma borda invisível para criar margem entre a barra e a borda do modal */
     border: 3px solid #fff; 
 }
-
 
 /* =========================================
    MODO ESCURO - HEADER (NAVBAR)
@@ -1171,7 +1232,6 @@ body.dark-mode .hamburger-mobile {
     color: #ffffff !important;
 }
 
-
 /* =========================================
    MODO ESCURO - SIDEBAR (MENU LATERAL)
 ========================================= */
@@ -1180,7 +1240,6 @@ body.dark-mode .sidebar {
                 url('../img/background-index-transparente.png') no-repeat center center;
     border-right: 1px solid #333;
 }
-
 
 body.dark-mode .menu-trigger {
     color: #ffffff !important;
@@ -1196,12 +1255,11 @@ body.dark-mode .sidebar nav a:hover {
     color: #ffffff !important;
 }
 
-
 /* CARDS*/
-
-.card-materia{
+.card-materia {
     border: none;
 }
+
 /* =========================================
    MODO ESCURO - MENU MOBILE (SE HOUVER)
 ========================================= */

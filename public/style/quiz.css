@@ -87,7 +87,8 @@ body {
 }
 
 /* Badges para Matéria e Conteúdo */
-#quiz-materia, #quiz-conteudo {
+#quiz-materia, 
+#quiz-conteudo {
     background-color: #eef7fc;
     color: #2980b9;
     padding: 4px 10px;
@@ -180,7 +181,6 @@ body {
     display: none;
 }
 
-
 /* ==========================================================================
    ESTILIZAÇÃO DOS COMPONENTES POR TIPO DE QUESTÃO (CASE 1 AO 6)
    ========================================================================== */
@@ -224,20 +224,26 @@ body {
     place-content: center;
     margin: 0;
 }
-#pergunta-atual label input[type="radio"] { border-radius: 50%; }
-#pergunta-atual label input[type="checkbox"] { border-radius: 6px; }
+
+#pergunta-atual label input[type="radio"] { 
+    border-radius: 50%; 
+}
+
+#pergunta-atual label input[type="checkbox"] { 
+    border-radius: 6px; 
+}
 
 #pergunta-atual label input:checked {
     background: var(--color-green);
     border-color: var(--color-dark-blue);
 }
+
 #pergunta-atual label input:checked::before {
     content: "✓";
     color: white;
     font-size: 1rem;
     font-weight: bold;
 }
-
 
 /* --- CASE 2: Resposta Curta (Caixa de Texto de Input Amigável) --- */
 #pergunta-atual input[type="text"] {
@@ -255,10 +261,10 @@ body {
     transition: border-color 0.2s;
     box-shadow: inset 0 3px 6px rgba(0,0,0,0.05);
 }
+
 #pergunta-atual input[type="text"]:focus {
     border-color: var(--color-dark-blue);
 }
-
 
 /* --- CASE 3: Verdadeiro ou Falso --- */
 #pergunta-atual button[onclick*="'Falso'"] {
@@ -280,6 +286,7 @@ body {
     transition: all 0.2s ease;
     margin: 10px auto !important;
 }
+
 #pergunta-atual button[onclick*="'Falso'"]::before {
     content: "✕" !important;
     font-family: 'Open_Sans', sans-serif !important;
@@ -307,6 +314,7 @@ body {
     transition: all 0.2s ease;
     margin: 10px auto !important;
 }
+
 #pergunta-atual button[onclick*="'Verdadeiro'"]::before {
     content: "✓" !important;
     font-family: 'Open_Sans', sans-serif !important;
@@ -344,7 +352,6 @@ body {
     text-align: center !important;
     margin: 15px 0 0 0 !important;
 }
-
 
 /* --- CASE 5: Ordenação Estilo Duolingo --- */
 #pergunta-atual div[style*="background: #ebf5fb"] {
@@ -417,6 +424,7 @@ body {
     box-shadow: 0 4px 0 var(--card-border) !important;
     transition: all 0.1s;
 }
+
 #pergunta-atual button[onclick*="selecionarOpcaoOrdem"]:active {
     transform: translateY(3px);
     box-shadow: 0 2px 0 var(--card-border) !important;
@@ -429,7 +437,6 @@ body {
     color: #bdc3c7 !important;
     box-shadow: none !important;
 }
-
 
 /* --- CASE 6: Arrastar e Soltar (Drag and Drop) --- */
 #itens-disponiveis {
@@ -488,11 +495,11 @@ div[id^="drag_"] {
     align-self: flex-start;
     transition: transform 0.1s;
 }
+
 #pergunta-atual button[onclick*="limparDrag"]:active {
     transform: translateY(3px);
     box-shadow: 0 1px 0 #b37005;
 }
-
 
 /* ==========================================================================
    3. CONTROLES DE NAVEGAÇÃO INFERIORES DO QUIZ (FOOTER)
@@ -509,7 +516,9 @@ div[id^="drag_"] {
     gap: 10px;
 }
 
-#btn-voltar, #btn-proximo, #btn-finalizar {
+#btn-voltar, 
+#btn-proximo, 
+#btn-finalizar {
     background-color: #ffffff;
     border: 3px solid var(--card-border);
     padding: 12px 24px;
@@ -524,11 +533,13 @@ div[id^="drag_"] {
     text-align: center;
 }
 
-#btn-voltar:hover, #btn-proximo:hover {
+#btn-voltar:hover, 
+#btn-proximo:hover {
     background-color: #f0f9ff;
 }
 
-#btn-voltar:active, #btn-proximo:active {
+#btn-voltar:active, 
+#btn-proximo:active {
     transform: translateY(4px);
     box-shadow: 0 1px 0 transparent;
 }
@@ -539,9 +550,11 @@ div[id^="drag_"] {
     color: #ffffff !important;
     box-shadow: 0 5px 0 #00874c !important;
 }
+
 #btn-finalizar:hover {
     background-color: #02b869 !important;
 }
+
 #btn-finalizar:active {
     transform: translateY(4px);
     box-shadow: 0 1px 0 transparent !important;
@@ -553,7 +566,6 @@ div[id^="drag_"] {
     font-weight: bold;
     text-align: center;
 }
-
 
 /* ==========================================================================
    ESTILIZAÇÃO DO MODAL DE RESULTADOS (POP-IN COM IMPACTO VISUAL)
@@ -665,10 +677,12 @@ div[id^="drag_"] {
     background-color: var(--color-orange);
     box-shadow: 0 8px 0 #d99f43;
 }
+
 .box-acertos {
     background-color: var(--color-green);
     box-shadow: 0 8px 0 #00aa5f;
 }
+
 .box-erros {
     background-color: var(--color-red);
     box-shadow: 0 8px 0 #db4f4f;
@@ -703,7 +717,6 @@ div[id^="drag_"] {
     margin: 0;
     font-size: 1rem;
 }
-
 
 #btn-final {
     background-color: #000000;
@@ -743,24 +756,22 @@ div[id^="drag_"] {
    SISTEMA DE AVALIAÇÃO DO QUIZ (APENAS ESTRELAS)
    ========================================================================== */
 
-   .modal-avaliacao{
-        position: fixed;
-        z-index: 9999;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(21, 45, 83, 0.5);
-        backdrop-filter: blur(5px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        padding: 15px;
-        animation: fadeInBg 0.4s ease forwards;
-        
-   }
+.modal-avaliacao {
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(21, 45, 83, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px;
+    animation: fadeInBg 0.4s ease forwards;
+}
 
-   
 #modal-avaliacao .modal-content {
     text-align: center;     
     padding: 20px;
@@ -772,7 +783,7 @@ div[id^="drag_"] {
 
 #modal-avaliacao h2 {
     font-size: clamp(1.2rem, 4vw, 1.8rem);
-    color:#f0f9ff;
+    color: #f0f9ff;
     background-color: #229df5;
     padding: 15px;
     border-radius: 25px;
@@ -994,8 +1005,12 @@ div[id^="drag_"] {
 
 /* Fade simples do fundo do Modal */
 @keyframes fadeInBg {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { 
+        opacity: 0; 
+    }
+    to { 
+        opacity: 1; 
+    }
 }
 
 /* Efeito Elástico tridimensional do Pop-up de resultados */
@@ -1027,7 +1042,9 @@ div[id^="drag_"] {
         margin-bottom: 5px;
     }
 
-    #btn-voltar, #btn-proximo, #btn-finalizar {
+    #btn-voltar, 
+    #btn-proximo, 
+    #btn-finalizar {
         width: 100%;
     }
 
