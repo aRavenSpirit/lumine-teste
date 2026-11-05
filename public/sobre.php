@@ -57,17 +57,17 @@
 
             <div class="stats-grid">
                 <div class="stat-item">
-                    <i class="fa-solid fa-bolt" style="color: #ffbd59;"></i>
+                    <i class="fa-solid fa-bolt"></i>
                     <h4>Dinâmico</h4>
                     <p>Quizzes rápidos e diretos.</p>
                 </div>
                 <div class="stat-item">
-                    <i class="fa-solid fa-graduation-cap" style="color: #0cc0df;"></i>
+                    <i class="fa-solid fa-graduation-cap"></i>
                     <h4>Educativo</h4>
                     <p>Focado na sua evolução.</p>
                 </div>
                 <div class="stat-item">
-                    <i class="fa-solid fa-trophy" style="color: #00bf63;"></i>
+                    <i class="fa-solid fa-trophy"></i>
                     <h4>Interativo</h4>
                     <p>Aprenda jogando.</p>
                 </div>
