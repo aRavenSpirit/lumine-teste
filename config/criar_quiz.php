@@ -68,6 +68,37 @@
             exit;
         }
 
+        // -------------------------------------------------------------
+        // VALIDAÇÃO ANTES DE INSERIR QUALQUER REGISTRO NO BANCO DE DADOS
+        // -------------------------------------------------------------
+        foreach ($data['perguntas'] as $index => $p) {
+            if (empty(trim($p['descricao'] ?? '')) || empty($p['tipo'])) {
+                echo json_encode(["erro" => "A Pergunta #" . ($index + 1) . " está inválida ou sem título."]);
+                exit;
+            }
+
+            $id_tipo = intval($p['tipo']);
+
+            if (in_array($id_tipo, [1, 4, 5, 6])) {
+                if (empty($p['respostas']) || count($p['respostas']) === 0) {
+                    echo json_encode(["erro" => "A Pergunta #" . ($index + 1) . " não possui alternativas."]);
+                    exit;
+                }
+
+                foreach ($p['respostas'] as $rIndex => $r) {
+                    if (empty(trim($r['descricao'] ?? ''))) {
+                        echo json_encode(["erro" => "A Pergunta #" . ($index + 1) . " possui a alternativa #" . ($rIndex + 1) . " vazia."]);
+                        exit;
+                    }
+
+                    if ($id_tipo == 6 && empty(trim($r['texto_alvo'] ?? ''))) {
+                        echo json_encode(["erro" => "A Pergunta #" . ($index + 1) . " possui o texto alvo #" . ($rIndex + 1) . " vazio."]);
+                        exit;
+                    }
+                }
+            }
+        }
+
         $nome = $conn->real_escape_string($data['nome']);
         $id_dificuldade = intval($data['dificuldade']);
         $id_conteudo = intval($data['id_conteudo']);
@@ -81,11 +112,6 @@
         $quiz_id = $conn->insert_id;
 
         foreach ($data['perguntas'] as $p) {
-            if (empty($p['descricao']) || empty($p['tipo'])) {
-                echo json_encode(["erro" => "Existe uma pergunta inválida ou sem título"]);
-                exit;
-            }
-
             $desc = $conn->real_escape_string($p['descricao']);
             $id_tipo = intval($p['tipo']);
 
@@ -99,14 +125,7 @@
 
             // MULTIPLA (1 correta) e VÁRIAS
             if ($id_tipo == 1 || $id_tipo == 4) {
-                if (empty($p['respostas'])) {
-                    echo json_encode(["erro" => "Respostas obrigatórias em múltipla escolha"]);
-                    exit;
-                }
-
                 foreach ($p['respostas'] as $r) {
-                    if (empty($r['descricao'])) continue;
-
                     $rdesc = $conn->real_escape_string($r['descricao']);
                     $certo = !empty($r['certo']) ? 1 : 0;
 
@@ -116,32 +135,21 @@
 
             // TEXTO
             if ($id_tipo == 2) {
-                if (empty($p['resposta_texto'])) {
-                    echo json_encode(["erro" => "Resposta de texto obrigatória"]);
-                    exit;
-                }
                 $resp = $conn->real_escape_string($p['resposta_texto']);
                 $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$resp', 1, $pergunta_id)");
             }
 
             // VERDADEIRO/FALSO
             if ($id_tipo == 3) {
-                if (!isset($p['vf'])) {
-                    echo json_encode(["erro" => "Seleção de Verdadeiro/Falso obrigatória"]);
-                    exit;
-                }
                 $valor = $p['vf'] ? 'Verdadeiro' : 'Falso';
                 $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$valor', 1, $pergunta_id)");
             }
 
             // ORDENAR / DRAG AND DROP
-            // ✅ CORREÇÃO: Tratamento unificado com verificação de isset preventiva
             if ($id_tipo == 5 || $id_tipo == 6) {
                 $posicao = 1;
 
                 foreach ($p['respostas'] as $r) {
-                    if (empty($r['descricao'])) continue;
-
                     $descItem = $conn->real_escape_string($r['descricao']);
                     $textoAlvo = '';
 

@@ -36,6 +36,12 @@
             $deslogar = false;
             // Altere 'id_usuario' ou 'user_id' para a chave exata que você usa na sua $_SESSION para guardar o ID do usuário logado
             if (isset($_SESSION['id_usuario']) && intval($_SESSION['id_usuario']) === $id) {
+                // APAGA O COOKIE DO BANNER DE COOKIES DO NAVEGADOR
+                setcookie("user_consent", "", [
+                    'expires' => time() - 3600,
+                    'path'    => '/'
+                ]);
+
                 // Limpa todas as variáveis de sessão
                 $_SESSION = array();
                 

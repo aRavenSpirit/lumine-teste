@@ -55,16 +55,72 @@
         <button onclick="salvarAlteracoes()" class="btn-save-bottom">SALVAR TODAS AS ALTERAÇÕES NO QUIZ</button>
     </div>
 
-    <script>
+    <!-- ESTRUTURA DA MODAL DO ADMINISTRADOR -->
+<div id="modalAdminAviso" class="modal-overlay-admin" style="display: none;">
+    <div class="modal-card-admin">
+        <h3 id="modalAdminTitulo">MENSAGEM DO SISTEMA</h3>
+        <p id="modalAdminMensagem">Conteúdo da mensagem aqui...</p>
+        <div id="modalAdminBotoes" class="modal-buttons-admin">
+            <!-- Botões dinâmicos via JS -->
+        </div>
+    </div>
+</div>
+
+<script>
         const api = "../config/criar_quiz.php"; 
         const urlParams = new URLSearchParams(window.location.search);
         const quizId = urlParams.get('id');
 
         let perguntas = [];
         let tipos = [];
+        let callbackConfirmacaoAdmin = null;
+
+        // ==========================================================
+        // SISTEMA DE MODAL PERSONALIZADA PARA O ADMINISTRADOR
+        // ==========================================================
+        function alertAdmin(mensagem, titulo = "ATENÇÃO", callbackFechar = null) {
+            document.getElementById('modalAdminTitulo').innerText = titulo;
+            document.getElementById('modalAdminMensagem').innerText = mensagem;
+            
+            const containerBotoes = document.getElementById('modalAdminBotoes');
+            containerBotoes.innerHTML = `
+                <button type="button" class="btn-admin-ok" onclick="fecharModalAdmin(true)">OK</button>
+            `;
+            
+            callbackConfirmacaoAdmin = callbackFechar;
+            document.getElementById('modalAdminAviso').style.display = 'flex';
+        }
+
+        function confirmAdmin(mensagem, acaoSim, titulo = "CONFIRMAÇÃO") {
+            document.getElementById('modalAdminTitulo').innerText = titulo;
+            document.getElementById('modalAdminMensagem').innerText = mensagem;
+            
+            const containerBotoes = document.getElementById('modalAdminBotoes');
+            containerBotoes.innerHTML = `
+                <button type="button" class="btn-admin-nao" onclick="fecharModalAdmin(false)">Cancelar</button>
+                <button type="button" class="btn-admin-sim" id="btnAdminConfirmarSim">OK</button>
+            `;
+
+            document.getElementById('btnAdminConfirmarSim').onclick = async function() {
+                fecharModalAdmin(false);
+                if (typeof acaoSim === 'function') await acaoSim();
+            };
+
+            document.getElementById('modalAdminAviso').style.display = 'flex';
+        }
+
+        function fecharModalAdmin(executarCallback = false) {
+            document.getElementById('modalAdminAviso').style.display = 'none';
+            if (executarCallback && typeof callbackConfirmacaoAdmin === 'function') {
+                const cb = callbackConfirmacaoAdmin;
+                callbackConfirmacaoAdmin = null;
+                cb();
+            }
+        }
+        // ==========================================================
 
         window.onload = async function () {
-            if (!quizId) return alert("ID do quiz não encontrado!");
+            if (!quizId) return alertAdmin("ID do quiz não encontrado!", "ERRO");
             
             await carregarTipos();
             await carregarListasIniciais();
@@ -188,7 +244,7 @@
                             <div class="answer-pill-box">
                                 <input class="inner-pill-input" oninput="perguntas[${i}].respostas[${j}].descricao = this.value" value="${r.descricao}" placeholder="Opção">
                                 <label class="check-label-wrapper">
-                                    Correta? <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="c_${i}" 
+                                     <input type="${p.tipo == 1 ? 'radio' : 'checkbox'}" name="c_${i}" 
                                         onchange="setCorreta(${i}, ${j}, this)" ${r.certo ? "checked" : ""}>
                                 </label>
                                 <button onclick="removerResposta(${i}, ${j})" class="btn-inline-remove">X</button>
@@ -285,10 +341,10 @@
         }
 
         function removerPergunta(i) {
-            if(confirm("Deseja apagar esta pergunta?")) {
+            confirmAdmin("Deseja apagar esta pergunta?", function() {
                 perguntas.splice(i, 1);
                 render();
-            }
+            }, "REMOVER PERGUNTA");
         }
 
         function setCorreta(i, j, input) {
@@ -304,6 +360,62 @@
         }
 
         async function salvarAlteracoes() {
+            // 1. Impedir salvar quiz completamente sem perguntas
+            if (!perguntas || perguntas.length === 0) {
+                alertAdmin("O quiz deve conter pelo menos 1 pergunta! Se não deseja este quiz, apague-o no Painel do Administrador.", "AVISO");
+                return;
+            }
+
+            // 2. Validação detalhada de perguntas e alternativas
+            for (let i = 0; i < perguntas.length; i++) {
+                let p = perguntas[i];
+
+                if (!p.descricao || !p.descricao.trim()) {
+                    alertAdmin(`A pergunta ${i + 1} está com a descrição vazia.`, "VALIDAÇÃO");
+                    return;
+                }
+                if (!p.tipo) {
+                    alertAdmin(`Selecione o tipo da pergunta ${i + 1}.`, "VALIDAÇÃO");
+                    return;
+                }
+
+                if (p.tipo == 1 || p.tipo == 4 || p.tipo == 5 || p.tipo == 6) {
+                    if (!p.respostas || p.respostas.length === 0) {
+                        alertAdmin(`A pergunta ${i + 1} não possui nenhuma alternativa/resposta cadastrada.`, "VALIDAÇÃO");
+                        return;
+                    }
+
+                    for (let j = 0; j < p.respostas.length; j++) {
+                        if (!p.respostas[j].descricao || !p.respostas[j].descricao.trim()) {
+                            alertAdmin(`Na pergunta ${i + 1}, a alternativa ${j + 1} está vazia.`, "VALIDAÇÃO");
+                            return;
+                        }
+                        if (p.tipo == 6 && (!p.respostas[j].texto_alvo || !p.respostas[j].texto_alvo.trim())) {
+                            alertAdmin(`Na pergunta ${i + 1}, o texto fixo/alvo ${j + 1} está vazio.`, "VALIDAÇÃO");
+                            return;
+                        }
+                    }
+                }
+
+                if (p.tipo == 1) {
+                    let corretas = p.respostas.filter(r => r.certo);
+                    if (corretas.length !== 1) {
+                        alertAdmin(`A pergunta ${i + 1} precisa ter exatamente 1 alternativa correta selecionada.`, "VALIDAÇÃO");
+                        return;
+                    }
+                }
+
+                if (p.tipo == 2 && (!p.resposta_texto || !p.resposta_texto.trim())) {
+                    alertAdmin(`A pergunta ${i + 1} precisa de uma resposta de texto.`, "VALIDAÇÃO");
+                    return;
+                }
+
+                if (p.tipo == 3 && p.vf === undefined) {
+                    alertAdmin(`A pergunta ${i + 1} precisa da seleção de Verdadeiro ou Falso.`, "VALIDAÇÃO");
+                    return;
+                }
+            }
+
             const payload = {
                 id_quiz: quizId,
                 nome: document.getElementById('input-nome').value,
@@ -319,12 +431,18 @@
                     body: JSON.stringify(payload)
                 });
                 const res = await response.json();
-                alert(res.mensagem || res.erro);
-                if (res.status) window.location.reload();
+                
+                if (res.status) {
+                    alertAdmin(res.mensagem || "Quiz atualizado com sucesso!", "SUCESSO", function() {
+                        window.location.reload();
+                    });
+                } else {
+                    alertAdmin("Erro ao salvar: " + (res.erro || "Verifique os dados enviados."), "ERRO");
+                }
             } catch (e) {
-                alert("Erro ao conectar com o servidor.");
+                alertAdmin("Erro ao conectar com o servidor.", "ERRO");
             }
         }
-    </script>
+</script>
 </body>
 </html>

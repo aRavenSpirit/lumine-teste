@@ -56,15 +56,16 @@
     <script src="js/cookies.js"></script>
 </div>
 
-<!-- Forçado style="display: none;" garantindo que o modal não abra no carregamento da página -->
+<!-- MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ (PADRONIZADA COM A HOME) -->
 <div id="modalConfirmacao" class="modal-overlay" style="display: none;">
     <div class="modal-content-confirm">
-        <p>deseja entrar no quiz?</p>
-        <img src="img/LUMINE-5con.ico" alt="logo">
-        <p id="nomeQuizConfirmacao"></p>
+        <p class="modal-titulo">Deseja entrar no quiz?</p>
+        
+        <img src="img/luminequestoes.png" alt="logo" class="modal-imagem-centro">
+        
         <div class="modal-buttons">
-            <button onclick="fecharConfirmacao()" class="btn-confirm btn-voltar">não</button>
-            <button id="btnConfirmarEntrada" class="btn-confirm btn-entrar">sim</button>
+            <button onclick="fecharConfirmacao()" class="btn-voltar">Não</button>
+            <button id="btnConfirmarEntrada" class="btn-entrar">Sim</button>
         </div>
     </div>
 </div>
@@ -138,11 +139,8 @@ function renderizarCards(lista) {
         else if (q.id_dificuldade == 2) { difTexto = "Médio"; difClasse = "dif-media"; }
         else if (q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
-        // Sanitize do nome do quiz para evitar quebra do atributo HTML/JS
-        const nomeQuizSanitizado = (q.nome || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-
         html += `
-            <div onclick="prepararEntrada('${nomeQuizSanitizado}', ${q.id})" class="card-materia" style="cursor: pointer;">
+            <div onclick="prepararEntrada(${q.id})" class="card-materia" style="cursor: pointer;">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
                     <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
@@ -167,9 +165,8 @@ function filtrarGeral() {
     renderizarCards(filtrados);
 }
 
-function prepararEntrada(nomeQuiz, idQuiz) {
+function prepararEntrada(idQuiz) {
     urlDestinoQuiz = `quiz.php?id=${idQuiz}`;
-    document.getElementById('nomeQuizConfirmacao').innerText = nomeQuiz;
     document.getElementById('modalConfirmacao').style.display = 'flex';
 }
 

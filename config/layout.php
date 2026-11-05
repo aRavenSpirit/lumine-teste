@@ -31,7 +31,6 @@ function renderHeader() {
             </li>
         </nav>
 
-
         <div class="mobile-profile-right">
             <a href="configuracoes.php">
                 <div class="profile-icon">
@@ -92,38 +91,123 @@ function renderSidebar($isQuiz = false) {
     </div>
     <?php
 }
-    // Função para o Footer (Rodapé)
-    function renderFooter() {
-        ?>
 
-        <script>
-    // Verifica imediatamente ao carregar a página se o tema salvo é o escuro
-    if (localStorage.getItem("theme") === "dark") {
-        document.body.classList.add("dark-mode");
-    }
-</script>
-        <footer>
-            <div class="footer-section">
-                <h3>GERAL</h3>
-                <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></a>
-                <a href="duvidas.html"><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></a>
-                <a href="equipe.html"><i class="fa-solid fa-users"></i> <span>EQUIPE</span></a>
-                <a href="contato.html"><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></a>
+// Função para o Footer (Rodapé)
+function renderFooter() {
+    ?>
+    <footer>
+        <div class="footer-section">
+            <h3>GERAL</h3>
+            <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></a>
+            <a href="duvidas.html"><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></a>
+            <a href="equipe.html"><i class="fa-solid fa-users"></i> <span>EQUIPE</span></a>
+            <a href="contato.html"><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></a>
+        </div>
+        <div class="footer-section">
+            <h3>TERMOS E PRIVACIDADE</h3>
+            <a href="normas.html"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
+            <a href="termos.html"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
+            <a href="privacidade.html"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
+        </div>
+        <div class="footer-section">
+            <h3>REDES SOCIAIS</h3>
+            <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i> <span>INSTAGRAM</span></a>
+            <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i> <span>YOUTUBE</span></a>
+            <a href="https://tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i> <span>TIKTOK</span></a>
+            <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i> <span>FACEBOOK</span></a>
+        </div>
+    </footer>
+
+    <!-- ========================================================== -->
+    <!-- MODAIS GLOBAIS DA APLICAÇÃO (LUMINE)                        -->
+    <!-- ========================================================== -->
+
+    <!-- 1. MODAL GLOBAL DE SUCESSO / ALERTA (DADOS SALVOS) -->
+    <div id="modalGlobalSucesso" class="modal-overlay-global" style="display: none;">
+        <div class="modal-card-global modal-sucesso-card">
+            <div class="modal-icon-wrapper icon-sucesso">
+                <i class="fas fa-check-circle"></i>
             </div>
-            <div class="footer-section">
-                <h3>TERMOS E PRIVACIDADE</h3>
-                <a href="normas.html"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
-                <a href="termos.html"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
-                <a href="privacidade.html"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
+            <h3 id="modalSucessoTitulo" class="modal-titulo-global">SUCESSO!</h3>
+            <p id="modalSucessoMensagem" class="modal-mensagem-global">Alterações salvas com sucesso.</p>
+            <div class="modal-botoes-global">
+                <button type="button" onclick="fecharModalGlobalSucesso()" class="btn-global-ok">OK</button>
             </div>
-            <div class="footer-section">
-                <h3>REDES SOCIAIS</h3>
-                <a href="https://instagram.com" target="_blank"><i class="fa-brands fa-instagram"></i> <span>INSTAGRAM</span></a>
-                <a href="https://youtube.com" target="_blank"><i class="fa-brands fa-youtube"></i> <span>YOUTUBE</span></a>
-                <a href="https://tiktok.com" target="_blank"><i class="fa-brands fa-tiktok"></i> <span>TIKTOK</span></a>
-                <a href="https://facebook.com" target="_blank"><i class="fa-brands fa-facebook"></i> <span>FACEBOOK</span></a>
+        </div>
+    </div>
+
+    <!-- 2. MODAL GLOBAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
+    <div id="modalGlobalConfirmar" class="modal-overlay-global" style="display: none;">
+        <div class="modal-card-global modal-perigo-card">
+            <div class="modal-icon-wrapper icon-perigo">
+                <i class="fas fa-exclamation-triangle"></i>
             </div>
-        </footer>
-        <?php
-    }
+            <h3 id="modalConfirmarTitulo" class="modal-titulo-global">TEM CERTEZA?</h3>
+            <p id="modalConfirmarMensagem" class="modal-mensagem-global">Deseja realmente excluir este item? Esta ação não poderá ser desfeita.</p>
+            <div class="modal-botoes-global">
+                <button type="button" onclick="fecharModalGlobalConfirmar()" class="btn-global-cancelar">Não, Cancelar</button>
+                <button type="button" id="btnGlobalConfirmarAcao" class="btn-global-confirmar">Sim, Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE CONTROLE DAS MODAIS GLOBAIS -->
+    <script>
+        let callbackConfirmacaoGlobal = null;
+
+        function exibirModalSucesso(mensagem, titulo = "SUCESSO!", callbackFechar = null) {
+            document.getElementById('modalSucessoTitulo').innerText = titulo;
+            document.getElementById('modalSucessoMensagem').innerText = mensagem;
+            
+            const modal = document.getElementById('modalGlobalSucesso');
+            modal.style.display = 'flex';
+
+            const btnOk = modal.querySelector('.btn-global-ok');
+            btnOk.onclick = function() {
+                fecharModalGlobalSucesso();
+                if (typeof callbackFechar === 'function') {
+                    callbackFechar();
+                }
+            };
+        }
+
+        function fecharModalGlobalSucesso() {
+            document.getElementById('modalGlobalSucesso').style.display = 'none';
+        }
+
+        function exibirModalConfirmacao(mensagem, acaoConfirmar, titulo = "TEM CERTEZA?") {
+            document.getElementById('modalConfirmarTitulo').innerText = titulo;
+            document.getElementById('modalConfirmarMensagem').innerText = mensagem;
+            
+            const btnConfirmar = document.getElementById('btnGlobalConfirmarAcao');
+            
+            // Atribuição direta e execução imediata da ação assíncrona
+            btnConfirmar.onclick = async function() {
+                btnConfirmar.disabled = true; // Evita cliques múltiplos
+                try {
+                    if (typeof acaoConfirmar === 'function') {
+                        await acaoConfirmar();
+                    }
+                } catch (e) {
+                    console.error("Erro na execução da confirmação:", e);
+                } finally {
+                    btnConfirmar.disabled = false;
+                    fecharModalGlobalConfirmar();
+                }
+            };
+
+            document.getElementById('modalGlobalConfirmar').style.display = 'flex';
+        }
+
+        function fecharModalGlobalConfirmar() {
+            document.getElementById('modalGlobalConfirmar').style.display = 'none';
+            callbackConfirmacaoGlobal = null;
+        }
+
+        if (localStorage.getItem("theme") === "dark") {
+            document.body.classList.add("dark-mode");
+        }
+    </script>
+    <?php
+}
 ?>

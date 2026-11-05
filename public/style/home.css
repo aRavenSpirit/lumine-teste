@@ -1266,3 +1266,111 @@ body.no-scroll {
     border-radius: 10px;
     border: 3px solid #fff; 
 }
+
+/* ==========================================================
+   ESTILOS DAS MODAIS GLOBAIS
+   ========================================================== */
+
+.modal-overlay-global {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999 !important;
+    isolation: isolate;
+}
+
+.modal-card-global {
+    background: #ffffff;
+    width: 90%;
+    max-width: 440px;
+    padding: 25px;
+    border-radius: 20px;
+    border: 3px solid #000000;
+    box-shadow: 4px 6px 0px #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    animation: popupModal 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popupModal {
+    from { transform: scale(0.8); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+.modal-icon-wrapper {
+    font-size: 3rem;
+}
+
+.icon-sucesso { color: #00bf63; }
+.icon-perigo { color: #ff5c5c; }
+
+.modal-titulo-global {
+    font-family: 'gliker', sans-serif;
+    font-size: 1.4rem;
+    color: #000000;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.modal-mensagem-global {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #444444;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.modal-botoes-global {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-global-ok, 
+.btn-global-cancelar, 
+.btn-global-confirmar {
+    padding: 10px 24px;
+    border-radius: 18px;
+    border: 2px solid #000000;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 2px 3px 0px #000000;
+    transition: transform 0.1s;
+    text-transform: uppercase;
+}
+
+.btn-global-ok { background-color: #00bf63; color: #ffffff; width: 100%; }
+.btn-global-cancelar { background-color: #e0e0e0; color: #000000; flex: 1; }
+.btn-global-confirmar { background-color: #ff5c5c; color: #ffffff; flex: 1; }
+
+.btn-global-ok:active, 
+.btn-global-cancelar:active, 
+.btn-global-confirmar:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
+/* COMPATIBILIDADE COM MODO ESCURO */
+body.dark-mode .modal-card-global {
+    background-color: #1e293b;
+    border-color: #ffffff;
+    box-shadow: 4px 6px 0px #ffffff;
+}
+
+body.dark-mode .modal-titulo-global,
+body.dark-mode .modal-mensagem-global {
+    color: #ffffff;
+}

@@ -86,6 +86,8 @@
         </section>
     </main>
 
+    <?php renderFooter(); ?>
+
 </div>
 
 <!-- Script de controle global do tamanho de fonte -->
@@ -252,13 +254,13 @@
                     { key: 'geografia', nome: 'Geografia', color: '#fbb355' },
                     { key: 'filosofia', nome: 'Filosofia', color: '#9ad0f5' },
                     { key: 'sociologia', nome: 'Sociologia', color: '#b2f0a5' },
-                    { key: 'natureza', nome: 'Ciência das Naturezas', color: '#00c882' },
-                    { key: 'arte', nome: 'Arte', color: '#5b63f6' },
+                    { key: 'ciencias_da_natureza', nome: 'Ciências da Natureza', color: '#00c882' },
+                    { key: 'artes', nome: 'Artes', color: '#5b63f6' },
                     { key: 'ingles', nome: 'Inglês', color: '#f3c246' },
                     { key: 'fisica', nome: 'Física', color: '#ff5c5c' },
                     { key: 'quimica', nome: 'Química', color: '#00cc7a' },
                     { key: 'biologia', nome: 'Biologia', color: '#00d68f' },
-                    { key: 'educacao_fisica', nome: 'Educação Física', color: '#f7d363' }
+                    { key: 'educacao_fisica', nome: 'Educação Física', color: '#f7d363' }                 
                 ];
 
                 materiaSelecionadaAtual = listaMateriasPadrao[0].key;
@@ -470,28 +472,39 @@
         if (selecionadosHistorico.size === 0) return;
 
         const quantidade = selecionadosHistorico.size;
-        if (!confirm(`Deseja realmente apagar ${quantidade} item(ns) selecionado(s) do histórico?`)) {
-            return;
-        }
 
-        const arrayIds = Array.from(selecionadosHistorico);
-        const formData = new FormData();
-        formData.append('acao', 'excluir_historicos_selecionados');
-        formData.append('ids', JSON.stringify(arrayIds));
+        if (typeof exibirModalConfirmacao === 'function') {
+            exibirModalConfirmacao(
+                `Deseja realmente apagar ${quantidade} item(ns) selecionado(s) do histórico?`,
+                async function() {
+                    const arrayIds = Array.from(selecionadosHistorico);
+                    const formData = new FormData();
+                    formData.append('acao', 'excluir_historicos_selecionados');
+                    formData.append('ids', JSON.stringify(arrayIds));
 
-        try {
-            const response = await fetch(api, { method: 'POST', body: formData });
-            const result = await response.json();
+                    try {
+                        const response = await fetch(api, { method: 'POST', body: formData });
+                        const result = await response.json();
 
-            if (result.success) {
-                selecionadosHistorico.clear();
-                carregarPerfil('historico');
-            } else {
-                alert("Erro ao excluir itens: " + (result.error || "Erro desconhecido."));
-            }
-        } catch (error) {
-            console.error("Erro na exclusão em lote:", error);
-            alert("Erro na comunicação com o servidor.");
+                        if (result.success) {
+                            selecionadosHistorico.clear();
+                            carregarPerfil('historico');
+                            if (typeof exibirModalSucesso === 'function') {
+                                exibirModalSucesso("Itens excluídos com sucesso!");
+                            }
+                        } else {
+                            if (typeof exibirModalSucesso === 'function') {
+                                exibirModalSucesso("Erro ao excluir itens: " + (result.error || "Erro desconhecido."), "ERRO");
+                            } else {
+                                alert("Erro ao excluir itens: " + (result.error || "Erro desconhecido."));
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Erro na exclusão em lote:", error);
+                    }
+                },
+                "EXCLUIR HISTÓRICO"
+            );
         }
     }
 
@@ -556,32 +569,36 @@
     }
 
     async function excluirHistorico(idTentativa) {
-        if (!confirm("Deseja remover esta tentativa do histórico?")) return;
+        if (typeof exibirModalConfirmacao === 'function') {
+            exibirModalConfirmacao(
+                "Deseja remover esta tentativa do histórico?",
+                async function() {
+                    const formData = new FormData();
+                    formData.append('acao', 'excluir_historico');
+                    formData.append('id_tentativa', idTentativa);
 
-        const formData = new FormData();
-        formData.append('acao', 'excluir_historico');
-        formData.append('id_tentativa', idTentativa);
+                    try {
+                        const response = await fetch(api, { method: 'POST', body: formData });
+                        const result = await response.json();
 
-        try {
-            const response = await fetch(api, { method: 'POST', body: formData });
-            const result = await response.json();
-
-            if (result.success) {
-                const linha = document.getElementById(`tentativa-${idTentativa}`);
-
-                if (linha) {
-                    linha.style.transition = "0.3s";
-                    linha.style.opacity = "0";
-
-                    setTimeout(() => linha.remove(), 300);
-                }
-
-            } else {
-                alert("Erro ao excluir: " + result.error);
-            }
-
-        } catch (error) {
-            console.error("Erro na exclusão:", error);
+                        if (result.success) {
+                            const linha = document.getElementById(`tentativa-${idTentativa}`);
+                            if (linha) {
+                                linha.style.transition = "0.3s";
+                                linha.style.opacity = "0";
+                                setTimeout(() => linha.remove(), 300);
+                            }
+                        } else {
+                            if (typeof exibirModalSucesso === 'function') {
+                                exibirModalSucesso("Erro ao excluir: " + result.error, "ERRO");
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Erro na exclusão:", error);
+                    }
+                },
+                "REMOVER TENTATIVA"
+            );
         }
     }
 
@@ -622,14 +639,23 @@
             const result = await res.json();
 
             if (result && result.success) {
-                carregarPerfil('preferencias');
+                if (typeof exibirModalSucesso === 'function') {
+                    exibirModalSucesso("Preferências salvas com sucesso!", "SUCESSO", () => {
+                        carregarPerfil('preferencias');
+                    });
+                } else {
+                    carregarPerfil('preferencias');
+                }
             } else {
-                alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
+                if (typeof exibirModalSucesso === 'function') {
+                    exibirModalSucesso("Erro ao salvar: " + (result.error || "Erro desconhecido"), "ERRO");
+                } else {
+                    alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
+                }
             }
 
         } catch (e) {
             console.error("Erro ao salvar", e);
-            alert("Não foi possível conectar ao servidor.");
         }
     }
 
@@ -702,12 +728,20 @@
         const confirmaSenha = document.getElementById('edit-confirma-senha-input')?.value;
 
         if (senha && !senhaValidaConfig) {
-            alert("A nova senha não cumpre todos os requisitos de segurança exigidos.");
+            if (typeof exibirModalSucesso === 'function') {
+                exibirModalSucesso("A nova senha não cumpre todos os requisitos de segurança exigidos.", "ATENÇÃO");
+            } else {
+                alert("A nova senha não cumpre todos os requisitos de segurança exigidos.");
+            }
             return;
         }
 
         if (senha && senha !== confirmaSenha) {
-            alert("As senhas não coincidem!");
+            if (typeof exibirModalSucesso === 'function') {
+                exibirModalSucesso("As senhas não coincidem!", "ATENÇÃO");
+            } else {
+                alert("As senhas não coincidem!");
+            }
             return;
         }
 
@@ -726,15 +760,23 @@
         .then(r => r.json())
         .then(data => {
             if (data.success || data.mensagem) {
-                alert("Perfil atualizado com sucesso!");
-                carregarPerfil('usuario');
+                if (typeof exibirModalSucesso === 'function') {
+                    exibirModalSucesso("Perfil atualizado com sucesso!", "SUCESSO", () => {
+                        carregarPerfil('usuario');
+                    });
+                } else {
+                    carregarPerfil('usuario');
+                }
             } else {
-                alert("Erro ao salvar: " + (data.error || data.erro || "Verifique o backend PHP"));
+                if (typeof exibirModalSucesso === 'function') {
+                    exibirModalSucesso("Erro ao salvar: " + (data.error || data.erro || "Verifique os dados enviados."), "ERRO");
+                } else {
+                    alert("Erro ao salvar: " + (data.error || data.erro));
+                }
             }
         })
         .catch(err => {
             console.error("Erro na requisição:", err);
-            alert("Erro na comunicação com o servidor.");
         });
     }
 
@@ -809,11 +851,12 @@
                     carregarPerfil('usuario');
                     carregarUsuario();
                 } else {
-                    alert("Erro ao enviar imagem: " + (data.error || "Erro desconhecido"));
+                    if (typeof exibirModalSucesso === 'function') {
+                        exibirModalSucesso("Erro ao enviar imagem: " + (data.error || "Erro desconhecido"), "ERRO");
+                    }
                 }
             } catch (e) {
                 console.error("Erro no upload", e);
-                alert("Falha de conexão ao enviar imagem.");
             }
         }, 'image/png');
     }
@@ -984,27 +1027,60 @@
     }
 
     async function excluirConta() {
-        const confirmacao = confirm("ATENÇÃO: Deseja realmente excluir sua conta? Esta ação é permanente e todos os seus históricos e dados serão apagados.");
-        
-        if (!confirmacao) return;
+        if (typeof exibirModalConfirmacao === 'function') {
+            exibirModalConfirmacao(
+                "ATENÇÃO: Deseja realmente excluir sua conta? Esta ação é permanente e todos os seus históricos e dados serão apagados.",
+                async function() {
+                    const formData = new FormData();
+                    formData.append('acao', 'excluir_conta');
+                    formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        const formData = new FormData();
-        formData.append('acao', 'excluir_conta');
-        formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+                    try {
+                        const response = await fetch(api, { method: 'POST', body: formData });
+                        const result = await response.json();
 
-        try {
-            const response = await fetch(api, { method: 'POST', body: formData });
-            const result = await response.json();
+                        if (result.success) {
+                            // Limpa o cookie local de consentimento
+                            document.cookie = "user_consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
-            if (result.success) {
-                alert("Sua conta foi excluída com sucesso.");
-                window.location.href = "login.html";
-            } else {
-                alert("Erro ao excluir conta: " + (result.error || "Erro desconhecido."));
+                            if (typeof exibirModalSucesso === 'function') {
+                                exibirModalSucesso("Sua conta foi excluída com sucesso.", "CONTA EXCLUÍDA", () => {
+                                    window.location.href = "login.html";
+                                });
+                            } else {
+                                alert("Sua conta foi excluída com sucesso.");
+                                window.location.href = "login.html";
+                            }
+                        } else {
+                            if (typeof exibirModalSucesso === 'function') {
+                                exibirModalSucesso("Erro ao excluir conta: " + (result.error || "Erro desconhecido."), "ERRO");
+                            } else {
+                                alert("Erro ao excluir conta: " + (result.error || "Erro desconhecido."));
+                            }
+                        }
+                    } catch (error) {
+                        console.error("Erro na requisição:", error);
+                        if (typeof exibirModalSucesso === 'function') {
+                            exibirModalSucesso("Erro ao se comunicar com o servidor.", "ERRO");
+                        } else {
+                            alert("Erro ao se comunicar com o servidor.");
+                        }
+                    }
+                },
+                "EXCLUIR CONTA PERMANENTEMENTE"
+            );
+        } else {
+            // Fallback caso a modal global não esteja disponível
+            if (confirm("ATENÇÃO: Deseja realmente excluir sua conta? Esta ação é permanente e todos os seus históricos e dados serão apagados.")) {
+                const formData = new FormData();
+                formData.append('acao', 'excluir_conta');
+                formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
+                const response = await fetch(api, { method: 'POST', body: formData });
+                const result = await response.json();
+                if (result.success) {
+                    window.location.href = "login.html";
+                }
             }
-        } catch (error) {
-            console.error("Erro na requisição:", error);
-            alert("Erro ao se comunicar com o servidor.");
         }
     }
 

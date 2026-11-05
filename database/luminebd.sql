@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS configuracoes (
         'filosofia', '#7f8c8d',
         'sociologia', '#16a085',
         'educacao_fisica', '#c0392b',
-        'literatura', '#9b59b6'
+        'ciencias_da_natureza', '#9b59b6'
     )),
     FOREIGN KEY (id_usuario) REFERENCES usuario (id) ON DELETE CASCADE
 );

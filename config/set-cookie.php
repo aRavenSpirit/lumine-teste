@@ -1,35 +1,43 @@
 <?php
-    // Define que a resposta é um JSON para o JavaScript entender
-    header('Content-Type: application/json');
+session_start();
+header('Content-Type: application/json');
 
-    // Captura a ação vinda do JS
-    $action = $_GET['action'] ?? '';
+$action = $_GET['action'] ?? '';
+$nomeCookie = "user_consent";
 
-    $nomeCookie = "user_consent";
-    $expiracao = time() + (30 * 24 * 60 * 60); // 30 dias
+// Verifica se o utilizador está logado (exemplo usando $_SESSION['user_id'])
+$userId = $_SESSION['user_id'] ?? null;
 
-    if ($action === 'accept') {
-        // Cria o cookie de verdade no navegador
-        setcookie($nomeCookie, 'accepted', [
-            'expires' => $expiracao,
-            'path' => '/',
-            'secure' => false, // Mude para true apenas se usar HTTPS
-            'httponly' => true, // Segurança contra ataques XSS
-            'samesite' => 'Lax'
-        ]);
-        
-        echo json_encode(['status' => 'success', 'choice' => 'accepted']);
-    } 
-    elseif ($action === 'decline') {
-        // Se recusar, matamos o cookie (tempo no passado)
-        setcookie($nomeCookie, 'declined', [
-            'expires' => time() - 3600, 
-            'path' => '/'
-        ]);
-        
-        echo json_encode(['status' => 'success', 'choice' => 'declined']);
-    } else {
-        // Caso o arquivo seja acessado sem ação
-        echo json_encode(['status' => 'error', 'message' => 'Nenhuma acao enviada.']);
-    }
+if ($action === 'accept') {
+    // 1. Guarda a escolha na Sessão/BD associada a ESTE utilizador
+    $_SESSION['user_consent'] = 'accepted';
+    
+    // (Opcional) Se tiver tabela no banco de dados:
+    // $pdo->prepare("UPDATE usuarios SET cookie_consent = 'accepted' WHERE id = ?")->execute([$userId]);
+
+    // 2. Define o cookie local por 30 dias
+    setcookie($nomeCookie, 'accepted', [
+        'expires'  => time() + (30 * 24 * 60 * 60),
+        'path'     => '/',
+        'secure'   => false,
+        'httponly' => false,
+        'samesite' => 'Lax'
+    ]);
+    
+    echo json_encode(['status' => 'success', 'choice' => 'accepted']);
+
+} elseif ($action === 'decline') {
+    // Se recusar, limpa da sessão e destrói qualquer cookie anterior[cite: 3]
+    unset($_SESSION['user_consent']);
+    
+    setcookie($nomeCookie, '', [
+        'expires' => time() - 3600, 
+        'path'    => '/'
+    ]);
+    
+    echo json_encode(['status' => 'success', 'choice' => 'declined']);
+
+} else {
+    echo json_encode(['status' => 'error', 'message' => 'Acao invalida']);
+}
 ?>

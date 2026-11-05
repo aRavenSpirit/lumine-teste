@@ -110,6 +110,20 @@
 
 </div>
 
+<!-- MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ -->
+<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content-confirm">
+        <p class="modal-titulo">Deseja entrar no quiz?</p>
+        
+        <img src="img/luminequestoes.png" alt="logo" class="modal-imagem-centro">
+        
+        <div class="modal-buttons">
+            <button onclick="fecharModalConfirmacao()" class="btn-voltar">Não</button>
+            <button id="btnConfirmarEntrada" class="btn-entrar">Sim</button>
+        </div>
+    </div>
+</div>
+
 <!-- Importação do script de tamanho de fonte -->
 <script src="js/tamanho_fonte.js"></script>
 
@@ -118,6 +132,7 @@
 
 <script>
 const api = "../config/home.php";
+let urlDestinoQuiz = "";
 
 // Transforma o array do PHP em um objeto JavaScript utilizável
 const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
@@ -160,9 +175,9 @@ function carregarMenuSidebar() {
                         <div class="card-body"><p>${m.nome_materia}</p></div>
                     </div>`;
             });
-            document.getElementById("menuMaterias").innerHTML = menuHTML;
-            document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-            document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+            if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
+            if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+            if(document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
         });
 }
 
@@ -180,11 +195,15 @@ function toggleSidebar() {
     const body = document.body;
     
     if (window.innerWidth <= 900) {
-        mobileMenu.classList.toggle('active');
-        mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
+        if(mobileMenu) {
+            mobileMenu.classList.toggle('active');
+            mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
+        }
     } else {
-        sidebar.classList.toggle('open');
-        main.classList.toggle('sidebar-open');
+        if(sidebar && main) {
+            sidebar.classList.toggle('open');
+            main.classList.toggle('sidebar-open');
+        }
     }
 }
 
@@ -220,8 +239,8 @@ async function carregarQuizzesRecentes() {
         renderizarCards(listaQuizzesGlobal);
 
         const menu = materias.map(m => `<a href="home.php"><span>${m.nome_materia}</span></a>`).join("");
-        document.getElementById("menuMaterias").innerHTML = menu;
-        document.getElementById("menuMateriasMobile").innerHTML = menu;
+        if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menu;
+        if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menu;
 
     } catch (e) {
         console.error("Erro:", e);
@@ -236,7 +255,7 @@ function renderizarCards(lista) {
     lista.forEach((q, index) => {
         let imgNome = q.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
         
-        // Lógica de Dificuldade baseada no id_dificuldade do seu banco
+        // Lógica de Dificuldade
         let difTexto = "Não definido";
         let difClasse = "dif-padrao";
 
@@ -245,7 +264,7 @@ function renderizarCards(lista) {
         else if(q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
         html += `
-            <div onclick="window.location.href='quiz.php?id=${q.id}'" class="card-materia">
+            <div onclick="prepararEntrada(event, 'quiz.php?id=${q.id}')" class="card-materia" style="cursor: pointer;">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
                     <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
@@ -260,6 +279,23 @@ function renderizarCards(lista) {
     container.innerHTML = html;
 }
 
+// ==========================================================
+// FUNÇÕES DE CONTROLE DA MODAL DE CONFIRMAÇÃO
+// ==========================================================
+function prepararEntrada(event, url) {
+    if (event) event.preventDefault();
+    urlDestinoQuiz = url;
+    document.getElementById('modalConfirmacao').style.display = 'flex';
+}
+
+function fecharModalConfirmacao() {
+    document.getElementById('modalConfirmacao').style.display = 'none';
+}
+
+document.getElementById('btnConfirmarEntrada').onclick = () => {
+    if (urlDestinoQuiz) window.location.href = urlDestinoQuiz;
+};
+
 function filtrarGeral() {
     const termo = document.getElementById('inputBusca').value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "");
     const filtrados = listaQuizzesGlobal.filter(q => 
@@ -272,7 +308,6 @@ function carregarUsuario() {
     fetch(api + "?tipo=usuario")
         .then(r => r.json())
         .then(u => {
-            // 1. Atualiza a imagem no HEADER (Navbar superior Desktop)
             const linkPerfilHeader = document.querySelector('.item-perfil a');
             if (linkPerfilHeader && u.foto_perfil) {
                 const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
@@ -286,25 +321,20 @@ function carregarUsuario() {
                 }
             }
             
-            // 2. Atualiza a foto no menu mobile (Navbar superior Mobile)
             const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
             if (linkPerfilMobile && u.foto_perfil) {
                 linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
             }
 
-            // 3. MONTA E ADICIONA O DROPDOWN DO PERFIL (Igual ao da Home)
             const itemPerfil = document.querySelector('.item-perfil');
             if (itemPerfil) {
-                // Remove um dropdown antigo se já existir para não duplicar
                 const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                 if (antigoDropdown) antigoDropdown.remove();
 
-                // Define se exibe a foto real ou o ícone de rostinho padrão
                 const fotoHtml = u.foto_perfil 
                     ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
                     : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
 
-                // Cria o elemento do dropdown
                 const dropdown = document.createElement('div');
                 dropdown.className = 'perfil-dropdown';
                 dropdown.innerHTML = `
@@ -329,7 +359,6 @@ function carregarUsuario() {
                     </a>
                 `;
                 
-                // Insere o dropdown montado dentro do item de perfil na barra de navegação
                 itemPerfil.appendChild(dropdown);
             }
         });

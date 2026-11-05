@@ -182,20 +182,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id_usuario = intval($_POST['id_usuario'] ?? 0);
         $id_sessao = intval($_SESSION['usuario_id'] ?? 0);
 
-        // Validação de segurança para garantir que o usuário só exclua a própria conta
         if ($id_usuario <= 0 || $id_usuario !== $id_sessao) {
             echo json_encode(["success" => false, "error" => "Ação não autorizada."]);
             exit;
         }
 
-        // Exclui o registro na tabela 'usuario'
-        // Como as tabelas 'tentativas', 'configuracoes', 'feedbacks_usuarios' e 'avaliacoes' 
-        // possuem ON DELETE CASCADE, os dados associados serão removidos automaticamente pelo MySQL.
         $stmt = $conn->prepare("DELETE FROM usuario WHERE id = ?");
         $stmt->bind_param("i", $id_usuario);
 
         if ($stmt->execute()) {
-            // Encerra a sessão e limpa os cookies
+            // APAGA O COOKIE DO NAVEGADOR DEFININDO DATA NO PASSADO
+            setcookie("user_consent", "", [
+                'expires' => time() - 3600,
+                'path'    => '/'
+            ]);
+
+            // Encerra a sessão
             session_unset();
             session_destroy();
 
@@ -419,6 +421,7 @@ switch ($tipo) {
     case 'quizzes':
         $id_conteudo = intval($_GET['id_conteudo'] ?? 0);
 
+        // Alterado de LEFT JOIN para JOIN com HAVING COUNT(p.id) > 0 para só retornar quizzes com perguntas
         $sql = "
             SELECT 
                 q.id,
@@ -435,10 +438,11 @@ switch ($tipo) {
                 ON q.id_conteudo = c.id
             JOIN materia m 
                 ON c.id_materia = m.id
-            LEFT JOIN perguntas p 
+            JOIN perguntas p 
                 ON p.id_quiz = q.id
             WHERE q.id_conteudo = ?
             GROUP BY q.id
+            HAVING total_questoes > 0
         ";
         $stmt = $conn->prepare($sql);
         $response = [];

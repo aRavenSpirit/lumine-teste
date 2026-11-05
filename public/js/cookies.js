@@ -1,16 +1,25 @@
 window.addEventListener('load', () => {
-    // Se o cookie não existir, cria a estrutura HTML e insere no body
-    if (!getCookie("user_consent")) {
-        renderizarBannerCookie();
-    }
+    // Consulta o servidor para saber se o utilizador atual já aceitou
+    fetch('../config/check-consent.php')
+        .then(res => res.json())
+        .then(data => {
+            // Se o utilizador atual NÃO tiver aceite, exibe o banner[cite: 2]
+            if (!data.hasConsent) {
+                renderizarBannerCookie();
+            }
+        })
+        .catch(() => {
+            // Fallback caso a API falhe: verifica cookie local[cite: 2]
+            if (!getCookie("user_consent")) {
+                renderizarBannerCookie();
+            }
+        });
 });
 
 function renderizarBannerCookie() {
-    // Cria o container do banner
     const banner = document.createElement('div');
     banner.id = 'cookieBanner';
 
-    // Injeta a estrutura HTML melhorada
     banner.innerHTML = `
         <div class="cookie-text">
             <h3><i class="fas fa-cookie-bite"></i> Aceita cookies?</h3>
@@ -30,23 +39,33 @@ function renderizarBannerCookie() {
     document.body.appendChild(banner);
 }
 
-// Envia a escolha do usuário
 function interagirCookie(acao) {
+    if (acao === 'decline') {
+        // Se recusar, apaga o cookie no cliente[cite: 2]
+        document.cookie = "user_consent=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=/;";
+    }
+
     fetch(`../config/set-cookie.php?action=${acao}`)
         .then(response => response.json())
         .then(dados => {
             if (dados.status === 'success') {
-                const banner = document.getElementById('cookieBanner');
-                if (banner) {
-                    banner.style.animation = 'entrarSuave 0.3s ease-in reverse';
-                    setTimeout(() => banner.remove(), 300);
-                }
+                removerBanner();
             }
         })
-        .catch(erro => console.error("Erro ao processar consentimento de cookies:", erro));
+        .catch(erro => {
+            console.error("Erro ao processar consentimento:", erro);
+            removerBanner();
+        });
 }
 
-// Lê os cookies do navegador
+function removerBanner() {
+    const banner = document.getElementById('cookieBanner');
+    if (banner) {
+        banner.style.animation = 'entrarSuave 0.3s ease-in reverse';
+        setTimeout(() => banner.remove(), 300);
+    }
+}
+
 function getCookie(name) {
     let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]*)'));
     if (match) return match[2];

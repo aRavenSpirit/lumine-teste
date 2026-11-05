@@ -10,20 +10,25 @@
         exit;
     }
 
-    // Inicia transação para garantir consistência espiritual e de dados
+    // Trava de segurança no backend: Impede salvar quiz sem perguntas
+    if (empty($data['perguntas']) || count($data['perguntas']) === 0) {
+        echo json_encode(["status" => false, "erro" => "Impossível salvar! O quiz precisa ter pelo menos 1 pergunta."]);
+        exit;
+    }
+
+    // Inicia transação para garantir consistência de dados
     $conn->begin_transaction();
 
     try {
-        // 1. Atualiza Dados Básicos de Forma Dinâmica
+        // 1. Atualiza Dados Básicos
         $nome = $conn->real_escape_string($data['nome']);
         $id_dif = intval($data['id_dificuldade']);
         $id_cont = intval($data['id_conteudo']);
 
-        if (empty($nome)) {
+        if (empty(trim($nome))) {
             throw new Exception("O nome do quiz não pode estar vazio.");
         }
 
-        // Monta a lista de colunas para atualizar conforme o que foi enviado
         $camposParaAtualizar = ["nome = '$nome'"];
 
         if ($id_dif > 0) {
@@ -33,7 +38,6 @@
             $camposParaAtualizar[] = "id_conteudo = $id_cont";
         }
 
-        // Junta os campos válidos gerando o comando UPDATE correto
         $sql_update = "UPDATE quizzes SET " . implode(", ", $camposParaAtualizar) . " WHERE id = $id_quiz";
         $conn->query($sql_update);
 
@@ -56,7 +60,7 @@
             // MULTIPLA ESCOLHA (1 e 4)
             if ($id_tipo == 1 || $id_tipo == 4) {
                 foreach ($p['respostas'] as $r) {
-                    if (empty($r['descricao'])) continue;
+                    if (empty(trim($r['descricao']))) continue;
                     $rdesc = $conn->real_escape_string($r['descricao']);
                     $certo = !empty($r['certo']) ? 1 : 0;
                     $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem) VALUES ('$rdesc', $certo, $pergunta_id, 0)");
@@ -76,13 +80,11 @@
             elseif ($id_tipo == 5 || $id_tipo == 6) {
                 $posicao = 1;
                 foreach ($p['respostas'] as $r) {
-                    if (empty($r['descricao'])) continue;
+                    if (empty(trim($r['descricao']))) continue;
                     $rdesc = $conn->real_escape_string($r['descricao']);
                     
-                    // Tratamento adaptativo para a nova coluna texto_alvo (comum no tipo 6)
                     $texto_alvo = (!empty($r['texto_alvo'])) ? "'" . $conn->real_escape_string($r['texto_alvo']) . "'" : "NULL";
                     
-                    // Agora gravando explicitamente nas colunas 'ordem' e 'texto_alvo'
                     $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem, texto_alvo) VALUES ('$rdesc', 1, $pergunta_id, $posicao, $texto_alvo)");
                     $posicao++;
                 }
