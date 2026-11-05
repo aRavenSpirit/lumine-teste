@@ -28,14 +28,17 @@
         echo json_encode(["erro" => "A senha deve ter no mínimo 8 caracteres."]);
         exit;
     }
+
     if (!preg_match('/[A-Z]/', $senhaRaw)) {
         echo json_encode(["erro" => "A senha deve conter pelo menos uma letra maiúscula."]);
         exit;
     }
+
     if (!preg_match('/[0-9]/', $senhaRaw)) {
         echo json_encode(["erro" => "A senha deve conter pelo menos um número."]);
         exit;
     }
+    
     if (!preg_match('/[^A-Za-z0-9]/', $senhaRaw)) {
         echo json_encode(["erro" => "A senha deve conter pelo menos um caractere especial (ex: !@#$)."]);
         exit;

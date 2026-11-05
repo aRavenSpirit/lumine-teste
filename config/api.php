@@ -13,11 +13,8 @@
             if (isset($_GET['tipo']) && $_GET['tipo'] == "escolaridade") {
 
                 $sql = "SELECT id_escolaridade, nome_escolaridade FROM escolaridade";
-
                 $result = $conn->query($sql);
-
                 $dados = [];
-
                 while ($row = $result->fetch_assoc()) {
                     $dados[] = $row;
                 }
@@ -39,7 +36,6 @@
             ";
 
             $result = $conn->query($sql);
-
             $dados = [];
 
             while ($row = $result->fetch_assoc()) {
@@ -110,9 +106,7 @@
         case 'DELETE':
 
             $data = json_decode(file_get_contents("php://input"), true);
-
             $id = intval($data['id']);
-
             $sql = "DELETE FROM usuario WHERE id = $id";
 
             if ($conn->query($sql)) {
@@ -126,7 +120,6 @@
             }
 
         break;
-
     }
 
     $conn->close();

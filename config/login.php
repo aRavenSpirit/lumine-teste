@@ -10,9 +10,7 @@
     }
 
     header("Content-Type: application/json; charset=UTF-8");
-
     require_once __DIR__ . "/conexao.php";
-
     $data = json_decode(file_get_contents("php://input"), true);
 
     if (!$data || !isset($data['email']) || !isset($data['senha'])) {
@@ -34,6 +32,7 @@
     $user = $result->fetch_assoc();
 
     if (password_verify($senha, $user['senha'])) {
+
         $_SESSION['usuario_id'] = $user['id'];
         $_SESSION['usuario_nome'] = $user['nome'];
         $_SESSION['escolaridade_id'] = $user['escolaridade_id'];
@@ -45,6 +44,7 @@
             "status" => true, 
             "precisa_escolaridade" => $precisa_escolaridade
         ]);
+
     } else {
         echo json_encode(["status" => false, "erro" => "Senha incorreta"]);
     }

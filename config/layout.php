@@ -1,7 +1,7 @@
 <?php
-// Função para o Header (Navbar)
-function renderHeader() {
-    ?>
+    // Função para o Header (Navbar)
+    function renderHeader() {
+?>
     <link rel="stylesheet" href="./style/dark-mode.css">
 
     <script>
@@ -39,62 +39,62 @@ function renderHeader() {
             </a>
         </div>
     </header>
-    <?php
-}
+<?php
+    }
 
-function renderSidebar($isQuiz = false) {
-    $pagina_atual = basename($_SERVER['SCRIPT_NAME']);
-    $link_logo = ($pagina_atual === 'home.php') ? "../public/index.php" : "home.php";
-    ?>
-    
-    <aside class="sidebar" id="sidebar">
-        <?php if ($isQuiz): ?>
-            <button class="btn-sair-flutuante" onclick="toggleModalSaida(event)" title="Sair do Quiz">
-                <i class="fa-solid fa-arrow-left"></i>
-                <span class="btn-sair-text">Sair do Quiz</span>
-            </button>
-        <?php endif; ?>
+    function renderSidebar($isQuiz = false) {
+        $pagina_atual = basename($_SERVER['SCRIPT_NAME']);
+        $link_logo = ($pagina_atual === 'home.php') ? "../public/index.php" : "home.php";
+?>
+        
+        <aside class="sidebar" id="sidebar">
+            <?php if ($isQuiz): ?>
+                <button class="btn-sair-flutuante" onclick="toggleModalSaida(event)" title="Sair do Quiz">
+                    <i class="fa-solid fa-arrow-left"></i>
+                    <span class="btn-sair-text">Sair do Quiz</span>
+                </button>
+            <?php endif; ?>
 
-        <div class="sidebar-header">
-            <div class="logo-container">
-                <a href="<?php echo $link_logo; ?>">
-                    <img src="img/LUMINE.png" alt="Lumine Logo" class="sidebar-logo">
-                </a>
+            <div class="sidebar-header">
+                <div class="logo-container">
+                    <a href="<?php echo $link_logo; ?>">
+                        <img src="img/LUMINE.png" alt="Lumine Logo" class="sidebar-logo">
+                    </a>
+                </div>
+                <div class="menu-trigger" onclick="toggleSidebar()">
+                    <i class="fa-solid fa-bars"></i>
+                </div>
             </div>
-            <div class="menu-trigger" onclick="toggleSidebar()">
-                <i class="fa-solid fa-bars"></i>
+
+            <nav id="menuMaterias"></nav>
+        </aside>
+
+        <div class="mobile-menu" id="mobileMenu">
+            <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
+            <div class="mobile-menu-scroll">
+                <nav class="nav-links-mobile">
+                    <?php if ($isQuiz): ?>
+                        <li>
+                            <a href="#" onclick="toggleModalSaida(event)" style="color: #e74c3c; font-weight: bold;">
+                                <i class="fa-solid fa-arrow-left"></i> SAIR DO QUIZ
+                            </a>
+                        </li>
+                    <?php endif; ?>
+                    <li><a href="sobre.php">Sobre nós</a></li>
+                    <li><a href="novidades.php">Novidades</a></li>
+                    <li><a href="home.php">Todos os quizzes</a></li>
+                    <li><a href="perfil.html">Perfil</a></li>
+                </nav>
+                <hr>
+                <div id="menuMateriasMobile"></div>
             </div>
         </div>
+<?php
+    }
 
-        <nav id="menuMaterias"></nav>
-    </aside>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="mobile-menu-close" onclick="toggleSidebar()">×</div>
-        <div class="mobile-menu-scroll">
-            <nav class="nav-links-mobile">
-                <?php if ($isQuiz): ?>
-                    <li>
-                        <a href="#" onclick="toggleModalSaida(event)" style="color: #e74c3c; font-weight: bold;">
-                            <i class="fa-solid fa-arrow-left"></i> SAIR DO QUIZ
-                        </a>
-                    </li>
-                <?php endif; ?>
-                <li><a href="sobre.php">Sobre nós</a></li>
-                <li><a href="novidades.php">Novidades</a></li>
-                <li><a href="home.php">Todos os quizzes</a></li>
-                <li><a href="perfil.html">Perfil</a></li>
-            </nav>
-            <hr>
-            <div id="menuMateriasMobile"></div>
-        </div>
-    </div>
-    <?php
-}
-
-// Função para o Footer (Rodapé)
-function renderFooter() {
-    ?>
+    // Função para o Footer (Rodapé)
+    function renderFooter() {
+?>
     <footer>
         <div class="footer-section">
             <h3>GERAL</h3>
@@ -208,6 +208,6 @@ function renderFooter() {
             document.body.classList.add("dark-mode");
         }
     </script>
-    <?php
-}
+<?php
+    }
 ?>

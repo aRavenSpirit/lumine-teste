@@ -27,15 +27,19 @@
             VALUES ($id_quiz, $id_usuario, $acertos, $total, '$tempo_formatado')";
 
     if ($conn->query($sql)) {
+
         // Retorna o ID da tentativa caso você queira mostrar uma página de resumo depois
         echo json_encode([
             "sucesso" => true, 
             "id_tentativa" => $conn->insert_id
         ]);
+
     } else {
+
         echo json_encode([
             "sucesso" => false, 
             "erro" => $conn->error
         ]);
+        
     }
 ?>

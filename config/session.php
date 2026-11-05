@@ -16,7 +16,6 @@
     }
 
     $id_usuario = intval($_SESSION['usuario_id']);
-
     require_once __DIR__ . "/conexao.php";
 
     // 2. Verifica se o utilizador existe no banco

@@ -34,6 +34,7 @@
         if ($id_dif > 0) {
             $camposParaAtualizar[] = "id_dificuldade = $id_dif";
         }
+
         if ($id_cont > 0) {
             $camposParaAtualizar[] = "id_conteudo = $id_cont";
         }
@@ -47,6 +48,7 @@
             $id_p_antiga = $row['id'];
             $conn->query("DELETE FROM respostas WHERE id_pergunta = $id_p_antiga");
         }
+
         $conn->query("DELETE FROM perguntas WHERE id_quiz = $id_quiz");
 
         // 3. Insere o novo ecossistema de perguntas atualizado
@@ -66,6 +68,7 @@
                     $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta, ordem) VALUES ('$rdesc', $certo, $pergunta_id, 0)");
                 }
             }
+            
             // TEXTO / DISCURSIVA (2)
             elseif ($id_tipo == 2) {
                 $resp = $conn->real_escape_string($p['resposta_texto']);

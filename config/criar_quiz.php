@@ -128,7 +128,6 @@
                 foreach ($p['respostas'] as $r) {
                     $rdesc = $conn->real_escape_string($r['descricao']);
                     $certo = !empty($r['certo']) ? 1 : 0;
-
                     $conn->query("INSERT INTO respostas (descricao, certo, id_pergunta) VALUES ('$rdesc', $certo, $pergunta_id)");
                 }
             }

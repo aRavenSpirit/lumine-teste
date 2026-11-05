@@ -21,6 +21,7 @@
         while ($row = $result->fetch_assoc()) {
             $dados[] = $row;
         }
+
         echo json_encode($dados);
         exit;
     }
@@ -29,6 +30,7 @@
 // ROTA PARA CHECAR SE O USUÁRIO JÁ AVALIOU O QUIZ ATUAL
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -37,6 +39,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
     $quiz_id = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0;
 
     if ($id_usuario > 0 && $quiz_id > 0) {
+
         // Altera a busca para validar id_usuario E id_quiz
         $stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ? AND id_quiz = ?");
         $stmt->bind_param("ii", $id_usuario, $quiz_id);
@@ -47,6 +50,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
         $stmt->close();
         
         echo json_encode(["avaliou" => $ja_avaliou]);
+
     } else {
         echo json_encode(["avaliou" => false]);
     }
@@ -57,6 +61,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'checar_avaliacao') {
 // ROTA PARA SALVAR A AVALIAÇÃO DO QUIZ
 // =========================================================================
 if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
+
     if (session_status() === PHP_SESSION_NONE) {
         session_start();
     }
@@ -73,6 +78,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
     }
 
     if ($quiz_id > 0 && $nota > 0) {
+
         // Verifica se o usuário já avaliou ESTE quiz em específico
         $check_stmt = $conn->prepare("SELECT id FROM avaliacoes WHERE id_usuario = ? AND id_quiz = ?");
         $check_stmt->bind_param("ii", $id_usuario, $quiz_id);
@@ -80,10 +86,12 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
         $check_stmt->store_result();
 
         if ($check_stmt->num_rows > 0) {
+
             $check_stmt->close();
             // Se já avaliou este quiz, retorna sucesso sem duplicar
             echo json_encode(["sucesso" => true]); 
             exit;
+
         }
         $check_stmt->close();
 
@@ -105,8 +113,8 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
 
 
     if (isset($_GET['tipo']) && $_GET['tipo'] == 'detalhes_quiz') {
-        $id_quiz = intval($_GET['id']);
 
+        $id_quiz = intval($_GET['id']);
         $sql_quiz = "SELECT q.*, m.nome_materia, c.nome as conteudo 
                      FROM quizzes q 
                      JOIN conteudo c ON q.id_conteudo = c.id 
@@ -117,6 +125,7 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
         $dados = $res_quiz->fetch_assoc();
 
         if ($dados) {
+
             $sql_perguntas = "SELECT id, descricao, id_tipo FROM perguntas WHERE id_quiz = $id_quiz";
             $res_perguntas = $conn->query($sql_perguntas);
             
@@ -150,8 +159,10 @@ if (isset($_GET['tipo']) && $_GET['tipo'] === 'salvar_feedback') {
                 
                 $perguntas[] = $p;
             }
+
             $dados['perguntas'] = $perguntas;
             echo json_encode($dados);
+            
         } else {
             echo json_encode(["erro" => "Quiz não encontrado"]);
         }

@@ -69,7 +69,7 @@
         }
     }
     
-   if ($tipo === 'quiz') {
+    if ($tipo === 'quiz') {
         // Inicia a transação de segurança
         $conn->begin_transaction();
 
