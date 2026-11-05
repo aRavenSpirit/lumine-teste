@@ -98,16 +98,16 @@ function renderFooter() {
     <footer>
         <div class="footer-section">
             <h3>GERAL</h3>
-            <a href="sobre.html"><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></a>
-            <a href="duvidas.html"><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></a>
-            <a href="equipe.html"><i class="fa-solid fa-users"></i> <span>EQUIPE</span></a>
-            <a href="contato.html"><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></a>
+            <a href="sobre.php"><i class="fa-solid fa-circle-info"></i> <span>SOBRE</span></a>
+            <a href="duvidas.php"><i class="fa-solid fa-circle-question"></i> <span>DÚVIDAS</span></a>
+            <a href="equipe.php"><i class="fa-solid fa-users"></i> <span>EQUIPE</span></a>
+            <a href="contato.php"><i class="fa-solid fa-envelope"></i> <span>CONTATO</span></a>
         </div>
         <div class="footer-section">
             <h3>TERMOS E PRIVACIDADE</h3>
-            <a href="normas.html"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
-            <a href="termos.html"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
-            <a href="privacidade.html"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
+            <a href="normas.php"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
+            <a href="termos.php"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
+            <a href="privacidade.php"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
         </div>
         <div class="footer-section">
             <h3>REDES SOCIAIS</h3>

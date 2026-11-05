@@ -1,3 +1,8 @@
+<?php
+    include_once("../config/session.php");
+    $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
+    $linkInicio = $estaLogado ? "home.php" : "index.php";
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -8,9 +13,8 @@
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Estilos específicos para a funcionalidade de Accordion (Dúvidas) */
         .main-container {
-            padding-top: 120px; /* Espaço para não ficar embaixo da navbar fixa */
+            padding-top: 120px;
             padding-bottom: 50px;
             display: flex;
             flex-direction: column;
@@ -97,18 +101,23 @@
 </head>
 <body>
 
-    <!-- NAVBAR IDENTICA À ORIGINAL -->
     <nav class="navbar">
         <div class="logo-section">
-            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+            <a href="<?php echo $linkInicio; ?>">
+                <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+            </a>
         </div>
         
         <ul class="nav-links">
-            <li class="item-sobre"><a href="index.php">Sobre nós</a></li>
+            <li class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
-            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-acessar">
-                <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php if ($estaLogado): ?>
+                    <a href="home.php" class="btn-acessar">Início</a>
+                <?php else: ?>
+                    <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php endif; ?>
             </li>
         </ul>
 
@@ -116,10 +125,16 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <div class="item-sobre"><a href="index.php">Sobre nós</a></div>
+        <div class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></div>
         <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
-        <div class="item-quizzes"><a href="#">Todos os quizzes</a></div>
-        <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
+        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <div class="item-acessar">
+            <?php if ($estaLogado): ?>
+                <a href="home.php" class="btn-acessar">Início</a>
+            <?php else: ?>
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            <?php endif; ?>
+        </div>
     </div>
 
     <main class="main-container">
@@ -159,17 +174,14 @@
     </main>
 
     <script>
-        // Função do Menu Mobile original
         function toggleMenu() {
             const menu = document.getElementById("mobileMenu");
             menu.classList.toggle("active");
         }
 
-        // Lógica do Accordion
         document.querySelectorAll('.accordion-header').forEach(button => {
             button.addEventListener('click', () => {
                 const content = button.nextElementSibling;
-                
                 button.classList.toggle('active');
 
                 if (button.classList.contains('active')) {
@@ -178,7 +190,6 @@
                     content.style.maxHeight = 0;
                 }
 
-                // Opcional: Fechar outros ao abrir um novo
                 document.querySelectorAll('.accordion-header').forEach(other => {
                     if (other !== button) {
                         other.classList.remove('active');

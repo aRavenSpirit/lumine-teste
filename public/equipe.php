@@ -1,3 +1,6 @@
+<?php
+    include_once("../config/session.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -99,12 +102,11 @@
             margin: 0;
         }
 
-        /* Cores das Bordas baseadas no logo */
-        .m1 { border-color: #00bf63; } /* Verde */
-        .m2 { border-color: #0cc0df; } /* Azul */
-        .m3 { border-color: #cb6ce6; } /* Roxo */
-        .m4 { border-color: #ff5757; } /* Vermelho */
-        .m5 { border-color: #ffbd59; } /* Laranja */
+        .m1 { border-color: #00bf63; }
+        .m2 { border-color: #0cc0df; }
+        .m3 { border-color: #cb6ce6; }
+        .m4 { border-color: #ff5757; }
+        .m5 { border-color: #ffbd59; }
 
         @media (max-width: 650px) {
             .membro-card {
@@ -123,19 +125,31 @@
             <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
         </div>
         <ul class="nav-links">
-            <li class="item-sobre"><a href="sobre.html">Sobre nós</a></li>
-            <li class="item-novidades"><a href="#">Novidades</a></li>
-            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
-            <li class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></li>
+            <li class="item-sobre"><a href="sobre.php">Sobre nós</a></li>
+            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <?php if (isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0): ?>
+                    <a href="home.php" class="btn-acessar">Início</a>
+                <?php else: ?>
+                    <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php endif; ?>
+            </li>
         </ul>
         <div class="hamburger" onclick="toggleMenu()">☰</div>
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <div class="item-sobre"><a href="sobre.html">Sobre nós</a></div>
-        <div class="item-novidades"><a href="#">Novidades</a></div>
-        <div class="item-quizzes"><a href="#">Todos os quizzes</a></div>
-        <div class="item-acessar"><a href="login.html" class="btn-acessar">Acessar</a></div>
+        <div class="item-sobre"><a href="sobre.php">Sobre nós</a></div>
+        <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
+        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <div class="item-acessar">
+            <?php if (isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0): ?>
+                <a href="home.php" class="btn-acessar">Início</a>
+            <?php else: ?>
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            <?php endif; ?>
+        </div>
     </div>
 
     <main class="main-container">

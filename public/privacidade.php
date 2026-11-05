@@ -1,3 +1,6 @@
+<?php
+    include_once("../config/session.php");
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -34,10 +37,14 @@
         
         <ul class="nav-links">
             <li class="item-sobre"><a href="index.php">Início</a></li>
-            <li class="item-novidades"><a href="#">Novidades</a></li>
-            <li class="item-quizzes"><a href="#">Todos os quizzes</a></li>
+            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-acessar">
-                <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php if (isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0): ?>
+                    <a href="home.php" class="btn-acessar">Início</a>
+                <?php else: ?>
+                    <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php endif; ?>
             </li>
         </ul>
 
@@ -52,5 +59,12 @@
             </div>
         </div>
     </main>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            if (menu) menu.classList.toggle("active");
+        }
+    </script>
 </body>
 </html>
