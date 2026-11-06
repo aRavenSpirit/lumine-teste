@@ -163,7 +163,7 @@
             <h3>TERMOS E PRIVACIDADE</h3>
             <a href="normas.php"><i class="fa-solid fa-list-check"></i> <span>NORMAS</span></a>
             <a href="termos.php"><i class="fa-solid fa-file-contract"></i> <span>TERMOS DE USO</span></a>
-            <a href="politica.php"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
+            <a href="privacidade.php"><i class="fa-solid fa-lock"></i> <span>PRIVACIDADE</span></a>
         </div>
 
         <div class="footer-section">

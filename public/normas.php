@@ -1,5 +1,8 @@
 <?php
-    include_once("../config/session.php");
+    include_once("../config/session_public.php");
+    $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
+    $linkInicio = $estaLogado ? "home.php" : "index.php";
+    include_once("../config/layout.php");
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -14,26 +17,8 @@
     <script src="js/tamanho_fonte.js"></script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="logo-section">
-            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
-        </div>
-        
-        <ul class="nav-links">
-            <li class="item-sobre"><a href="index.php">Início</a></li>
-            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
-            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
-            <li class="item-acessar">
-                <?php if (isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0): ?>
-                    <a href="home.php" class="btn-acessar">Início</a>
-                <?php else: ?>
-                    <a href="login.html" class="btn-acessar">Acessar</a>
-                <?php endif; ?>
-            </li>
-        </ul>
-
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
+    
+    <?php renderPublicHeader(); ?>
 
     <main class="main-container">
         <div class="legal-card">

@@ -35,3 +35,31 @@ body {
     line-height: 1.8; 
     font-size: 17px; 
 }
+
+/* Ajustes para alinhar e definir a proporção correta da Logo */
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 5px 15px;
+}
+
+.logo-section a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-decoration: none;
+}
+
+.logo-img {
+    max-height: 85px;  /* Ajusta a altura limite dentro da navbar */
+    width: auto;       /* Mantém a proporção original sem esticar */
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo-section a:hover .logo-img {
+    transform: scale(1.05); /* Efeito suave ao passar o rato */
+}

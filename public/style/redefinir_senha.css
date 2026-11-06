@@ -94,3 +94,24 @@
     background-color: #8bd8ff;
     transform: scale(1.05); 
 }
+
+
+/* Container da única linha inteligente */
+.barra-seguranca-redefinir-senha {
+    display: flex;
+    flex-direction: row;
+    gap: 6px;
+    width: 100%;
+    margin-top: 15px;
+    margin-bottom: 25px; /* Abre espaço para o texto descritivo abaixo da barra */
+}
+
+/* Os 4 pedaços da linha */
+.segmento {
+    flex: 1;
+    height: 6px;
+    background-color: #e2e8f0; /* Começa cinza neutro */
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+    position: relative;
+}

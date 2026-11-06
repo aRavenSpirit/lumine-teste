@@ -1,5 +1,48 @@
 <?php
-    // Função para o Header (Navbar)
+    // Função para o Header das Páginas Institucionais / Públicas
+    function renderPublicHeader() {
+        $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
+        $linkInicio = $estaLogado ? "home.php" : "index.php";
+?>
+    <nav class="navbar">
+        <div class="logo-section">
+            <a href="<?php echo $linkInicio; ?>">
+                <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
+            </a>
+        </div>
+        
+        <ul class="nav-links">
+            <li class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></li>
+            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
+            <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
+            <li class="item-acessar">
+                <?php if ($estaLogado): ?>
+                    <a href="home.php" class="btn-acessar">HOME</a>
+                <?php else: ?>
+                    <a href="login.html" class="btn-acessar">Acessar</a>
+                <?php endif; ?>
+            </li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+
+    <div class="mobile-menu" id="mobileMenu">
+        <div class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></div>
+        <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
+        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <div class="item-acessar">
+            <?php if ($estaLogado): ?>
+                <a href="home.php" class="btn-acessar">Início</a>
+            <?php else: ?>
+                <a href="login.html" class="btn-acessar">Acessar</a>
+            <?php endif; ?>
+        </div>
+    </div>
+<?php
+    }
+
+    // Função para o Header do Painel Logado (Home)
     function renderHeader() {
 ?>
     <link rel="stylesheet" href="./style/dark-mode.css">
@@ -118,11 +161,7 @@
         </div>
     </footer>
 
-    <!-- ========================================================== -->
-    <!-- MODAIS GLOBAIS DA APLICAÇÃO (LUMINE)                        -->
-    <!-- ========================================================== -->
-
-    <!-- 1. MODAL GLOBAL DE SUCESSO / ALERTA (DADOS SALVOS) -->
+    <!-- MODAIS GLOBAIS -->
     <div id="modalGlobalSucesso" class="modal-overlay-global" style="display: none;">
         <div class="modal-card-global modal-sucesso-card">
             <div class="modal-icon-wrapper icon-sucesso">
@@ -136,7 +175,6 @@
         </div>
     </div>
 
-    <!-- 2. MODAL GLOBAL DE CONFIRMAÇÃO DE EXCLUSÃO -->
     <div id="modalGlobalConfirmar" class="modal-overlay-global" style="display: none;">
         <div class="modal-card-global modal-perigo-card">
             <div class="modal-icon-wrapper icon-perigo">
@@ -151,7 +189,6 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE CONTROLE DAS MODAIS GLOBAIS -->
     <script>
         let callbackConfirmacaoGlobal = null;
 
@@ -181,9 +218,8 @@
             
             const btnConfirmar = document.getElementById('btnGlobalConfirmarAcao');
             
-            // Atribuição direta e execução imediata da ação assíncrona
             btnConfirmar.onclick = async function() {
-                btnConfirmar.disabled = true; // Evita cliques múltiplos
+                btnConfirmar.disabled = true;
                 try {
                     if (typeof acaoConfirmar === 'function') {
                         await acaoConfirmar();
