@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
     <script src="js/tamanho_fonte.js"></script>
+    <script src="./js/update_foto.js"></script>
 </head>
 <body>
 
@@ -271,42 +272,49 @@
 
 
         function carregarUsuario() {
-            fetch(api + "?tipo=usuario")
+            fetch(apiHome + "?tipo=usuario")
                 .then(r => r.json())
                 .then(u => {
-                    // 1. Atualiza a imagem no HEADER (Navbar superior Desktop)
+                    if (!u) return;
+
+                    // Evita o cache do navegador adicionando um parâmetro de tempo na URL da foto
+                    const fotoComCache = u.foto_perfil 
+                        ? u.foto_perfil + (u.foto_perfil.includes('?') ? '&t=' : '?t=') + new Date().getTime() 
+                        : '';
+
+                    // 1. Atualiza a foto no HEADER (Navbar Desktop)
                     const linkPerfilHeader = document.querySelector('.item-perfil a');
-                    if (linkPerfilHeader && u.foto_perfil) {
+                    if (linkPerfilHeader && fotoComCache) {
                         const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
                         if (iconeUsuario) {
-                            iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                        } else {
-                            const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                            if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                                imagemHeaderExistente.src = u.foto_perfil;
+                            if (iconeUsuario.tagName === 'IMG') {
+                                iconeUsuario.src = fotoComCache;
+                            } else {
+                                iconeUsuario.outerHTML = `<img src="${fotoComCache}" class="profile-icon" style="object-fit: cover;">`;
                             }
                         }
                     }
                     
-                    // 2. Atualiza a foto no menu mobile (Navbar superior Mobile)
+                    // 2. Atualiza a foto no HEADER (Navbar Mobile)
                     const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-                    if (linkPerfilMobile && u.foto_perfil) {
-                        linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                    if (linkPerfilMobile && fotoComCache) {
+                        if (linkPerfilMobile.tagName === 'IMG') {
+                            linkPerfilMobile.src = fotoComCache;
+                        } else {
+                            linkPerfilMobile.outerHTML = `<img src="${fotoComCache}" class="profile-icon" style="object-fit: cover;">`;
+                        }
                     }
 
-                    // 3. MONTA E ADICIONA O DROPDOWN DO PERFIL (Igual ao da Home)
+                    // 3. Monta o Dropdown do Perfil COM O LÁPIS DE EDIÇÃO
                     const itemPerfil = document.querySelector('.item-perfil');
                     if (itemPerfil) {
-                        // Remove um dropdown antigo se já existir para não duplicar
                         const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                         if (antigoDropdown) antigoDropdown.remove();
 
-                        // Define se exibe a foto real ou o ícone de rostinho padrão
-                        const fotoHtml = u.foto_perfil 
-                            ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
+                        const fotoHtml = fotoComCache 
+                            ? `<img src="${fotoComCache}" class="avatar-preview" id="avatarImg">`
                             : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
 
-                        // Cria o elemento do dropdown
                         const dropdown = document.createElement('div');
                         dropdown.className = 'perfil-dropdown';
                         dropdown.innerHTML = `
@@ -314,10 +322,6 @@
                                 <div id="avatarWrapper">
                                     ${fotoHtml}
                                 </div>
-                                <div class="avatar-edit-badge">
-                                    <i class="fas fa-pencil-alt"></i>
-                                </div>
-                                <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
                             </div>
 
                             <h4 style="text-align: center;">Minha Conta</h4>
@@ -331,10 +335,10 @@
                             </a>
                         `;
                         
-                        // Insere o dropdown montado dentro do item de perfil na barra de navegação
                         itemPerfil.appendChild(dropdown);
                     }
-                });
+                })
+                .catch(err => console.error("Erro ao carregar usuário no quiz:", err));
         }
 
     </script>

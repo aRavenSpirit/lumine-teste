@@ -342,10 +342,6 @@ function carregarUsuario() {
                         <div id="avatarWrapper">
                             ${fotoHtml}
                         </div>
-                        <div class="avatar-edit-badge">
-                            <i class="fas fa-pencil-alt"></i>
-                        </div>
-                        <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
                     </div>
 
                     <h4 style="text-align: center;">Minha Conta</h4>
