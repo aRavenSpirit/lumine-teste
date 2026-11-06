@@ -3,32 +3,71 @@
     $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
     $linkInicio = $estaLogado ? "home.php" : "index.php";
 
+    use PHPMailer\PHPMailer\PHPMailer;
+    use PHPMailer\PHPMailer\Exception;
+
     $status = "";
 
-    // Lógica para processar o formulário quando for enviado
+    // Lógica para processar o formulário quando for enviado via POST
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $nome = filter_var(trim($_POST["nome"] ?? ''), FILTER_SANITIZE_SPECIAL_CHARS);
-        $email = filter_var(trim($_POST["email"] ?? ''), FILTER_SANITIZE_EMAIL);
+        $email_remetente = filter_var(trim($_POST["email"] ?? ''), FILTER_SANITIZE_EMAIL);
         $assunto_usuario = filter_var(trim($_POST["assunto"] ?? ''), FILTER_SANITIZE_SPECIAL_CHARS);
         $mensagem = filter_var(trim($_POST["mensagem"] ?? ''), FILTER_SANITIZE_SPECIAL_CHARS);
 
-        if (!empty($nome) && !empty($email) && !empty($assunto_usuario) && !empty($mensagem) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $para = "matheuseuzebio39@gmail.com";
-            $assunto_email = "LUMINE - Contato: " . $assunto_usuario;
+        if (!empty($nome) && !empty($email_remetente) && !empty($assunto_usuario) && !empty($mensagem) && filter_var($email_remetente, FILTER_VALIDATE_EMAIL)) {
+            
+            try {
+                // Inclui os arquivos do PHPMailer da pasta config (mesmo caminho do solicitar_reset.php)
+                require_once __DIR__ . '/../config/PHPMailer/src/Exception.php';
+                require_once __DIR__ . '/../config/PHPMailer/src/PHPMailer.php';
+                require_once __DIR__ . '/../config/PHPMailer/src/SMTP.php';
 
-            $corpo = "Você recebeu uma nova mensagem através do site LUMINE:\n\n";
-            $corpo .= "Nome: " . $nome . "\n";
-            $corpo .= "E-mail: " . $email . "\n";
-            $corpo .= "Assunto: " . $assunto_usuario . "\n\n";
-            $corpo .= "Mensagem:\n" . $mensagem . "\n";
+                $mail = new PHPMailer(true);
 
-            $headers = "From: " . $email . "\r\n";
-            $headers .= "Reply-To: " . $email . "\r\n";
-            $headers .= "X-Mailer: PHP/" . phpversion();
+                // Configurações SMTP do Gmail (iguais ao solicitar_reset.php)
+                $mail->isSMTP();
+                $mail->Host       = 'smtp.gmail.com';
+                $mail->SMTPAuth   = true;
+                $mail->Username   = 'matheuseuzebio39@gmail.com';
+                $mail->Password   = 'jbqlqlkwcfsrhcqn'; // Senha de App do Google
+                $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+                $mail->Port       = 465;
+                $mail->CharSet    = 'UTF-8';
+                $mail->Timeout    = 15;
 
-            if (@mail($para, $assunto_email, $corpo, $headers)) {
+                // Opções de SSL para bypass no localhost
+                $mail->SMTPOptions = array(
+                    'ssl' => array(
+                        'verify_peer'       => false,
+                        'verify_peer_name'  => false,
+                        'allow_self_signed' => true
+                    )
+                );
+
+                // Remetente e Destinatário
+                $mail->setFrom('matheuseuzebio39@gmail.com', 'Contato Lumine');
+                $mail->addAddress('matheuseuzebio39@gmail.com'); // Seu e-mail para receber as mensagens
+                $mail->addReplyTo($email_remetente, $nome); // Permite responder diretamente ao usuário
+
+                // Conteúdo do e-mail
+                $mail->isHTML(true);
+                $mail->Subject = 'LUMINE - Contato: ' . $assunto_usuario;
+
+                $mail->Body = "
+                    <h2>Nova mensagem enviada pelo formulário de contato</h2>
+                    <p><strong>Nome:</strong> {$nome}</p>
+                    <p><strong>E-mail:</strong> {$email_remetente}</p>
+                    <p><strong>Assunto:</strong> {$assunto_usuario}</p>
+                    <br>
+                    <p><strong>Mensagem:</strong></p>
+                    <p>" . nl2br($mensagem) . "</p>
+                ";
+
+                $mail->send();
                 $status = "sucesso";
-            } else {
+
+            } catch (Exception $e) {
                 $status = "erro";
             }
         } else {
@@ -96,7 +135,6 @@
                 <div class="alerta erro">Falha ao enviar mensagem. Tente novamente mais tarde.</div>
             <?php endif; ?>
 
-            <!-- action vazio envia para o próprio arquivo contato.php -->
             <form class="contato-form" action="contato.php" method="POST">
                 <div class="form-group">
                     <label for="nome">Nome Completo</label>
