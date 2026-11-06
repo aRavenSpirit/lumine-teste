@@ -267,24 +267,69 @@ body {
 }
 
 /* --- CASE 3: Verdadeiro ou Falso --- */
-#pergunta-atual button[onclick*="'Falso'"] {
+
+/* Transforma o #pergunta-atual em um CSS Grid específico para este tipo de questão */
+#pergunta-atual:has(button[onclick*="'Verdadeiro'"]) {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 20px;
+    row-gap: 15px;
+    justify-items: center;
+    align-items: center;
+}
+
+/* Garante que o cabeçalho h3 ocupe as duas colunas inteiras do grid */
+#pergunta-atual:has(button[onclick*="'Verdadeiro'"]) h3 {
+    grid-column: 1 / -1;
+    width: 100%;
+}
+
+/* Botão Verdadeiro na primeira coluna do grid */
+#pergunta-atual button[onclick*="'Verdadeiro'"] {
+    grid-column: 1;
+    justify-self: end;
     position: relative !important;
     bottom: auto !important;
     left: auto !important;
-    width: 48% !important;
+    right: auto !important;
+    width: 100% !important;
     max-width: 300px !important;
     height: 140px !important;
     border: 4px solid #000000 !important;
     border-radius: 30px !important;
     cursor: pointer;
-    background-color: var(--color-red) !important;
-    box-shadow: 0 8px 0 #bc4b4b !important;
     font-size: 0 !important;
     display: inline-flex !important;
     align-items: center;
     justify-content: center;
     transition: all 0.2s ease;
-    margin: 10px auto !important;
+    margin: 10px 0 !important;
+    background-color: var(--color-green) !important;
+    box-shadow: 0 8px 0 #009353 !important;
+}
+
+/* Botão Falso na segunda coluna do grid */
+#pergunta-atual button[onclick*="'Falso'"] {
+    grid-column: 2;
+    justify-self: start;
+    position: relative !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    width: 100% !important;
+    max-width: 300px !important;
+    height: 140px !important;
+    border: 4px solid #000000 !important;
+    border-radius: 30px !important;
+    cursor: pointer;
+    font-size: 0 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    margin: 10px 0 !important;
+    background-color: var(--color-red) !important;
+    box-shadow: 0 8px 0 #bc4b4b !important;
 }
 
 #pergunta-atual button[onclick*="'Falso'"]::before {
@@ -293,26 +338,6 @@ body {
     color: #ffffff !important;
     font-size: 4rem !important;
     font-weight: 300 !important;
-}
-
-#pergunta-atual button[onclick*="'Verdadeiro'"] {
-    position: relative !important;
-    bottom: auto !important;
-    right: auto !important;
-    width: 48% !important;
-    max-width: 300px !important;
-    height: 140px !important;
-    border: 4px solid #000000 !important;
-    border-radius: 30px !important;
-    cursor: pointer;
-    background-color: var(--color-green) !important;
-    box-shadow: 0 8px 0 #009353 !important;
-    font-size: 0 !important;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s ease;
-    margin: 10px auto !important;
 }
 
 #pergunta-atual button[onclick*="'Verdadeiro'"]::before {
@@ -344,13 +369,17 @@ body {
     filter: brightness(1.08);
 }
 
+/* Texto de "Selecionado: ..." ocupa toda a extensão abaixo e fica alinhado à esquerda */
 #pergunta-atual p[id*="selecionado"] {
+    grid-column: 1 / -1;
+    justify-self: start;
     position: relative !important;
     bottom: auto !important;
     left: auto !important;
     width: 100% !important;
-    text-align: center !important;
-    margin: 15px 0 0 0 !important;
+    text-align: left !important;
+    margin: 20px 0 0 0 !important;
+    display: block !important;
 }
 
 /* --- CASE 5: Ordenação Estilo Duolingo --- */
@@ -1048,10 +1077,18 @@ div[id^="drag_"] {
         width: 100%;
     }
 
-    #pergunta-atual button[onclick*="'Falso'"],
-    #pergunta-atual button[onclick*="'Verdadeiro'"] {
+    /* EMPILHA OS BOTÕES VERDADEIRO E FALSO UM EM CIMA DO OUTRO EM TELAS PEQUENAS (MOBILE) */
+    #pergunta-atual:has(button[onclick*="'Verdadeiro'"]) {
+        grid-template-columns: 1fr !important;
+    }
+
+    #pergunta-atual button[onclick*="'Verdadeiro'"],
+    #pergunta-atual button[onclick*="'Falso'"] {
+        grid-column: 1 !important;
+        justify-self: center !important;
         width: 100% !important;
         max-width: 100% !important;
+        margin: 8px 0 !important;
     }
 
     .btn-sair {

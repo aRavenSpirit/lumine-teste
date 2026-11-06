@@ -172,7 +172,7 @@
 
                 const fotoHtml = possuiFoto 
                     ? `<img src="${data.foto_perfil}" class="avatar-preview-img" id="avatarImg">`
-                    : `<div class="avatar-preview-placeholder" id="avatarImg"><i class="fas fa-user"></i></div>`;
+                    : `<img src="img/user.webp" class="avatar-preview-img" id="avatarImg">`;
 
                 const textoFoto = possuiFoto ? "Altere a foto" : "Adicione uma foto";
 
@@ -910,22 +910,24 @@
         fetch(api + "?tipo=usuario")
             .then(r => r.json())
             .then(u => {
+                const fotoParaUsar = u.foto_perfil ? u.foto_perfil : "img/user.webp";
+
                 const linkPerfilHeader = document.querySelector('.item-perfil a');
-                if (linkPerfilHeader && u.foto_perfil) {
+                if (linkPerfilHeader) {
                     const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
                     if (iconeUsuario) {
-                        iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                        iconeUsuario.outerHTML = `<img src="${fotoParaUsar}" class="profile-icon" style="object-fit: cover;">`;
                     } else {
                         const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
                         if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                            imagemHeaderExistente.src = u.foto_perfil;
+                            imagemHeaderExistente.src = fotoParaUsar;
                         }
                     }
                 }
                 
                 const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-                if (linkPerfilMobile && u.foto_perfil) {
-                    linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                if (linkPerfilMobile) {
+                    linkPerfilMobile.outerHTML = `<img src="${fotoParaUsar}" class="profile-icon" style="object-fit: cover;">`;
                 }
 
                 const itemPerfil = document.querySelector('.item-perfil');
@@ -933,9 +935,7 @@
                     const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
                     if (antigoDropdown) antigoDropdown.remove();
 
-                    const fotoHtml = u.foto_perfil 
-                        ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                        : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
+                    const fotoHtml = `<img src="${fotoParaUsar}" class="avatar-preview-img" id="avatarImg">`;
 
                     const dropdown = document.createElement('div');
                     dropdown.className = 'perfil-dropdown';

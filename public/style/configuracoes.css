@@ -793,7 +793,8 @@ body.fonte-nivel-3 .materia-pill span {
     display: flex;
     flex-direction: column;
     gap: 8px;
-    width: 100px;
+    width: 130px; 
+    min-width: 120px;
     flex-shrink: 0;
 }
 
@@ -811,11 +812,14 @@ body.fonte-nivel-3 .materia-pill span {
 .badge-dificuldade-pill {
     color: #ffffff;
     font-weight: 900;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     text-align: center;
-    padding: 4px 0;
+    padding: 4px 8px; 
     border-radius: 20px;
     border: 2px solid #000000;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .badge-dificuldade-pill.facil {
