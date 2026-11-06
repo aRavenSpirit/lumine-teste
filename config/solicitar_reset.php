@@ -57,8 +57,8 @@
         $mail->isSMTP();
         $mail->Host       = 'smtp.gmail.com';
         $mail->SMTPAuth   = true;
-        $mail->Username   = 'matheuseuzebio39@gmail.com';
-        $mail->Password   = 'jbqlqlkwcfsrhcqn'; // Senha de App do Google
+        $mail->Username   = 'lumineprojeto@gmail.com';
+        $mail->Password   = 'mdblltgkgsavilsk'; // Senha de App do Google
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS; // Usar SMTPS para porta 465
         $mail->Port       = 465;
         $mail->CharSet    = 'UTF-8';
@@ -74,7 +74,7 @@
             )
         );
 
-        $mail->setFrom('matheuseuzebio39@gmail.com', 'Suporte Lumine');
+        $mail->setFrom('lumineprojeto@gmail.com', 'Suporte Lumine');
         $mail->addAddress($email);
 
         $mail->isHTML(true);

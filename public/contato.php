@@ -30,8 +30,8 @@
                 $mail->isSMTP();
                 $mail->Host       = 'smtp.gmail.com';
                 $mail->SMTPAuth   = true;
-                $mail->Username   = 'matheuseuzebio39@gmail.com';
-                $mail->Password   = 'jbqlqlkwcfsrhcqn'; // Senha de App do Google
+                $mail->Username   = 'lumineprojeto@gmail.com';
+                $mail->Password   = 'mdblltgkgsavilsk'; // Senha de App do Google
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
                 $mail->Port       = 465;
                 $mail->CharSet    = 'UTF-8';
@@ -47,8 +47,8 @@
                 );
 
                 // Remetente e Destinatário
-                $mail->setFrom('matheuseuzebio39@gmail.com', 'Contato Lumine');
-                $mail->addAddress('matheuseuzebio39@gmail.com'); // Seu e-mail para receber as mensagens
+                $mail->setFrom('lumineprojeto@gmail.com', 'Contato Lumine');
+                $mail->addAddress('lumineprojeto@gmail.com'); // Seu e-mail para receber as mensagens
                 $mail->addReplyTo($email_remetente, $nome); // Permite responder diretamente ao usuário
 
                 // Conteúdo do e-mail
