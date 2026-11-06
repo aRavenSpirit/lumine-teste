@@ -53,6 +53,15 @@
         </div>
 
         <div id="perguntas"></div>
+
+        <!-- MODAL CUSTOMIZADO -->
+        <div id="customModal" class="custom-modal-overlay">
+            <div class="custom-modal-box">
+                <h3 id="modalTitle" class="custom-modal-title">Aviso</h3>
+                <p id="modalMessage" class="custom-modal-message">Mensagem aqui</p>
+                <button class="custom-modal-btn" onclick="fecharModal()">OK</button>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -61,6 +70,24 @@
 
         let perguntas = [];
         let tipos = [];
+
+        // Controle do modal customizado
+        let modalCallback = null;
+
+        function mostrarAlerta(mensagem, titulo = "Aviso", callback = null) {
+            document.getElementById("modalMessage").innerText = mensagem;
+            document.getElementById("modalTitle").innerText = titulo;
+            document.getElementById("customModal").classList.add("active");
+            modalCallback = callback;
+        }
+
+        function fecharModal() {
+            document.getElementById("customModal").classList.remove("active");
+            if (typeof modalCallback === "function") {
+                modalCallback();
+                modalCallback = null;
+            }
+        }
 
         window.onload = function () {
             carregarMaterias();
@@ -301,7 +328,6 @@
                     html += `</div>`;
                 }
 
-                // ✅ MUDANÇA: Adicionado os atributos e eventos nativos de Drag and Drop para que a ordenação visual funcione e chame as funções
                 if (p.tipo == 5) {
                     html += `<button class="btn-add-item" onclick="addResposta(${i})">+ Adicionar Palavra/Item</button>`;
                     html += `<p style="margin: 5px 0;"><small><em>Arraste os itens para ordenar ou escreva de cima para baixo:</em></small></p>`;
@@ -346,64 +372,58 @@
             let difficulty = document.getElementById("dificuldade").value;
             let conteudo = document.getElementById("conteudo").value;
 
-            if (!nome) return alert("Informe o nome do quiz!");
-            if (!difficulty) return alert("Informe a dificuldade!");
-            if (!conteudo) return alert("Selecione o conteúdo!");
-            if (perguntas.length === 0) return alert("Adicione pelo menos 1 pergunta!");
+            if (!nome) return mostrarAlerta("Informe o nome do quiz!");
+            if (!difficulty) return mostrarAlerta("Informe a dificuldade!");
+            if (!conteudo) return mostrarAlerta("Selecione o conteúdo!");
+            if (perguntas.length === 0) return mostrarAlerta("Adicione pelo menos 1 pergunta!");
 
             for (let i = 0; i < perguntas.length; i++) {
                 let p = perguntas[i];
 
-                if (!p.descricao.trim()) return alert(`A pergunta ${i + 1} está sem título/descrição!`);
-                if (!p.tipo) return alert(`Selecione o tipo da pergunta ${i + 1}!`);
+                if (!p.descricao.trim()) return mostrarAlerta(`A pergunta ${i + 1} está sem título/descrição!`);
+                if (!p.tipo) return mostrarAlerta(`Selecione o tipo da pergunta ${i + 1}!`);
 
-                // -------------------------------------------------------------
-                // VALIDAÇÃO DE ALTERNATIVAS VAZIAS (TIPOS 1, 4, 5, 6)
-                // -------------------------------------------------------------
                 if (p.tipo == 1 || p.tipo == 4 || p.tipo == 5 || p.tipo == 6) {
                     if (!p.respostas || p.respostas.length === 0) {
-                        return alert(`A pergunta ${i + 1} não possui nenhuma alternativa adicionada!`);
+                        return mostrarAlerta(`A pergunta ${i + 1} não possui nenhuma alternativa adicionada!`);
                     }
 
-                    // Verifica se existe alguma alternativa sem texto preenchido
                     for (let j = 0; j < p.respostas.length; j++) {
                         let textDesc = (p.respostas[j].descricao || "").trim();
                         if (!textDesc) {
-                            return alert(`Na pergunta ${i + 1}, a alternativa ${j + 1} está vazia! Preencha ou remova o campo.`);
+                            return mostrarAlerta(`Na pergunta ${i + 1}, a alternativa ${j + 1} está vazia! Preencha ou remova o campo.`);
                         }
 
-                        // Se for do tipo 6 (Associação/Drag and Drop com Par)
                         if (p.tipo == 6) {
                             let textAlvo = (p.respostas[j].texto_alvo || "").trim();
                             if (!textAlvo) {
-                                return alert(`Na pergunta ${i + 1}, o texto alvo/par da alternativa ${j + 1} está vazio!`);
+                                return mostrarAlerta(`Na pergunta ${i + 1}, o texto alvo/par da alternativa ${j + 1} está vazio!`);
                             }
                         }
                     }
                 }
 
-                // Validações específicas de tipo
                 if (p.tipo == 1) {
-                    if (p.respostas.length < 2) return alert(`A pergunta ${i + 1} precisa de pelo menos 2 respostas.`);
+                    if (p.respostas.length < 2) return mostrarAlerta(`A pergunta ${i + 1} precisa de pelo menos 2 respostas.`);
                     let corretas = p.respostas.filter(r => r.certo);
-                    if (corretas.length !== 1) return alert(`A pergunta ${i + 1} precisa de exatamente 1 alternativa correta marcada.`);
+                    if (corretas.length !== 1) return mostrarAlerta(`A pergunta ${i + 1} precisa de exatamente 1 alternativa correta marcada.`);
                 }
 
                 if (p.tipo == 4) {
-                    if (p.respostas.length < 2) return alert(`A pergunta ${i + 1} precisa de pelo menos 2 respostas.`);
+                    if (p.respostas.length < 2) return mostrarAlerta(`A pergunta ${i + 1} precisa de pelo menos 2 respostas.`);
                     let corretas = p.respostas.filter(r => r.certo);
-                    if (corretas.length === 0) return alert(`A pergunta ${i + 1} precisa de pelo menos 1 resposta correta selecionada.`);
+                    if (corretas.length === 0) return mostrarAlerta(`A pergunta ${i + 1} precisa de pelo menos 1 resposta correta selecionada.`);
                 }
 
                 if (p.tipo == 2 && !(p.resposta_texto || "").trim())
-                    return alert(`A pergunta ${i + 1} precisa de uma resposta de texto!`);
+                    return mostrarAlerta(`A pergunta ${i + 1} precisa de uma resposta de texto!`);
 
                 if (p.tipo == 3 && p.vf === undefined)
-                    return alert(`A pergunta ${i + 1} precisa da seleção de Verdadeiro ou Falso!`);
+                    return mostrarAlerta(`A pergunta ${i + 1} precisa da seleção de Verdadeiro ou Falso!`);
 
                 if (p.tipo == 5 || p.tipo == 6) {
                     if (p.respostas.length < 2)
-                        return alert(`A pergunta ${i + 1} precisa de pelo menos 2 itens.`);
+                        return mostrarAlerta(`A pergunta ${i + 1} precisa de pelo menos 2 itens.`);
                     
                     p.respostas.forEach((r, idx) => r.ordem = idx + 1);
                 }
@@ -421,15 +441,17 @@
             })
             .then(r => r.json())
             .then(d => {
-                if (d.erro) alert("Erro: " + d.erro);
-                else {
-                    alert(d.mensagem || "Quiz salvo com sucesso!");
-                    window.location.href='admin_dashboard.html';
+                if (d.erro) {
+                    mostrarAlerta("Erro: " + d.erro);
+                } else {
+                    mostrarAlerta(d.mensagem || "Quiz salvo com sucesso!", "Sucesso", () => {
+                        window.location.href = 'admin_dashboard.html';
+                    });
                 }
             })
             .catch(err => {
                 console.error(err);
-                alert("Erro ao conectar com o servidor ou processar os dados.");
+                mostrarAlerta("Erro ao conectar com o servidor ou processar os dados.");
             });
         }
 
