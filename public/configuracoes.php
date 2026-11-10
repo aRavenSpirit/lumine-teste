@@ -90,49 +90,29 @@
 
 </div>
 
-<!-- Script de controle global do tamanho de fonte -->
+<!-- Scripts Globais e de Layout -->
 <script src="js/tamanho_fonte.js"></script>
-
-<!-- Script do Modo Escuro -->
 <script src="js/dark-mode.js"></script>
 
-<script>
+<!-- Script do Header (Contém funções de Header, Sidebar, Perfil e Resize global) -->
+<script src="js/header.js"></script>
 
-    const api = "../config/home.php";
+<!-- Script Específico da Página de Configurações -->
+<script>
     let dadosUsuarioLocal = {};
     let materiaSelecionadaAtual = 'portugues';
     let cropperInstance = null;
     let arquivoSelecionado = null;
-
-    // Função para ajustar texto no header conforme a fonte/tamanho da tela
-    function ajustarTextoHeaderQuizzes(nivelFonte) {
-        const linksNav = document.querySelectorAll('header nav a, header .menu-item a, header a');
-        linksNav.forEach(link => {
-            const texto = link.textContent.trim().toUpperCase();
-            if (texto.includes('TODOS OS QUIZZES') || texto.includes('TODOS QUIZZES')) {
-                if (nivelFonte == 3 || window.innerWidth <= 1016) {
-                    link.textContent = 'TODOS QUIZZES';
-                } else {
-                    link.textContent = 'TODOS OS QUIZZES';
-                }
-            }
-        });
-    }
-
-    // Aplica classe auxiliar no body ao mudar a fonte para ajustar o layout
-    function aplicarClasseTamanhoFonteBody(nivel) {
-        document.body.classList.remove('fonte-nivel-1', 'fonte-nivel-2', 'fonte-nivel-3');
-        document.body.classList.add(`fonte-nivel-${nivel}`);
-        ajustarTextoHeaderQuizzes(nivel);
-    }
+    let senhaValidaConfig = true;
 
     async function carregarPerfil(tipo, event = null) {
-
         const cardOpcoes = document.getElementById('card-opcoes');
         const id_usuario = <?php echo $_SESSION['usuario_id'] ?? 0; ?>;
+        
         document.querySelectorAll('.btn-aba').forEach(btn => {
             btn.classList.remove('active');
         });
+        
         if (event) {
             event.currentTarget.classList.add('active');
         } else {
@@ -158,7 +138,6 @@
             let html = '';
             
             if (tipo === 'usuario') {
-
                 dadosUsuarioLocal = data;
                 const resEsc = await fetch(`${api}?tipo=lista_escolaridades`);
                 const listaEscolaridades = await resEsc.json();
@@ -169,16 +148,14 @@
                 `).join('');
 
                 const possuiFoto = !!data.foto_perfil;
-
                 const fotoHtml = possuiFoto 
                     ? `<img src="${data.foto_perfil}" class="avatar-preview-img" id="avatarImg">`
-                    : `<img src="img/user.webp" class="avatar-preview-img" id="avatarImg">`;
+                    : `<div class="avatar-preview" id="avatarImg" style="width: 100%; height: 100%; font-size: 5rem;"><i class="fas fa-smile"></i></div>`;
 
                 const textoFoto = possuiFoto ? "Altere a foto" : "Adicione uma foto";
 
                 html = `
                     <div class="perfil-discord-style perfil-container-flex">
-                        
                         <div class="coluna-dados-perfil">
                             <div class="input-pill-container">
                                 <input type="text" id="edit-nome-input" class="input-pill" value="${data.nome || ''}" placeholder="Novo nome de usuário">
@@ -206,7 +183,6 @@
                                 <i onclick="toggleConfirmarSenhaConfig()" class="fas fa-eye olho-senha-confirmar"></i>
                             </div>
 
-                            <!-- Barra de Segurança de Senha -->
                             <div class="barra-seguranca" style="margin-bottom: 15px;">
                                 <div id="seg-length" class="segmento" data-label="Comprimento"></div>
                                 <div id="seg-uppercase" class="segmento" data-label="Maiúscula"></div>
@@ -231,19 +207,13 @@
                             </div>
                             <span class="titulo-foto-label" onclick="document.getElementById('inputFotoPerfilPagina').click()">${textoFoto}</span>
                         </div>
-
                     </div>
                 `;
             }
-
             else if (tipo === 'preferencias') {
                 let cores = data.cores_materia;
                 if (typeof cores === 'string') {
-                    try {
-                        cores = JSON.parse(cores);
-                    } catch(e) {
-                        cores = {};
-                    }
+                    try { cores = JSON.parse(cores); } catch(e) { cores = {}; }
                 }
                 cores = cores || {};
 
@@ -268,13 +238,15 @@
 
                 let cardsHtml = listaMateriasPadrao.map(item => {
                     let corAtual = cores[item.key] || item.color;
+                    let corTexto = obterCorTextoLegivel(corAtual);
+
                     return `
                         <div class="materia-pill"
                              id="pill-${item.key}"
-                             style="background-color:${corAtual}"
+                             style="background-color:${corAtual}; color:${corTexto};"
                              onclick="selecionarMateriaCor('${item.key}')">
 
-                            <span>${item.nome}</span>
+                            <span style="color:${corTexto};">${item.nome}</span>
 
                             <input type="color"
                                    id="picker-${item.key}"
@@ -556,7 +528,15 @@
 
     function alterarCorMateria(materia, novaCor) {
         const pill = document.getElementById(`pill-${materia}`);
-        if(pill) pill.style.backgroundColor = novaCor;
+        const corTexto = obterCorTextoLegivel(novaCor);
+
+        if (pill) {
+            pill.style.backgroundColor = novaCor;
+            pill.style.color = corTexto;
+            
+            const spanTexto = pill.querySelector('span');
+            if (spanTexto) spanTexto.style.color = corTexto;
+        }
         
         const pickerOc = document.getElementById(`picker-${materia}`);
         if(pickerOc) pickerOc.value = novaCor;
@@ -604,7 +584,6 @@
 
     async function salvarConfiguracoesGerais() {
         const formData = new FormData();
-
         formData.append('acao', 'atualizar_preferencias_prepared');
 
         const tema = document.getElementById('pref-tema') ? document.getElementById('pref-tema').value : 0;
@@ -653,7 +632,6 @@
                     alert("Erro ao salvar: " + (result.error || "Erro desconhecido"));
                 }
             }
-
         } catch (e) {
             console.error("Erro ao salvar", e);
         }
@@ -664,7 +642,6 @@
         const containerForm = document.getElementById('modal-form-content');
 
         modal.style.display = 'flex';
-
         let inputHtml = '';
 
         if (campo === 'nome') {
@@ -696,7 +673,6 @@
 
     function salvarAlteracao(campo) {
         const novoValor = document.getElementById('edit-valor').value;
-
         const formData = new FormData();
 
         formData.append('acao', 'atualizar_perfil');
@@ -704,10 +680,7 @@
         formData.append('valor', novoValor);
         formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        fetch(api, {
-            method: 'POST',
-            body: formData
-        })
+        fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => {
             if (data.success) {
@@ -753,10 +726,7 @@
         if (senha) formData.append('senha', senha);
         formData.append('id_usuario', <?php echo $_SESSION['usuario_id'] ?? 0; ?>);
 
-        fetch(api, {
-            method: 'POST',
-            body: formData
-        })
+        fetch(api, { method: 'POST', body: formData })
         .then(r => r.json())
         .then(data => {
             if (data.success || data.mensagem) {
@@ -775,9 +745,7 @@
                 }
             }
         })
-        .catch(err => {
-            console.error("Erro na requisição:", err);
-        });
+        .catch(err => console.error("Erro na requisição:", err));
     }
 
     /* MINI-SISTEMA DE RECORTE DE FOTO */
@@ -799,7 +767,7 @@
             }
 
             cropperInstance = new Cropper(imgElement, {
-                aspectRatio: 1, // Recorte quadrado / circular 1:1
+                aspectRatio: 1,
                 viewMode: 1,
                 dragMode: 'move',
                 autoCropArea: 0.9,
@@ -860,115 +828,6 @@
             }
         }, 'image/png');
     }
-
-    function toggleSidebar() {
-        const sidebar = document.getElementById('sidebar');
-        const main = document.getElementById('mainContainer');
-        const mobileMenu = document.getElementById('mobileMenu');
-        const body = document.body;
-        
-        if (window.innerWidth <= 900) {
-            if (mobileMenu) {
-                mobileMenu.classList.toggle('active');
-                mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
-            }
-        } else {
-            if (sidebar && main) {
-                sidebar.classList.toggle('open');
-                main.classList.toggle('sidebar-open');
-            }
-        }
-    }
-
-    function carregarMenuSidebar() {
-        fetch(api + "?tipo=materias")
-            .then(r => r.json())
-            .then(dados => {
-                let menuHTML = "";
-                let cardsIniciais = "";
-
-                dados.forEach(m => {
-                    let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                    
-                    menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
-                    
-                    cardsIniciais += `
-                        <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
-                            <div class="card-banner">
-                                <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
-                            </div>
-                            <div class="card-body"><p>${m.nome_materia}</p></div>
-                        </div>`;
-                });
-                if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
-                if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-                if(document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
-            });
-    }
-
-    function carregarUsuario() {
-        fetch(api + "?tipo=usuario")
-            .then(r => r.json())
-            .then(u => {
-                const fotoParaUsar = u.foto_perfil ? u.foto_perfil : "img/user.webp";
-
-                const linkPerfilHeader = document.querySelector('.item-perfil a');
-                if (linkPerfilHeader) {
-                    const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
-                    if (iconeUsuario) {
-                        iconeUsuario.outerHTML = `<img src="${fotoParaUsar}" class="profile-icon" style="object-fit: cover;">`;
-                    } else {
-                        const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                        if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                            imagemHeaderExistente.src = fotoParaUsar;
-                        }
-                    }
-                }
-                
-                const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-                if (linkPerfilMobile) {
-                    linkPerfilMobile.outerHTML = `<img src="${fotoParaUsar}" class="profile-icon" style="object-fit: cover;">`;
-                }
-
-                const itemPerfil = document.querySelector('.item-perfil');
-                if (itemPerfil) {
-                    const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                    if (antigoDropdown) antigoDropdown.remove();
-
-                    const fotoHtml = `<img src="${fotoParaUsar}" class="avatar-preview-img" id="avatarImg">`;
-
-                    const dropdown = document.createElement('div');
-                    dropdown.className = 'perfil-dropdown';
-                    dropdown.innerHTML = `
-                        <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                            <div id="avatarWrapper">
-                                ${fotoHtml}
-                            </div>
-                        </div>
-
-                        <h4 style="text-align: center;">Minha Conta</h4>
-                        <hr>
-                        <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                        <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                        <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                        <hr>
-                        <a href="../config/logout.php" class="btn-logout">
-                            <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                        </a>
-                    `;
-                    
-                    itemPerfil.appendChild(dropdown);
-                }
-            });
-    }
-    
-    window.onload = () => {
-        carregarUsuario();
-        carregarMenuSidebar();
-        carregarPerfil('usuario'); 
-    };
-
-    let senhaValidaConfig = true;
 
     function validarSenhaConfiguracoes() {
         const senhaInput = document.getElementById("edit-senha-input");
@@ -1036,7 +895,6 @@
                         const result = await response.json();
 
                         if (result.success) {
-                            // Limpa o cookie local de consentimento
                             document.cookie = "user_consent=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
 
                             if (typeof exibirModalSucesso === 'function') {
@@ -1066,7 +924,6 @@
                 "EXCLUIR CONTA PERMANENTEMENTE"
             );
         } else {
-            // Fallback caso a modal global não esteja disponível
             if (confirm("ATENÇÃO: Deseja realmente excluir sua conta? Esta ação é permanente e todos os seus históricos e dados serão apagados.")) {
                 const formData = new FormData();
                 formData.append('acao', 'excluir_conta');
@@ -1080,38 +937,15 @@
         }
     }
 
+    // Inicialização da página
+    window.onload = () => {
+        carregarUsuario();
+        carregarMenuSidebar();
+        carregarPerfil('usuario'); 
+    };
 </script>
 
 <script src="js/sidebar_close.js" defer></script>
-
-<script>
-    let resizeTimer;
-
-    window.addEventListener('resize', () => {
-        const selectFonte = document.getElementById('pref-fonte');
-        if (selectFonte) {
-            ajustarTextoHeaderQuizzes(selectFonte.value);
-        }
-
-        clearTimeout(resizeTimer);
-
-        resizeTimer = setTimeout(() => {
-            if (typeof carregarMenuSidebar === 'function') {
-                carregarMenuSidebar();
-            }
-            
-            if (typeof cropperInstance !== 'undefined' && cropperInstance) {
-                cropperInstance.resize();
-            }
-
-            if (window.innerWidth > 900) {
-                document.body.classList.remove('no-scroll');
-                const mobileMenu = document.getElementById('mobileMenu');
-                if (mobileMenu) mobileMenu.classList.remove('active');
-            }
-        }, 250);
-    });
-</script>
 
 </body>
 </html>

@@ -159,6 +159,34 @@ window.onload = () => {
     carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais
 };
 
+// ==========================================================
+// FUNÇÃO PARA CALCULAR O CONTRASTE DA FONTE COM A COR DE FUNDO
+// ==========================================================
+function obterCorTextoLegivel(hexColor) {
+    if (!hexColor) return '#ffffff';
+    
+    // Remove o '#' caso exista
+    let color = hexColor.replace('#', '');
+    
+    // Se a cor estiver em formato 3 dígitos (ex: #fff), converte para 6
+    if (color.length === 3) {
+        color = color.split('').map(c => c + c).join('');
+    }
+    
+    if (color.length !== 6) return '#ffffff';
+
+    const r = parseInt(color.substring(0, 2), 16);
+    const g = parseInt(color.substring(2, 4), 16);
+    const b = parseInt(color.substring(4, 6), 16);
+
+    // Calcula a luminância percebida segundo o padrão ITU-R BT.601
+    const luminancia = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // Se a luminância for menor que 128 (fundo escuro), retorna a fonte branca (#ffffff).
+    // Caso contrário, retorna um tom escuro (#333333) para bom contraste em fundos claros.
+    return luminancia < 128 ? '#ffffff' : '#333333';
+}
+
 function carregarUsuario() {
     fetch(api + "?tipo=usuario")
         .then(r => r.json())
@@ -225,6 +253,7 @@ function carregarMenuSidebar() {
                 let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
                 let chaveMateria = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
                 let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+                let corDoTexto = obterCorTextoLegivel(corDoCard);
 
                 menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
                 
@@ -233,7 +262,9 @@ function carregarMenuSidebar() {
                         <div class="card-banner">
                             <img src="img/${nomeLimpo}.webp" onerror="this.src='img/indisponivel.png'">
                         </div>
-                        <div class="card-body" style="background-color: ${corDoCard} !important;"><p>${m.nome_materia}</p></div>
+                        <div class="card-body" style="background-color: ${corDoCard} !important;">
+                            <p style="color: ${corDoTexto} !important;">${m.nome_materia}</p>
+                        </div>
                     </div>`;
             });
             document.getElementById("menuMaterias").innerHTML = menuHTML;

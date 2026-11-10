@@ -20,13 +20,19 @@
 <body>
 
         
-    <?php renderSidebar(true); // Ativa o botão de sair! ?>
+    <?php renderSidebar(false); // Desativa o botão de sair padrão da sidebar! ?>
 
     <div class="main-container" id="mainContainer">
 
         <?php renderHeader(); ?>
 
         <main class="quiz-main-section">
+            <!-- Botão de Sair que expande com o texto "Sair" no hover -->
+            <button class="btn-sair-quiz" onclick="abrirModalSaida()" title="Sair do Quiz">
+                <i class="fas fa-arrow-left"></i>
+                <span class="texto-sair">Sair</span>
+            </button>
+
             <header id="quiz-header">
                 <div class="quiz-info-left">
                     <h1 id="quiz-titulo">Quiz Interativo</h1>
@@ -47,8 +53,8 @@
                 <span id="progresso">Pergunta 1 de X</span>
                 <button id="btn-proximo" onclick="proximaPerguntaOpcao()">Próximo</button>
                 <button id="btn-finalizar" onclick="finalizarQuiz()" style="display:none;">Finalizar e Ver Resultado</button>
-                <button id="btn-home-revisao" onclick="window.location.href='home.php'" style="display:none; background-color: #3498db; color: white;">Voltar para a Home</button>
-                <button id="btn-comentarios-revisao" onclick="window.location.href='comentario.php'" style="display:none; background-color: #34db5e; color: white;">Ver comentários</button>
+                <button id="btn-home-revisao" class="btn-rodape-revisao" onclick="window.location.href='home.php'" style="display:none;">Voltar para a Home</button>
+                <button id="btn-comentarios-revisao" class="btn-rodape-revisao btn-comentario-cor" onclick="window.location.href='comentario.php'" style="display:none;">Ver comentários</button>
             </footer>
         </main>
 
@@ -80,13 +86,19 @@
                 </div>
             </div>
             
-            <button class="btn-final" onclick="revisarRespostas()">Revisar Respostas</button>
+            <div class="modal-resultado-acoes">
+                <button class="btn-modal-acao btn-revisar" onclick="revisarRespostas()">
+                    Revisar Respostas
+                </button>
 
-            <button class="btn-final" onclick="window.location.href='comentario.php'" >Fazer comentário</button>
+                <button class="btn-modal-acao btn-comentario" onclick="window.location.href='comentario.php'">
+                    Fazer comentário
+                </button>
 
-            <button id="btn-modal-home">
-                Avançar <i class="fas fa-arrow-right"></i>
-            </button>
+                <button id="btn-modal-home" class="btn-modal-acao btn-avancar">
+                    Avançar <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
         </div>
     </div>  
 
@@ -129,6 +141,32 @@
     <script>
         
         const apiHome = "../config/home.php";
+
+        // --- FUNÇÕES DO MODAL DE SAÍDA ---
+        function abrirModalSaida() {
+            // Se já estiver no modo revisão, sai direto para a home sem pedir confirmação
+            if (typeof emModoRevisao !== 'undefined' && emModoRevisao) {
+                window.location.href = 'home.php';
+                return;
+            }
+            
+            // Caso contrário (durante a execução do quiz), exibe o modal de confirmação
+            const modal = document.getElementById('modal-confirmar-saida');
+            if (modal) {
+                modal.style.display = 'flex';
+            }
+        }
+
+        function fecharModalSaida() {
+            const modal = document.getElementById('modal-confirmar-saida');
+            if (modal) {
+                modal.style.display = 'none';
+            }
+        }
+
+        function confirmarSaida() {
+            window.location.href = 'home.php';
+        }
 
         window.addEventListener('load', () => {
             carregarMenuSidebarQuiz();
@@ -229,7 +267,6 @@
             const modal = document.getElementById('modal-resultado');
             if(modal) {
                 modal.style.display = 'none';
-                toggleSidebar(); // Abre a sidebar para revisão
             }
 
             // Libera o botão de pergunta anterior
@@ -262,8 +299,6 @@
                 controles.style.pointerEvents = 'auto';
                 controles.style.opacity = '1';
             }
-
-            
 
             emModoRevisao = true;   // Ativa a flag do JS
             indicePergunta = 0;     // Reseta para a primeira pergunta

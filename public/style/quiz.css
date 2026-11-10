@@ -48,6 +48,55 @@ body {
     width: 100%;
 }
 
+/* Botão de Sair Vermelho que expande e revela o texto "Sair" ao passar o mouse */
+.btn-sair-quiz {
+    position: absolute;
+    left: 20px;
+    top: 25px;
+    height: 44px;
+    width: 44px;
+    padding: 0 14px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 25px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.btn-sair-quiz .texto-sair {
+    font-size: 0.95rem;
+    font-weight: 700;
+    opacity: 0;
+    max-width: 0;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: inline-block;
+}
+
+.btn-sair-quiz:hover {
+    width: 100px;
+    background-color: #c0392b;
+    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
+}
+
+.btn-sair-quiz:hover .texto-sair {
+    opacity: 1;
+    max-width: 50px;
+}
+
+.btn-sair-quiz:active {
+    transform: scale(0.95);
+}
+
 /* Estrutura Geral do Topo - TOTALMENTE REESTILIZADA */
 #quiz-header {
     width: 100%;
@@ -59,10 +108,11 @@ body {
     justify-content: space-between;
     gap: 15px;
     background: #ffffff;
-    padding: 15px 20px;
+    padding: 15px 20px 15px 65px; /* Espaço extra à esquerda para telas grandes não encostarem */
     border-radius: 22px;
     border: 3px solid var(--card-border);
     box-shadow: 0 8px 20px rgba(162, 219, 255, 0.15);
+    transition: padding 0.3s ease;
 }
 
 #quiz-header div:first-child {
@@ -187,9 +237,12 @@ body {
 
 /* --- CASE 1 e CASE 4: Alternativas Únicas e Múltiplas --- */
 #pergunta-atual label {
-    display: flex;
-    align-items: center;
-    gap: 15px;
+    display: flex !important;
+    flex-direction: row !important; /* Força ficar na mesma linha na horizontal */
+    align-items: center !important; /* Alinha o checkbox e o número ao centro */
+    justify-content: flex-start !important;
+    gap: 15px !important;            /* Espaço entre a caixinha e o número */
+    
     background: #ffffff;
     border: 3px solid var(--card-border);
     border-radius: 20px;
@@ -202,6 +255,11 @@ body {
     user-select: none;
     box-shadow: 0 4px 0 var(--card-border);
     word-break: break-word;
+}
+
+#pergunta-atual label * {
+    display: inline-block;
+    margin: 0 !important;
 }
 
 #pergunta-atual label:hover {
@@ -545,32 +603,36 @@ div[id^="drag_"] {
     gap: 10px;
 }
 
+/* Estilo padronizado base para os botões do rodapé */
 #btn-voltar, 
 #btn-proximo, 
-#btn-finalizar {
-    background-color: #ffffff;
-    border: 3px solid var(--card-border);
+#btn-finalizar,
+.btn-rodape-revisao {
+    background-color: #ffffff !important;
+    border: 3px solid var(--card-border) !important;
+    color: var(--color-dark-blue) !important;
     padding: 12px 24px;
     border-radius: 20px;
     font-weight: bold;
     font-size: 1rem;
     cursor: pointer;
-    box-shadow: 0 5px 0 var(--card-border);
+    box-shadow: 0 5px 0 var(--card-border) !important;
     transition: transform 0.1s, background 0.2s;
     font-family: 'Open_Sans', sans-serif !important;
     white-space: normal;
     text-align: center;
+    text-decoration: none;
 }
 
 #btn-voltar:hover, 
 #btn-proximo:hover {
-    background-color: #f0f9ff;
+    background-color: #f0f9ff !important;
 }
 
 #btn-voltar:active, 
 #btn-proximo:active {
     transform: translateY(4px);
-    box-shadow: 0 1px 0 transparent;
+    box-shadow: 0 1px 0 transparent !important;
 }
 
 #btn-finalizar {
@@ -585,6 +647,40 @@ div[id^="drag_"] {
 }
 
 #btn-finalizar:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 transparent !important;
+}
+
+/* Botão "Voltar para a Home" no rodapé - Azul destacado */
+#btn-home-revisao.btn-rodape-revisao {
+    background-color: #3498db !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 0 #2980b9 !important;
+}
+
+#btn-home-revisao.btn-rodape-revisao:hover {
+    background-color: #2980b9 !important;
+}
+
+#btn-home-revisao.btn-rodape-revisao:active {
+    transform: translateY(4px);
+    box-shadow: 0 1px 0 transparent !important;
+}
+
+/* Botão "Ver comentários" no rodapé - Verde destacado */
+#btn-comentarios-revisao.btn-rodape-revisao {
+    background-color: #00ca72 !important;
+    border: none !important;
+    color: #ffffff !important;
+    box-shadow: 0 5px 0 #009353 !important;
+}
+
+#btn-comentarios-revisao.btn-rodape-revisao:hover {
+    background-color: #00b164 !important;
+}
+
+#btn-comentarios-revisao.btn-rodape-revisao:active {
     transform: translateY(4px);
     box-shadow: 0 1px 0 transparent !important;
 }
@@ -717,54 +813,76 @@ div[id^="drag_"] {
     box-shadow: 0 8px 0 #db4f4f;
 }
 
-#btn-modal-home {
-    background-color: #000000;
+/* Container dos botões do modal de resultado */
+.modal-resultado-acoes {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    width: 100%;
+    margin-top: 15px;
+}
+
+/* Estilo base idêntico ao botão Avançar para todos os botões */
+.btn-modal-acao {
     color: #ffffff;
     border: none;
     border-radius: 25px;
-    padding: 12px 35px;
-    font-size: 1rem;
+    padding: 12px 24px;
+    font-size: 0.95rem;
     font-weight: 800;
     cursor: pointer;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
-    margin: 8px auto;
-    box-shadow: 0 6px 0 #333333;
+    gap: 8px;
     transition: transform 0.1s ease, box-shadow 0.1s ease;
-    width: 100%;
-    max-width: 280px;
+    flex: 1 1 180px;
+    max-width: 250px;
+    text-decoration: none;
 }
 
+/* Efeito de clique idêntico para todos */
+.btn-modal-acao:active {
+    transform: translateY(4px) !important;
+}
+
+/* 1. Botão Revisar Respostas - Tom de Azul (#3498db) */
+.btn-revisar {
+    background-color: #3498db !important;
+    box-shadow: 0 6px 0 #2980b9 !important;
+}
+.btn-revisar:active {
+    box-shadow: 0 2px 0 #2980b9 !important;
+}
+
+/* 2. Botão Fazer Comentário - Tom de Verde (#34db5e) */
+.btn-comentario {
+    background-color: #34db5e !important;
+    box-shadow: 0 6px 0 #27ae60 !important;
+}
+.btn-comentario:active {
+    box-shadow: 0 2px 0 #27ae60 !important;
+}
+
+/* 3. Botão Avançar - Preto original */
+.btn-avancar,
+#btn-modal-home {
+    background-color: #000000 !important;
+    box-shadow: 0 6px 0 #333333 !important;
+    margin: 0 !important; /* Reseta margem individual */
+    width: 100%;
+    max-width: 250px;
+}
+.btn-avancar:active,
 #btn-modal-home:active {
-    transform: translateY(4px);
-    box-shadow: 0 2px 0 #333333;
+    box-shadow: 0 2px 0 #333333 !important;
 }
 
 #btn-modal-home i {
     margin: 0;
     font-size: 1rem;
-}
-
-#btn-final {
-    background-color: #000000;
-    color: #ffffff;
-    border: none;
-    border-radius: 25px;
-    padding: 12px 35px;
-    font-size: 1rem;
-    font-weight: 800;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 8px auto;
-    box-shadow: 0 6px 0 #333333;
-    transition: transform 0.1s ease, box-shadow 0.1s ease;
-    width: 100%;
-    max-width: 280px;
 }
 
 /* ==========================================================================
@@ -1060,6 +1178,34 @@ div[id^="drag_"] {
 /* ==========================================================================
    REGRAS ESPECÍFICAS DE AJUSTE PARA TELAS MENORES (RESPONSIVIDADE EXTRA)
    ========================================================================== */
+/* Breakpoint em 1050px: aciona logo que a largura da tela encostar na borda do quiz */
+@media (max-width: 1050px) {
+    .quiz-main-section {
+        align-items: stretch;
+    }
+
+    .btn-sair-quiz {
+        position: relative;
+        top: 0;
+        left: 0;
+        align-self: flex-start;
+        margin-bottom: 12px;
+        height: 40px;
+        width: 40px;
+        padding: 0 12px;
+        font-size: 1rem;
+    }
+
+    .btn-sair-quiz:hover {
+        width: 90px;
+    }
+
+    #quiz-header {
+        margin-top: 0;
+        padding-left: 20px;
+    }
+}
+
 @media (max-width: 600px) {
     #quiz-controls {
         flex-direction: column;
@@ -1073,7 +1219,8 @@ div[id^="drag_"] {
 
     #btn-voltar, 
     #btn-proximo, 
-    #btn-finalizar {
+    #btn-finalizar,
+    .btn-rodape-revisao {
         width: 100%;
     }
 

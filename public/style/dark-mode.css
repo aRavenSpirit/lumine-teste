@@ -38,12 +38,11 @@ body.dark-mode .navbar .hamburger {
 body.dark-mode .navbar .hamburger:hover{
     background: #5170ff;
 }
+
 body.dark-mode .nav-links a,
 body.dark-mode .mobile-menu a {
     color: #ffffff;
 }
-
-
 
 body.dark-mode .nav-links .item-acessar {
     color: #1a1a1a;
@@ -51,9 +50,6 @@ body.dark-mode .nav-links .item-acessar {
 
 body.dark-mode .hero {
     background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), url('../img/background-index-transparente.png') no-repeat center center;
-}
-
-body.dark-mode .hero {
     color: #e0e0e0;
 }
 
@@ -85,6 +81,7 @@ body.dark-mode footer p {
     color: #b0b0b0 !important;
 }
 
+
 /* 3. COMPONENTES DO PAINEL INTERNO E QUIZZES (home.css / layout.php) */
 body.dark-mode .navbar-home {
     background-color: #1a1a1a !important;
@@ -92,7 +89,8 @@ body.dark-mode .navbar-home {
 }
 
 body.dark-mode .sidebar {
-    background-color: #1a1a1a !important;
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center !important;
     border-right: 1px solid #2d2d2d !important;
 }
 
@@ -100,26 +98,28 @@ body.dark-mode .sidebar a {
     color: #ffffff !important;
 }
 
-body.dark-mode .nav-links-home a {
+body.dark-mode .sidebar nav a:hover {
+    background-color: #333 !important;
     color: #ffffff !important;
 }
 
-body.dark-mode .quiz-card {
-    color: #1a1a1a;
+body.dark-mode .menu-trigger {
+    color: #ffffff !important;
 }
 
-/* Cards de Quiz, Comentários e Elementos Internos */
-body.dark-mode .card-respostas,
-body.dark-mode .comentario-form {
-    background-color: #1a1a1a !important;
-    border: 1px solid #2d2d2d !important;
+body.dark-mode .nav-links-home a,
+body.dark-mode .nav-links-home .perfil-link span {
+    color: #e0e0e0 !important;
 }
 
-body.dark-mode textarea,
-body.dark-mode select {
-    
-    color: #333 !important;
-    border: 1px solid #444444 !important;
+body.dark-mode .nav-links-home a:hover {
+    color: #ffffff !important;
+    background-color: #333 !important;
+}
+
+body.dark-mode .profile-icon,
+body.dark-mode .hamburger-mobile {
+    color: #ffffff !important;
 }
 
 /* Páginas Novidades, Recomendados e Home */
@@ -134,7 +134,7 @@ body.dark-mode #bemvindo {
     color: #ffffff !important;
 }
 
-body.dark-mode .welcome-text h1{
+body.dark-mode .welcome-text h1 {
     background-color: #1595C4;
     border: 3px solid #d2e8ff;
 }
@@ -143,7 +143,7 @@ body.dark-mode #tituloModal {
     color: #ffffff;
 }
 
-/* Estilo do dropdown de perfil no Modo Escuro */
+/* Dropdown do perfil */
 body.dark-mode .perfil-dropdown {
     background-color: #2a2a2a !important;
     color: #ffffff !important;
@@ -161,87 +161,36 @@ body.dark-mode .perfil-dropdown hr {
     border-color: #444444 !important;
 }
 
-/* Card Quiz */
-
-body.dark-mode .navbar-home {
-    background-color: #1a1a1a !important; 
-    border-bottom: 1px solid #333; 
-}
-
-body.dark-mode .nav-links-home a,
-body.dark-mode .nav-links-home .perfil-link span {
-    color: #e0e0e0 !important; 
-}
-
-body.dark-mode .nav-links-home a:hover {
-    color: #ffffff !important;
-    background-color: #333; 
-}
-
-body.dark-mode .profile-icon,
-body.dark-mode .hamburger-mobile {
-    color: #ffffff !important;
-}
-
-body.dark-mode .sidebar {
-    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
-                url('../img/background-index-transparente.png') no-repeat center center;
-    border-right: 1px solid #333;
-}
-
-body.dark-mode .menu-trigger {
-    color: #ffffff !important;
-}
-
-body.dark-mode .sidebar nav a {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .sidebar nav a:hover {
-    background-color: #333 !important;
-    color: #ffffff !important;
-}
-
-body.dark-mode .modal-content {
-    background-color: #1e293b;
-    border-color: #334155;
-}
-
-body.dark-mode .modal-header {
-    background-color: #1e293b;
-}
-
-body.dark-mode .modal-body {
-    background-color: #0f172a;
-}
-
+/* Quiz Cards */
 body.dark-mode .quiz-card {
-    background-color: #1e293b;
-    border-color: #334155;
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #1a1a1a;
 }
 
 body.dark-mode .quiz-card:hover {
-    background-color: #1e293b;
-    border-color: #1595C4;
+    background-color: #1e293b !important;
+    border-color: #1595C4 !important;
 }
 
 body.dark-mode .quiz-title {
-    color: #f1f5f9;
+    color: #f1f5f9 !important;
 }
 
 body.dark-mode .quiz-conteudo {
-    color: #94a3b8;
+    color: #94a3b8 !important;
 }
 
 body.dark-mode .quiz-questoes-badge {
-    background-color: #334155;
-    color: #cbd5e1;
+    background-color: #334155 !important;
+    color: #cbd5e1 !important;
 }
 
-body.dark-mode .card-materia{
-    border: none;
+body.dark-mode .card-materia {
+    border: none !important;
 }
 
+/* Mobile Menu */
 body.dark-mode .mobile-menu,
 body.dark-mode .mobile-menu-scroll {
     background-color: #1a1a1a !important;
@@ -256,38 +205,34 @@ body.dark-mode .nav-links-mobile a:hover {
     background-color: #333 !important;
 }
 
-
-/* ==================================================================
-   BANNER DE COOKIES - MODO ESCURO (body.dark-mode)
-   ================================================================== */
+/* Banner de Cookies */
 body.dark-mode #cookieBanner {
-    background: #1595C4; /* Fundo todo azul */
-    color: #ffffff; /* Textos em branco */
-    border: 2px solid #0b506b;
-    box-shadow: 8px 8px 0px #0b506b; /* Sombrinha azul escuro na direita/baixo */
+    background: #1595C4 !important;
+    color: #ffffff !important;
+    border: 2px solid #0b506b !important;
+    box-shadow: 8px 8px 0px #0b506b !important;
 }
 
-body.dark-mode .cookie-text h3 {
-    color: #ffffff;
-    letter-spacing: 0.8px; /* Mantém o leve espaçamento entre as letras no modo escuro */
-}
-
-body.dark-mode .cookie-text p {
-    color: #ffffff;
-}
-
+body.dark-mode .cookie-text h3,
+body.dark-mode .cookie-text p,
 body.dark-mode .politica a {
-    color: #ffffff;
-    opacity: 0.9;
+    color: #ffffff !important;
 }
 
-body.dark-mode .politica a:hover {
-    opacity: 1;
+/* Modais Genéricos */
+body.dark-mode .modal-content {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
 }
 
-/* --- REGRAS DO MODO ESCURO PARA O MODAL --- */
+body.dark-mode .modal-header {
+    background-color: #1e293b !important;
+}
 
-/* Aplica o estilo se a classe .dark-mode estiver no body ou direto no modal */
+body.dark-mode .modal-body {
+    background-color: #0f172a !important;
+}
+
 body.dark-mode .modal-content-confirm,
 .modal-content-confirm.dark-mode {
     background: #1e293b !important;
@@ -301,24 +246,330 @@ body.dark-mode .modal-content-confirm .modal-titulo,
     border-color: #475569 !important;
 }
 
-/* Ajustes nos botões para o modo escuro (opcional) */
 body.dark-mode .btn-voltar, 
-body.dark-mode .btn-entrar,
-.modal-content-confirm.dark-mode .btn-voltar,
-.modal-content-confirm.dark-mode .btn-entrar {
+body.dark-mode .btn-entrar {
     border-color: #000 !important;
 }
 
-/* --- MODO ESCURO (DARK MODE) --- */
 
-/* Suporte manual via classe .dark-mode */
-body.dark-mode .modal-content-confirm {
-    background: #1e293b;
-    border-color: #475569;
+/* ==========================================================================
+   4. ESTILIZAÇÃO COMPLETA DA INTERFACE DO QUIZ (quiz.css / quiz.php)
+   ========================================================================== */
+
+/* Fundo Geral da Seção do Quiz */
+body.dark-mode .quiz-main-section {
+    background-color: #121212 !important;
 }
 
-body.dark-mode .modal-content-confirm .modal-titulo {
-    background: #0f172a;
-    color: #f8fafc;
-    border-color: #475569;
+/* Cabeçalho do Quiz (Topo com Título, Matéria e Conteúdo) */
+body.dark-mode #quiz-header {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode #quiz-titulo {
+    color: #f8fafc !important;
+}
+
+body.dark-mode #quiz-header p {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode #quiz-materia {
+    background-color: #0f172a !important;
+    color: #38bdf8 !important;
+}
+
+body.dark-mode #quiz-conteudo {
+    background-color: #2e1065 !important;
+    color: #c084fc !important;
+}
+
+body.dark-mode #cronometro {
+    background-color: #1e1b4b !important;
+    color: #fb923c !important;
+    border-color: #431407 !important;
+    box-shadow: 0 4px 0 #431407 !important;
+}
+
+/* Card Principal da Pergunta */
+body.dark-mode #pergunta-atual {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode #pergunta-atual h3 {
+    background-color: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #334155 !important;
+    box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode #pergunta-atual p {
+    color: #e2e8f0 !important;
+}
+
+/* Alternativas (Opções Únicas e Múltiplas) */
+body.dark-mode #pergunta-atual label {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 4px 0 #334155 !important;
+}
+
+body.dark-mode #pergunta-atual label:hover {
+    background-color: #1e293b !important;
+    border-color: #38bdf8 !important;
+}
+
+body.dark-mode #pergunta-atual label input[type="radio"],
+body.dark-mode #pergunta-atual label input[type="checkbox"] {
+    background-color: #1e293b !important;
+    border-color: #64748b !important;
+}
+
+/* Input de Resposta Curta */
+body.dark-mode #pergunta-atual input[type="text"] {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #ffffff !important;
+    box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode #pergunta-atual input[type="text"]:focus {
+    border-color: #38bdf8 !important;
+}
+
+/* Ordenação Estilo Duolingo */
+body.dark-mode #pergunta-atual div[style*="background: #ebf5fb"] {
+    background-color: #0f172a !important;
+    border-color: #38bdf8 !important;
+}
+
+body.dark-mode #pergunta-atual button[onclick*="selecionarOpcaoOrdem"] {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 0 #334155 !important;
+}
+
+body.dark-mode #pergunta-atual button[disabled][style*="opacity: 0.6"] {
+    background-color: #334155 !important;
+    border-color: #475569 !important;
+    color: #64748b !important;
+}
+
+/* Arrastar e Soltar */
+body.dark-mode #itens-disponiveis {
+    background-color: #1e1b4b !important;
+    border-color: #6366f1 !important;
+}
+
+body.dark-mode div[id^="drag_"] {
+    background-color: #0f172a !important;
+    border-color: #38bdf8 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 0 #0284c7 !important;
+}
+
+body.dark-mode .box-target {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+    color: #94a3b8 !important;
+}
+
+/* Controles e Botões Inferiores do Quiz */
+body.dark-mode #btn-voltar,
+body.dark-mode #btn-proximo {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    color: #f8fafc !important;
+    box-shadow: 0 5px 0 #0f172a !important;
+}
+
+body.dark-mode #btn-voltar:hover,
+body.dark-mode #btn-proximo:hover {
+    background-color: #334155 !important;
+}
+
+body.dark-mode #progresso {
+    color: #e2e8f0 !important;
+}
+
+/* Modal de Resultados Finais */
+body.dark-mode #modal-resultado {
+    background-color: rgba(15, 23, 42, 0.75) !important;
+}
+
+body.dark-mode .modal-resultado-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.7) !important;
+}
+
+body.dark-mode .modal-resultado-topo {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .modal-resultado-topo h2,
+body.dark-mode .modal-resultado-subtitulo {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .resultado-valor {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+}
+
+/* Modais de Saída e Avaliação */
+body.dark-mode .modal-confirmar-saida {
+    background-color: rgba(0, 0, 0, 0.75) !important;
+}
+
+body.dark-mode .modal-confirmar-saida-card {
+    background-color: #1e293b !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .modal-confirmar-saida-card h2 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .modal-confirmar-saida-card p {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .btn-secondary {
+    background-color: #334155 !important;
+    color: #cbd5e1 !important;
+}
+
+body.dark-mode .btn-secondary:hover {
+    background-color: #e74c3c !important;
+    color: #ffffff !important;
+}
+
+body.dark-mode #modal-avaliacao .modal-content {
+    background-color: #1e293b !important;
+    color: #f8fafc !important;
+}
+
+body.dark-mode #modal-avaliacao p {
+    color: #cbd5e1 !important;
+}
+
+
+/* ==========================================================================
+   5. ESTILIZAÇÃO COMPLETA DA PÁGINA DE COMENTÁRIOS (comentario.php / comentario.css)
+   ========================================================================== */
+
+/* Container Principal dos Comentários */
+body.dark-mode .container-comentarios {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.dark-mode .container-comentarios h2 {
+    color: #38bdf8 !important;
+}
+
+/* Área Interna onde os comentários ficam listados */
+body.dark-mode .card-respostas {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+/* Card Individual de cada Comentário */
+body.dark-mode .comentario {
+    background-color: #1e293b !important;
+    border-left: 5px solid #00bf63 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.dark-mode .comentario-avatar {
+    border-color: #334155 !important;
+    background-color: #334155 !important;
+}
+
+body.dark-mode .comentario-info h3 {
+    color: #f8fafc !important;
+}
+
+body.dark-mode .comentario-data {
+    color: #94a3b8 !important;
+}
+
+body.dark-mode .comentario-texto {
+    color: #e2e8f0 !important;
+}
+
+/* Formulário de Envio (Estilo Pílula) */
+body.dark-mode .comentario-form form {
+    background-color: #0f172a !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .comentario-form form:focus-within {
+    border-color: #0cc0df !important;
+    box-shadow: 0 0 0 4px rgba(12, 192, 223, 0.2) !important;
+    background-color: #1e293b !important;
+}
+
+body.dark-mode .comentario-form textarea {
+    color: #f8fafc !important;
+    background: transparent !important;
+}
+
+body.dark-mode .comentario-form textarea::placeholder {
+    color: #64748b !important;
+}
+
+/* Botão de Enviar do Formulário */
+body.dark-mode .comentario-form button {
+    background-color: #00bf63 !important;
+    color: #ffffff !important;
+    box-shadow: 0px 4px 0px #008f4a !important;
+}
+
+body.dark-mode .comentario-form button:hover {
+    background-color: #02d16d !important;
+    box-shadow: 0px 5px 0px #008f4a !important;
+}
+
+body.dark-mode .comentario-form button:active {
+    box-shadow: 0px 1px 0px #008f4a !important;
+}
+
+/* Scrollbar do Textarea no modo escuro */
+body.dark-mode .comentario-form textarea::-webkit-scrollbar-thumb {
+    background: #0cc0df !important;
+}
+
+/* Botões de Rota/Navegação (Sair e Revisar Respostas) */
+body.dark-mode .rotas-buttons .btn-sair-flutuante {
+    background-color: #e74c3c !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .rotas-buttons .btn-sair-flutuante:hover,
+body.dark-mode .rotas-buttons .btn-sair-flutuante:active,
+body.dark-mode .rotas-buttons .btn-sair-flutuante:focus {
+    background-color: #c0392b !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6) !important;
+}
+
+body.dark-mode .rotas-buttons .btn-revisar {
+    background-color: #0284c7 !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+}
+
+body.dark-mode .rotas-buttons .btn-revisar:hover,
+body.dark-mode .rotas-buttons .btn-revisar:active,
+body.dark-mode .rotas-buttons .btn-revisar:focus {
+    background-color: #0369a1 !important;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6) !important;
 }
