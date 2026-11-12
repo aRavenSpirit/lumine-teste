@@ -70,17 +70,19 @@
     </div>
 </div>
 
+<!-- Importação do script global do Header, Sidebar e Perfil -->
+<script src="js/header.js"></script>
+
 <script src="js/sidebar_close.js"></script>
 
 <script>
-const api = "../config/home.php";
 let listaQuizzesGlobal = [];
 let urlDestinoQuiz = "";
 
 window.onload = () => {
     carregarMenuSidebarFixo();
     carregarQuizzesRecomendados();
-    carregarUsuario();
+    carregarUsuario(); // Função vinda do header.js
 };
 
 function carregarMenuSidebarFixo() {
@@ -182,58 +184,6 @@ window.addEventListener('click', (e) => {
     const modal = document.getElementById('modalConfirmacao');
     if (e.target === modal) fecharConfirmacao();
 });
-
-function carregarUsuario() {
-    fetch(api + "?tipo=usuario")
-        .then(r => r.json())
-        .then(u => {
-            const linkPerfilHeader = document.querySelector('.item-perfil a');
-            if (linkPerfilHeader && u.foto_perfil) {
-                const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
-                if (iconeUsuario) {
-                    iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                }
-            }
-            
-            const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-            if (linkPerfilMobile && u.foto_perfil) {
-                linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-            }
-
-            const itemPerfil = document.querySelector('.item-perfil');
-            if (itemPerfil) {
-                const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                if (antigoDropdown) antigoDropdown.remove();
-
-                const fotoHtml = u.foto_perfil 
-                    ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                const dropdown = document.createElement('div');
-                dropdown.className = 'perfil-dropdown';
-                dropdown.innerHTML = `
-                    <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                        <div id="avatarWrapper">
-                            ${fotoHtml}
-                        </div>
-                    </div>
-
-                    <h4 style="text-align: center;">Minha Conta</h4>
-                    <hr>
-                    <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                    <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                    <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                    <hr>
-                    <a href="../config/logout.php" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                    </a>
-                `;
-                
-                itemPerfil.appendChild(dropdown);
-            }
-        })
-        .catch(e => console.error("Erro ao carregar usuário:", e));
-}
 </script>
 
 </body>

@@ -135,6 +135,9 @@
         </div>
     </div>
 
+    <!-- Importação do script global do Header, Sidebar e Perfil -->
+    <script src="js/header.js"></script>
+
     <!-- Scripts da aplicação -->
     <script src="js/sidebar_close.js"></script>
     <script src="js/resolucao_quiz.js"></script>
@@ -170,7 +173,7 @@
 
         window.addEventListener('load', () => {
             carregarMenuSidebarQuiz();
-            carregarUsuario();     // <--- Adicionado para carregar a foto no header
+            carregarUsuario();     // Função vinda do header.js
             ajustarLayoutTela();
         });
 
@@ -236,31 +239,9 @@
                 .catch(err => console.error("Erro ao carregar menu na página de quiz:", err));
         }
 
-        function toggleSidebar() {
-            // 900px é o limite exato que está configurado no seu arquivo home.css
-            if (window.innerWidth <= 900) {
-                
-                // ==================================================================
-                // COMPORTAMENTO MOBILE (Celular / Tablet)
-                // ==================================================================
-                const mobileMenu = document.getElementById('mobileMenu');
-                if (mobileMenu) {
-                    mobileMenu.classList.toggle('active');
-                }
-                document.body.classList.toggle('no-scroll');
-
-            } else {
-                
-                // ==================================================================
-                // COMPORTAMENTO DESKTOP (O seu código original intacto!)
-                // ==================================================================
-                const sidebar = document.getElementById('sidebar');
-                const main = document.getElementById('mainContainer');
-                
-                if (sidebar) sidebar.classList.toggle('open');
-                if (main) main.classList.toggle('sidebar-open');
-                
-            }
+        // Mantém os links da sidebar redirecionando para a Home caso o resize global do header.js seja disparado
+        function carregarMenuSidebar() {
+            carregarMenuSidebarQuiz();
         }
         
         function revisarRespostas() {
@@ -303,77 +284,6 @@
             emModoRevisao = true;   // Ativa a flag do JS
             indicePergunta = 0;     // Reseta para a primeira pergunta
             renderizarPergunta();   // Atualiza a tela com a primeira pergunta
-        }
-
-
-        function carregarUsuario() {
-            fetch(apiHome + "?tipo=usuario")
-                .then(r => r.json())
-                .then(u => {
-                    if (!u) return;
-
-                    // Evita o cache do navegador adicionando um parâmetro de tempo na URL da foto
-                    const fotoComCache = u.foto_perfil 
-                        ? u.foto_perfil + (u.foto_perfil.includes('?') ? '&t=' : '?t=') + new Date().getTime() 
-                        : '';
-
-                    // 1. Atualiza a foto no HEADER (Navbar Desktop)
-                    const linkPerfilHeader = document.querySelector('.item-perfil a');
-                    if (linkPerfilHeader && fotoComCache) {
-                        const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
-                        if (iconeUsuario) {
-                            if (iconeUsuario.tagName === 'IMG') {
-                                iconeUsuario.src = fotoComCache;
-                            } else {
-                                iconeUsuario.outerHTML = `<img src="${fotoComCache}" class="profile-icon" style="object-fit: cover;">`;
-                            }
-                        }
-                    }
-                    
-                    // 2. Atualiza a foto no HEADER (Navbar Mobile)
-                    const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-                    if (linkPerfilMobile && fotoComCache) {
-                        if (linkPerfilMobile.tagName === 'IMG') {
-                            linkPerfilMobile.src = fotoComCache;
-                        } else {
-                            linkPerfilMobile.outerHTML = `<img src="${fotoComCache}" class="profile-icon" style="object-fit: cover;">`;
-                        }
-                    }
-
-                    // 3. Monta o Dropdown do Perfil COM O LÁPIS DE EDIÇÃO
-                    const itemPerfil = document.querySelector('.item-perfil');
-                    if (itemPerfil) {
-                        const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                        if (antigoDropdown) antigoDropdown.remove();
-
-                        const fotoHtml = fotoComCache 
-                            ? `<img src="${fotoComCache}" class="avatar-preview" id="avatarImg">`
-                            : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                        const dropdown = document.createElement('div');
-                        dropdown.className = 'perfil-dropdown';
-                        dropdown.innerHTML = `
-                            <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                                <div id="avatarWrapper">
-                                    ${fotoHtml}
-                                </div>
-                            </div>
-
-                            <h4 style="text-align: center;">Minha Conta</h4>
-                            <hr>
-                            <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                            <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                            <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                            <hr>
-                            <a href="../config/logout.php" class="btn-logout">
-                                <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                            </a>
-                        `;
-                        
-                        itemPerfil.appendChild(dropdown);
-                    }
-                })
-                .catch(err => console.error("Erro ao carregar usuário no quiz:", err));
         }
 
     </script>

@@ -25,41 +25,46 @@ function obterCorTextoLegivel(hexColor) {
     return luminancia < 128 ? '#ffffff' : '#333333';
 }
 
-// 2. Ajusta textos do menu do header dinamicamente conforme a tela ou tamanho da fonte
+// 2. Ajusta textos do menu do header dinamicamente conforme a tela, zoom ou tamanho da fonte
 function ajustarTextoHeaderQuizzes(nivelFonte) {
     const linksNav = document.querySelectorAll('header nav a, header .menu-item a, header a');
     const selectFonte = document.getElementById('pref-fonte');
-    const nivelAtual = nivelFonte || (selectFonte ? selectFonte.value : 2);
+    
+    // Verifica o nível pelo parâmetro, pelo select ou pela classe já aplicada no body
+    let nivelAtual = nivelFonte || (selectFonte ? selectFonte.value : null);
+    if (!nivelAtual) {
+        if (document.body.classList.contains('fonte-nivel-3')) nivelAtual = 3;
+        else if (document.body.classList.contains('fonte-nivel-1')) nivelAtual = 1;
+        else nivelAtual = 2;
+    }
 
-    const encurtar = (window.innerWidth <= 1016 || nivelAtual == 3);
+    // Só encurta se a tela for estreita (<= 1016px) OU se a fonte for Grande (nível 3) e a tela for <= 1280px
+    const encurtar = (window.innerWidth <= 1016 || (nivelAtual == 3 && window.innerWidth <= 1280));
 
     linksNav.forEach(link => {
         if (link.closest('.item-perfil') || link.classList.contains('link-perfil') || link.querySelector('.profile-icon')) {
             return;
         }
 
-        const texto = link.textContent.trim().toUpperCase();
+        // Salva o texto original na primeira execução para nunca perder o nome completo
+        if (!link.dataset.textoOriginal) {
+            const txtInicial = link.textContent.trim().toUpperCase();
+            if (txtInicial.includes('SOBRE')) link.dataset.textoOriginal = 'SOBRE NÓS';
+            else if (txtInicial.includes('NOVI')) link.dataset.textoOriginal = 'NOVIDADES';
+            else if (txtInicial.includes('RECO')) link.dataset.textoOriginal = 'RECOMENDADOS';
+            else if (txtInicial.includes('TODOS')) link.dataset.textoOriginal = 'TODOS OS QUIZZES';
+            else link.dataset.textoOriginal = link.textContent.trim();
+        }
+
+        const original = link.dataset.textoOriginal;
 
         if (encurtar) {
-            if (texto.includes('SOBRE NÓS') || texto === 'SOBRE...') {
-                link.textContent = 'SOBRE...';
-            } else if (texto.includes('NOVIDADES') || texto === 'NOVI...') {
-                link.textContent = 'NOVI...';
-            } else if (texto.includes('RECOMENDADOS') || texto === 'RECO...') {
-                link.textContent = 'RECO...';
-            } else if (texto.includes('TODOS') || texto === 'TODOS...') {
-                link.textContent = 'TODOS...';
-            }
+            if (original === 'SOBRE NÓS') link.textContent = 'SOBRE...';
+            else if (original === 'NOVIDADES') link.textContent = 'NOVI...';
+            else if (original === 'RECOMENDADOS') link.textContent = 'RECO...';
+            else if (original === 'TODOS OS QUIZZES') link.textContent = 'TODOS...';
         } else {
-            if (texto === 'SOBRE...' || texto.includes('SOBRE NÓS')) {
-                link.textContent = 'SOBRE NÓS';
-            } else if (texto === 'NOVI...' || texto.includes('NOVIDADES')) {
-                link.textContent = 'NOVIDADES';
-            } else if (texto === 'RECO...' || texto.includes('RECOMENDADOS')) {
-                link.textContent = 'RECOMENDADOS';
-            } else if (texto === 'TODOS...' || texto.includes('TODOS OS QUIZZES') || texto.includes('TODOS QUIZZES')) {
-                link.textContent = 'TODOS OS QUIZZES';
-            }
+            link.textContent = original;
         }
     });
 }
@@ -193,9 +198,11 @@ function carregarUsuario() {
         .catch(err => console.error("Erro ao carregar dados do usuário no header:", err));
 }
 
-// 7. Event Listener Global de Redimensionamento da Tela (Resize)
+// 7. Sistema Global de Atualização por Redimensionamento e Proporção (Zoom / DPR)
 let resizeTimerGlobal;
-window.addEventListener('resize', () => {
+
+function atualizarSistemaPorProporcao() {
+    // Atualiza o texto do header imediatamente
     ajustarTextoHeaderQuizzes();
 
     clearTimeout(resizeTimerGlobal);
@@ -214,5 +221,24 @@ window.addEventListener('resize', () => {
             const mobileMenu = document.getElementById('mobileMenu');
             if (mobileMenu) mobileMenu.classList.remove('active');
         }
-    }, 250);
-});
+    }, 200);
+}
+
+// Dispara ao redimensionar a janela
+window.addEventListener('resize', atualizarSistemaPorProporcao);
+
+// Dispara sempre que a proporção/zoom da página mudar (Ctrl + / Ctrl - / escala do sistema)
+let ultimoPixelRatio = window.devicePixelRatio;
+function monitorarProporcaoTela() {
+    matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener('change', () => {
+        if (window.devicePixelRatio !== ultimoPixelRatio) {
+            ultimoPixelRatio = window.devicePixelRatio;
+            atualizarSistemaPorProporcao();
+        }
+        monitorarProporcaoTela(); // Re-registra o ouvinte para o novo nível de proporção
+    }, { once: true });
+}
+monitorarProporcaoTela();
+
+// Garante a verificação assim que a página termina de carregar
+document.addEventListener('DOMContentLoaded', atualizarSistemaPorProporcao);

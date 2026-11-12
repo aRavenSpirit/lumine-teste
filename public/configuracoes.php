@@ -234,15 +234,19 @@
                 ];
 
                 materiaSelecionadaAtual = listaMateriasPadrao[0].key;
+                let nomeInicial = listaMateriasPadrao[0].nome;
                 let corInicial = cores[materiaSelecionadaAtual] || listaMateriasPadrao[0].color;
 
-                let cardsHtml = listaMateriasPadrao.map(item => {
+                let cardsHtml = listaMateriasPadrao.map((item, idx) => {
                     let corAtual = cores[item.key] || item.color;
                     let corTexto = obterCorTextoLegivel(corAtual);
+                    let classeInicial = idx === 0 ? 'selecionada-compacto' : '';
 
                     return `
-                        <div class="materia-pill"
+                        <div class="materia-pill ${classeInicial}"
                              id="pill-${item.key}"
+                             data-nome-completo="${item.nome}"
+                             title="${item.nome}"
                              style="background-color:${corAtual}; color:${corTexto};"
                              onclick="selecionarMateriaCor('${item.key}')">
 
@@ -269,7 +273,7 @@
                 const classeIcone = temaBanco === "1" ? "fas fa-moon" : "fas fa-sun";
 
                 html = `
-                    <div class="preferencias-container-visual">
+                    <div class="preferencias-container-visual" id="preferenciasContainerVisual">
                         <div class="sessao-cores-layout">
                             <div class="grid-materias-pills">
                                 ${cardsHtml}
@@ -282,6 +286,7 @@
                                         <span>Clique para alterar a cor</span>
                                     </div>
                                 </label>
+                                <div id="materia-selecionada-badge" class="materia-selecionada-badge">${nomeInicial}</div>
                                 <input type="color" id="picker-painel-real" value="${corInicial}" onchange="atualizarCorPainelPrincipal(this.value)" style="opacity: 0; width: 0; height: 0; position: absolute;">
                             </div>
                         </div>
@@ -305,9 +310,9 @@
                             <div class="controles-estilizados">
                                 <label for="pref-fonte" class="label-estilizada">Tamanho da letra:</label>
                                 <select id="pref-fonte" class="select-arredondado" aria-label="Selecione o tamanho do texto" onchange="mudarFonteLocal(this.value)">
-                                    <option value="1" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
-                                    <option value="2" ${data.tamanho_fonte == 2 || !data.tamanho_fonte ? 'selected' : ''}>Médio</option>
-                                    <option value="3" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
+                                    <option value="1" data-completo="Pequeno" data-curto="P" ${data.tamanho_fonte == 1 ? 'selected' : ''}>Pequeno</option>
+                                    <option value="2" data-completo="Médio" data-curto="M" ${data.tamanho_fonte == 2 || !data.tamanho_fonte ? 'selected' : ''}>Médio</option>
+                                    <option value="3" data-completo="Grande" data-curto="G" ${data.tamanho_fonte == 3 ? 'selected' : ''}>Grande</option>
                                 </select>
                             </div>
                         </div>
@@ -372,9 +377,107 @@
 
             cardOpcoes.innerHTML = html;
 
+            // Atualiza imediatamente o layout compacto caso a aba carregada seja 'preferencias'
+            if (tipo === 'preferencias') {
+                atualizarLayoutPreferenciasResponsivo();
+            }
+
         } catch (error) {
             console.error("Erro:", error);
             cardOpcoes.innerHTML = "<p style='text-align:center; margin-top:20px; color:red;'>Erro ao carregar dados.</p>";
+        }
+    }
+
+    /* =========================================================================
+       SISTEMA RESPONSIVO DE PREFERÊNCIAS (P/M/G + QUADRADINHOS + MONITOR DE PROPORÇÃO)
+       ========================================================================= */
+    function atualizarLayoutPreferenciasResponsivo() {
+        const containerPref = document.getElementById('preferenciasContainerVisual');
+        if (!containerPref) return;
+
+        const larguraJanela = window.innerWidth;
+        const larguraCardOpcoes = document.getElementById('card-opcoes')?.offsetWidth || larguraJanela;
+        
+        // Ativa o modo compacto (P/M/G e quadradinhos com 1ª letra) quando:
+        // NÃO está no modo mobile (> 900px) E a largura da janela ou do painel interno está apertada
+        const isMobile = larguraJanela <= 900;
+        const ativarModoCompacto = !isMobile && (larguraJanela <= 1140 || larguraCardOpcoes <= 560);
+
+        const selectFonte = document.getElementById('pref-fonte');
+        const pillsMaterias = containerPref.querySelectorAll('.materia-pill');
+        const badgeMateria = document.getElementById('materia-selecionada-badge');
+
+        if (ativarModoCompacto) {
+            containerPref.classList.add('modo-compacto-preferencias');
+
+            // Transforma Pequeno, Médio, Grande em P, M, G
+            if (selectFonte) {
+                Array.from(selectFonte.options).forEach(opt => {
+                    if (opt.dataset.curto) opt.textContent = opt.dataset.curto;
+                });
+            }
+
+            // Transforma matérias em quadradinhos com apenas a primeira letra
+            pillsMaterias.forEach(pill => {
+                pill.classList.add('modo-compacto-ativo');
+                const span = pill.querySelector('span');
+                const nomeCompleto = pill.dataset.nomeCompleto || (span ? span.textContent.trim() : '');
+                if (span && nomeCompleto) {
+                    span.textContent = nomeCompleto.charAt(0).toUpperCase();
+                }
+            });
+
+            // Atualiza o texto abaixo do bloco de cor com a matéria atualmente selecionada
+            const pillAtiva = document.getElementById(`pill-${materiaSelecionadaAtual}`);
+            if (badgeMateria && pillAtiva) {
+                badgeMateria.textContent = pillAtiva.dataset.nomeCompleto || '';
+            }
+        } else {
+            // Volta tudo ao modo normal (tanto no mobile <= 900px quanto em telas grandes)
+            containerPref.classList.remove('modo-compacto-preferencias');
+
+            if (selectFonte) {
+                Array.from(selectFonte.options).forEach(opt => {
+                    if (opt.dataset.completo) opt.textContent = opt.dataset.completo;
+                });
+            }
+
+            pillsMaterias.forEach(pill => {
+                pill.classList.remove('modo-compacto-ativo');
+                const span = pill.querySelector('span');
+                const nomeCompleto = pill.dataset.nomeCompleto;
+                if (span && nomeCompleto) {
+                    span.textContent = nomeCompleto;
+                }
+            });
+        }
+    }
+
+    // Monitora redimensionamento, zoom e alterações de proporção da página
+    function iniciarMonitorProporcaoConfiguracoes() {
+        window.addEventListener('resize', atualizarLayoutPreferenciasResponsivo);
+
+        let ultimoDPR = window.devicePixelRatio;
+        function observarZoom() {
+            matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener('change', () => {
+                if (window.devicePixelRatio !== ultimoDPR) {
+                    ultimoDPR = window.devicePixelRatio;
+                }
+                atualizarLayoutPreferenciasResponsivo();
+                if (typeof ajustarTextoHeaderQuizzes === 'function') {
+                    ajustarTextoHeaderQuizzes();
+                }
+                observarZoom();
+            }, { once: true });
+        }
+        observarZoom();
+
+        const cardOpcoesEl = document.getElementById('card-opcoes');
+        if (cardOpcoesEl && typeof ResizeObserver !== 'undefined') {
+            const observerContainer = new ResizeObserver(() => {
+                atualizarLayoutPreferenciasResponsivo();
+            });
+            observerContainer.observe(cardOpcoesEl);
         }
     }
 
@@ -383,6 +486,7 @@
             aplicarTamanhoFonteGlobal(val);
         }
         aplicarClasseTamanhoFonteBody(val);
+        atualizarLayoutPreferenciasResponsivo();
     }
 
     let selecionadosHistorico = new Set();
@@ -510,6 +614,19 @@
 
     function selecionarMateriaCor(materia) {
         materiaSelecionadaAtual = materia;
+
+        // Destaca visualmente a matéria clicada e atualiza o nome embaixo do bloco de cor
+        document.querySelectorAll('.materia-pill').forEach(p => p.classList.remove('selecionada-compacto'));
+        const pillSelecionada = document.getElementById(`pill-${materia}`);
+        const badgeMateria = document.getElementById('materia-selecionada-badge');
+
+        if (pillSelecionada) {
+            pillSelecionada.classList.add('selecionada-compacto');
+            if (badgeMateria) {
+                badgeMateria.textContent = pillSelecionada.dataset.nomeCompleto || '';
+            }
+        }
+
         const pickerOc = document.getElementById(`picker-${materia}`);
         const pickerPainel = document.getElementById('picker-painel-real');
         const previewBox = document.getElementById('preview-box');
@@ -941,7 +1058,8 @@
     window.onload = () => {
         carregarUsuario();
         carregarMenuSidebar();
-        carregarPerfil('usuario'); 
+        carregarPerfil('usuario');
+        iniciarMonitorProporcaoConfiguracoes();
     };
 </script>
 

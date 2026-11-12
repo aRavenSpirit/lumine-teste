@@ -124,6 +124,9 @@
     </div>
 </div>
 
+<!-- Importação do script global do Header, Sidebar e Perfil -->
+<script src="js/header.js"></script>
+
 <!-- Importação do script de tamanho de fonte -->
 <script src="js/tamanho_fonte.js"></script>
 
@@ -131,7 +134,6 @@
 <script src="js/sidebar_close.js"></script>
 
 <script>
-const api = "../config/home.php";
 let urlDestinoQuiz = "";
 
 // Transforma o array do PHP em um objeto JavaScript utilizável
@@ -153,59 +155,12 @@ if (typeof aplicarTamanhoFonteGlobal === "function") {
     aplicarTamanhoFonteGlobal(tamanhoFonteBanco);
 }
 
-function carregarMenuSidebar() {
-    fetch(api + "?tipo=materias")
-        .then(r => r.json())
-        .then(dados => {
-            let menuHTML = "";
-            let cardsIniciais = "";
-
-            dados.forEach(m => {
-                let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
-                
-                // Link na Sidebar
-                menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
-                
-                // Card inicial na tela
-                cardsIniciais += `
-                    <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
-                        <div class="card-banner">
-                            <img src="img/${nomeLimpo}.webp" onerror="this.src='img/'">
-                        </div>
-                        <div class="card-body"><p>${m.nome_materia}</p></div>
-                    </div>`;
-            });
-            if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
-            if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-            if(document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
-        });
-}
-
 let listaQuizzesGlobal = [];
 
 window.onload = () => {
     carregarQuizzesRecentes();
-    carregarUsuario();     // Carrega a foto e dados no header/dropdown
+    carregarUsuario();     // Função do header.js: carrega a foto e dados no header/dropdown
 };
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.getElementById('mainContainer');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const body = document.body;
-    
-    if (window.innerWidth <= 900) {
-        if(mobileMenu) {
-            mobileMenu.classList.toggle('active');
-            mobileMenu.classList.contains('active') ? body.classList.add('no-scroll') : body.classList.remove('no-scroll');
-        }
-    } else {
-        if(sidebar && main) {
-            sidebar.classList.toggle('open');
-            main.classList.toggle('sidebar-open');
-        }
-    }
-}
 
 async function carregarQuizzesRecentes() {
     try {
@@ -302,62 +257,6 @@ function filtrarGeral() {
         q.nome.toLowerCase().includes(termo) || q.nome_materia.toLowerCase().includes(termo) || q.nome_conteudo.toLowerCase().includes(termo)
     );
     renderizarCards(filtrados);
-}
-
-function carregarUsuario() {
-    fetch(api + "?tipo=usuario")
-        .then(r => r.json())
-        .then(u => {
-            const linkPerfilHeader = document.querySelector('.item-perfil a');
-            if (linkPerfilHeader && u.foto_perfil) {
-                const iconeUsuario = linkPerfilHeader.querySelector('.profile-icon');
-                if (iconeUsuario) {
-                    iconeUsuario.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                } else {
-                    const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                    if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                        imagemHeaderExistente.src = u.foto_perfil;
-                    }
-                }
-            }
-            
-            const linkPerfilMobile = document.querySelector('.mobile-profile-right .profile-icon');
-            if (linkPerfilMobile && u.foto_perfil) {
-                linkPerfilMobile.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-            }
-
-            const itemPerfil = document.querySelector('.item-perfil');
-            if (itemPerfil) {
-                const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                if (antigoDropdown) antigoDropdown.remove();
-
-                const fotoHtml = u.foto_perfil 
-                    ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                const dropdown = document.createElement('div');
-                dropdown.className = 'perfil-dropdown';
-                dropdown.innerHTML = `
-                    <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                        <div id="avatarWrapper">
-                            ${fotoHtml}
-                        </div>
-                    </div>
-
-                    <h4 style="text-align: center;">Minha Conta</h4>
-                    <hr>
-                    <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                    <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                    <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                    <hr>
-                    <a href="../config/logout.php" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                    </a>
-                `;
-                
-                itemPerfil.appendChild(dropdown);
-            }
-        });
 }
 </script>
 

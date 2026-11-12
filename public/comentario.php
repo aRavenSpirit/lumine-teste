@@ -10,7 +10,8 @@
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
     // ==========================================================
-    $id_usuario_logado = intval($_SESSION['usuario_id']);$sql_pref = "SELECT cores_materia 
+    $id_usuario_logado = intval($_SESSION['usuario_id']);
+    $sql_pref = "SELECT cores_materia 
                  FROM configuracoes 
                  WHERE id_usuario = $id_usuario_logado";
                  
@@ -40,14 +41,11 @@
     // ==========================================================
     // MESCLA AS CONFIGURAÇÕES SALVAS COM AS PADRÕES
     // ==========================================================
-    if ($result_pref &&$result_pref->num_rows > 0) {
-        $row_pref =$result_pref->fetch_assoc();
-        $cores_banco = json_decode($row_pref['cores_materia'],
-            true
-        );
-        if (is_array($cores_banco)) {$cores_usuario = array_merge(
-                $cores_usuario,$cores_banco
-            );
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
+        $cores_banco = json_decode($row_pref['cores_materia'], true);
+        if (is_array($cores_banco)) {
+            $cores_usuario = array_merge($cores_usuario, $cores_banco);
         }
     }
 ?>
@@ -134,108 +132,27 @@
     </div>
 </div>
 
+<!-- Importação do script global do Header, Sidebar e Perfil -->
+<script src="js/header.js"></script>
+
 <!-- Importação do script desacoplado da sidebar -->
 <script src="js/sidebar_close.js"></script>
 
 <script>
     const apiComentario = "../config/comentario.php";
-    const apiHome = "../config/home.php";
     let urlDestinoQuiz = "";
 
     // Transforma o array do PHP em um objeto JavaScript utilizável
     const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
-    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ?$_SESSION['usuario_id'] : 'null'; ?>;
+    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
 
     // Executa assim que a página carregar
     document.addEventListener("DOMContentLoaded", () => {
-        carregarUsuario();
-        carregarMenuSidebar();
+        carregarUsuario();      // Função vinda do header.js
+        carregarMenuSidebar();  // Função vinda do header.js
         carregarComentarios();
         configurarFormulario();
     });
-
-    function carregarUsuario() {
-        fetch(apiHome + "?tipo=usuario")
-            .then(r => r.json())
-            .then(u => {
-                const nomeUsuario = u.nome ? u.nome.toUpperCase() : "ALUNO";
-                const elementoBemVindo = document.getElementById("bemvindo");
-                if (elementoBemVindo) {
-                    elementoBemVindo.innerHTML = `SEJA BEM-VINDO, <span class="nome-destaque">${nomeUsuario}</span>!!`;
-                }
-                
-                // Atualiza a imagem no HEADER (Navbar superior)
-                const linkPerfilHeader = document.querySelector('.item-perfil a');
-                if (linkPerfilHeader && u.foto_perfil) {
-                    const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
-                    if (iconeRoxo) {
-                        iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                    } else {
-                        const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                        if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                            imagemHeaderExistente.src = u.foto_perfil;
-                        }
-                    }
-                }
-
-                // Captura o item de perfil para montar o Dropdown
-                const itemPerfil = document.querySelector('.item-perfil');
-                
-                if (itemPerfil) {
-                    const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                    if (antigoDropdown) antigoDropdown.remove();
-
-                    const fotoHtml = u.foto_perfil 
-                        ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                        : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                    const dropdown = document.createElement('div');
-                    dropdown.className = 'perfil-dropdown';
-                    dropdown.innerHTML = `
-                        <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                            <div id="avatarWrapper">
-                                ${fotoHtml}
-                            </div>
-                            <div class="avatar-edit-badge">
-                                <i class="fas fa-pencil-alt"></i>
-                            </div>
-                            <input type="file" id="inputFotoPerfil" accept="image/*" style="display: none;" onchange="uploadFotoPerfil(this)">
-                        </div>
-
-                        <h4 style="text-align: center;">Minha Conta</h4>
-                        <hr>
-                        <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                        <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                        <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                        <hr>
-                        <a href="../config/logout.php" class="btn-logout">
-                            <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                        </a>
-                    `;
-                    
-                    itemPerfil.appendChild(dropdown);
-                }
-            });
-    }
-
-    function carregarMenuSidebar() {
-        fetch(apiHome + "?tipo=materias")
-            .then(r => r.json())
-            .then(dados => {
-                let menuHTML = "";
-
-                dados.forEach(m => {
-                    // Link na Sidebar redirecionando para a home com a matéria selecionada ou executando visualização
-                    menuHTML += `<a href="home.php" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
-                });
-                
-                const menuDesk = document.getElementById("menuMaterias");
-                const menuMob = document.getElementById("menuMateriasMobile");
-
-                if (menuDesk) menuDesk.innerHTML = menuHTML;
-                if (menuMob) menuMob.innerHTML = menuHTML;
-            });
-    }
 
     function uploadFotoPerfil(input) {
         if (input.files && input.files[0]) {

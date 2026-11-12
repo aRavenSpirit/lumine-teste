@@ -125,6 +125,9 @@
     </div>
 </div>
 
+<!-- Importação do script global do Header, Sidebar e Perfil -->
+<script src="js/header.js"></script>
+
 <!-- Importação do script de tamanho de fonte -->
 <script src="js/tamanho_fonte.js"></script>
 
@@ -132,7 +135,6 @@
 <script src="js/sidebar_close.js"></script>
 
 <script>
-const api = "../config/home.php";
 let urlDestinoQuiz = "";
 
 // Transforma o array do PHP em um objeto JavaScript utilizável
@@ -155,93 +157,27 @@ if (typeof aplicarTamanhoFonteGlobal === "function") {
 }
 
 window.onload = () => {
-    carregarUsuario();
-    carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais
+    carregarUsuario(); // Função do header.js (carrega foto e dropdown do perfil)
+    carregarSaudacaoHome(); // Carrega o nome na mensagem de boas-vindas da Home
+    carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais com cores personalizadas
 };
 
 // ==========================================================
-// FUNÇÃO PARA CALCULAR O CONTRASTE DA FONTE COM A COR DE FUNDO
+// CARREGA O NOME DO USUÁRIO NA SAUDAÇÃO DA HOME
 // ==========================================================
-function obterCorTextoLegivel(hexColor) {
-    if (!hexColor) return '#ffffff';
-    
-    // Remove o '#' caso exista
-    let color = hexColor.replace('#', '');
-    
-    // Se a cor estiver em formato 3 dígitos (ex: #fff), converte para 6
-    if (color.length === 3) {
-        color = color.split('').map(c => c + c).join('');
-    }
-    
-    if (color.length !== 6) return '#ffffff';
-
-    const r = parseInt(color.substring(0, 2), 16);
-    const g = parseInt(color.substring(2, 4), 16);
-    const b = parseInt(color.substring(4, 6), 16);
-
-    // Calcula a luminância percebida segundo o padrão ITU-R BT.601
-    const luminancia = (r * 299 + g * 587 + b * 114) / 1000;
-
-    // Se a luminância for menor que 128 (fundo escuro), retorna a fonte branca (#ffffff).
-    // Caso contrário, retorna um tom escuro (#333333) para bom contraste em fundos claros.
-    return luminancia < 128 ? '#ffffff' : '#333333';
-}
-
-function carregarUsuario() {
+function carregarSaudacaoHome() {
     fetch(api + "?tipo=usuario")
         .then(r => r.json())
         .then(u => {
             const nomeUsuario = u.nome ? u.nome.toUpperCase() : "ALUNO";
             document.getElementById("bemvindo").innerHTML = `SEJA BEM-VINDO, <span class="nome-destaque">${nomeUsuario}</span>!!`;
-            
-            const linkPerfilHeader = document.querySelector('.item-perfil a');
-            if (linkPerfilHeader && u.foto_perfil) {
-                const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
-                if (iconeRoxo) {
-                    iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
-                } else {
-                    const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                    if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                        imagemHeaderExistente.src = u.foto_perfil;
-                    }
-                }
-            }
-
-            const itemPerfil = document.querySelector('.item-perfil');
-            
-            if (itemPerfil) {
-                const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                if (antigoDropdown) antigoDropdown.remove();
-
-                const fotoHtml = u.foto_perfil 
-                    ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                const dropdown = document.createElement('div');
-                dropdown.className = 'perfil-dropdown';
-                dropdown.innerHTML = `
-                    <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                        <div id="avatarWrapper">
-                            ${fotoHtml}
-                        </div>
-                    </div>
-
-                    <h4 style="text-align: center;">Minha Conta</h4>
-                    <hr>
-                    <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                    <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                    <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                    <hr>
-                    <a href="../config/logout.php" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                    </a>
-                `;
-                
-                itemPerfil.appendChild(dropdown);
-            }
         });
 }
 
+// ==========================================================
+// SOBRESCREVE carregarMenuSidebar PARA APLICAR AS CORES DO BANCO NOS CARDS DA HOME
+// (Usa obterCorTextoLegivel diretamente do header.js)
+// ==========================================================
 function carregarMenuSidebar() {
     fetch(api + "?tipo=materias")
         .then(r => r.json())
@@ -267,14 +203,14 @@ function carregarMenuSidebar() {
                         </div>
                     </div>`;
             });
-            document.getElementById("menuMaterias").innerHTML = menuHTML;
-            document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-            document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+            if (document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
+            if (document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+            if (document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
         });
 }
 
 function carregarConteudos(idMateria, nomeMateria) {
-    fecharMenuMobile();
+    if (typeof fecharMenuMobile === "function") fecharMenuMobile();
     
     document.querySelector(".subtitle").innerText = `CONTEÚDOS DE: ${nomeMateria.toUpperCase()}`;
     const container = document.getElementById("cardsConteudos");
