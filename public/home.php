@@ -160,7 +160,133 @@ window.onload = () => {
     carregarUsuario(); // Função do header.js (carrega foto e dropdown do perfil)
     carregarSaudacaoHome(); // Carrega o nome na mensagem de boas-vindas da Home
     carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais com cores personalizadas
+    inicializarPerfilMobile(); // Ativa o clique na foto de perfil no modo mobile
+    inicializarLogoMobile(); // Ativa o clique na logo central da Lumine no modo mobile para ir para a Home
 };
+
+// ==========================================================
+// SISTEMA DE LOGO MOBILE (REDIRECIONA PARA HOME AO CLICAR NO ÍCONE DA LUMINE)
+// ==========================================================
+function inicializarLogoMobile() {
+    const mobileLogoContainer = document.querySelector('.mobile-logo-central');
+    if (!mobileLogoContainer) return;
+
+    const desktopLogoLink = document.querySelector('.logo-container a');
+    const urlHome = desktopLogoLink ? desktopLogoLink.getAttribute('href') : 'home.php';
+
+    mobileLogoContainer.addEventListener('click', function(e) {
+        const linkInterno = mobileLogoContainer.querySelector('a');
+        if (!linkInterno || !linkInterno.getAttribute('href') || linkInterno.getAttribute('href') === '#') {
+            e.preventDefault();
+            window.location.href = urlHome;
+        }
+    });
+}
+
+// ==========================================================
+// SISTEMA DE PERFIL MOBILE (1º CLIQUE ABRE INFORMAÇÕES, 2º ABRE CONFIGURAÇÕES)
+// ==========================================================
+function inicializarPerfilMobile() {
+    const mobileProfileContainer = document.querySelector('.mobile-profile-right');
+    const desktopItemPerfil = document.querySelector('.item-perfil');
+
+    if (!mobileProfileContainer) return;
+
+    // Clona o dropdown do desktop para dentro do container mobile se ele ainda não estiver lá
+    function sincronizarDropdownMobile() {
+        const desktopDropdown = document.querySelector('.item-perfil .perfil-dropdown');
+        if (!desktopDropdown) return;
+
+        let mobileDropdown = mobileProfileContainer.querySelector('.perfil-dropdown');
+        if (!mobileDropdown) {
+            mobileDropdown = desktopDropdown.cloneNode(true);
+            // Evita IDs duplicados que quebrem seletores do desktop
+            mobileDropdown.querySelectorAll('[id]').forEach(el => {
+                el.setAttribute('data-original-id', el.id);
+                el.removeAttribute('id');
+            });
+
+            // Adiciona botão direto para configurações dentro do card se ainda não existir
+            const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+            const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+            if (!mobileDropdown.querySelector('.btn-config-mobile')) {
+                const btnConfig = document.createElement('a');
+                btnConfig.href = urlConfig;
+                btnConfig.className = 'btn-config-mobile';
+                btnConfig.innerHTML = '<i class="fas fa-cog"></i> Configurações';
+                const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                if (btnLogout) {
+                    mobileDropdown.insertBefore(btnConfig, btnLogout);
+                } else {
+                    mobileDropdown.appendChild(btnConfig);
+                }
+            }
+
+            mobileProfileContainer.appendChild(mobileDropdown);
+        } else {
+            // Mantém os dados dinâmicos (nome, email, foto) sincronizados após carregarUsuario()
+            const tempClone = desktopDropdown.cloneNode(true);
+            tempClone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            const btnConfigExistente = mobileDropdown.querySelector('.btn-config-mobile');
+            mobileDropdown.innerHTML = tempClone.innerHTML;
+            if (btnConfigExistente) {
+                const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                if (btnLogout) {
+                    mobileDropdown.insertBefore(btnConfigExistente, btnLogout);
+                } else {
+                    mobileDropdown.appendChild(btnConfigExistente);
+                }
+            }
+        }
+    }
+
+    // Observa mudanças no dropdown do desktop (quando carregarUsuario() preencher os dados via fetch)
+    if (desktopItemPerfil) {
+        const observerPerfil = new MutationObserver(() => {
+            sincronizarDropdownMobile();
+        });
+        observerPerfil.observe(desktopItemPerfil, { childList: true, subtree: true, attributes: true });
+    }
+
+    // Executa sincronização inicial com pequenos atrasos para garantir carregamento da API
+    sincronizarDropdownMobile();
+    setTimeout(sincronizarDropdownMobile, 500);
+    setTimeout(sincronizarDropdownMobile, 1500);
+
+    // Controla o clique no ícone de perfil mobile
+    mobileProfileContainer.addEventListener('click', function(e) {
+        const clicouDentroDoDropdown = e.target.closest('.perfil-dropdown');
+
+        // Se clicou em algum link ou botão dentro do dropdown aberto (ex: Sair, Configurações ou trocar avatar), deixa funcionar normalmente
+        if (clicouDentroDoDropdown) {
+            return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        sincronizarDropdownMobile();
+
+        const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+        const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+        // Se o dropdown já está aberto e o usuário clicou novamente na foto de perfil -> abre configurações
+        if (mobileProfileContainer.classList.contains('active')) {
+            window.location.href = urlConfig;
+        } else {
+            // 1º clique: abre o card com as informações do perfil
+            mobileProfileContainer.classList.add('active');
+        }
+    });
+
+    // Fecha o dropdown mobile ao tocar fora dele
+    document.addEventListener('click', function(e) {
+        if (!mobileProfileContainer.contains(e.target)) {
+            mobileProfileContainer.classList.remove('active');
+        }
+    });
+}
 
 // ==========================================================
 // CARREGA O NOME DO USUÁRIO NA SAUDAÇÃO DA HOME

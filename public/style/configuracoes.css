@@ -593,7 +593,7 @@ input[type="password"]::-ms-clear {
 
 /* Etiqueta que mostra o nome da matéria abaixo do bloco de cor no modo letra */
 .materia-selecionada-badge {
-    display: none; /* Oculto por padrão no modo normal */
+    display: none;
     width: 100%;
     margin-top: 10px;
     padding: 7px 12px;
@@ -1053,7 +1053,7 @@ body.fonte-nivel-3 .materia-pill:not(.modo-compacto-ativo) span {
 }
 
 /* =========================================
-   DROPDOWN DO PERFIL
+   DROPDOWN DO PERFIL (DESKTOP E MOBILE)
    ========================================= */
 .perfil-dropdown .avatar-upload-container {
     position: relative;
@@ -1076,6 +1076,11 @@ body.fonte-nivel-3 .materia-pill:not(.modo-compacto-ativo) span {
     border-radius: 50% !important;
     object-fit: cover !important;
     border: 3px solid #ff3333 !important;
+}
+
+.mobile-profile-right .perfil-dropdown a,
+.item-perfil .perfil-dropdown a {
+    white-space: normal !important;
 }
 
 /* =========================================

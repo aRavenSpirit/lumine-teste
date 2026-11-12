@@ -55,116 +55,202 @@
         </div>
     </div>
 
+    <!-- Modal de Seleção de Escolaridade (Estética idêntica ao Login/Cadastro) -->
+    <div id="modal-escolaridade" class="modal-overlay">
+        <div class="modal-box">
+            <div class="area-icone-modal">
+                <img src="./img/LUMINE.png" alt="Logo" class="icone-site-modal">
+            </div>
+
+            <h2 class="titulo-modal">Quase lá!</h2>
+            <p class="subtitulo-modal">Selecione a sua escolaridade para personalizarmos os seus conteúdos:</p>
+            
+            <div class="select-wrapper">
+                <select id="select-escolaridade">
+                    <option value="">A carregar opções...</option>
+                </select>
+            </div>
+
+            <div id="msg-modal"></div>
+
+            <div class="area-botao-modal">
+                <button onclick="salvarEscolaridade()" class="botao-cadastrar">Continuar</button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/tamanho_fonte.js"></script>
     <script src="js/validar-senha.js"></script>
 
     <script>
+        inicializarValidacaoSenha();
 
-    inicializarValidacaoSenha();
+        const campos = document.querySelectorAll('input');
+        campos.forEach(campo => {
+            campo.addEventListener('input', () => {
+                const msg = document.getElementById("mensagem");
+                msg.className = ""; 
+                setTimeout(() => {
+                    if(!msg.classList.contains('caixa-erro') && !msg.classList.contains('caixa-sucesso')) {
+                        msg.innerHTML = "";
+                    }
+                }, 400);
+            });
+        });
 
-    const campos = document.querySelectorAll('input');
-    campos.forEach(campo => {
-        campo.addEventListener('input', () => {
-            const msg = document.getElementById("mensagem");
-            msg.className = ""; 
+        // Limpa a mensagem de erro do modal ao selecionar uma opção
+        document.getElementById("select-escolaridade").addEventListener('change', () => {
+            const msgModal = document.getElementById("msg-modal");
+            msgModal.className = "";
             setTimeout(() => {
-                if(!msg.classList.contains('caixa-erro')) {
-                    msg.innerHTML = "";
+                if(!msgModal.classList.contains('caixa-erro-modal')) {
+                    msgModal.innerText = "";
                 }
             }, 400);
         });
-    });
 
-    function exibirErro(texto) {
-        const msg = document.getElementById("mensagem");
-        msg.innerHTML = texto;
-        msg.className = "caixa-erro";
-    }
-
-    function cadastrar(){
-        let nome = document.getElementById("nome").value.trim();
-        let email = document.getElementById("email").value.trim();
-        let senha = document.getElementById("senha").value;
-        let confirmar = document.getElementById("confirmar").value;
-
-        if(!nome || !email || !senha || !confirmar){
-            exibirErro("Preencha todos os campos!");
-            return;
+        function exibirErro(texto) {
+            const msg = document.getElementById("mensagem");
+            msg.innerHTML = texto;
+            msg.className = "caixa-erro";
         }
 
-        const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!regexEmail.test(email)) {
-            exibirErro("Por favor, insira um e-mail válido (ex: usuario@email.com)");
-            return;
+        function exibirSucesso(texto) {
+            const msg = document.getElementById("mensagem");
+            msg.innerHTML = texto;
+            msg.className = "caixa-sucesso";
         }
 
-        if (!senhaValida) {
-            exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
-            return;
+        function exibirErroModal(texto) {
+            const msg = document.getElementById("msg-modal");
+            msg.innerText = texto;
+            msg.className = texto ? "caixa-erro-modal" : "";
         }
 
-        if(senha !== confirmar){
-            exibirErro("As senhas não coincidem!");
-            return;
+        function mostrarModalEscolaridade() {
+            const modal = document.getElementById("modal-escolaridade");
+            modal.classList.add("ativo");
+            exibirErroModal("");
+            
+            fetch("../config/api.php?tipo=escolaridade")
+                .then(r => r.json())
+                .then(dados => {
+                    let select = document.getElementById("select-escolaridade");
+                    select.innerHTML = '<option value="">Selecione a sua escolaridade</option>';
+                    dados.forEach(e => {
+                        select.innerHTML += `<option value="${e.id_escolaridade}">${e.nome_escolaridade}</option>`;
+                    });
+                })
+                .catch(err => {
+                    exibirErroModal("Erro ao carregar escolaridades.");
+                });
         }
 
-        fetch("../config/cadastrar.php",{
-            method:"POST",
-            headers:{"Content-Type":"application/json"},
-            body:JSON.stringify({
-                nome: nome,
-                email: email,
-                senha: senha
+        function salvarEscolaridade() {
+            const esc = document.getElementById("select-escolaridade").value;
+            if(!esc) {
+                exibirErroModal("Por favor, escolha uma opção!");
+                return;
+            }
+            
+            fetch("../config/salvar_escolaridade.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ escolaridade_id: esc })
             })
-        })
-        .then(r=>r.json())
-        .then(d=>{
-            if(d.erro){
-                exibirErro(d.erro);
-                document.getElementById("senha").value = "";
-                document.getElementById("confirmar").value = "";
-                senhaInput.dispatchEvent(new Event('input'));
+            .then(r => r.json())
+            .then(d => {
+                if(d.status) {
+                    window.location = "home.php";
+                } else {
+                    exibirErroModal(d.erro || "Erro ao salvar.");
+                }
+            })
+            .catch(() => {
+                exibirErroModal("Erro ao conectar com o servidor.");
+            });
+        }
+
+        function cadastrar(){
+            let nome = document.getElementById("nome").value.trim();
+            let email = document.getElementById("email").value.trim();
+            let senha = document.getElementById("senha").value;
+            let confirmar = document.getElementById("confirmar").value;
+
+            if(!nome || !email || !senha || !confirmar){
+                exibirErro("Preencha todos os campos!");
                 return;
             }
 
-            const msg = document.getElementById("mensagem");
-            msg.innerHTML = "Conta criada com sucesso!";
-            msg.className = "caixa-erro"; 
-            msg.style.color = "green";
-            msg.style.borderColor = "green";
-            
-            setTimeout(() => {
-                window.location="login.html";
-            }, 2000);
-        })
-        .catch(err => {
-            exibirErro("Este e-mail já está cadastrado.");
-        });
-    }
+            const regexEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!regexEmail.test(email)) {
+                exibirErro("Por favor, insira um e-mail válido (ex: usuario@email.com)");
+                return;
+            }
 
-    function toggleSenha() {
-        const input = document.getElementById("senha");
-        const icone = document.querySelector(".olho-senha");
-        if (input.type === "password") {
-            input.type = "text";
-            icone.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-            input.type = "password";
-            icone.classList.replace("fa-eye-slash", "fa-eye");
-        }
-    }
+            if (!senhaValida) {
+                exibirErro("A sua senha não cumpre todos os requisitos de segurança exigidos.");
+                return;
+            }
 
-    function toggleConfirmarSenha() {
-        const input = document.getElementById("confirmar");
-        const icone = document.querySelector(".olho-senha-confirmar");
-        if (input.type === "password") {
-            input.type = "text";
-            icone.classList.replace("fa-eye", "fa-eye-slash");
-        } else {
-            input.type = "password";
-            icone.classList.replace("fa-eye-slash", "fa-eye");
+            if(senha !== confirmar){
+                exibirErro("As senhas não coincidem!");
+                return;
+            }
+
+            fetch("../config/cadastrar.php",{
+                method:"POST",
+                headers:{"Content-Type":"application/json"},
+                body:JSON.stringify({
+                    nome: nome,
+                    email: email,
+                    senha: senha
+                })
+            })
+            .then(r=>r.json())
+            .then(d=>{
+                if(d.erro){
+                    exibirErro(d.erro);
+                    document.getElementById("senha").value = "";
+                    document.getElementById("confirmar").value = "";
+                    senhaInput.dispatchEvent(new Event('input'));
+                    return;
+                }
+
+                exibirSucesso("Conta criada com sucesso!");
+                
+                setTimeout(() => {
+                    mostrarModalEscolaridade();
+                }, 1000);
+            })
+            .catch(err => {
+                exibirErro("Este e-mail já está cadastrado.");
+            });
         }
-    }
-</script>
+
+        function toggleSenha() {
+            const input = document.getElementById("senha");
+            const icone = document.querySelector(".olho-senha");
+            if (input.type === "password") {
+                input.type = "text";
+                icone.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icone.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+
+        function toggleConfirmarSenha() {
+            const input = document.getElementById("confirmar");
+            const icone = document.querySelector(".olho-senha-confirmar");
+            if (input.type === "password") {
+                input.type = "text";
+                icone.classList.replace("fa-eye", "fa-eye-slash");
+            } else {
+                input.type = "password";
+                icone.classList.replace("fa-eye-slash", "fa-eye");
+            }
+        }
+    </script>
 </body>
 </html>

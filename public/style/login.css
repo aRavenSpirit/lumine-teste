@@ -87,6 +87,7 @@ input[type="password"] {
     box-shadow: 0px 6px 0px #1595c4;
     font-size: 1.2rem;
     font-weight: 600;
+    font-family: inherit;
     outline: none;
     transition: 0.2s;
 }
@@ -138,7 +139,8 @@ input:focus {
 }
 
 /* --- MENSAGENS E ALERTAS (COM EFEITO DE RECOLHER) --- */
-#mensagem {
+#mensagem,
+#msg-modal {
     text-align: center;
     display: flex;
     justify-content: center;
@@ -155,8 +157,9 @@ input:focus {
 }
 
 /* Quando houver erro: expande e mostra */
-.caixa-erro {
-    max-height: 100px !important; /* Permite a expansão */
+.caixa-erro,
+.caixa-erro-modal {
+    max-height: 100px !important;
     opacity: 1 !important;
     margin: 15px 0 !important;
     
@@ -165,17 +168,17 @@ input:focus {
     padding: 10px 25px;
     color: #ff6b6b;
     font-weight: 800;
-    font-size: 1.2rem;
+    font-size: 1.1rem;
     background-color: #fff;
 }
 
-/* --- BOTÃO ENTRAR --- */
+/* --- BOTÃO ENTRAR E CONTINUAR --- */
 .area-botao {
     margin-top: 10px;
 }
 
 .botao-login {
-    width: 200px;
+    width: 210px;
     background-color: #a3e1ff;
     padding: 15px 0;
     border-radius: 50px;
@@ -183,6 +186,7 @@ input:focus {
     box-shadow: 0px 6px 0px #1595c4;
     font-size: 1.4rem;
     font-weight: 900;
+    font-family: inherit;
     color: #000;
     cursor: pointer;
     transition: 0.2s;
@@ -232,94 +236,167 @@ input:focus {
     text-decoration: underline;
 }
 
-/* --- RESPONSIVIDADE --- */
-@media screen and (max-width: 600px) {
-    .container-login { 
-        padding: 40px 25px; 
-        width: 95%; 
-    }
-    .area-icone { 
-        position: relative; 
-        top: 0; 
-        right: 0; 
-        margin-bottom: 20px; 
-        display: flex; 
-        justify-content: center; 
-    }
-    .titulo-log { 
-        text-align: center; 
-        font-size: 2.2rem; 
-    }
-    .titulo-log::after { 
-        margin: 0 auto; 
-    }
-}
-
 /* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-
 ::-webkit-scrollbar {
     width: 10px; 
 }
 
 ::-webkit-scrollbar-track {
-    /* Deixando transparente o fundo da barra, ela parece estar mais 'dentro' */
     background: transparent; 
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #1595C4, #0cc0df); 
     border-radius: 10px;
-    /* Adiciona uma borda invisível para criar margem entre a barra e a borda do modal */
     border: 3px solid #fff; 
 }
 
-
-/* --- MODAL ESCOLARIDADE APÓS O CADASTRO --- */
-
+/* --- MODAL ESCOLARIDADE APÓS O CADASTRO (IDENTIDADE LUMINE) --- */
 .modal-overlay {
     display: none;
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0, 0, 0, 0.6);
-    backdrop-filter: blur(4px);
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(227, 240, 254, 0.72);
+    backdrop-filter: blur(6px);
     z-index: 9999;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
+
 .modal-overlay.ativo {
     display: flex;
+    animation: fadeInModal 0.25s ease;
 }
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
 .modal-box {
-    background: #ffffff;
-    padding: 25px;
-    border-radius: 12px;
-    max-width: 400px;
-    width: 90%;
-    text-align: center;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    position: relative;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 40px;
+    border: 3px solid #1595c4;
+    padding: 50px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    text-align: left;
 }
-.modal-box h2 {
+
+.area-icone-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.icone-site-modal {
+    width: 80px;
+    height: auto;
+}
+
+.titulo-modal {
+    font-size: 2.5rem;
+    color: #000;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.titulo-modal::after {
+    content: '';
+    display: block;
+    width: 135px;
+    height: 6px;
+    background-color: #a3e1ff;
+    border-radius: 10px;
+    margin-top: -2px;
+}
+
+.subtitulo-modal {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #3b4d58;
+    line-height: 1.45;
+    margin-bottom: 28px;
+}
+
+/* Select estilizado igual aos inputs do Login */
+.select-wrapper {
+    position: relative;
+    width: 100%;
     margin-bottom: 10px;
-    color: #333;
 }
+
+.select-wrapper::after {
+    content: '▼';
+    font-size: 0.95rem;
+    color: #3b4d58;
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
 .modal-box select {
     width: 100%;
-    padding: 10px;
-    margin: 15px 0;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1rem;
-}
-.modal-box button {
-    background-color: #2b78e4;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 6px;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-color: #a3e1ff;
+    padding: 18px 50px 18px 25px;
+    border-radius: 50px;
+    border: 3px solid #3b4d58;
+    box-shadow: 0px 6px 0px #1595c4;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-family: inherit;
+    color: #000;
     cursor: pointer;
-    font-weight: bold;
-    width: 100%;
+    outline: none;
+    transition: 0.2s;
 }
-.modal-box button:hover {
-    background-color: #1a5bb8;
+
+.modal-box select:focus {
+    transform: translateY(2px);
+    box-shadow: 0px 3px 0px #1595c4;
+}
+
+.area-botao-modal {
+    margin-top: 25px;
+}
+
+/* --- RESPONSIVIDADE --- */
+@media screen and (max-width: 600px) {
+    .container-login,
+    .modal-box { 
+        padding: 40px 25px; 
+        width: 95%; 
+    }
+    .area-icone,
+    .area-icone-modal { 
+        position: relative; 
+        top: 0; 
+        right: 0; 
+        margin-bottom: 15px; 
+        display: flex; 
+        justify-content: center; 
+    }
+    .titulo-log,
+    .titulo-modal { 
+        text-align: center; 
+        font-size: 2.2rem; 
+    }
+    .titulo-log::after,
+    .titulo-modal::after { 
+        margin: 4px auto 0; 
+    }
+    .subtitulo-modal {
+        text-align: center;
+    }
 }

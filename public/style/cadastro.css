@@ -43,7 +43,7 @@ body {
     background-color: #ffffff;
     width: 100%;
     max-width: 550px; 
-    border-radius: 40px; /* Igual ao login */
+    border-radius: 40px;
     border: 3px solid #1595c4;
     padding: 50px; 
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
@@ -95,6 +95,7 @@ input, select {
     box-shadow: 0px 6px 0px #1595c4;
     font-size: 1.1rem;
     font-weight: 600;
+    font-family: inherit;
     outline: none;
     transition: 0.2s;
     width: 100%;
@@ -134,7 +135,8 @@ input:focus, select:focus {
 }
 
 /* --- MENSAGENS E ALERTAS (IDENTICO AO LOGIN) --- */
-#mensagem {
+#mensagem,
+#msg-modal {
     text-align: center;
     display: flex;
     justify-content: center;
@@ -146,7 +148,8 @@ input:focus, select:focus {
     transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
 }
 
-.caixa-erro {
+.caixa-erro,
+.caixa-erro-modal {
     max-height: 120px !important;
     opacity: 1 !important;
     margin: 10px 0 !important;
@@ -159,20 +162,33 @@ input:focus, select:focus {
     background-color: #fff;
 }
 
+.caixa-sucesso {
+    max-height: 120px !important;
+    opacity: 1 !important;
+    margin: 10px 0 !important;
+    border: 3px solid #28a745;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #28a745;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: #fff;
+}
+
 /* Container da única linha inteligente */
 .barra-seguranca {
     display: flex;
     gap: 6px;
     width: 100%;
     margin-top: 5px;
-    margin-bottom: 25px; /* Abre espaço para o texto descritivo abaixo da barra */
+    margin-bottom: 25px;
 }
 
 /* Os 4 pedaços da linha */
 .segmento {
     flex: 1;
     height: 6px;
-    background-color: #e2e8f0; /* Começa cinza neutro */
+    background-color: #e2e8f0;
     border-radius: 4px;
     transition: background-color 0.3s ease;
     position: relative;
@@ -181,11 +197,11 @@ input:focus, select:focus {
 /* Modificações dinâmicas feitas pelo JS */
 .segmento.valido { 
     background-color: #2ecc71; 
-}   /* Verde */
+}
 
 .segmento.invalido { 
     background-color: #e74c3c; 
-} /* Vermelho */
+}
 
 /* Rótulo descritivo automático posicionado abaixo da barra de segurança */
 .segmento::after {
@@ -225,7 +241,6 @@ input:focus, select:focus {
     animation: tremerAviso 0.3s ease;
 }
 
-/* Setinha do balão apontando para o input */
 .balao-aviso::after {
     content: "";
     position: absolute;
@@ -239,24 +254,14 @@ input:focus, select:focus {
 }
 
 @keyframes tremerAviso {
-    0% { 
-        transform: translate(1px, 1px); 
-    }
-    20% { 
-        transform: translate(-2px, -1px); 
-    }
-    40% { 
-        transform: translate(-1px, 1px); 
-    }
-    60% { 
-        transform: translate(2px, -1px); 
-    }
-    100% { 
-        transform: translate(0, 0); 
-    }
+    0% { transform: translate(1px, 1px); }
+    20% { transform: translate(-2px, -1px); }
+    40% { transform: translate(-1px, 1px); }
+    60% { transform: translate(2px, -1px); }
+    100% { transform: translate(0, 0); }
 }
 
-/* --- BOTÃO CADASTRAR --- */
+/* --- BOTÃO CADASTRAR E CONTINUAR --- */
 .area-botao {
     margin-top: 20px;
 }
@@ -270,6 +275,7 @@ input:focus, select:focus {
     box-shadow: 0px 6px 0px #1595c4;
     font-size: 1.4rem;
     font-weight: 900;
+    font-family: inherit;
     color: #000;
     cursor: pointer;
     transition: 0.2s;
@@ -299,26 +305,137 @@ input:focus, select:focus {
     text-decoration: underline;
 }
 
+/* --- MODAL ESCOLARIDADE APÓS O CADASTRO (IDENTIDADE LUMINE) --- */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background: rgba(227, 240, 254, 0.72);
+    backdrop-filter: blur(6px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.modal-overlay.ativo {
+    display: flex;
+    animation: fadeInModal 0.25s ease;
+}
+
+@keyframes fadeInModal {
+    from { opacity: 0; transform: scale(0.96); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+.modal-box {
+    position: relative;
+    background-color: #ffffff;
+    width: 100%;
+    max-width: 520px;
+    border-radius: 40px;
+    border: 3px solid #1595c4;
+    padding: 50px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+    text-align: left;
+}
+
+.area-icone-modal {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+}
+
+.icone-site-modal {
+    width: 80px;
+    height: auto;
+}
+
+.titulo-modal {
+    font-size: 2.5rem;
+    color: #000;
+    font-weight: 800;
+    margin-bottom: 18px;
+}
+
+.titulo-modal::after {
+    content: '';
+    display: block;
+    width: 135px;
+    height: 6px;
+    background-color: #a3e1ff;
+    border-radius: 10px;
+    margin-top: -2px;
+}
+
+.subtitulo-modal {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #3b4d58;
+    line-height: 1.45;
+    margin-bottom: 28px;
+}
+
+.select-wrapper {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+.select-wrapper::after {
+    content: '▼';
+    font-size: 0.95rem;
+    color: #3b4d58;
+    position: absolute;
+    right: 25px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+.modal-box select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 50px;
+    color: #000;
+    cursor: pointer;
+}
+
+.area-botao-modal {
+    margin-top: 25px;
+}
+
 /* --- RESPONSIVIDADE --- */
 @media screen and (max-width: 600px) {
-    .container-cadastro { 
+    .container-cadastro,
+    .modal-box { 
         padding: 40px 25px; 
         width: 95%; 
     }
-    .area-icone { 
+    .area-icone,
+    .area-icone-modal { 
         position: relative; 
         top: 0; 
         right: 0; 
-        margin-bottom: 20px; 
+        margin-bottom: 15px; 
         display: flex; 
         justify-content: center; 
     }
-    .titulo-cad { 
+    .titulo-cad,
+    .titulo-modal { 
         text-align: center; 
         font-size: 2.2rem; 
     }
-    .titulo-cad::after { 
-        margin: 0 auto; 
+    .titulo-cad::after,
+    .titulo-modal::after { 
+        margin: 4px auto 0; 
+    }
+    .subtitulo-modal {
+        text-align: center;
     }
 }
 
@@ -328,13 +445,11 @@ input:focus, select:focus {
 }
 
 ::-webkit-scrollbar-track {
-    /* Deixando transparente o fundo da barra, ela parece estar mais 'dentro' */
     background: transparent; 
 }
 
 ::-webkit-scrollbar-thumb {
     background: linear-gradient(to bottom, #1595C4, #0cc0df); 
     border-radius: 10px;
-    /* Adiciona uma borda invisível para criar margem entre a barra e a borda do modal */
     border: 3px solid #fff; 
 }

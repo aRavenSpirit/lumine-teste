@@ -55,16 +55,27 @@
         <p class="texto-cadastro">Ainda não tem cadastro? <a href="cadastro.html">Cadastre-se</a></p>
     </div>
 
-    <!-- Modal de Seleção de Escolaridade -->
+    <!-- Modal de Seleção de Escolaridade (Estética idêntica ao Login) -->
     <div id="modal-escolaridade" class="modal-overlay">
         <div class="modal-box">
-            <h2>Quase lá!</h2>
-            <p>Selecione a sua escolaridade para personalizarmos os seus conteúdos:</p>
-            <select id="select-escolaridade">
-                <option value="">A carregar opções...</option>
-            </select>
-            <div id="msg-modal" style="color: red; margin-bottom: 10px; font-size: 0.9rem;"></div>
-            <button onclick="salvarEscolaridade()">Continuar</button>
+            <div class="area-icone-modal">
+                <img src="img/LUMINE.png" alt="Logo" class="icone-site-modal">
+            </div>
+
+            <h2 class="titulo-modal">Quase lá!</h2>
+            <p class="subtitulo-modal">Selecione a sua escolaridade para personalizarmos os seus conteúdos:</p>
+            
+            <div class="select-wrapper">
+                <select id="select-escolaridade">
+                    <option value="">A carregar opções...</option>
+                </select>
+            </div>
+
+            <div id="msg-modal"></div>
+
+            <div class="area-botao-modal">
+                <button onclick="salvarEscolaridade()" class="botao-login">Continuar</button>
+            </div>
         </div>
     </div>
 
@@ -82,15 +93,33 @@
             });
         });
 
+        // Limpa a mensagem de erro do modal ao selecionar uma opção
+        document.getElementById("select-escolaridade").addEventListener('change', () => {
+            const msgModal = document.getElementById("msg-modal");
+            msgModal.className = "";
+            setTimeout(() => {
+                if(!msgModal.classList.contains('caixa-erro-modal')) {
+                    msgModal.innerText = "";
+                }
+            }, 400);
+        });
+
         function exibirErro(texto) {
             const msg = document.getElementById("mensagem");
             msg.innerHTML = texto;
-            msg.className = "caixa-erro";
+            msg.className = texto ? "caixa-erro" : "";
+        }
+
+        function exibirErroModal(texto) {
+            const msg = document.getElementById("msg-modal");
+            msg.innerText = texto;
+            msg.className = texto ? "caixa-erro-modal" : "";
         }
 
         function mostrarModalEscolaridade() {
             const modal = document.getElementById("modal-escolaridade");
             modal.classList.add("ativo");
+            exibirErroModal("");
             
             fetch("../config/api.php?tipo=escolaridade")
                 .then(r => r.json())
@@ -102,14 +131,14 @@
                     });
                 })
                 .catch(err => {
-                    document.getElementById("msg-modal").innerText = "Erro ao carregar escolaridades.";
+                    exibirErroModal("Erro ao carregar escolaridades.");
                 });
         }
 
         function salvarEscolaridade() {
             const esc = document.getElementById("select-escolaridade").value;
             if(!esc) {
-                document.getElementById("msg-modal").innerText = "Por favor, escolha uma opção!";
+                exibirErroModal("Por favor, escolha uma opção!");
                 return;
             }
             
@@ -123,11 +152,11 @@
                 if(d.status) {
                     window.location = "home.php";
                 } else {
-                    document.getElementById("msg-modal").innerText = d.erro || "Erro ao salvar.";
+                    exibirErroModal(d.erro || "Erro ao salvar.");
                 }
             })
             .catch(() => {
-                document.getElementById("msg-modal").innerText = "Erro ao conectar com o servidor.";
+                exibirErroModal("Erro ao conectar com o servidor.");
             });
         }
 

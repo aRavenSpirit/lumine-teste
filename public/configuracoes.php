@@ -105,6 +105,119 @@
     let arquivoSelecionado = null;
     let senhaValidaConfig = true;
 
+    // ==========================================================
+    // ATUALIZAÇÃO ICO-HOME (REDIRECIONA PARA HOME.PHP AO CLICAR NO ÍCONE CENTRAL MOBILE)
+    // ==========================================================
+    function inicializarLogoMobile() {
+        const mobileLogoContainer = document.querySelector('.mobile-logo-central');
+        if (!mobileLogoContainer) return;
+
+        const desktopLogoLink = document.querySelector('.logo-container a');
+        const urlHome = desktopLogoLink ? desktopLogoLink.getAttribute('href') : 'home.php';
+
+        mobileLogoContainer.addEventListener('click', function(e) {
+            const linkInterno = mobileLogoContainer.querySelector('a');
+            if (!linkInterno || !linkInterno.getAttribute('href') || linkInterno.getAttribute('href') === '#') {
+                e.preventDefault();
+                window.location.href = urlHome;
+            }
+        });
+    }
+
+    // ==========================================================
+    // ATUALIZAÇÃO CONFIG-MOBILE (1º CLIQUE ABRE INFORMAÇÕES, 2º ABRE CONFIGURAÇÕES)
+    // ==========================================================
+    function inicializarPerfilMobile() {
+        const mobileProfileContainer = document.querySelector('.mobile-profile-right');
+        const desktopItemPerfil = document.querySelector('.item-perfil');
+
+        if (!mobileProfileContainer) return;
+
+        function sincronizarDropdownMobile() {
+            const desktopDropdown = document.querySelector('.item-perfil .perfil-dropdown');
+            if (!desktopDropdown) return;
+
+            let mobileDropdown = mobileProfileContainer.querySelector('.perfil-dropdown');
+            if (!mobileDropdown) {
+                mobileDropdown = desktopDropdown.cloneNode(true);
+                mobileDropdown.querySelectorAll('[id]').forEach(el => {
+                    el.setAttribute('data-original-id', el.id);
+                    el.removeAttribute('id');
+                });
+
+                const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+                const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+                if (!mobileDropdown.querySelector('.btn-config-mobile')) {
+                    const btnConfig = document.createElement('a');
+                    btnConfig.href = urlConfig;
+                    btnConfig.className = 'btn-config-mobile';
+                    btnConfig.innerHTML = '<i class="fas fa-cog"></i> Configurações';
+                    const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                    if (btnLogout) {
+                        mobileDropdown.insertBefore(btnConfig, btnLogout);
+                    } else {
+                        mobileDropdown.appendChild(btnConfig);
+                    }
+                }
+
+                mobileProfileContainer.appendChild(mobileDropdown);
+            } else {
+                const tempClone = desktopDropdown.cloneNode(true);
+                tempClone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+                const btnConfigExistente = mobileDropdown.querySelector('.btn-config-mobile');
+                mobileDropdown.innerHTML = tempClone.innerHTML;
+                if (btnConfigExistente) {
+                    const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                    if (btnLogout) {
+                        mobileDropdown.insertBefore(btnConfigExistente, btnLogout);
+                    } else {
+                        mobileDropdown.appendChild(btnConfigExistente);
+                    }
+                }
+            }
+        }
+
+        if (desktopItemPerfil) {
+            const observerPerfil = new MutationObserver(() => {
+                sincronizarDropdownMobile();
+            });
+            observerPerfil.observe(desktopItemPerfil, { childList: true, subtree: true, attributes: true });
+        }
+
+        sincronizarDropdownMobile();
+        setTimeout(sincronizarDropdownMobile, 500);
+        setTimeout(sincronizarDropdownMobile, 1500);
+
+        mobileProfileContainer.addEventListener('click', function(e) {
+            const clicouDentroDoDropdown = e.target.closest('.perfil-dropdown');
+
+            if (clicouDentroDoDropdown) {
+                return;
+            }
+
+            e.preventDefault();
+            e.stopPropagation();
+
+            sincronizarDropdownMobile();
+
+            const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+            const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+            if (mobileProfileContainer.classList.contains('active')) {
+                window.location.href = urlConfig;
+            } else {
+                mobileProfileContainer.classList.add('active');
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!mobileProfileContainer.contains(e.target)) {
+                mobileProfileContainer.classList.remove('active');
+            }
+        });
+    }
+
     async function carregarPerfil(tipo, event = null) {
         const cardOpcoes = document.getElementById('card-opcoes');
         const id_usuario = <?php echo $_SESSION['usuario_id'] ?? 0; ?>;
@@ -398,8 +511,6 @@
         const larguraJanela = window.innerWidth;
         const larguraCardOpcoes = document.getElementById('card-opcoes')?.offsetWidth || larguraJanela;
         
-        // Ativa o modo compacto (P/M/G e quadradinhos com 1ª letra) quando:
-        // NÃO está no modo mobile (> 900px) E a largura da janela ou do painel interno está apertada
         const isMobile = larguraJanela <= 900;
         const ativarModoCompacto = !isMobile && (larguraJanela <= 1140 || larguraCardOpcoes <= 560);
 
@@ -410,14 +521,12 @@
         if (ativarModoCompacto) {
             containerPref.classList.add('modo-compacto-preferencias');
 
-            // Transforma Pequeno, Médio, Grande em P, M, G
             if (selectFonte) {
                 Array.from(selectFonte.options).forEach(opt => {
                     if (opt.dataset.curto) opt.textContent = opt.dataset.curto;
                 });
             }
 
-            // Transforma matérias em quadradinhos com apenas a primeira letra
             pillsMaterias.forEach(pill => {
                 pill.classList.add('modo-compacto-ativo');
                 const span = pill.querySelector('span');
@@ -427,13 +536,11 @@
                 }
             });
 
-            // Atualiza o texto abaixo do bloco de cor com a matéria atualmente selecionada
             const pillAtiva = document.getElementById(`pill-${materiaSelecionadaAtual}`);
             if (badgeMateria && pillAtiva) {
                 badgeMateria.textContent = pillAtiva.dataset.nomeCompleto || '';
             }
         } else {
-            // Volta tudo ao modo normal (tanto no mobile <= 900px quanto em telas grandes)
             containerPref.classList.remove('modo-compacto-preferencias');
 
             if (selectFonte) {
@@ -453,7 +560,6 @@
         }
     }
 
-    // Monitora redimensionamento, zoom e alterações de proporção da página
     function iniciarMonitorProporcaoConfiguracoes() {
         window.addEventListener('resize', atualizarLayoutPreferenciasResponsivo);
 
@@ -615,7 +721,6 @@
     function selecionarMateriaCor(materia) {
         materiaSelecionadaAtual = materia;
 
-        // Destaca visualmente a matéria clicada e atualiza o nome embaixo do bloco de cor
         document.querySelectorAll('.materia-pill').forEach(p => p.classList.remove('selecionada-compacto'));
         const pillSelecionada = document.getElementById(`pill-${materia}`);
         const badgeMateria = document.getElementById('materia-selecionada-badge');
@@ -1060,6 +1165,8 @@
         carregarMenuSidebar();
         carregarPerfil('usuario');
         iniciarMonitorProporcaoConfiguracoes();
+        inicializarPerfilMobile(); // Ativa config-mobile
+        inicializarLogoMobile();   // Ativa ico-home
     };
 </script>
 

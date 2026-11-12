@@ -123,3 +123,19 @@
 .logo-section a:hover .logo-img {
     transform: scale(1.05); /* Efeito suave ao passar o rato */
 }
+
+/* Garante alinhamento perfeito dos itens do menu mobile */
+.mobile-menu div {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+.mobile-menu div a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0;
+}

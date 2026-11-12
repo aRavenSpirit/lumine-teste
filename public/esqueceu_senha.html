@@ -3,87 +3,107 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Recuperar Senha</title>
+    <title>Recuperar Senha - LUMINE</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="./style/esqueceu_senha.css">
+    <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
+    <script src="js/navegacao-teclado.js" defer></script>
     <script src="js/tamanho_fonte.js"></script>
-    <link rel="stylesheet" href="../public/style/esqueceu_senha.css">
 </head>
 <body>
-    <main>
-        <section class="secao2" style="width: 100%; height: 100vh; display: flex; justify-content: center; align-items: center;">
-            <div class="container-secao2">
-                <h1 class="titulo">Recuperar Senha</h1>
-                <p class="instrucao">
-                    Insira seu e-mail cadastrado para receber as instruções de recuperação.
-                </p>
-                
-                <form id="formRecuperar" onsubmit="enviarSolicitacao(event)">
-                    <label for="email">Email:</label>
-                    <div class="input-box">
-                        <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" placeholder="Insira seu email" required>
-                    </div>
-            
-                    <p id="mensagem"></p>
-            
-                    <button class="enviar" type="submit">Enviar Link</button>
-                    
-                    <div style="text-align: center; margin-top: 20px;">
-                        <a href="login.html" style="text-decoration: none; color: #333;">Voltar para o Login</a>
-                    </div>
-                </form>
+    <div class="container-login">
+        <div class="area-icone">
+            <a href="index.php"><img src="img/LUMINE.png" alt="Logo" class="icone-site"></a>
+        </div>
+
+        <h1 class="titulo-log">Recuperar<br>Senha</h1>
+
+        <p class="instrucao">
+            Insira seu e-mail cadastrado para receber as instruções de recuperação.
+        </p>
+
+        <form id="formRecuperar" class="conteudo-form" onsubmit="enviarSolicitacao(event)">
+            <div class="blocos-log">
+                <div class="input-group">
+                    <input type="email" name="email" placeholder="Email" id="email" required>
+                </div>
+
+                <div id="mensagem"></div>
             </div>
-        </section>
-    </main>
+
+            <div class="area-botao">
+                <button type="submit" class="botao-login">Enviar Link</button>
+            </div>
+        </form>
+
+        <div class="divisor">
+            <span>ou</span>
+        </div>
+
+        <p class="texto-cadastro">Lembrou a senha? <a href="login.html">Voltar para o Login</a></p>
+    </div>
 
     <script>
-    function enviarSolicitacao(event) {
-        if (event) event.preventDefault(); // Evita recarregar a página ao submeter o formulário
+        const emailInputEl = document.getElementById('email');
+        emailInputEl.addEventListener('input', () => {
+            const msg = document.getElementById("mensagem");
+            msg.className = "";
+            setTimeout(() => {
+                if (!msg.classList.contains('caixa-erro') && 
+                    !msg.classList.contains('caixa-sucesso') && 
+                    !msg.classList.contains('caixa-info')) {
+                    msg.innerHTML = "";
+                }
+            }, 400);
+        });
 
-        let msg = document.getElementById('mensagem');
-        let emailInput = document.getElementById('email').value.trim();
-
-        if (!emailInput) {
-            msg.innerHTML = "Por favor, preencha o campo de e-mail.";
-            msg.style.color = "#ff3636";
-            return;
+        function exibirMensagem(texto, tipo) {
+            const msg = document.getElementById("mensagem");
+            msg.innerHTML = texto;
+            msg.className = "caixa-" + tipo; // 'erro', 'sucesso' ou 'info'
         }
 
-        msg.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
-        msg.style.color = "#1595c4";
+        function enviarSolicitacao(event) {
+            if (event) event.preventDefault();
 
-        fetch("/lumine-teste/config/solicitar_reset.php", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: "email=" + encodeURIComponent(emailInput)
-        })
-        .then(async r => {
-            const text = await r.text();
-            console.log("Resposta bruta do servidor:", text);
-            
-            try {
-                return JSON.parse(text);
-            } catch (jsonError) {
-                throw new Error("Erro de resposta do servidor (não é um JSON válido). Verifique o console.");
+            const emailInput = document.getElementById('email').value.trim();
+
+            if (!emailInput) {
+                exibirMensagem("Por favor, preencha o campo de e-mail.", "erro");
+                return;
             }
-        })
-        .then(d => {
-            if (d.status) {
-                msg.innerHTML = '<i class="fas fa-check-circle"></i> ' + d.msg;
-                msg.style.color = "#28a745";
-            } else {
-                msg.innerHTML = '<i class="fas fa-times-circle"></i> ' + d.msg;
-                msg.style.color = "#ff3636";
-            }
-        })
-        .catch(err => {
-            console.error(err);
-            msg.innerHTML = "Erro ao conectar com o servidor: " + err.message;
-            msg.style.color = "#ff3636";
-        });
-    }
+
+            exibirMensagem('<i class="fas fa-spinner fa-spin"></i> Verificando...', "info");
+
+            fetch("/lumine-teste/config/solicitar_reset.php", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: "email=" + encodeURIComponent(emailInput)
+            })
+            .then(async r => {
+                const text = await r.text();
+                console.log("Resposta bruta do servidor:", text);
+                
+                try {
+                    return JSON.parse(text);
+                } catch (jsonError) {
+                    throw new Error("Erro de resposta do servidor (não é um JSON válido).");
+                }
+            })
+            .then(d => {
+                if (d.status) {
+                    exibirMensagem('<i class="fas fa-check-circle"></i> ' + d.msg, "sucesso");
+                } else {
+                    exibirMensagem('<i class="fas fa-times-circle"></i> ' + d.msg, "erro");
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                exibirMensagem("Erro ao conectar com o servidor: " + err.message, "erro");
+            });
+        }
     </script>
 </body>
 </html>

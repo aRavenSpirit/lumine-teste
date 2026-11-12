@@ -352,7 +352,8 @@ body {
 }
 
 /* --- DROPDOWN DE PERFIL --- */
-.item-perfil {
+.item-perfil,
+.mobile-profile-right {
     position: relative;
 }
 
@@ -383,8 +384,11 @@ body {
     border-color: transparent transparent #ff5757 transparent;
 }
 
-.item-perfil:hover .perfil-dropdown {
-    display: block;
+.item-perfil:hover .perfil-dropdown,
+.item-perfil.active .perfil-dropdown,
+.mobile-profile-right.active .perfil-dropdown,
+.perfil-dropdown.show {
+    display: block !important;
 }
 
 .perfil-dropdown h4 {
@@ -434,6 +438,28 @@ body {
     background-color: #d94545;
 }
 
+.btn-config-mobile {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #1595C4;
+    color: white !important;
+    text-align: center;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 0.875rem;
+    transition: background 0.2s;
+}
+
+.btn-config-mobile:hover {
+    background-color: #0e769c;
+}
+
 .avatar-upload-container {
     position: relative;
     width: 80px;
@@ -460,7 +486,8 @@ body {
     box-sizing: border-box;
 }
 
-#avatarImg {
+#avatarImg,
+.perfil-dropdown img {
     width: 80px;
     height: 80px;
     border-radius: 50%;
@@ -675,7 +702,7 @@ main {
 .quizzes-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    align-items: stretch; /* Garante altura igual entre os cards da mesma linha */
+    align-items: stretch;
     gap: 16px;
     width: 100%;
 }
@@ -684,7 +711,7 @@ main {
     text-decoration: none; 
     color: inherit; 
     display: flex;
-    height: 100%; /* Faz o link ocupar 100% da altura da célula da grid */
+    height: 100%;
     width: 100%;
 }
 
@@ -700,8 +727,8 @@ main {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
     position: relative;
     overflow: hidden;
-    width: 100%; /* Ocupa a largura total da coluna */
-    height: 100%; /* Expande o card para igualar ao maior vizinho da linha */
+    width: 100%;
+    height: 100%;
 }
 
 .quiz-card::before {
@@ -723,7 +750,6 @@ main {
     box-shadow: 0 8px 20px rgba(21, 149, 196, 0.16);
 }
 
-/* POSICIONA O BADGE DE QUESTÕES NO CANTO SUPERIOR DIREITO */
 .quiz-card-header {
     display: flex;
     justify-content: flex-end;
@@ -789,7 +815,6 @@ main {
     letter-spacing: 0.5px;
 }
 
-/* --- DESTAQUE VIBRANTE PARA AS DIFICULDADES --- */
 .badge-dificuldade {
     font-size: 0.75rem;
     font-weight: 800;
@@ -844,21 +869,16 @@ main {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;          /* Ocupa a largura total da janela */
-    height: 100vh;         /* Ocupa a altura total da janela */
+    width: 100vw;
+    height: 100vh;
     background: rgba(0, 0, 0, 0.6);
     display: flex;
     justify-content: center;
     align-items: center;
-    
-    /* Garanter que fique acima de absolutamente tudo */
     z-index: 999999 !important; 
-    
-    /* Evita problemas de contexto de empilhamento em navegadores modernos */
     isolation: isolate; 
 }
 
-/* --- ESTILO BASE DO MODAL (MODO CLARO) --- */
 .modal-content-confirm {
     background: #a3e1ff;
     padding: 30px;
@@ -874,7 +894,6 @@ main {
     transition: background 0.3s ease, border-color 0.3s ease;
 }
 
-/* Título superior sem quebrar linha */
 .modal-content-confirm .modal-titulo {
     background: #e3f0fe;
     font-size: 1.2rem;
@@ -889,73 +908,17 @@ main {
     transition: background 0.3s ease, color 0.3s ease;
 }
 
-/* Imagem centralizada */
 .modal-imagem-centro {
     width: 225px;
     height: auto;
     object-fit: contain;
 }
 
-/* --- BOTÕES E ANIMAÇÕES --- */
-.modal-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    width: 100%;
-}
-
-.btn-voltar, 
-.btn-entrar {
-    padding: 12px 36px;
-    font-size: 1.1rem;
-    font-weight: 800;
-    text-transform: uppercase;
-    border-radius: 12px;
-    border: 2px solid #000;
-    cursor: pointer;
-    outline: none;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.2s ease;
-    box-shadow: 0 4px 0 #000;
-}
-
-/* Botão Não */
-.btn-voltar {
-    background-color: #ff6b6b;
-    color: #fff;
-}
-
-/* Botão Sim */
-.btn-entrar {
-    background-color: #2ecc71;
-    color: #fff;
-}
-
-/* Efeitos de Hover (Passar o Mouse) */
-.btn-voltar:hover, 
-.btn-entrar:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 7px 0 #000;
-}
-
-.btn-voltar:hover {
-    background-color: #ff4242;
-}
-
-.btn-entrar:hover {
-    background-color: #27ae60;
-}
-
-/* Efeitos de Click (Pressionar) */
-.btn-voltar:active, 
-.btn-entrar:active {
-    transform: translateY(2px);
-    box-shadow: 0 2px 0 #000;
-}
-
 .modal-buttons {
     display: flex;
     justify-content: center;
     gap: 10px;
+    width: 100%;
 }
 
 .btn-voltar, 
@@ -971,6 +934,7 @@ main {
     cursor: pointer;
     transition: all 0.3s ease;
     text-transform: uppercase;
+    box-shadow: 0 4px 0 #000;
 }
 
 .btn-voltar {
@@ -980,6 +944,8 @@ main {
 .btn-voltar:hover { 
     background-color: #ff5757; 
     border-color: #ff5757;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 #000;
 }
 
 .btn-entrar {
@@ -989,6 +955,14 @@ main {
 .btn-entrar:hover { 
     background-color: #00a14b; 
     border-color: #00a14b;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 0 #000;
+}
+
+.btn-voltar:active, 
+.btn-entrar:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 #000;
 }
 
 /* --- FOOTER --- */
@@ -1215,18 +1189,50 @@ body.no-scroll {
     .mobile-logo-central {
         display: flex;
         justify-content: center;
-        flex: 2; 
+        align-items: center;
+        flex: 2;
+        cursor: pointer;
+        position: relative;
+        z-index: 2500;
+    }
+
+    .mobile-logo-central a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
     }
 
     .mobile-logo-central img {
         height: 70px;
         width: auto;
+        cursor: pointer;
+        transition: transform 0.2s ease;
+    }
+
+    .mobile-logo-central:active img {
+        transform: scale(0.95);
     }
 
     .mobile-profile-right {
         display: flex;
         justify-content: flex-end;
-        flex: 1; 
+        align-items: center;
+        flex: 1;
+        position: relative;
+        cursor: pointer;
+        z-index: 2500;
+    }
+
+    .mobile-profile-right .perfil-dropdown {
+        right: 0;
+        top: calc(100% + 12px);
+        min-width: 260px;
+        max-width: 88vw;
+    }
+
+    .mobile-profile-right .perfil-dropdown::before {
+        right: 12px;
     }
 
     #bemvindo { 
@@ -1296,7 +1302,7 @@ body.no-scroll {
 
 /* --- SCROLLBAR --- */
 ::-webkit-scrollbar {
-    width: 10px; /* Corrigido de volta para 10px */
+    width: 10px;
 }
 
 ::-webkit-scrollbar-track {
@@ -1438,5 +1444,18 @@ body.dark-mode .modal-card-global {
 
 body.dark-mode .modal-titulo-global,
 body.dark-mode .modal-mensagem-global {
+    color: #ffffff;
+}
+
+body.dark-mode .perfil-dropdown {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+body.dark-mode .perfil-dropdown p {
+    color: #e2e8f0;
+}
+
+body.dark-mode .perfil-dropdown p strong {
     color: #ffffff;
 }

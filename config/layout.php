@@ -12,7 +12,7 @@
         </div>
         
         <ul class="nav-links">
-            <li class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></li>
+            <li class="item-sobre"><a href="index.php">Início</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
             <li class="item-acessar">
@@ -28,17 +28,40 @@
     </nav>
 
     <div class="mobile-menu" id="mobileMenu">
-        <div class="item-sobre"><a href="<?php echo $linkInicio; ?>">Início</a></div>
-        <div class="item-novidades"><a href="novidades.php">Novidades</a></div>
-        <div class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></div>
-        <div class="item-acessar">
+        <div class="item-sobre-mob"><a href="index.php">Início</a></div>
+        <div class="item-novidades-mob"><a href="novidades.php">Novidades</a></div>
+        <div class="item-quizzes-mob"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <div class="item-acessar-mob">
             <?php if ($estaLogado): ?>
-                <a href="home.php" class="btn-acessar">Início</a>
+                <a href="home.php">Home</a>
             <?php else: ?>
-                <a href="login.html" class="btn-acessar">Acessar</a>
+                <a href="login.html">Acessar</a>
             <?php endif; ?>
         </div>
     </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.getElementById("mobileMenu");
+            if (menu) {
+                menu.classList.toggle("active");
+            }
+        }
+
+        function verificarTamanhoTelaMenu() {
+            const menu = document.getElementById("mobileMenu");
+            const hamburger = document.querySelector(".hamburger");
+            if (menu && hamburger) {
+                // Fecha o menu se a tela passar de 580px ou se o botão hambúrguer sumir no CSS
+                if (window.innerWidth > 580 || window.getComputedStyle(hamburger).display === "none") {
+                    menu.classList.remove("active");
+                }
+            }
+        }
+
+        window.addEventListener('resize', verificarTamanhoTelaMenu);
+        window.addEventListener('orientationchange', verificarTamanhoTelaMenu);
+    </script>
 <?php
     }
 
@@ -125,6 +148,7 @@
                     <?php endif; ?>
                     <li><a href="sobre.php">Sobre nós</a></li>
                     <li><a href="novidades.php">Novidades</a></li>
+                    <li><a href="recomendados.php">Recomendados</a></li>
                     <li><a href="home.php">Todos os quizzes</a></li>
                     <li><a href="perfil.html">Perfil</a></li>
                 </nav>

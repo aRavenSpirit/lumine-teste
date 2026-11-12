@@ -82,8 +82,123 @@ let urlDestinoQuiz = "";
 window.onload = () => {
     carregarMenuSidebarFixo();
     carregarQuizzesRecomendados();
-    carregarUsuario(); // Função vinda do header.js
+    carregarUsuario();         // Função vinda do header.js
+    inicializarPerfilMobile(); // Ativa config-mobile
+    inicializarLogoMobile();   // Ativa ico-home
 };
+
+// ==========================================================
+// ATUALIZAÇÃO ICO-HOME (REDIRECIONA PARA HOME.PHP AO CLICAR NO ÍCONE CENTRAL MOBILE)
+// ==========================================================
+function inicializarLogoMobile() {
+    const mobileLogoContainer = document.querySelector('.mobile-logo-central');
+    if (!mobileLogoContainer) return;
+
+    const desktopLogoLink = document.querySelector('.logo-container a');
+    const urlHome = desktopLogoLink ? desktopLogoLink.getAttribute('href') : 'home.php';
+
+    mobileLogoContainer.addEventListener('click', function(e) {
+        const linkInterno = mobileLogoContainer.querySelector('a');
+        if (!linkInterno || !linkInterno.getAttribute('href') || linkInterno.getAttribute('href') === '#') {
+            e.preventDefault();
+            window.location.href = urlHome;
+        }
+    });
+}
+
+// ==========================================================
+// ATUALIZAÇÃO CONFIG-MOBILE (1º CLIQUE ABRE INFORMAÇÕES, 2º ABRE CONFIGURAÇÕES)
+// ==========================================================
+function inicializarPerfilMobile() {
+    const mobileProfileContainer = document.querySelector('.mobile-profile-right');
+    const desktopItemPerfil = document.querySelector('.item-perfil');
+
+    if (!mobileProfileContainer) return;
+
+    function sincronizarDropdownMobile() {
+        const desktopDropdown = document.querySelector('.item-perfil .perfil-dropdown');
+        if (!desktopDropdown) return;
+
+        let mobileDropdown = mobileProfileContainer.querySelector('.perfil-dropdown');
+        if (!mobileDropdown) {
+            mobileDropdown = desktopDropdown.cloneNode(true);
+            mobileDropdown.querySelectorAll('[id]').forEach(el => {
+                el.setAttribute('data-original-id', el.id);
+                el.removeAttribute('id');
+            });
+
+            const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+            const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+            if (!mobileDropdown.querySelector('.btn-config-mobile')) {
+                const btnConfig = document.createElement('a');
+                btnConfig.href = urlConfig;
+                btnConfig.className = 'btn-config-mobile';
+                btnConfig.innerHTML = '<i class="fas fa-cog"></i> Configurações';
+                const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                if (btnLogout) {
+                    mobileDropdown.insertBefore(btnConfig, btnLogout);
+                } else {
+                    mobileDropdown.appendChild(btnConfig);
+                }
+            }
+
+            mobileProfileContainer.appendChild(mobileDropdown);
+        } else {
+            const tempClone = desktopDropdown.cloneNode(true);
+            tempClone.querySelectorAll('[id]').forEach(el => el.removeAttribute('id'));
+            const btnConfigExistente = mobileDropdown.querySelector('.btn-config-mobile');
+            mobileDropdown.innerHTML = tempClone.innerHTML;
+            if (btnConfigExistente) {
+                const btnLogout = mobileDropdown.querySelector('.btn-logout');
+                if (btnLogout) {
+                    mobileDropdown.insertBefore(btnConfigExistente, btnLogout);
+                } else {
+                    mobileDropdown.appendChild(btnConfigExistente);
+                }
+            }
+        }
+    }
+
+    if (desktopItemPerfil) {
+        const observerPerfil = new MutationObserver(() => {
+            sincronizarDropdownMobile();
+        });
+        observerPerfil.observe(desktopItemPerfil, { childList: true, subtree: true, attributes: true });
+    }
+
+    sincronizarDropdownMobile();
+    setTimeout(sincronizarDropdownMobile, 500);
+    setTimeout(sincronizarDropdownMobile, 1500);
+
+    mobileProfileContainer.addEventListener('click', function(e) {
+        const clicouDentroDoDropdown = e.target.closest('.perfil-dropdown');
+
+        if (clicouDentroDoDropdown) {
+            return;
+        }
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        sincronizarDropdownMobile();
+
+        const linkConfigDesktop = desktopItemPerfil ? desktopItemPerfil.querySelector('a.perfil-link, a[href*="config"]') : null;
+        const urlConfig = linkConfigDesktop ? linkConfigDesktop.getAttribute('href') : 'configuracoes.php';
+
+        if (mobileProfileContainer.classList.contains('active')) {
+            window.location.href = urlConfig;
+        } else {
+            mobileProfileContainer.classList.add('active');
+        }
+    });
+
+    document.addEventListener('click', function(e) {
+        if (!mobileProfileContainer.contains(e.target)) {
+            mobileProfileContainer.classList.remove('active');
+        }
+    });
+}
 
 function carregarMenuSidebarFixo() {
     fetch(api + "?tipo=materias")
@@ -148,7 +263,7 @@ function renderizarCards(lista) {
                     <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
                 </div>
                 <div class="card-body">
-                    <p>${q.nome}</p>
+                    <p title="${q.nome}">${q.nome}</p>
                     <span class="card-subtexto">${q.nome_materia} • ${q.conteudo || ''}</span>
                     <span class="tag-dificuldade ${difClasse}">${difTexto}</span>
                 </div>

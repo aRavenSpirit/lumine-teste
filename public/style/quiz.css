@@ -46,6 +46,7 @@ body {
     align-items: center;
     padding: 20px 12px;
     width: 100%;
+    min-width: 0;
 }
 
 /* Botão de Sair Vermelho que expande e revela o texto "Sair" ao passar o mouse */
@@ -101,6 +102,7 @@ body {
 #quiz-header {
     width: 100%;
     max-width: 850px;
+    min-width: 0;
     margin-bottom: 20px;
     display: flex;
     flex-wrap: wrap;
@@ -113,12 +115,17 @@ body {
     border: 3px solid var(--card-border);
     box-shadow: 0 8px 20px rgba(162, 219, 255, 0.15);
     transition: padding 0.3s ease;
+    overflow: hidden;
 }
 
+#quiz-header .quiz-info-left,
 #quiz-header div:first-child {
     display: flex;
     flex-direction: column;
     gap: 6px;
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
 }
 
 #quiz-titulo {
@@ -126,6 +133,12 @@ body {
     font-weight: 800;
     color: var(--color-dark-blue);
     margin: 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
+    word-break: break-word;
+    white-space: normal;
+    line-height: 1.25;
 }
 
 #quiz-header p {
@@ -133,6 +146,7 @@ body {
     font-size: 0.875rem;
     color: #7f8c8d;
     font-weight: 600;
+    overflow-wrap: anywhere;
     word-break: break-word;
 }
 
@@ -146,6 +160,9 @@ body {
     font-weight: 700;
     display: inline-block;
     margin: 2px 0;
+    max-width: 100%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 #quiz-conteudo {
@@ -167,6 +184,7 @@ body {
     gap: 8px;
     box-shadow: 0 4px 0 #fde3cf;
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 #cronometro::before {
@@ -178,6 +196,7 @@ body {
 #quiz-container {
     width: 100%;
     max-width: 850px;
+    min-width: 0;
     perspective: 1000px; /* Profundidade habilitada para as transições em 3D */
 }
 
@@ -188,6 +207,7 @@ body {
     border-radius: 35px;
     width: 100%;
     max-width: 850px;
+    min-width: 0;
     min-height: auto;
     padding: 25px 20px;
     box-shadow: 0 10px 25px rgba(162, 219, 255, 0.25);
@@ -195,6 +215,7 @@ body {
     display: flex;
     flex-direction: column;
     position: relative;
+    overflow: hidden;
     
     /* Quando carrega a tela pela primeira vez, ele cai do topo com efeito elástico */
     animation: dropFromTop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
@@ -215,6 +236,8 @@ body {
     margin-bottom: 25px;
     border: 3px solid #000000;
     box-shadow: 0 6px 0 rgba(0,0,0,0.1);
+    overflow-wrap: anywhere;
+    word-wrap: break-word;
     word-break: break-word;
 }
 
@@ -223,6 +246,7 @@ body {
     font-size: 1rem;
     font-weight: bold;
     color: var(--color-dark-blue);
+    overflow-wrap: anywhere;
     word-break: break-word;
 }
 
@@ -254,6 +278,7 @@ body {
     transition: transform 0.2s, background 0.2s;
     user-select: none;
     box-shadow: 0 4px 0 var(--card-border);
+    overflow-wrap: anywhere;
     word-break: break-word;
 }
 
@@ -490,6 +515,8 @@ body {
     padding: 8px 16px !important;
     box-shadow: 0 4px 0 #071224 !important;
     margin: 0 !important;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 #pergunta-atual div[style*="background: #d6eaf8"] {
@@ -510,6 +537,8 @@ body {
     padding: 10px 18px !important;
     box-shadow: 0 4px 0 var(--card-border) !important;
     transition: all 0.1s;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 #pergunta-atual button[onclick*="selecionarOpcaoOrdem"]:active {
@@ -545,6 +574,8 @@ div[id^="drag_"] {
     font-size: 0.95rem !important;
     box-shadow: 0 4px 0 var(--color-dark-blue) !important;
     touch-action: none;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .box-target {
@@ -558,6 +589,8 @@ div[id^="drag_"] {
     transition: all 0.2s ease;
     min-height: 60px;
     margin-bottom: 10px;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .box-target[style*="background:#d1f2eb"], 
@@ -985,7 +1018,7 @@ div[id^="drag_"] {
     cursor: pointer;
     box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* Sombra leve vermelha */
     transition: all 0.2s ease-in-out;
-    z-index: 10000; /* Garante que ele fique acima de outros elementos do quiz */
+    z-index: 10000; /* Garante que ele fique acima outros elementos do quiz */
 }
 
 /* Efeito de Hover (Passar o mouse) */
