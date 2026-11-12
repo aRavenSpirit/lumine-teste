@@ -342,6 +342,10 @@ function carregarConteudos(idMateria, nomeMateria) {
     const container = document.getElementById("cardsConteudos");
     container.innerHTML = "<p>Carregando conteúdos...</p>";
 
+    let chaveMateria = nomeMateria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+    let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+    let corDoTexto = obterCorTextoLegivel(corDoCard);
+
     fetch(api + "?tipo=conteudos&id_materia=" + idMateria)
         .then(res => res.json())
         .then(dados => {
@@ -364,8 +368,8 @@ function carregarConteudos(idMateria, nomeMateria) {
                             <div class="card-banner">
                                 <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
                             </div>
-                            <div class="card-body">
-                                <p>${c.nome}</p>
+                            <div class="card-body" style="background-color: ${corDoCard} !important;">
+                                <p style="color: ${corDoTexto} !important;">${c.nome}</p>
                             </div>
                         </div>`;
                 });
