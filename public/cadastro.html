@@ -85,6 +85,8 @@
     <script>
         inicializarValidacaoSenha();
 
+        let emailCadastrado = "";
+
         const campos = document.querySelectorAll('input');
         campos.forEach(campo => {
             campo.addEventListener('input', () => {
@@ -132,7 +134,9 @@
             modal.classList.add("ativo");
             exibirErroModal("");
             
-            fetch("../config/api.php?tipo=escolaridade")
+            fetch("../config/api.php?tipo=escolaridade", {
+                credentials: "same-origin"
+            })
                 .then(r => r.json())
                 .then(dados => {
                     let select = document.getElementById("select-escolaridade");
@@ -155,8 +159,12 @@
             
             fetch("../config/salvar_escolaridade.php", {
                 method: "POST",
+                credentials: "same-origin",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ escolaridade_id: esc })
+                body: JSON.stringify({ 
+                    escolaridade_id: esc,
+                    email: emailCadastrado
+                })
             })
             .then(r => r.json())
             .then(d => {
@@ -200,6 +208,7 @@
 
             fetch("../config/cadastrar.php",{
                 method:"POST",
+                credentials: "same-origin",
                 headers:{"Content-Type":"application/json"},
                 body:JSON.stringify({
                     nome: nome,
@@ -217,11 +226,26 @@
                     return;
                 }
 
-                exibirSucesso("Conta criada com sucesso!");
-                
-                setTimeout(() => {
-                    mostrarModalEscolaridade();
-                }, 1000);
+                emailCadastrado = email;
+
+                // Autentica automaticamente para iniciar a $_SESSION no servidor antes de abrir o modal
+                fetch("../config/login.php", {
+                    method: "POST",
+                    credentials: "same-origin",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        email: email,
+                        senha: senha
+                    })
+                })
+                .catch(() => {})
+                .finally(() => {
+                    exibirSucesso("Conta criada com sucesso!");
+                    
+                    setTimeout(() => {
+                        mostrarModalEscolaridade();
+                    }, 1000);
+                });
             })
             .catch(err => {
                 exibirErro("Este e-mail já está cadastrado.");
