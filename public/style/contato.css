@@ -1,15 +1,6 @@
-/* =========================================
-   PÁGINA DE CONTATO - IDENTIDADE LUMINE
-   ========================================= */
-
-/* Espaçamento superior para compensar a navbar fixa */
 body {
     padding-top: 100px;
 }
-
-/* =========================================
-   AJUSTES DA LOGO NA NAVBAR
-   ========================================= */
 
 .logo-section {
     display: flex;
@@ -38,10 +29,6 @@ body {
     transform: scale(1.05);
 }
 
-/* =========================================
-   CONTAINER E CARD PRINCIPAL
-   ========================================= */
-
 .main-container {
     display: flex;
     justify-content: center;
@@ -50,7 +37,6 @@ body {
     min-height: 85vh;
 }
 
-/* Card principal com efeito vidro e borda inferior 3D */
 .contato-card {
     position: relative;
     overflow: hidden;
@@ -67,7 +53,6 @@ body {
     animation: fadeUpContato 0.55s ease-out;
 }
 
-/* Faixa superior com as 4 cores sólidas da Navbar */
 .contato-card::before {
     content: "";
     position: absolute;
@@ -84,10 +69,6 @@ body {
     );
 }
 
-/* =========================================
-   TÍTULO E DESCRIÇÃO
-   ========================================= */
-
 .contato-title {
     font-family: 'gliker', sans-serif;
     color: #f2545b;
@@ -100,7 +81,6 @@ body {
     gap: 14px;
 }
 
-/* Badge circular para o ícone de envelope */
 .contato-title i {
     width: 52px;
     height: 52px;
@@ -129,10 +109,6 @@ body {
     border-bottom: 2px dashed #edf2f7;
 }
 
-/* =========================================
-   MENSAGENS DE ALERTA (RETORNO DO PHP)
-   ========================================= */
-
 .alerta {
     padding: 16px 20px;
     border-radius: 16px;
@@ -146,7 +122,6 @@ body {
     animation: fadeUpContato 0.35s ease-out;
 }
 
-/* Alerta positivo alinhado ao verde da marca */
 .alerta.sucesso {
     background-color: #e8f9f0;
     color: #0b6e3d;
@@ -154,17 +129,12 @@ body {
     border-bottom-color: #00bf63;
 }
 
-/* Alerta de erro alinhado ao coral da marca */
 .alerta.erro {
     background-color: #fdeced;
     color: #9e2228;
     border-color: #f8c6c9;
     border-bottom-color: #f2545b;
 }
-
-/* =========================================
-   FORMULÁRIO E CAMPOS DE ENTRADA
-   ========================================= */
 
 .contato-form {
     display: flex;
@@ -185,7 +155,6 @@ body {
     letter-spacing: 0.3px;
 }
 
-/* Inputs e Textarea com borda suave e fundo limpo */
 .form-group input,
 .form-group textarea {
     width: 100%;
@@ -205,7 +174,6 @@ body {
     color: #94a3b8;
 }
 
-/* Destaque ao clicar/digitar no campo */
 .form-group input:focus,
 .form-group textarea:focus {
     background-color: #ffffff;
@@ -218,10 +186,6 @@ body {
     min-height: 130px;
     line-height: 1.6;
 }
-
-/* =========================================
-   BOTÃO DE ENVIO (ESTILO 3D GAMIFICADO)
-   ========================================= */
 
 .btn-enviar {
     font-family: 'gliker', sans-serif;
@@ -246,14 +210,12 @@ body {
     box-shadow: 0 12px 24px rgba(242, 84, 91, 0.35);
 }
 
-/* Efeito de clique pressionando o botão 3D */
 .btn-enviar:active {
     transform: translateY(3px);
     border-bottom-width: 2px;
     box-shadow: 0 4px 10px rgba(242, 84, 91, 0.25);
 }
 
-/* Animação suave de entrada do card */
 @keyframes fadeUpContato {
     from {
         opacity: 0;
@@ -265,9 +227,7 @@ body {
     }
 }
 
-/* =========================================
-   RESPONSIVIDADE (TABLET E CELULAR)
-   ========================================= */
+/* RESPONSIVIDADE */
 
 @media (max-width: 580px) {
     .main-container {

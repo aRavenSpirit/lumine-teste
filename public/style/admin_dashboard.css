@@ -164,7 +164,7 @@ body {
 }
 
 .btn-lumine-top {
-    background-color: #ffd54f; /* Amarelo chamativo para destacar a marca */
+    background-color: #ffd54f; 
     color: #000000;
 }
 
@@ -251,7 +251,6 @@ header {
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
 }
 
-/* Cores específicas dos cards baseadas na imagem */
 .card-usuarios { background-color: #00c853; }
 .card-quizzes { background-color: #ff5252; }
 .card-avaliacoes { background-color: #40c4ff; }
@@ -296,7 +295,6 @@ header {
     background-color: #ffffff;
 }
 
-/* Container dos Gráficos */
 .charts-container {
     display: grid;
     grid-template-columns: 1.3fr 1fr;
@@ -313,7 +311,7 @@ header {
     flex-direction: column;
     align-items: center;
     box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.1);
-    min-width: 0; /* Impede que o canvas transborde no grid */
+    min-width: 0; 
     width: 100%;
 }
 
@@ -338,9 +336,6 @@ header {
     position: relative;
 }
 
-/* ==========================================================================
-   ESTRUTURA DE DUAS COLUNAS PARA A MODAL DE AVALIAÇÕES
-   ========================================================================== */
 .container-split-modal {
     display: flex;
     gap: 25px;
@@ -417,6 +412,8 @@ header {
     color: #444;
 }
 
+/*  RESPONSIVIDADE */
+
 @media screen and (max-width: 768px) {
     .container-split-modal { 
         flex-direction: column-reverse; 
@@ -426,7 +423,6 @@ header {
     }
 }
 
-/* Responsividade Básica e Avançada */
 @media (max-width: 992px) {
     .charts-container {
         grid-template-columns: 1fr;

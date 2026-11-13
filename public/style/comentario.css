@@ -1,4 +1,3 @@
-/* --- CONTAINER CENTRAL DE COMENTÁRIOS --- */
 .container-comentarios {
     width: 100%;
     max-width: 800px;
@@ -11,16 +10,15 @@
 }
 
 .container-comentarios h2 {
-    color: #1595C4; /* Azul padrão do rodapé do index */
+    color: #1595C4; 
     font-size: clamp(1.5rem, 3vw, 2rem);
     margin-bottom: 25px;
     text-align: center;
     font-weight: 700;
 }
 
-/* --- ÁREA DE EXIBIÇÃO DOS COMENTÁRIOS (CARD-RESPOSTAS) --- */
 .card-respostas {
-    background-color: #f8fbff; /* Fundo suave das seções do index */
+    background-color: #f8fbff; 
     border-radius: 15px;
     padding: 20px;
     max-height: 450px;
@@ -29,14 +27,13 @@
     border: 1px solid #d1def2;
 }
 
-/* Estilização de cada bloco de comentário inserido pelo JS */
 .comentario {
     background: #ffffff;
     padding: 15px 20px;
     border-radius: 12px;
     margin-bottom: 15px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border-left: 5px solid #00bf63; /* Detalhe verde Lumine na esquerda */
+    border-left: 5px solid #00bf63; 
     transition: transform 0.2s ease;
 }
 
@@ -48,7 +45,6 @@
     transform: translateX(5px);
 }
 
-/* --- CABEÇALHO DO COMENTÁRIO (FOTO, NOME E DATA) --- */
 .comentario-header {
     display: flex;
     align-items: center;
@@ -93,38 +89,33 @@
     word-break: break-word;
 }
 
-/* --- FORMULÁRIO DESIGN PÍLULA TRAVADO COM FLEXBOX --- */
 .comentario-form form {
     display: flex;
-    flex-direction: row; /* Mantém textarea e botão lado a lado */
-    align-items: center; /* Centraliza o botão verticalmente */
+    flex-direction: row; 
+    align-items: center; 
     background-color: #f8fbff;
     border: 2px solid #d1def2;
-    border-radius: 50px; /* Sua pílula arredondada original */
+    border-radius: 50px; 
     padding: 4px 6px 4px 25px;
-    
-    /* BLOQUEIO: Impede a pílula de expandir verticalmente */
     min-height: 56px;
     height: 56px; 
-    overflow: hidden; /* Garante que nada quebre o contorno da pílula */
+    overflow: hidden; 
     
     transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .comentario-form form:focus-within {
-    border-color: #0cc0df; /* Azul Lumine ao focar */
+    border-color: #0cc0df; 
     box-shadow: 0 0 0 4px rgba(12, 192, 223, 0.15);
     background-color: #ffffff;
 }
 
 .comentario-form textarea {
-    flex: 1; /* Ocupa todo o espaço até chegar no botão */
-    
+    flex: 1;
     height: 36px; 
     max-height: 36px;
-    overflow-y: auto; /* Ativa o scroll vertical apenas aqui dentro quando o texto crescer */
-    
-    padding: 6px 0; /* Ajuste sutil para o texto rolar perfeitamente no centro */
+    overflow-y: auto; 
+    padding: 6px 0;
     border: none;
     background: transparent;
     font-family: inherit;
@@ -137,9 +128,8 @@
     display: block;
 }
 
-/* --- BOTÃO ALINHADO E ESPAÇADO VIA FLEXBOX --- */
 .comentario-form button {
-    background-color: #00bf63; /* Verde Lumine */
+    background-color: #00bf63; 
     color: #ffffff;
     font-weight: 700;
     font-size: 0.95rem;
@@ -153,7 +143,7 @@
     white-space: nowrap;
     
     margin-left: 3px; 
-    flex-shrink: 0; /* Impede o flexbox de esmagar o botão */
+    flex-shrink: 0; 
 }
 
 .comentario-form button:hover {
@@ -167,9 +157,8 @@
     box-shadow: 0px 1px 0px #008f4a;
 }
 
-/* --- ESTILIZAÇÃO DO SCROLLBAR INTERNO DA TEXTAREA (ESTILO LUMINE) --- */
 .comentario-form textarea::-webkit-scrollbar {
-    width: 4px; /* Barra bem fininha para ficar discreta dentro da pílula */
+    width: 4px; 
 }
 
 .comentario-form textarea::-webkit-scrollbar-track {
@@ -177,24 +166,22 @@
 }
 
 .comentario-form textarea::-webkit-scrollbar-thumb {
-    background: #0cc0df; /* Azul Lumine */
+    background: #0cc0df; 
     border-radius: 10px;
 }
 
-/* --- CONTAINER DOS BOTÕES DE ROTA (APROXIMADO DO CABEÇALHO) --- */
 .rotas-buttons {
     position: relative;
     display: flex;
     align-items: center;
     gap: 12px;
     max-width: 800px;
-    margin: -30px auto 15px auto; /* Margin-top negativa (-30px) faz os botões subirem bem para perto do teto/cabeçalho */
+    margin: -30px auto 15px auto; 
     padding: 0 10px;
     z-index: 10;
     box-sizing: border-box;
 }
 
-/* --- BOTÃO CIRCULAR VERMELHO (BOLINHA QUE EXPANDE NO HOVER) --- */
 .rotas-buttons .btn-sair-flutuante {
     position: relative;
     top: auto;
@@ -253,7 +240,6 @@
     visibility: visible;
 }
 
-/* --- BOTÃO AZUL DE REVISAR (SEMPRE ABERTO E COM ANIMAÇÃO HOVER) --- */
 .rotas-buttons .btn-revisar {
     position: relative;
     width: 210px; /* Já fica aberto por padrão */
@@ -286,7 +272,7 @@
 
 .rotas-buttons .btn-revisar .btn-revisar-text {
     display: inline-block;
-    opacity: 1; /* Texto visível por padrão */
+    opacity: 1; 
     visibility: visible;
     white-space: nowrap;
     font-family: 'Open_Sans', sans-serif;
@@ -300,11 +286,11 @@
 .rotas-buttons .btn-revisar:active,
 .rotas-buttons .btn-revisar:focus {
     background-color: #2980b9;
-    transform: translateY(-2px); /* Efeito suave de levitação */
+    transform: translateY(-2px); 
     box-shadow: 0 6px 15px rgba(41, 128, 185, 0.4);
 }
 
-/* --- RESPONSIVIDADE MELHORADA --- */
+/* RESPONSIVIDADE */
 @media screen and (max-width: 900px) {
     .rotas-buttons {
         top: auto;

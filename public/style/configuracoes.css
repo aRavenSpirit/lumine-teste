@@ -613,12 +613,6 @@ input[type="password"]::-ms-clear {
     display: block !important;
 }
 
-body.dark-mode .materia-selecionada-badge {
-    background-color: #2a2a2a;
-    color: #ffffff;
-    border-color: #000000;
-}
-
 /* =========================================
    MODO COMPACTO INTERMEDIÁRIO (QUADRADINHOS + P/M/G)
    ========================================= */
@@ -1081,57 +1075,6 @@ body.fonte-nivel-3 .materia-pill:not(.modo-compacto-ativo) span {
 .mobile-profile-right .perfil-dropdown a,
 .item-perfil .perfil-dropdown a {
     white-space: normal !important;
-}
-
-/* =========================================
-   MODO ESCURO
-   ========================================= */
-body.dark-mode .cards-section,
-body.dark-mode #card-opcoes {
-    background-color: #1a1a1a;
-}
-
-body.dark-mode .container-aside {
-    background-color: #262626;
-}
-
-body.dark-mode .titulo-perfil-aside {
-    background-color: #333333;
-    color: #ffffff;
-}
-
-body.dark-mode .card-btn {
-    background-color: #333333;
-    color: #ffffff;
-}
-
-body.dark-mode .card-btn.active {
-    background-color: #1da0d0;
-}
-
-body.dark-mode .historico-card {
-    background-color: #2a2a2a;
-    color: #ffffff;
-}
-
-body.dark-mode .historico-card.selecionado {
-    background-color: #1a3d52;
-}
-
-body.dark-mode .historico-detalhes h4,
-body.dark-mode .historico-detalhes p,
-body.dark-mode .aviso-minimo,
-body.dark-mode .titulo-foto-label {
-    color: #ffffff;
-}
-
-body.dark-mode .modal-cropper-content {
-    background: #2a2a2a;
-    color: #ffffff;
-}
-
-body.dark-mode .modal-cropper-content h3 {
-    color: #ffffff;
 }
 
 /* =========================================

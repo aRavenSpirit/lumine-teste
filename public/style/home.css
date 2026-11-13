@@ -1434,28 +1434,3 @@ body.no-scroll {
     transform: translate(2px, 2px);
     box-shadow: 0px 0px 0px #000000;
 }
-
-/* COMPATIBILIDADE COM MODO ESCURO */
-body.dark-mode .modal-card-global {
-    background-color: #1e293b;
-    border-color: #ffffff;
-    box-shadow: 4px 6px 0px #ffffff;
-}
-
-body.dark-mode .modal-titulo-global,
-body.dark-mode .modal-mensagem-global {
-    color: #ffffff;
-}
-
-body.dark-mode .perfil-dropdown {
-    background-color: #1e293b;
-    color: #f8fafc;
-}
-
-body.dark-mode .perfil-dropdown p {
-    color: #e2e8f0;
-}
-
-body.dark-mode .perfil-dropdown p strong {
-    color: #ffffff;
-}

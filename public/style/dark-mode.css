@@ -573,3 +573,151 @@ body.dark-mode .rotas-buttons .btn-revisar:focus {
     background-color: #0369a1 !important;
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6) !important;
 }
+
+body.dark-mode .cards-section,
+body.dark-mode #card-opcoes {
+    background-color: #1a1a1a;
+}
+
+body.dark-mode .container-aside {
+    background-color: #262626;
+}
+
+body.dark-mode .titulo-perfil-aside {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .card-btn {
+    background-color: #333333;
+    color: #ffffff;
+}
+
+body.dark-mode .card-btn.active {
+    background-color: #1da0d0;
+}
+
+body.dark-mode .historico-card {
+    background-color: #2a2a2a;
+    color: #ffffff;
+}
+
+body.dark-mode .historico-card.selecionado {
+    background-color: #1a3d52;
+}
+
+body.dark-mode .historico-detalhes h4,
+body.dark-mode .historico-detalhes p,
+body.dark-mode .aviso-minimo,
+body.dark-mode .titulo-foto-label {
+    color: #ffffff;
+}
+
+body.dark-mode .modal-cropper-content {
+    background: #2a2a2a;
+    color: #ffffff;
+}
+
+body.dark-mode .modal-cropper-content h3 {
+    color: #ffffff;
+}
+body.dark-mode .materia-selecionada-badge {
+    background-color: #2a2a2a;
+    color: #ffffff;
+    border-color: #000000;
+}
+
+body.dark-mode .modal-card-global {
+    background-color: #1e293b;
+    border-color: #ffffff;
+    box-shadow: 4px 6px 0px #ffffff;
+}
+
+body.dark-mode .modal-titulo-global,
+body.dark-mode .modal-mensagem-global {
+    color: #ffffff;
+}
+
+body.dark-mode .perfil-dropdown {
+    background-color: #1e293b;
+    color: #f8fafc;
+}
+
+body.dark-mode .perfil-dropdown p {
+    color: #e2e8f0;
+}
+
+body.dark-mode .perfil-dropdown p strong {
+    color: #ffffff;
+}
+
+/* =========================================
+   MODO ESCURO - HEADER (NAVBAR)
+========================================= */
+body.dark-mode .navbar-home {
+    background-color: #1a1a1a !important; /* Fundo cinza escuro */
+    border-bottom: 1px solid #333; /* Linha sutil para separar do conteúdo */
+}
+
+/* Cor dos links do menu no topo */
+body.dark-mode .nav-links-home a,
+body.dark-mode .nav-links-home .perfil-link span {
+    color: #e0e0e0 !important; 
+}
+
+/* Efeito ao passar o mouse nos links do topo */
+body.dark-mode .nav-links-home a:hover {
+    color: #ffffff !important;
+    background-color: #333; /* Fundo levemente mais claro no hover, se houver */
+}
+
+/* Ícone do usuário e menu hambúrguer mobile */
+body.dark-mode .profile-icon,
+body.dark-mode .hamburger-mobile {
+    color: #ffffff !important;
+}
+
+/* =========================================
+   MODO ESCURO - SIDEBAR (MENU LATERAL)
+========================================= */
+body.dark-mode .sidebar {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center;
+    border-right: 1px solid #333;
+}
+
+body.dark-mode .menu-trigger {
+    color: #ffffff !important;
+}
+
+/* Links das matérias na sidebar */
+body.dark-mode .sidebar nav a {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .sidebar nav a:hover {
+    background-color: #333 !important;
+    color: #ffffff !important;
+}
+
+/* CARDS*/
+.card-materia {
+    border: none;
+}
+
+/* =========================================
+   MODO ESCURO - MENU MOBILE (SE HOUVER)
+========================================= */
+body.dark-mode .mobile-menu,
+body.dark-mode .mobile-menu-scroll {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode .nav-links-mobile a,
+body.dark-mode .mobile-menu-close {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .nav-links-mobile a:hover {
+    background-color: #333 !important;
+}
