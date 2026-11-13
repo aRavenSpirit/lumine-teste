@@ -115,3 +115,8 @@
     transition: background-color 0.3s ease;
     position: relative;
 }
+
+.container-senha{
+    position: relative; 
+    width: 100%;
+}

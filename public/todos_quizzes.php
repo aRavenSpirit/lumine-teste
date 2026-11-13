@@ -109,7 +109,7 @@
 </div>
 
 <!-- MODAL GLOBAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ -->
-<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+<div id="modalConfirmacao" class="modal-overlay">
     <div class="modal-content-confirm">
         <p class="modal-titulo">Deseja entrar no quiz?</p>
         
@@ -189,7 +189,7 @@ function carregarUsuario() {
             if (linkPerfilHeader && u.foto_perfil) {
                 const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
                 if (iconeRoxo) {
-                    iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon" style="object-fit: cover;">`;
+                    iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon"">`;
                 } else {
                     const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
                     if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {

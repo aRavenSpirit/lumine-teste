@@ -721,3 +721,69 @@ body.dark-mode .mobile-menu-close {
 body.dark-mode .nav-links-mobile a:hover {
     background-color: #333 !important;
 }
+
+/* =========================================
+   MODO ESCURO - MENU MOBILE (SE HOUVER)
+========================================= */
+body.dark-mode .mobile-menu,
+body.dark-mode .mobile-menu-scroll {
+    background-color: #1a1a1a !important;
+}
+
+body.dark-mode .nav-links-mobile a,
+body.dark-mode .mobile-menu-close {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .nav-links-mobile a:hover {
+    background-color: #333 !important;
+}
+
+/* =========================================
+   MODO ESCURO - HEADER (NAVBAR)
+========================================= */
+body.dark-mode .navbar-home {
+    background-color: #1a1a1a !important; /* Fundo cinza escuro */
+    border-bottom: 1px solid #333; /* Linha sutil para separar do conteúdo */
+}
+
+/* Cor dos links do menu no topo */
+body.dark-mode .nav-links-home a,
+body.dark-mode .nav-links-home .perfil-link span {
+    color: #e0e0e0 !important; 
+}
+
+/* Efeito ao passar o mouse nos links do topo */
+body.dark-mode .nav-links-home a:hover {
+    color: #ffffff !important;
+    background-color: #333; /* Fundo levemente mais claro no hover, se houver */
+}
+
+/* Ícone do usuário e menu hambúrguer mobile */
+body.dark-mode .profile-icon,
+body.dark-mode .hamburger-mobile {
+    color: #ffffff !important;
+}
+
+/* =========================================
+   MODO ESCURO - SIDEBAR (MENU LATERAL)
+========================================= */
+body.dark-mode .sidebar {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center;
+    border-right: 1px solid #333;
+}
+
+body.dark-mode .menu-trigger {
+    color: #ffffff !important;
+}
+
+/* Links das matérias na sidebar */
+body.dark-mode .sidebar nav a {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .sidebar nav a:hover {
+    background-color: #333 !important;
+    color: #ffffff !important;
+}

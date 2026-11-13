@@ -121,7 +121,7 @@
     </div>
 </div>
 
-<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+<div id="modalConfirmacao" class="modal-overlay">
     <div class="modal-content-confirm">
         <p>Deseja entrar no quiz?</p>
         <img src="img/LUMINE-5con.ico" alt="logo">

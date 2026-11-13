@@ -57,7 +57,7 @@
 </div>
 
 <!-- MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ (PADRONIZADA COM A HOME) -->
-<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+<div id="modalConfirmacao" class="modal-overlay">
     <div class="modal-content-confirm">
         <p class="modal-titulo">Deseja entrar no quiz?</p>
         

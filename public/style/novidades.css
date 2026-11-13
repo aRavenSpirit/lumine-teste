@@ -163,6 +163,10 @@ footer {
     margin-top: 50px;
 }
 
+.modal-overlay{
+    display: none;
+}
+
 /* =========================================
    RESPONSIVIDADE MOBILE (TABLETS E CELULARES)
    ========================================= */
