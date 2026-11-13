@@ -23,15 +23,15 @@
 
     <main class="main-container">
         <div class="content-card">
-            <h1 class="title-sobre">Conheça a Lumine</h1>
+            <h1 class="title-sobre">Conheça a LUMINE</h1>
             
             <div class="text-sobre">
-                <p>Na <strong>LUMINE</strong>, acreditamos que o conhecimento não precisa de ser uma tarefa árdua, mas sim um desafio estimulante. Somos uma plataforma focada em transformar a educação através da interatividade e da gamificação.</p>
-                <p>O nosso objetivo é oferecer conteúdos de qualidade para todas as matérias, desde as Ciências Exatas até às Humanidades, proporcionando uma experiência onde cada estudante pode testar a sua rapidez, superar limites e dominar qualquer assunto de forma leve e divertida.</p>
+                <p>Na <strong>LUMINE</strong>, acreditamos que o conhecimento é resultado de dedicação e esforço. Aprender não precisa ser uma tarefa difícil, mas proveitosa.</p>
+                <p>O nosso objetivo é oferecer conteúdos de qualidade para todas as matérias, proporcionando uma experiência onde cada estudante pode testar a sua rapidez, superar limites e dominar qualquer assunto de forma leve e divertida.</p>
             </div>
 
             <div class="highlight-box">
-                "Desafie a sua mente no melhor site de quizzes interativos. Entre no jogo e prove que está pronto!"
+                "Desafie a sua mente no melhor site de quizzes interativos. Estamos preparados para te receber!"
             </div>
 
             <div class="stats-grid">

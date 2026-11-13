@@ -39,7 +39,7 @@
                     <i class="fa-solid fa-chevron-down"></i>
                 </button>
                 <div class="accordion-content">
-                    <p>Sim! A Lumine tem como objetivo democratizar o ensino através da gamificação, oferecendo quizzes interativos para todos os estudantes.</p>
+                    <p>Sim! A Lumine tem como objetivo democratizar o ensino, oferecendo quizzes interativos para todos os estudantes.</p>
                 </div>
             </div>
 
@@ -49,7 +49,57 @@
                     <i class="fa-solid fa-chevron-down"></i>
                 </button>
                 <div class="accordion-content">
-                    <p>Basta criar uma conta clicando em "Acessar". Assim, todos os seus resultados e badges ficarão salvos no seu perfil.</p>
+                    <p>Basta criar uma conta clicando em "Acessar". Assim, todos os seus resultados ficarão salvos no seu perfil, na aba "Histórico".</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>O que aparece na página de Recomendados?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Na página de Recomendados, o sistema filtra e exibe quizzes selecionados de acordo com a sua faixa escolar, facilitando o reforço exato dos conteúdos que você está estudando.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>Consigo revisar minhas respostas depois de jogar?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Sim! Após concluir um quiz, você pode revisar suas respostas para conferir seus acertos e erros, além de acompanhar toda a sua evolução e histórico de progresso na plataforma.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>Como funcionam os comentários nos quizzes?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Cada quiz possui sua própria área de comentários. Nela, você pode deixar dúvidas, opiniões e sugestões específicas sobre aquele desafio para trocar ideias e ajudar os administradores a melhorarem os conteúdos.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>É possível avaliar os quizzes?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Com certeza! Você pode avaliar cada quiz dando uma nota de 0 a 5 estrelas.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <button class="accordion-header">
+                    <h3>Posso personalizar a aparência do site?</h3>
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+                <div class="accordion-content">
+                    <p>Sim! Na área de preferências, é possível mudar as cores da interface (como ativar o modo escuro, e selecionar uma cor para cada matéria) e ajustar o tamanho da letra para tornar sua experiência de estudo muito mais confortável.</p>
                 </div>
             </div>
         </div>

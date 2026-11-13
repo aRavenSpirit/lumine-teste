@@ -9,15 +9,6 @@
     padding-right: 20px;
 }
 
-.equipe-title {
-    font-family: 'gliker', sans-serif;
-    font-size: clamp(30px, 5vw, 50px);
-    color: #1595C4;
-    margin-bottom: 50px;
-    text-transform: uppercase;
-    text-align: center;
-}
-
 .equipe-lista {
     display: flex;
     flex-direction: column;
@@ -94,16 +85,6 @@
 .m4 { border-color: #ff5757; }
 .m5 { border-color: #ffbd59; }
 
-@media (max-width: 650px) {
-    .membro-card {
-        flex-direction: column;
-        text-align: center;
-        padding: 30px 20px;
-    }
-    .main-container { padding-top: 100px; }
-}
-
-/* Ajustes para alinhar e definir a proporção correta da Logo */
 .logo-section {
     display: flex;
     align-items: center;
@@ -121,12 +102,21 @@
 }
 
 .logo-img {
-    max-height: 85px;  /* Ajusta a altura limite dentro da navbar */
-    width: auto;       /* Mantém a proporção original sem esticar */
+    max-height: 85px;
+    width: auto;       
     object-fit: contain;
     transition: transform 0.3s ease;
 }
 
 .logo-section a:hover .logo-img {
-    transform: scale(1.05); /* Efeito suave ao passar o rato */
+    transform: scale(1.05); 
+}
+
+@media (max-width: 650px) {
+    .membro-card {
+        flex-direction: column;
+        text-align: center;
+        padding: 30px 20px;
+    }
+    .main-container { padding-top: 100px; }
 }

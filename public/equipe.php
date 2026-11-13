@@ -21,61 +21,60 @@
     <?php renderPublicHeader(); ?>
 
     <main class="main-container">
-        <h1 class="equipe-title">Nossa Equipe</h1>
 
         <div class="equipe-lista">
             <div class="membro-card">
                 <div class="foto-circulo m1">
-                    <img src="img/equipe/matheus.png" alt="Foto">
+                    <img src="img/equipe/breno.webp" alt="Foto">
                 </div>
                 <div class="info-container">
-                    <span class="membro-nome">Integrante 1</span>
-                    <span class="membro-cargo">Desenvolvedor</span>
-                    <p class="membro-descricao">Focado em criar a melhor experiência técnica, garantindo que os quizzes carreguem instantaneamente e funcionem em qualquer dispositivo.</p>
+                    <span class="membro-nome">Breno Gomes</span>
+                    <span class="membro-cargo">Desenvolvedor Front-End</span>
+                    <p class="membro-descricao"> Responsável por proporcionar uma experiência de qualidade para o usuário, por meio de animações e interatividade. </p>
                 </div>
             </div>
 
             <div class="membro-card">
                 <div class="foto-circulo m2">
-                    <img src="img/equipe/matheus.png" alt="Foto">
+                    <img src="img/equipe/lucas.webp" alt="Foto">
                 </div>
                 <div class="info-container">
-                    <span class="membro-nome">Integrante 2</span>
-                    <span class="membro-cargo">Design & UX</span>
-                    <p class="membro-descricao">Responsável pelas cores e formas que dão vida à Lumine, tornando o estudo algo visualmente prazeroso e intuitivo.</p>
+                    <span class="membro-nome">Lucas Rosa</span>
+                    <span class="membro-cargo">Desenvolvedor Back-End</span>
+                    <p class="membro-descricao">Focado em criar a melhor experiência técnica, garantindo que os quizzes carreguem instantaneamente e funcionem em qualquer dispositivo.</p>
                 </div>
             </div>
 
             <div class="membro-card">
                 <div class="foto-circulo m3">
-                    <img src="img/equipe/matheus.png" alt="Foto">
+                    <img src="img/equipe/manu.webp" alt="Foto">
                 </div>
                 <div class="info-container">
-                    <span class="membro-nome">Integrante 3</span>
-                    <span class="membro-cargo">Pedagogia</span>
-                    <p class="membro-descricao">Garante que cada pergunta tenha valor educativo, transformando o conteúdo escolar em desafios que realmente ensinam.</p>
+                    <span class="membro-nome">Manuella Anunciato</span>
+                    <span class="membro-cargo">Administração do Banco de Dados</span>
+                    <p class="membro-descricao">Garante que cada usuário possa usufruir da LUMINE de maneira segura. Além disso, também foi responsável por estruturar os principais Quizzes disponíveis. </p>
                 </div>
             </div>
 
             <div class="membro-card">
                 <div class="foto-circulo m4">
-                    <img src="img/equipe/matheus.png" alt="Foto">
+                    <img src="img/equipe/matheus.webp" alt="Foto">
                 </div>
                 <div class="info-container">
-                    <span class="membro-nome">Integrante 4</span>
-                    <span class="membro-cargo">Marketing</span>
-                    <p class="membro-descricao">Conecta a Lumine com os estudantes, gerenciando nossa comunidade e trazendo novidades sempre que elas surgem.</p>
+                    <span class="membro-nome">Matheus Euzébio</span>
+                    <span class="membro-cargo">Desenvolvedor Back-End</span>
+                    <p class="membro-descricao">Conecta a Lumine com os estudantes, possibilitando um bom aproveitamento da plataforma e a garantia da usabilidade e bom desempenho. </p>
                 </div>
             </div>
 
             <div class="membro-card">
                 <div class="foto-circulo m5">
-                    <img src="img/equipe/matheus.png" alt="Foto">
+                    <img src="img/equipe/victoria.webp" alt="Foto">
                 </div>
                 <div class="info-container">
-                    <span class="membro-nome">Integrante 5</span>
-                    <span class="membro-cargo">Conteúdo</span>
-                    <p class="membro-descricao">Curador oficial dos quizzes, sempre em busca de curiosidades e fatos interessantes para desafiar o seu conhecimento.</p>
+                    <span class="membro-nome">Victoria Espirito Santo</span>
+                    <span class="membro-cargo">Desenvolvedora Front-End</span>
+                    <p class="membro-descricao">Inseriu as cores que demonstram a identidade da LUMINE, promovendo uma maior proximidade entre os usuários e a plataforma. </p>
                 </div>
             </div>
         </div>
