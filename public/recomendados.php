@@ -219,9 +219,9 @@ async function carregarQuizzesRecomendados() {
         if (dados.erro) {
             document.getElementById("tituloSecao").innerText = "Aviso";
             document.getElementById("containerCards").innerHTML = `
-                <div style="grid-column: 1/-1; text-align: center; padding: 20px;">
-                    <p style="font-size: 1.1rem; margin-bottom: 15px;">${dados.erro}</p>
-                    ${dados.precisa_escolaridade ? `<button onclick="window.location.href='home.php'" style="padding: 10px 20px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer;">Escolher Escolaridade</button>` : ''}
+                <div class="aviso-escolaridade">
+                    <p>${dados.erro}</p>
+                    ${dados.precisa_escolaridade ? `<button onclick="window.location.href='home.php'" class="btn-escolaridade">Escolher Escolaridade</button>` : ''}
                 </div>`;
             return;
         }
@@ -233,7 +233,7 @@ async function carregarQuizzesRecomendados() {
     } catch (e) {
         console.error("Erro ao buscar recomendações:", e);
         document.getElementById("tituloSecao").innerText = "Erro";
-        document.getElementById("containerCards").innerHTML = "<p>Não foi possível carregar as recomendações.</p>";
+        document.getElementById("containerCards").innerHTML = "<p class='msg-lista-vazia'>Não foi possível carregar as recomendações.</p>";
     }
 }
 
@@ -242,7 +242,7 @@ function renderizarCards(lista) {
     let html = "";
     
     if (!lista || lista.length === 0) { 
-        container.innerHTML = "<p style='grid-column: 1/-1; text-align: center;'>Nenhum quiz encontrado para a sua escolaridade no momento.</p>"; 
+        container.innerHTML = "<p class='msg-lista-vazia'>Nenhum quiz encontrado para a sua escolaridade no momento.</p>"; 
         return; 
     }
 
@@ -257,14 +257,14 @@ function renderizarCards(lista) {
         else if (q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
         html += `
-            <div onclick="prepararEntrada(${q.id})" class="card-materia" style="cursor: pointer;">
+            <div onclick="prepararEntrada(${q.id})" class="card-materia">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
-                    <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
+                    <img src="img/${imgNome}.webp" onerror="this.classList.add('imagem-oculta')">
                 </div>
                 <div class="card-body">
                     <p title="${q.nome}">${q.nome}</p>
-                    <span class="card-subtexto">${q.nome_materia} • ${q.conteudo || ''}</span>
+                    <span class="card-subtexto">${q.nome_materia}${q.conteudo ? ` - ${q.conteudo}` : ''}</span>
                     <span class="tag-dificuldade ${difClasse}">${difTexto}</span>
                 </div>
             </div>`;
@@ -284,11 +284,11 @@ function filtrarGeral() {
 
 function prepararEntrada(idQuiz) {
     urlDestinoQuiz = `quiz.php?id=${idQuiz}`;
-    document.getElementById('modalConfirmacao').style.display = 'flex';
+    document.getElementById('modalConfirmacao').classList.add('active');
 }
 
 function fecharConfirmacao() {
-    document.getElementById('modalConfirmacao').style.display = 'none';
+    document.getElementById('modalConfirmacao').classList.remove('active');
 }
 
 document.getElementById('btnConfirmarEntrada').onclick = () => {

@@ -64,6 +64,10 @@
     box-sizing: border-box;
 }
 
+.card-banner img.imagem-oculta {
+    display: none;
+}
+
 .card-body {
     width: 100%;
     padding: 15px;
@@ -134,37 +138,46 @@
 }
 
 /* =========================================
-   GARANTIA DE ESTILO DO PERFIL E LOGO MOBILE
+   MENSAGENS DE ESTADO E AVISOS (RECOMENDADOS / NOVIDADES)
    ========================================= */
-.mobile-logo-central {
+.msg-lista-vazia {
+    grid-column: 1 / -1;
+    text-align: center;
+}
+
+.aviso-escolaridade {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 20px;
+}
+
+.aviso-escolaridade p {
+    font-size: 1.1rem;
+    margin-bottom: 15px;
+}
+
+.btn-escolaridade {
+    padding: 10px 20px;
+    background-color: #3498db;
+    color: #ffffff;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
-    position: relative;
-    z-index: 2500;
-}
-
-.mobile-profile-right {
-    position: relative;
-    cursor: pointer;
-    z-index: 2500;
-}
-
-.mobile-profile-right .perfil-dropdown {
-    right: 0;
-    top: calc(100% + 12px);
-    min-width: 260px;
-    max-width: 88vw;
-}
-
-.mobile-profile-right .perfil-dropdown::before {
-    right: 12px;
 }
 
 footer {
     margin-top: 50px;
 }
 
-.modal-overlay{
+/* =========================================
+   CONTROLE DA MODAL DE CONFIRMAÇÃO
+   ========================================= */
+.modal-overlay {
     display: none;
+}
+
+.modal-overlay.active {
+    display: flex;
 }
 
 /* =========================================

@@ -111,7 +111,7 @@
 </div>
 
 <!-- MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ -->
-<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+<div id="modalConfirmacao" class="modal-overlay">
     <div class="modal-content-confirm">
         <p class="modal-titulo">Deseja entrar no quiz?</p>
         
@@ -320,7 +320,10 @@ async function carregarQuizzesRecentes() {
 function renderizarCards(lista) {
     const container = document.getElementById("containerCards");
     let html = "";
-    if(lista.length === 0) { container.innerHTML = "<p>Nenhum quiz encontrado.</p>"; return; }
+    if(lista.length === 0) { 
+        container.innerHTML = "<p class='msg-lista-vazia'>Nenhum quiz encontrado.</p>"; 
+        return; 
+    }
 
     lista.forEach((q, index) => {
         let imgNome = q.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
@@ -334,14 +337,14 @@ function renderizarCards(lista) {
         else if(q.id_dificuldade == 3) { difTexto = "Difícil"; difClasse = "dif-dificil"; }
 
         html += `
-            <div onclick="prepararEntrada(event, 'quiz.php?id=${q.id}')" class="card-materia" style="cursor: pointer;">
+            <div onclick="prepararEntrada(event, 'quiz.php?id=${q.id}')" class="card-materia">
                 <div class="quiz-numero">#${index + 1}</div>
                 <div class="card-banner">
-                    <img src="img/${imgNome}.webp" onerror="this.style.display='none'">
+                    <img src="img/${imgNome}.webp" onerror="this.classList.add('imagem-oculta')">
                 </div>
                 <div class="card-body">
                     <p title="${q.nome}">${q.nome}</p>
-                    <span class="card-subtexto">${q.nome_materia} • ${q.nome_conteudo}</span>
+                    <span class="card-subtexto">${q.nome_materia} - ${q.nome_conteudo}</span>
                     <span class="tag-dificuldade ${difClasse}">${difTexto}</span>
                 </div>
             </div>`;
@@ -355,11 +358,11 @@ function renderizarCards(lista) {
 function prepararEntrada(event, url) {
     if (event) event.preventDefault();
     urlDestinoQuiz = url;
-    document.getElementById('modalConfirmacao').style.display = 'flex';
+    document.getElementById('modalConfirmacao').classList.add('active');
 }
 
 function fecharModalConfirmacao() {
-    document.getElementById('modalConfirmacao').style.display = 'none';
+    document.getElementById('modalConfirmacao').classList.remove('active');
 }
 
 document.getElementById('btnConfirmarEntrada').onclick = () => {
