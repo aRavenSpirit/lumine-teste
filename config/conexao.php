@@ -1,7 +1,7 @@
 <?php
     $host = "localhost";
     $user = "root";
-    $pass = "Home@spSENAI2025!"; 
+    $pass = ""; 
     //$pass = "Mathws02.10";
    // $pass = "Home@spSENAI2025!";
     $db   = "luminebd";

@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. CONTAINER E CARD PRINCIPAL
+   ========================================================================== */
 .main-container {
     padding: 120px 20px 80px;
     display: flex;
@@ -7,7 +10,6 @@
     min-height: 85vh;
 }
 
-/* Card Principal */
 .content-card {
     position: relative;
     overflow: hidden;
@@ -42,7 +44,9 @@
     );
 }
 
-/* Título Principal */
+/* ==========================================================================
+   2. TÍTULO, TEXTOS E CAIXA DE DESTAQUE
+   ========================================================================== */
 .title-sobre {
     position: relative;
     display: inline-block;
@@ -120,6 +124,9 @@
     pointer-events: none;
 }
 
+/* ==========================================================================
+   3. GRID DE ESTATÍSTICAS / PILARES
+   ========================================================================== */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -170,10 +177,12 @@
 .stat-item:nth-child(1) {
     border-bottom-color: #ffbd59;
 }
+
 .stat-item:nth-child(1) i {
     background: rgba(255, 189, 89, 0.2);
     color: #e59a24;
 }
+
 .stat-item:nth-child(1):hover {
     border-color: #ffbd59;
     box-shadow: 0 14px 28px rgba(255, 189, 89, 0.22);
@@ -182,10 +191,12 @@
 .stat-item:nth-child(2) {
     border-bottom-color: #0cc0df;
 }
+
 .stat-item:nth-child(2) i {
     background: rgba(12, 192, 223, 0.16);
     color: #0cc0df;
 }
+
 .stat-item:nth-child(2):hover {
     border-color: #0cc0df;
     box-shadow: 0 14px 28px rgba(12, 192, 223, 0.22);
@@ -194,10 +205,12 @@
 .stat-item:nth-child(3) {
     border-bottom-color: #f2545b;
 }
+
 .stat-item:nth-child(3) i {
     background: rgba(242, 84, 91, 0.15);
     color: #f2545b;
 }
+
 .stat-item:nth-child(3):hover {
     border-color: #f2545b;
     box-shadow: 0 14px 28px rgba(242, 84, 91, 0.22);
@@ -211,6 +224,9 @@
     transform: scale(1.1) rotate(-5deg);
 }
 
+/* ==========================================================================
+   4. ANIMAÇÕES, RESPONSIVIDADE, LOGO E MENU MOBILE
+   ========================================================================== */
 @keyframes fadeUpCard {
     from {
         opacity: 0;
@@ -221,8 +237,6 @@
         transform: translateY(0);
     }
 }
-
-/* RESPONSIVIDADE */
 
 @media (max-width: 820px) {
     .stats-grid {
@@ -259,8 +273,6 @@
         font-size: 1rem;
     }
 }
-
-/* LOGO E MENU MOBILE */
 
 .logo-section {
     display: flex;

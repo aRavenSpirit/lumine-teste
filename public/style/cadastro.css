@@ -1,15 +1,6 @@
-
-input::-ms-reveal,
-input::-ms-clear {
-    display: none;
-}
-
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-    display: none !important;
-}
-
-/* --- FONTES --- */
+/* =========================================
+   FONTES E RESET GLOBAL
+   ========================================= */
 @font-face {
     font-family: 'Open_Sans';
     src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
@@ -35,6 +26,33 @@ body {
     padding: 20px;
 }
 
+input::-ms-reveal,
+input::-ms-clear,
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+    display: none !important;
+}
+
+/* =========================================
+   SCROLLBAR PERSONALIZADA
+   ========================================= */
+::-webkit-scrollbar {
+    width: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
+    border-radius: 10px;
+    border: 3px solid #fff; 
+}
+
+/* =========================================
+   CARD PRINCIPAL E CABEÇALHO DO CADASTRO
+   ========================================= */
 .container-cadastro {
     position: relative; 
     background-color: #ffffff;
@@ -74,6 +92,9 @@ body {
     margin-top: -5px;
 }
 
+/* =========================================
+   FORMULÁRIO E CAMPOS DE ENTRADA
+   ========================================= */
 .blocos-cad {
     display: flex;
     flex-direction: column;
@@ -105,17 +126,7 @@ input:focus, select:focus {
     width: 100%; 
 }
 
-.olho-senha {
-    position: absolute;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    cursor: pointer;
-    font-size: 1.2rem;
-    color: #3b4d58;
-    z-index: 5;
-}
-
+.olho-senha,
 .olho-senha-confirmar {
     position: absolute;
     right: 20px;
@@ -127,46 +138,9 @@ input:focus, select:focus {
     z-index: 5;
 }
 
-#mensagem,
-#msg-modal {
-    text-align: center;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    max-height: 0;
-    opacity: 0;
-    margin: 0;
-    overflow: hidden;
-    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
-}
-
-.caixa-erro,
-.caixa-erro-modal {
-    max-height: 120px !important;
-    opacity: 1 !important;
-    margin: 10px 0 !important;
-    border: 3px solid #ff6b6b;
-    border-radius: 20px;
-    padding: 10px 20px;
-    color: #ff6b6b;
-    font-weight: 800;
-    font-size: 1.1rem;
-    background-color: #fff;
-}
-
-.caixa-sucesso {
-    max-height: 120px !important;
-    opacity: 1 !important;
-    margin: 10px 0 !important;
-    border: 3px solid #28a745;
-    border-radius: 20px;
-    padding: 10px 20px;
-    color: #28a745;
-    font-weight: 800;
-    font-size: 1.1rem;
-    background-color: #fff;
-}
-
+/* =========================================
+   BARRA DE SEGURANÇA E BALÃO DE AVISO
+   ========================================= */
 .barra-seguranca {
     display: flex;
     gap: 6px;
@@ -248,6 +222,52 @@ input:focus, select:focus {
     100% { transform: translate(0, 0); }
 }
 
+/* =========================================
+   MENSAGENS DE FEEDBACK (ERRO / SUCESSO)
+   ========================================= */
+#mensagem,
+#msg-modal {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    max-height: 0;
+    opacity: 0;
+    margin: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease, opacity 0.3s ease, margin 0.4s ease;
+}
+
+.caixa-erro,
+.caixa-erro-modal {
+    max-height: 120px !important;
+    opacity: 1 !important;
+    margin: 10px 0 !important;
+    border: 3px solid #ff6b6b;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #ff6b6b;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: #fff;
+}
+
+.caixa-sucesso {
+    max-height: 120px !important;
+    opacity: 1 !important;
+    margin: 10px 0 !important;
+    border: 3px solid #28a745;
+    border-radius: 20px;
+    padding: 10px 20px;
+    color: #28a745;
+    font-weight: 800;
+    font-size: 1.1rem;
+    background-color: #fff;
+}
+
+/* =========================================
+   BOTÃO DE ENVIO E RODAPÉ DO CARD
+   ========================================= */
 .area-botao {
     margin-top: 20px;
 }
@@ -291,6 +311,9 @@ input:focus, select:focus {
     text-decoration: underline;
 }
 
+/* =========================================
+   MODAL DE SELEÇÃO COMPLEMENTAR
+   ========================================= */
 .modal-overlay {
     display: none;
     position: fixed;
@@ -394,27 +417,16 @@ input:focus, select:focus {
     margin-top: 25px;
 }
 
-::-webkit-scrollbar {
-    width: 10px; 
-}
-
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
-    border-radius: 10px;
-    border: 3px solid #fff; 
-}
-
-/* RESPONSIVIDADE */
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
 @media screen and (max-width: 600px) {
     .container-cadastro,
     .modal-box { 
         padding: 40px 25px; 
         width: 95%; 
     }
+
     .area-icone,
     .area-icone-modal { 
         position: relative; 
@@ -424,17 +436,19 @@ input:focus, select:focus {
         display: flex; 
         justify-content: center; 
     }
+
     .titulo-cad,
     .titulo-modal { 
         text-align: center; 
         font-size: 2.2rem; 
     }
+
     .titulo-cad::after,
     .titulo-modal::after { 
         margin: 4px auto 0; 
     }
+
     .subtitulo-modal {
         text-align: center;
     }
 }
-

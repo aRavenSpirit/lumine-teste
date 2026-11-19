@@ -1,3 +1,36 @@
+/* =========================================
+   LOGOTIPO (HEADER)
+   ========================================= */
+.logo-section {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding: 5px 15px;
+}
+
+.logo-section a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    text-decoration: none;
+}
+
+.logo-img {
+    max-height: 85px;
+    width: auto;       
+    object-fit: contain;
+    transition: transform 0.3s ease;
+}
+
+.logo-section a:hover .logo-img {
+    transform: scale(1.05); 
+}
+
+/* =========================================
+   CONTAINER PRINCIPAL E LISTA DE MEMBROS
+   ========================================= */
 .main-container {
     padding-top: 120px;
     padding-bottom: 80px;
@@ -17,6 +50,9 @@
     max-width: 850px;
 }
 
+/* =========================================
+   CARD INDIVIDUAL DE CADA MEMBRO
+   ========================================= */
 .membro-card {
     background: rgba(255, 255, 255, 0.9);
     display: flex;
@@ -49,6 +85,12 @@
     object-fit: cover;
 }
 
+.m1 { border-color: #00bf63; }
+.m2 { border-color: #0cc0df; }
+.m3 { border-color: #cb6ce6; }
+.m4 { border-color: #ff5757; }
+.m5 { border-color: #ffbd59; }
+
 .info-container {
     flex-grow: 1;
 }
@@ -79,44 +121,17 @@
     margin: 0;
 }
 
-.m1 { border-color: #00bf63; }
-.m2 { border-color: #0cc0df; }
-.m3 { border-color: #cb6ce6; }
-.m4 { border-color: #ff5757; }
-.m5 { border-color: #ffbd59; }
-
-.logo-section {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    padding: 5px 15px;
-}
-
-.logo-section a {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    text-decoration: none;
-}
-
-.logo-img {
-    max-height: 85px;
-    width: auto;       
-    object-fit: contain;
-    transition: transform 0.3s ease;
-}
-
-.logo-section a:hover .logo-img {
-    transform: scale(1.05); 
-}
-
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
 @media (max-width: 650px) {
+    .main-container { 
+        padding-top: 100px; 
+    }
+
     .membro-card {
         flex-direction: column;
         text-align: center;
         padding: 30px 20px;
     }
-    .main-container { padding-top: 100px; }
 }

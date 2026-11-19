@@ -7,7 +7,7 @@
     font-display: swap;
 }
 
-/* --- RESET --- */
+/* --- RESET E BASE --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -25,7 +25,7 @@ body {
     padding: 20px;
 }
 
-/* --- CONTAINER PRINCIPAL --- */
+/* --- CONTAINER CENTRAL --- */
 .container-login {
     position: relative; 
     background-color: #ffffff;
@@ -37,7 +37,7 @@ body {
     box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
-/* --- ÍCONE SUPERIOR --- */
+/* --- TOPO DO CARD (ÍCONE E TÍTULO) --- */
 .area-icone {
     position: absolute;
     top: 15px;      
@@ -75,7 +75,7 @@ body {
     line-height: 1.4;
 }
 
-/* --- ESTILO DOS INPUTS --- */
+/* --- FORMULÁRIO E INPUTS --- */
 .blocos-log {
     display: flex;
     flex-direction: column;
@@ -111,7 +111,7 @@ input:focus {
     box-shadow: 0px 3px 0px #1595c4;
 }
 
-/* --- MENSAGENS E ALERTAS (COM EFEITO DE RECOLHER) --- */
+/* --- MENSAGENS DE FEEDBACK --- */
 #mensagem {
     text-align: center;
     display: flex;
@@ -155,7 +155,7 @@ input:focus {
     color: #1595c4;
 }
 
-/* --- BOTÃO ENVIAR --- */
+/* --- BOTÃO DE ENVIO --- */
 .area-botao {
     margin-top: 15px;
 }
@@ -185,7 +185,7 @@ input:focus {
     box-shadow: 0px 2px 0px #1595c4;
 }
 
-/* --- DIVISOR E RODAPÉ --- */
+/* --- DIVISOR E RODAPÉ DO CARD --- */
 .divisor {
     text-align: center;
     border-bottom: 2px solid #ddd;
@@ -212,6 +212,21 @@ input:focus {
     text-decoration: underline;
 }
 
+/* --- CUSTOMIZAÇÃO DA SCROLLBAR --- */
+::-webkit-scrollbar {
+    width: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
+    border-radius: 10px;
+    border: 3px solid #fff; 
+}
+
 /* --- RESPONSIVIDADE --- */
 @media screen and (max-width: 600px) {
     .container-login { 
@@ -236,19 +251,4 @@ input:focus {
     .instrucao {
         text-align: center;
     }
-}
-
-/* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-::-webkit-scrollbar {
-    width: 10px; 
-}
-
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
-    border-radius: 10px;
-    border: 3px solid #fff; 
 }

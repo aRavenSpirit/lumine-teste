@@ -804,7 +804,7 @@ body.fonte-nivel-3 .materia-pill:not(.modo-compacto-ativo) span {
 }
 
 /* =========================================
-   ESTILO DA ABA: HISTÓRICO
+   HISTÓRICO
    ========================================= */
 .historico-container-scroll {
     display: flex;
@@ -1078,7 +1078,7 @@ body.fonte-nivel-3 .materia-pill:not(.modo-compacto-ativo) span {
 }
 
 /* =========================================
-   MEDIA QUERIES - RESPONSIVIDADE
+     RESPONSIVIDADE
    ========================================= */
 
 @media screen and (max-width: 1050px) {

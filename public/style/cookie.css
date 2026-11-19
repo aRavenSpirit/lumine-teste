@@ -1,38 +1,35 @@
-/* ==================================================================
-   BANNER DE COOKIES (ESTILO PADRÃO / MODULARIZADO)
-   ================================================================== */
+/* =========================================
+   BANNER FLUTUANTE DE COOKIES
+   ========================================= */
 #cookieBanner {
     position: fixed;
     bottom: 20px;
     left: 20px;
     right: auto;
     max-width: 400px;
-    background: #ffffff; /* Fundo todo azul */
-    color: #ffffff; /* Textos em branco */
+    background: #ffffff;
+    color: #ffffff;
     padding: 20px;
     border-radius: 12px;
-    border: 2px solid #0b506b; /* Borda em azul escuro */
+    border: 2px solid #0b506b;
     display: flex;
     flex-direction: column;
     gap: 15px;
     z-index: 9999;
-    /* Sombrinha fixa em azul escuro */
     box-shadow: 8px 8px 0px #0b506b; 
     font-family: 'Open_Sans', sans-serif;
-    
-    /* Transição suave de subida mantendo a relação com a sombra */
     transition: bottom 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    
-    /* Animação de surgimento via opacidade */
     animation: aparecerSuave 0.4s ease-out forwards;
 }
 
-/* Animação ao passar o mouse: Sobe exatamente igual ao modo escuro mantendo a distância exata da sombra */
 #cookieBanner:hover {
-    bottom: 26px; /* Sobe suavemente sem esticar a sombra */
-    box-shadow: 8px 8px 0px #1595C4; /* Mantém a sombra fixa exatamente na mesma proporção */
+    bottom: 26px;
+    box-shadow: 8px 8px 0px #1595C4;
 }
 
+/* =========================================
+   TEXTOS E LINKS DO BANNER
+   ========================================= */
 .cookie-text h3 {
     font-family: 'gliker', sans-serif;
     color: #1595C4;
@@ -47,6 +44,25 @@
     color: #334155;
 }
 
+.politica {
+    text-align: center;
+}
+
+.politica a {
+    color: #1595C4;
+    font-size: 0.8rem;
+    text-decoration: underline;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.politica a:hover {
+    opacity: 1;
+}
+
+/* =========================================
+   BOTÕES DE AÇÃO
+   ========================================= */
 .cookie-buttons {
     display: flex;
     flex-direction: column;
@@ -90,25 +106,9 @@
     transform: translateY(-2px);
 }
 
-.politica {
-    text-align: center;
-}
-
-.politica a {
-    color: #1595C4;
-    font-size: 0.8rem;
-    text-decoration: underline;
-    opacity: 0.9;
-    transition: opacity 0.2s ease;
-}
-
-.politica a:hover {
-    opacity: 1;
-}
-
-/* ==================================================================
-   ANIMAÇÃO DE ENTRADA E RESPONSIVIDADE
-   ================================================================== */
+/* =========================================
+   ANIMAÇÃO E RESPONSIVIDADE
+   ========================================= */
 @keyframes aparecerSuave {
     from {
         opacity: 0;

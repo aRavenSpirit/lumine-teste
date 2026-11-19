@@ -1,4 +1,6 @@
-/* --- FONTES --- */
+/* =========================================
+   FONTES E RESET GLOBAL
+   ========================================= */
 @font-face {
     font-family: 'Open_Sans';
     src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
@@ -24,9 +26,26 @@ body {
     min-height: 100vh;
 }
 
-/* ==========================================================================
-   ABAS / TOP BAR SUPERIOR
-   ========================================================================== */
+/* =========================================
+   SCROLLBAR PERSONALIZADA
+   ========================================= */
+::-webkit-scrollbar {
+    width: 10px; 
+}
+
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
+    border-radius: 10px;
+    border: 3px solid #fff; 
+}
+
+/* =========================================
+   BARRA DE NAVEGAÇÃO SUPERIOR (TOP BAR)
+   ========================================= */
 .navbar-container {
     display: flex;
     flex-direction: row; 
@@ -87,9 +106,9 @@ body {
     color: #000000;
 }
 
-/* ==========================================================================
-   CARD DO CONTEÚDO PRINCIPAL
-   ========================================================================== */
+/* =========================================
+   CONTAINER PRINCIPAL E METADADOS DO QUIZ
+   ========================================= */
 .main-card {
     background-color: #ffffff; 
     border: 3px solid #000000;
@@ -118,7 +137,6 @@ h3 {
     margin: 25px 0;
 }
 
-/* FORMULÁRIO SUPERIOR DE METADADOS */
 .quiz-header-form {
     display: flex;
     flex-direction: column;
@@ -224,9 +242,9 @@ h3 {
     box-shadow: 0px 2px 0px #000000;
 }
 
-/* ==========================================================================
-   CARDS DE PERGUNTAS (ESTILO AZUL NEO-BRUTALISTA)
-   ========================================================================== */
+/* =========================================
+   CARDS DE PERGUNTAS
+   ========================================= */
 .question-card {
     background-color: #40c4ff; 
     border: 3px solid #000000;
@@ -313,7 +331,9 @@ h3 {
     box-shadow: 0px 2px 0px #000000;
 }
 
-/* CONTAINERS DE RESPOSTAS */
+/* =========================================
+   ALTERNATIVAS: MÚLTIPLA ESCOLHA E TEXTO
+   ========================================= */
 .answers-container {
     margin-top: 5px;
     width: 100%;
@@ -385,7 +405,6 @@ h3 {
     transform: scale(0.9);
 }
 
-/* INPUT TEXTO LIVRE */
 .text-answer-input {
     background-color: #ffffff !important;
     width: 100%;
@@ -394,7 +413,9 @@ h3 {
     margin-top: 5px;
 }
 
-/* VERDADEIRO E FALSO */
+/* =========================================
+   ALTERNATIVAS: VERDADEIRO E FALSO
+   ========================================= */
 .vf-container {
     display: flex;
     flex-direction: column;
@@ -457,7 +478,9 @@ h3 {
     box-shadow: inset 0 0 0 4px #ffffff;
 }
 
-/* ORDENAÇÃO DE ITENS (DRAG AND DROP REESTRUTURADO) */
+/* =========================================
+   ALTERNATIVAS: ORDENAÇÃO DE ITENS
+   ========================================= */
 .drag-drop-container {
     display: flex;
     gap: 15px;
@@ -514,7 +537,9 @@ h3 {
     width: 100% !important;
 }
 
-/* LIGAÇÃO DE ITENS (ARRASTAR E SOLTAR PAR) */
+/* =========================================
+   ALTERNATIVAS: LIGAÇÃO DE PARES
+   ========================================= */
 .matching-container {
     display: flex;
     flex-direction: column;
@@ -558,9 +583,9 @@ h3 {
     border-left: 10px solid #000000;
 }
 
-/* ==========================================================================
-   RODAPÉ / BOTÕES DE SALVAMENTO
-   ========================================================================== */
+/* =========================================
+   RODAPÉ DO CARD (BOTÃO SALVAR)
+   ========================================= */
 .btn-save-bottom {
     background-color: #00c853; 
     border: 3px solid #000000;
@@ -585,65 +610,9 @@ h3 {
     box-shadow: 0px 2px 0px #000000;
 }
 
-/* ==========================================================================
-   RESPONSIVIDADE E QUEBRA DE BARRA
-   ========================================================================== */
-@media (max-width: 900px) {
-    .navbar-container {
-        flex-wrap: wrap; 
-        justify-content: center;
-    }
-}
-
-@media (max-width: 768px) {
-    .question-header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .question-title-input, 
-    .type-select-wrapper select {
-        width: 100%;
-    }
-    .flex-row {
-        flex-direction: column;
-    }
-    .answer-pill-box, 
-    .match-box-left, 
-    .match-box-right {
-        width: 100%;
-    }
-    .inner-pill-input {
-        width: 100%;
-    }
-    .match-arrow {
-        display: none; /* Remove a seta horizontal em telas mobile */
-    }
-    .matching-row {
-        flex-direction: column;
-        align-items: stretch;
-        border-bottom: 2px dashed rgba(0, 0, 0, 0.2);
-        padding-bottom: 10px;
-    }
-}
-
-/* ==========================================================================
-   CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE)
-   ========================================================================== */
-::-webkit-scrollbar {
-    width: 10px; 
-}
-
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
-    border-radius: 10px;
-    border: 3px solid #fff; 
-}
-
-/* Overlay da Modal do Administrador */
+/* =========================================
+   MODAL DE CONFIRMAÇÃO DO ADMINISTRADOR
+   ========================================= */
 .modal-overlay-admin {
     display: none;
     position: fixed;
@@ -657,7 +626,6 @@ h3 {
     align-items: center;
 }
 
-/* Card Principal da Modal */
 .modal-card-admin {
     background-color: #ffffff;
     border: 3px solid #000000;
@@ -684,14 +652,12 @@ h3 {
     line-height: 1.4;
 }
 
-/* Container de Botões */
 .modal-buttons-admin {
     display: flex;
     gap: 15px;
     justify-content: center;
 }
 
-/* Botões com o Estilo Neobrutalista do Painel ADM */
 .modal-buttons-admin button {
     border: 2px solid #000000;
     border-radius: 8px;
@@ -718,4 +684,51 @@ h3 {
 .btn-admin-nao {
     background-color: #ff5252;
     color: #ffffff;
+}
+
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
+@media (max-width: 900px) {
+    .navbar-container {
+        flex-wrap: wrap; 
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .question-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .question-title-input, 
+    .type-select-wrapper select {
+        width: 100%;
+    }
+
+    .flex-row {
+        flex-direction: column;
+    }
+
+    .answer-pill-box, 
+    .match-box-left, 
+    .match-box-right {
+        width: 100%;
+    }
+
+    .inner-pill-input {
+        width: 100%;
+    }
+
+    .match-arrow {
+        display: none;
+    }
+
+    .matching-row {
+        flex-direction: column;
+        align-items: stretch;
+        border-bottom: 2px dashed rgba(0, 0, 0, 0.2);
+        padding-bottom: 10px;
+    }
 }

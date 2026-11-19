@@ -1,3 +1,6 @@
+/* ==========================================================================
+   1. CONFIGURAÇÕES GERAIS E CONTAINER PRINCIPAL
+   ========================================================================== */
 * { 
     box-sizing: border-box; 
     margin: 0; 
@@ -23,6 +26,9 @@
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 }
 
+/* ==========================================================================
+   2. FORMULÁRIO, INPUTS E TÍTULO
+   ========================================================================== */
 .formNovaSenha {
     display: flex;
     flex-direction: column;
@@ -44,7 +50,6 @@
     margin-top: 8px;
 }
 
-/* Sobrescreve e remove a borda azul curvada trazida pelo cadastro.css */
 .formNovaSenha .input-box {
     border: 1px solid #bdbdbd !important;
     border-radius: 4px !important;
@@ -63,7 +68,14 @@
     padding: 10px !important;
 }
 
-/* Configuração do #mensagem para suportar a caixa-erro do cadastro */
+.container-senha {
+    position: relative; 
+    width: 100%;
+}
+
+/* ==========================================================================
+   3. BARRA DE SEGURANÇA, MENSAGENS E BOTÃO
+   ========================================================================== */
 #mensagem {
     text-align: center;
     display: flex;
@@ -95,28 +107,20 @@
     transform: scale(1.05); 
 }
 
-
-/* Container da única linha inteligente */
 .barra-seguranca-redefinir-senha {
     display: flex;
     flex-direction: row;
     gap: 6px;
     width: 100%;
     margin-top: 15px;
-    margin-bottom: 25px; /* Abre espaço para o texto descritivo abaixo da barra */
+    margin-bottom: 25px;
 }
 
-/* Os 4 pedaços da linha */
 .segmento {
     flex: 1;
     height: 6px;
-    background-color: #e2e8f0; /* Começa cinza neutro */
+    background-color: #e2e8f0;
     border-radius: 4px;
     transition: background-color 0.3s ease;
     position: relative;
-}
-
-.container-senha{
-    position: relative; 
-    width: 100%;
 }

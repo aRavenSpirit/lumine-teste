@@ -1,4 +1,6 @@
-/* --- FONTES --- */
+/* ==========================================================================
+   1. FONTES, CONFIGURAÇÕES GERAIS E PALETA DE CORES
+   ========================================================================== */
 @font-face {
     font-family: 'Open_Sans';
     src: url('../fonts/Open_Sans/static/OpenSans-Regular.ttf') format('truetype');
@@ -7,14 +9,11 @@
     font-display: swap;
 }
 
-/* 1. CONFIGURAÇÕES GERAIS E PALETA DE CORES */
 :root {
     --bg-page: #faf8f5;
     --card-border: #a2dbff;
     --header-blue: #a3ddfc;
     --text-main: #000000;
-    
-    /* Cores Temáticas Lumine */
     --color-green: #00ca72;
     --color-red: #ff6565;
     --color-blue: #a3dbff;
@@ -27,7 +26,6 @@
     font-family: 'Open_Sans', sans-serif;
 }
 
-/* Alterado para não chocar com a estrutura da home.css */
 body {
     margin: 0;
     padding: 0;
@@ -35,10 +33,9 @@ body {
     font-family: 'Open_Sans', sans-serif;
     color: var(--text-main);
     min-height: 100vh;
-    overflow-x: hidden; /* Evita barras de rolagem horizontais fantasmas nas animações */
+    overflow-x: hidden;
 }
 
-/* Nova seção que centraliza o conteúdo do quiz mantendo o Header alinhado */
 .quiz-main-section {
     position: relative;
     display: flex;
@@ -49,7 +46,9 @@ body {
     min-width: 0;
 }
 
-/* Botão de Sair Vermelho que expande e revela o texto "Sair" ao passar o mouse */
+/* ==========================================================================
+   2. BOTÕES DE SAÍDA E VOLTAR (CANTO SUPERIOR ESQUERDO)
+   ========================================================================== */
 .btn-sair-quiz {
     position: absolute;
     left: 20px;
@@ -98,7 +97,39 @@ body {
     transform: scale(0.95);
 }
 
-/* Estrutura Geral do Topo - TOTALMENTE REESTILIZADA */
+.btn-sair {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    width: 45px;
+    height: 45px;
+    background-color: #e74c3c;
+    color: #ffffff;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3);
+    transition: all 0.2s ease-in-out;
+    z-index: 10000;
+}
+
+.btn-sair:hover {
+    background-color: #c0392b;
+    transform: scale(1.08);
+    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
+}
+
+.btn-sair:active {
+    transform: scale(0.95);
+}
+
+/* ==========================================================================
+   3. CABEÇALHO DO QUIZ (TÍTULO, BADGES E CRONÔMETRO)
+   ========================================================================== */
 #quiz-header {
     width: 100%;
     max-width: 850px;
@@ -110,7 +141,7 @@ body {
     justify-content: space-between;
     gap: 15px;
     background: #ffffff;
-    padding: 15px 20px 15px 65px; /* Espaço extra à esquerda para telas grandes não encostarem */
+    padding: 15px 20px 15px 65px;
     border-radius: 22px;
     border: 3px solid var(--card-border);
     box-shadow: 0 8px 20px rgba(162, 219, 255, 0.15);
@@ -150,7 +181,6 @@ body {
     word-break: break-word;
 }
 
-/* Badges para Matéria e Conteúdo */
 #quiz-materia, 
 #quiz-conteudo {
     background-color: #eef7fc;
@@ -170,7 +200,6 @@ body {
     color: #e67e22;
 }
 
-/* Cronômetro Estilizado */
 #cronometro {
     font-weight: 800;
     color: #e67e22;
@@ -192,15 +221,16 @@ body {
     font-size: 1.125rem;
 }
 
-/* Container que envolve o card da pergunta */
+/* ==========================================================================
+   4. CARD PRINCIPAL DA PERGUNTA (CENTRO)
+   ========================================================================== */
 #quiz-container {
     width: 100%;
     max-width: 850px;
     min-width: 0;
-    perspective: 1000px; /* Profundidade habilitada para as transições em 3D */
+    perspective: 1000px;
 }
 
-/* O CARD PRINCIPAL DA PERGUNTA - COM ANIMAÇÃO DE ENTRADA INICIAL */
 #pergunta-atual {
     background: #ffffff;
     border: 4px solid var(--card-border);
@@ -216,12 +246,9 @@ body {
     flex-direction: column;
     position: relative;
     overflow: hidden;
-    
-    /* Quando carrega a tela pela primeira vez, ele cai do topo com efeito elástico */
     animation: dropFromTop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
-/* Enunciado da Questão (Transformado no bloco de destaque superior) */
 #pergunta-atual h3 {
     background-color: var(--header-blue);
     color: #000000;
@@ -241,7 +268,6 @@ body {
     word-break: break-word;
 }
 
-/* Alinhamento de textos menores/informativos injetados dentro do card */
 #pergunta-atual p {
     font-size: 1rem;
     font-weight: bold;
@@ -250,23 +276,19 @@ body {
     word-break: break-word;
 }
 
-/* Evita quebras de linha (<br>) feias bagunçarem o grid de labels */
 #pergunta-atual br {
     display: none;
 }
 
 /* ==========================================================================
-   ESTILIZAÇÃO DOS COMPONENTES POR TIPO DE QUESTÃO (CASE 1 AO 6)
+   5. COMPONENTES POR TIPO DE QUESTÃO (CASE 1 AO 6)
    ========================================================================== */
-
-/* --- CASE 1 e CASE 4: Alternativas Únicas e Múltiplas --- */
 #pergunta-atual label {
     display: flex !important;
-    flex-direction: row !important; /* Força ficar na mesma linha na horizontal */
-    align-items: center !important; /* Alinha o checkbox e o número ao centro */
+    flex-direction: row !important;
+    align-items: center !important;
     justify-content: flex-start !important;
-    gap: 15px !important;            /* Espaço entre a caixinha e o número */
-    
+    gap: 15px !important;
     background: #ffffff;
     border: 3px solid var(--card-border);
     border-radius: 20px;
@@ -292,7 +314,6 @@ body {
     transform: translateY(-2px);
 }
 
-/* Escondendo e customizando o Radio e o Checkbox nativo */
 #pergunta-atual label input[type="radio"],
 #pergunta-atual label input[type="checkbox"] {
     appearance: none;
@@ -328,7 +349,6 @@ body {
     font-weight: bold;
 }
 
-/* --- CASE 2: Resposta Curta (Caixa de Texto de Input Amigável) --- */
 #pergunta-atual input[type="text"] {
     width: 100%;
     max-width: 550px;
@@ -349,9 +369,6 @@ body {
     border-color: var(--color-dark-blue);
 }
 
-/* --- CASE 3: Verdadeiro ou Falso --- */
-
-/* Transforma o #pergunta-atual em um CSS Grid específico para este tipo de questão */
 #pergunta-atual:has(button[onclick*="'Verdadeiro'"]) {
     display: grid !important;
     grid-template-columns: 1fr 1fr;
@@ -361,13 +378,11 @@ body {
     align-items: center;
 }
 
-/* Garante que o cabeçalho h3 ocupe as duas colunas inteiras do grid */
 #pergunta-atual:has(button[onclick*="'Verdadeiro'"]) h3 {
     grid-column: 1 / -1;
     width: 100%;
 }
 
-/* Botão Verdadeiro na primeira coluna do grid */
 #pergunta-atual button[onclick*="'Verdadeiro'"] {
     grid-column: 1;
     justify-self: end;
@@ -391,7 +406,6 @@ body {
     box-shadow: 0 8px 0 #009353 !important;
 }
 
-/* Botão Falso na segunda coluna do grid */
 #pergunta-atual button[onclick*="'Falso'"] {
     grid-column: 2;
     justify-self: start;
@@ -452,7 +466,6 @@ body {
     filter: brightness(1.08);
 }
 
-/* Texto de "Selecionado: ..." ocupa toda a extensão abaixo e fica alinhado à esquerda */
 #pergunta-atual p[id*="selecionado"] {
     grid-column: 1 / -1;
     justify-self: start;
@@ -465,7 +478,6 @@ body {
     display: block !important;
 }
 
-/* --- CASE 5: Ordenação Estilo Duolingo --- */
 #pergunta-atual div[style*="background: #ebf5fb"] {
     background-color: #eaf6ff !important;
     border: 3px dashed #229df5 !important;
@@ -554,7 +566,6 @@ body {
     box-shadow: none !important;
 }
 
-/* --- CASE 6: Arrastar e Soltar (Drag and Drop) --- */
 #itens-disponiveis {
     background: #fff9f2 !important;
     border: 3px dashed var(--color-orange) !important;
@@ -622,7 +633,7 @@ div[id^="drag_"] {
 }
 
 /* ==========================================================================
-   3. CONTROLES DE NAVEGAÇÃO INFERIORES DO QUIZ (FOOTER)
+   6. CONTROLES DE NAVEGAÇÃO INFERIORES DO QUIZ (FOOTER)
    ========================================================================== */
 #quiz-controls {
     width: 100%;
@@ -636,7 +647,6 @@ div[id^="drag_"] {
     gap: 10px;
 }
 
-/* Estilo padronizado base para os botões do rodapé */
 #btn-voltar, 
 #btn-proximo, 
 #btn-finalizar,
@@ -684,7 +694,6 @@ div[id^="drag_"] {
     box-shadow: 0 1px 0 transparent !important;
 }
 
-/* Botão "Voltar para a Home" no rodapé - Azul destacado */
 #btn-home-revisao.btn-rodape-revisao {
     background-color: #3498db !important;
     border: none !important;
@@ -701,7 +710,6 @@ div[id^="drag_"] {
     box-shadow: 0 1px 0 transparent !important;
 }
 
-/* Botão "Ver comentários" no rodapé - Verde destacado */
 #btn-comentarios-revisao.btn-rodape-revisao {
     background-color: #00ca72 !important;
     border: none !important;
@@ -726,7 +734,7 @@ div[id^="drag_"] {
 }
 
 /* ==========================================================================
-   ESTILIZAÇÃO DO MODAL DE RESULTADOS (POP-IN COM IMPACTO VISUAL)
+   7. MODAL DE RESULTADOS (POP-IN COM IMPACTO VISUAL)
    ========================================================================== */
 #modal-resultado {
     position: fixed;
@@ -809,7 +817,7 @@ div[id^="drag_"] {
 }
 
 .resultado-label {
-    font-size: 0.875rem; /* Letras Brancas maiores */
+    font-size: 0.875rem;
     font-weight: 800;
     color: #ffffff;
     text-transform: uppercase;
@@ -846,7 +854,6 @@ div[id^="drag_"] {
     box-shadow: 0 8px 0 #db4f4f;
 }
 
-/* Container dos botões do modal de resultado */
 .modal-resultado-acoes {
     display: flex;
     justify-content: center;
@@ -857,7 +864,6 @@ div[id^="drag_"] {
     margin-top: 15px;
 }
 
-/* Estilo base idêntico ao botão Avançar para todos os botões */
 .btn-modal-acao {
     color: #ffffff;
     border: none;
@@ -876,38 +882,37 @@ div[id^="drag_"] {
     text-decoration: none;
 }
 
-/* Efeito de clique idêntico para todos */
 .btn-modal-acao:active {
     transform: translateY(4px) !important;
 }
 
-/* 1. Botão Revisar Respostas - Tom de Azul (#3498db) */
 .btn-revisar {
     background-color: #3498db !important;
     box-shadow: 0 6px 0 #2980b9 !important;
 }
+
 .btn-revisar:active {
     box-shadow: 0 2px 0 #2980b9 !important;
 }
 
-/* 2. Botão Fazer Comentário - Tom de Verde (#34db5e) */
 .btn-comentario {
     background-color: #34db5e !important;
     box-shadow: 0 6px 0 #27ae60 !important;
 }
+
 .btn-comentario:active {
     box-shadow: 0 2px 0 #27ae60 !important;
 }
 
-/* 3. Botão Avançar - Preto original */
 .btn-avancar,
 #btn-modal-home {
     background-color: #000000 !important;
     box-shadow: 0 6px 0 #333333 !important;
-    margin: 0 !important; /* Reseta margem individual */
+    margin: 0 !important;
     width: 100%;
     max-width: 250px;
 }
+
 .btn-avancar:active,
 #btn-modal-home:active {
     box-shadow: 0 2px 0 #333333 !important;
@@ -919,23 +924,8 @@ div[id^="drag_"] {
 }
 
 /* ==========================================================================
-   CLASSES ESPECÍFICAS DISPARADAS AUTOMATICAMENTE NO CLIQUE
+   8. SISTEMA DE AVALIAÇÃO DO QUIZ (APENAS ESTRELAS)
    ========================================================================== */
-
-/* Transição de Próximo (Vem deslizando da Direita em 3D) */
-.slide-proximo {
-    animation: slideFromRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-}
-
-/* Transição de Anterior (Vem deslizando da Esquerda em 3D) */
-.slide-anterior {
-    animation: slideFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
-}
-
-/* ==========================================================================
-   SISTEMA DE AVALIAÇÃO DO QUIZ (APENAS ESTRELAS)
-   ========================================================================== */
-
 .modal-avaliacao {
     position: fixed;
     z-index: 9999;
@@ -979,7 +969,6 @@ div[id^="drag_"] {
     margin-bottom: 20px;
 }
 
-/* Container centralizado das estrelas */
 .rating-stars {
     display: flex;
     justify-content: center;
@@ -987,7 +976,6 @@ div[id^="drag_"] {
     margin: 20px 0;
 }
 
-/* Estilo individual de cada estrela */
 .rating-stars i {
     font-size: clamp(2rem, 6vw, 2.6rem);
     cursor: pointer;
@@ -995,65 +983,28 @@ div[id^="drag_"] {
     transition: transform 0.2s ease, color 0.2s ease;
 }
 
-/* Efeito de crescimento sutil no hover */
 .rating-stars i:hover {
     transform: scale(1.18);
 }
 
-/* Estilização do Botão Sair / Voltar */
-.btn-sair {
-    position: absolute;
-    top: 20px;      /* Distância do topo */
-    left: 20px;     /* Distância da esquerda */
-    width: 45px;    /* Largura idêntica à altura para fazer um círculo perfeito */
-    height: 45px;   /* Altura idêntica */
-    background-color: #e74c3c; /* Vermelho moderno (Alizarin) */
-    color: #ffffff; /* Ícone branco */
-    border: none;
-    border-radius: 50%; /* Deixa o botão perfeitamente redondo */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 1.2rem; /* Tamanho da seta */
-    cursor: pointer;
-    box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* Sombra leve vermelha */
-    transition: all 0.2s ease-in-out;
-    z-index: 10000; /* Garante que ele fique acima outros elementos do quiz */
-}
-
-/* Efeito de Hover (Passar o mouse) */
-.btn-sair:hover {
-    background-color: #c0392b; /* Vermelho um pouco mais escuro */
-    transform: scale(1.08); /* Dá uma leve aumentada ao passar o mouse */
-    box-shadow: 0 6px 15px rgba(192, 57, 43, 0.4);
-}
-
-/* Efeito de Clique */
-.btn-sair:active {
-    transform: scale(0.95); /* Dá um efeito de "afundar" ao clicar */
-}
-
 /* ==========================================================================
-   MODAL DE CONFIRMAÇÃO DE SAÍDA
+   9. MODAL DE CONFIRMAÇÃO DE SAÍDA
    ========================================================================== */
-
-/* O overlay (fundo escurecido que cobre toda a tela) */
 .modal-confirmar-saida {
-    display: none; /* <-- ESSENCIAL: Começa totalmente escondida */
-    position: fixed !important; /* Força a modal a sair do fluxo do Flexbox */
+    display: none;
+    position: fixed !important;
     top: 0;
     left: 0;
-    width: 100vw; /* Ocupa 100% da largura da janela */
-    height: 100vh; /* Ocupa 100% da altura da janela */
-    background-color: rgba(0, 0, 0, 0.6); /* Fundo escurecido */
-    backdrop-filter: blur(5px); /* Efeito blur no quiz atrás */
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
     justify-content: center;
     align-items: center;
-    z-index: 99999; /* Garante que fique por cima de absolutamente tudo */
+    z-index: 99999;
     padding: 15px;
 }
 
-/* O card centralizado */
 .modal-confirmar-saida-card {
     background-color: #ffffff;
     padding: 25px 20px;
@@ -1062,12 +1013,9 @@ div[id^="drag_"] {
     max-width: 450px;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-    
-    /* Animação suave ao aparecer */
     animation: aparecerModal 0.3s ease-out;
 }
 
-/* Título da Modal */
 .modal-confirmar-saida-card h2 {
     color: #2c3e50;
     font-size: 1.3rem;
@@ -1075,7 +1023,6 @@ div[id^="drag_"] {
     font-weight: 700;
 }
 
-/* Subtítulo / Texto explicativo */
 .modal-confirmar-saida-card p {
     color: #7f8c8d;
     font-size: 0.95rem;
@@ -1083,15 +1030,13 @@ div[id^="drag_"] {
     margin-bottom: 25px;
 }
 
-/* Container dos botões */
 .modal-buttons {
     display: flex;
     justify-content: center;
-    gap: 10px; /* Espaçamento entre os botões */
+    gap: 10px;
     flex-wrap: wrap;
 }
 
-/* Estilização Geral dos Botões da Modal */
 .modal-buttons button {
     padding: 12px 20px;
     font-size: 0.9rem;
@@ -1100,12 +1045,11 @@ div[id^="drag_"] {
     border-radius: 8px;
     cursor: pointer;
     transition: all 0.2s ease;
-    flex: 1 1 120px; /* Faz os dois botões responderem proporcionalmente */
+    flex: 1 1 120px;
 }
 
-/* Botão Principal (Não, Continuar) - Destacado para o usuário não sair sem querer */
 .btn-primary {
-    background-color: #3498db; /* Azul combinando com o Lumine */
+    background-color: #3498db;
     color: #ffffff;
 }
 
@@ -1114,24 +1058,32 @@ div[id^="drag_"] {
     transform: translateY(-2px);
 }
 
-/* Botão Secundário (Sim, Sair) - Mais discreto ou com tom de aviso */
 .btn-secondary {
     background-color: #ecf0f1;
     color: #7f8c8d;
 }
 
 .btn-secondary:hover {
-    background-color: #e74c3c; /* Fica vermelho ao passar o mouse, indicando perigo/saída */
+    background-color: #e74c3c;
     color: #ffffff;
     transform: translateY(-2px);
 }
 
-/* Efeito de clique nos botões */
 .modal-buttons button:active {
     transform: translateY(0);
 }
 
-/* Keyframes para a animação de entrada */
+/* ==========================================================================
+   10. CLASSES DE TRANSIÇÃO E MECÂNICA KEYFRAMES DAS ANIMAÇÕES
+   ========================================================================== */
+.slide-proximo {
+    animation: slideFromRight 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
+.slide-anterior {
+    animation: slideFromLeft 0.45s cubic-bezier(0.25, 1, 0.5, 1) forwards !important;
+}
+
 @keyframes aparecerModal {
     from {
         opacity: 0;
@@ -1143,11 +1095,6 @@ div[id^="drag_"] {
     }
 }
 
-/* ==========================================================================
-   MECÂNICA KEYFRAMES DAS ANIMAÇÕES
-   ========================================================================== */
-
-/* Entrada Inicial (Caindo do topo) */
 @keyframes dropFromTop {
     0% {
         opacity: 0;
@@ -1159,7 +1106,6 @@ div[id^="drag_"] {
     }
 }
 
-/* Avançar Pergunta */
 @keyframes slideFromRight {
     0% {
         opacity: 0;
@@ -1171,7 +1117,6 @@ div[id^="drag_"] {
     }
 }
 
-/* Voltar Pergunta */
 @keyframes slideFromLeft {
     0% {
         opacity: 0;
@@ -1183,7 +1128,6 @@ div[id^="drag_"] {
     }
 }
 
-/* Fade simples do fundo do Modal */
 @keyframes fadeInBg {
     from { 
         opacity: 0; 
@@ -1193,7 +1137,6 @@ div[id^="drag_"] {
     }
 }
 
-/* Efeito Elástico tridimensional do Pop-up de resultados */
 @keyframes feedbackPopIn {
     0% {
         opacity: 0;
@@ -1209,9 +1152,8 @@ div[id^="drag_"] {
 }
 
 /* ==========================================================================
-   REGRAS ESPECÍFICAS DE AJUSTE PARA TELAS MENORES (RESPONSIVIDADE EXTRA)
+   11. REGRAS ESPECÍFICAS DE AJUSTE PARA TELAS MENORES (RESPONSIVIDADE EXTRA)
    ========================================================================== */
-/* Breakpoint em 1050px: aciona logo que a largura da tela encostar na borda do quiz */
 @media (max-width: 1050px) {
     .quiz-main-section {
         align-items: stretch;
@@ -1257,7 +1199,6 @@ div[id^="drag_"] {
         width: 100%;
     }
 
-    /* EMPILHA OS BOTÕES VERDADEIRO E FALSO UM EM CIMA DO OUTRO EM TELAS PEQUENAS (MOBILE) */
     #pergunta-atual:has(button[onclick*="'Verdadeiro'"]) {
         grid-template-columns: 1fr !important;
     }

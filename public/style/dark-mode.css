@@ -1,12 +1,9 @@
-/* ==========================================================================
-   LUMINE - CSS GLOBAL DO MODO ESCURO
-   ========================================================================== */
-
-/* 1. CONFIGURAÇÕES GERAIS DE FUNDO E TEXTO */
+/* =========================================
+   CONFIGURAÇÕES GERAIS DE FUNDO E MARCA
+   ========================================= */
 body.dark-mode {
     background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
                 url('../img/background-index-transparente.png') no-repeat center center;
-    
     color: #e0e0e0 !important;
 }
 
@@ -17,15 +14,16 @@ body.dark-mode {
 .N { color: #ff5757; }
 .E { color: #ffbd59; }
 
-
-/* 2. COMPONENTES DA PÁGINA INICIAL / INSTITUCIONAL (index.css) */
+/* =========================================
+   HEADER E NAVEGAÇÃO PÚBLICA
+   ========================================= */
 body.dark-mode .navbar,
 body.dark-mode .mobile-menu {
     background-color: #1a1a1a !important;
     border-bottom: 1px solid #2d2d2d;
 }
 
-body.dark-mode .navbar .logo-section{
+body.dark-mode .navbar .logo-section {
     background-color: #1a1a1a;
 }
 
@@ -35,7 +33,7 @@ body.dark-mode .navbar .hamburger {
     transition: all 0.3s ease;
 }
 
-body.dark-mode .navbar .hamburger:hover{
+body.dark-mode .navbar .hamburger:hover {
     background: #5170ff;
 }
 
@@ -48,6 +46,9 @@ body.dark-mode .nav-links .item-acessar {
     color: #1a1a1a;
 }
 
+/* =========================================
+   SEÇÕES INSTITUCIONAIS E RODAPÉ
+   ========================================= */
 body.dark-mode .hero {
     background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), url('../img/background-index-transparente.png') no-repeat center center;
     color: #e0e0e0;
@@ -81,35 +82,17 @@ body.dark-mode footer p {
     color: #b0b0b0 !important;
 }
 
-
-/* 3. COMPONENTES DO PAINEL INTERNO E QUIZZES (home.css / layout.php) */
+/* =========================================
+   HEADER INTERNO, SIDEBAR E MENU MOBILE
+   ========================================= */
 body.dark-mode .navbar-home {
     background-color: #1a1a1a !important;
     border-bottom: 1px solid #2d2d2d !important;
 }
 
-body.dark-mode .sidebar {
-    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
-                url('../img/background-index-transparente.png') no-repeat center center !important;
-    border-right: 1px solid #2d2d2d !important;
-}
-
-body.dark-mode .sidebar a {
-    color: #ffffff !important;
-}
-
-body.dark-mode .sidebar nav a:hover {
-    background-color: #333 !important;
-    color: #ffffff !important;
-}
-
-body.dark-mode .menu-trigger {
-    color: #ffffff !important;
-}
-
 body.dark-mode .nav-links-home a,
 body.dark-mode .nav-links-home .perfil-link span {
-    color: #e0e0e0 !important;
+    color: #e0e0e0 !important; 
 }
 
 body.dark-mode .nav-links-home a:hover {
@@ -118,32 +101,44 @@ body.dark-mode .nav-links-home a:hover {
 }
 
 body.dark-mode .profile-icon,
-body.dark-mode .hamburger-mobile {
+body.dark-mode .hamburger-mobile,
+body.dark-mode .menu-trigger {
     color: #ffffff !important;
 }
 
-/* Páginas Novidades, Recomendados e Home */
-body.dark-mode .subtitle, 
-body.dark-mode .section-title,
-body.dark-mode .search-box-wrapper,
-body.dark-mode .card-body {
-    color: #ffffff;
+body.dark-mode .sidebar {
+    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
+                url('../img/background-index-transparente.png') no-repeat center center !important;
+    border-right: 1px solid #2d2d2d !important;
 }
 
-body.dark-mode #bemvindo {
+body.dark-mode .sidebar a,
+body.dark-mode .sidebar nav a {
     color: #ffffff !important;
 }
 
-body.dark-mode .welcome-text h1 {
-    background-color: #1595C4;
-    border: 3px solid #d2e8ff;
+body.dark-mode .sidebar nav a:hover {
+    background-color: #333 !important;
+    color: #ffffff !important;
 }
 
-body.dark-mode #tituloModal {
-    color: #ffffff;
+body.dark-mode .mobile-menu,
+body.dark-mode .mobile-menu-scroll {
+    background-color: #1a1a1a !important;
 }
 
-/* Dropdown do perfil */
+body.dark-mode .nav-links-mobile a,
+body.dark-mode .mobile-menu-close {
+    color: #e0e0e0 !important;
+}
+
+body.dark-mode .nav-links-mobile a:hover {
+    background-color: #333 !important;
+}
+
+/* =========================================
+   DROPDOWN DO PERFIL
+   ========================================= */
 body.dark-mode .perfil-dropdown {
     background-color: #2a2a2a !important;
     color: #ffffff !important;
@@ -161,7 +156,26 @@ body.dark-mode .perfil-dropdown hr {
     border-color: #444444 !important;
 }
 
-/* Quiz Cards */
+/* =========================================
+   HOME, NOVIDADES E CARDS DE QUIZZES
+   ========================================= */
+body.dark-mode .subtitle, 
+body.dark-mode .section-title,
+body.dark-mode .search-box-wrapper,
+body.dark-mode .card-body,
+body.dark-mode #tituloModal {
+    color: #ffffff;
+}
+
+body.dark-mode #bemvindo {
+    color: #ffffff !important;
+}
+
+body.dark-mode .welcome-text h1 {
+    background-color: #1595C4;
+    border: 3px solid #d2e8ff;
+}
+
 body.dark-mode .quiz-card {
     background-color: #1e293b !important;
     border-color: #334155 !important;
@@ -186,82 +200,18 @@ body.dark-mode .quiz-questoes-badge {
     color: #cbd5e1 !important;
 }
 
+.card-materia,
 body.dark-mode .card-materia {
     border: none !important;
 }
 
-/* Mobile Menu */
-body.dark-mode .mobile-menu,
-body.dark-mode .mobile-menu-scroll {
-    background-color: #1a1a1a !important;
-}
-
-body.dark-mode .nav-links-mobile a,
-body.dark-mode .mobile-menu-close {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .nav-links-mobile a:hover {
-    background-color: #333 !important;
-}
-
-/* Banner de Cookies */
-body.dark-mode #cookieBanner {
-    background: #1595C4 !important;
-    color: #ffffff !important;
-    border: 2px solid #0b506b !important;
-    box-shadow: 8px 8px 0px #0b506b !important;
-}
-
-body.dark-mode .cookie-text h3,
-body.dark-mode .cookie-text p,
-body.dark-mode .politica a {
-    color: #ffffff !important;
-}
-
-/* Modais Genéricos */
-body.dark-mode .modal-content {
-    background-color: #1e293b !important;
-    border-color: #334155 !important;
-}
-
-body.dark-mode .modal-header {
-    background-color: #1e293b !important;
-}
-
-body.dark-mode .modal-body {
-    background-color: #0f172a !important;
-}
-
-body.dark-mode .modal-content-confirm,
-.modal-content-confirm.dark-mode {
-    background: #1e293b !important;
-    border-color: #475569 !important;
-}
-
-body.dark-mode .modal-content-confirm .modal-titulo,
-.modal-content-confirm.dark-mode .modal-titulo {
-    background: #0f172a !important;
-    color: #f8fafc !important;
-    border-color: #475569 !important;
-}
-
-body.dark-mode .btn-voltar, 
-body.dark-mode .btn-entrar {
-    border-color: #000 !important;
-}
-
-
-/* ==========================================================================
-   4. ESTILIZAÇÃO COMPLETA DA INTERFACE DO QUIZ (quiz.css / quiz.php)
-   ========================================================================== */
-
-/* Fundo Geral da Seção do Quiz */
+/* =========================================
+   PÁGINA DO QUIZ: CABEÇALHO E CRONÔMETRO
+   ========================================= */
 body.dark-mode .quiz-main-section {
     background-color: #121212 !important;
 }
 
-/* Cabeçalho do Quiz (Topo com Título, Matéria e Conteúdo) */
 body.dark-mode #quiz-header {
     background-color: #1e293b !important;
     border-color: #334155 !important;
@@ -293,7 +243,9 @@ body.dark-mode #cronometro {
     box-shadow: 0 4px 0 #431407 !important;
 }
 
-/* Card Principal da Pergunta */
+/* =========================================
+   PÁGINA DO QUIZ: PERGUNTAS E ALTERNATIVAS
+   ========================================= */
 body.dark-mode #pergunta-atual {
     background-color: #1e293b !important;
     border-color: #334155 !important;
@@ -311,7 +263,6 @@ body.dark-mode #pergunta-atual p {
     color: #e2e8f0 !important;
 }
 
-/* Alternativas (Opções Únicas e Múltiplas) */
 body.dark-mode #pergunta-atual label {
     background-color: #0f172a !important;
     border-color: #334155 !important;
@@ -330,7 +281,6 @@ body.dark-mode #pergunta-atual label input[type="checkbox"] {
     border-color: #64748b !important;
 }
 
-/* Input de Resposta Curta */
 body.dark-mode #pergunta-atual input[type="text"] {
     background-color: #0f172a !important;
     border-color: #334155 !important;
@@ -342,7 +292,9 @@ body.dark-mode #pergunta-atual input[type="text"]:focus {
     border-color: #38bdf8 !important;
 }
 
-/* Ordenação Estilo Duolingo */
+/* =========================================
+   PÁGINA DO QUIZ: ORDENAÇÃO E ARRASTAR/SOLTAR
+   ========================================= */
 body.dark-mode #pergunta-atual div[style*="background: #ebf5fb"] {
     background-color: #0f172a !important;
     border-color: #38bdf8 !important;
@@ -361,7 +313,6 @@ body.dark-mode #pergunta-atual button[disabled][style*="opacity: 0.6"] {
     color: #64748b !important;
 }
 
-/* Arrastar e Soltar */
 body.dark-mode #itens-disponiveis {
     background-color: #1e1b4b !important;
     border-color: #6366f1 !important;
@@ -380,7 +331,9 @@ body.dark-mode .box-target {
     color: #94a3b8 !important;
 }
 
-/* Controles e Botões Inferiores do Quiz */
+/* =========================================
+   PÁGINA DO QUIZ: CONTROLES E MODAIS
+   ========================================= */
 body.dark-mode #btn-voltar,
 body.dark-mode #btn-proximo {
     background-color: #1e293b !important;
@@ -398,7 +351,6 @@ body.dark-mode #progresso {
     color: #e2e8f0 !important;
 }
 
-/* Modal de Resultados Finais */
 body.dark-mode #modal-resultado {
     background-color: rgba(15, 23, 42, 0.75) !important;
 }
@@ -424,7 +376,6 @@ body.dark-mode .resultado-valor {
     color: #ffffff !important;
 }
 
-/* Modais de Saída e Avaliação */
 body.dark-mode .modal-confirmar-saida {
     background-color: rgba(0, 0, 0, 0.75) !important;
 }
@@ -461,12 +412,9 @@ body.dark-mode #modal-avaliacao p {
     color: #cbd5e1 !important;
 }
 
-
-/* ==========================================================================
-   5. ESTILIZAÇÃO COMPLETA DA PÁGINA DE COMENTÁRIOS (comentario.php / comentario.css)
-   ========================================================================== */
-
-/* Container Principal dos Comentários */
+/* =========================================
+   PÁGINA DE COMENTÁRIOS
+   ========================================= */
 body.dark-mode .container-comentarios {
     background-color: #1e293b !important;
     border-color: #334155 !important;
@@ -477,13 +425,11 @@ body.dark-mode .container-comentarios h2 {
     color: #38bdf8 !important;
 }
 
-/* Área Interna onde os comentários ficam listados */
 body.dark-mode .card-respostas {
     background-color: #0f172a !important;
     border-color: #334155 !important;
 }
 
-/* Card Individual de cada Comentário */
 body.dark-mode .comentario {
     background-color: #1e293b !important;
     border-left: 5px solid #00bf63 !important;
@@ -507,7 +453,6 @@ body.dark-mode .comentario-texto {
     color: #e2e8f0 !important;
 }
 
-/* Formulário de Envio (Estilo Pílula) */
 body.dark-mode .comentario-form form {
     background-color: #0f172a !important;
     border-color: #334155 !important;
@@ -528,7 +473,10 @@ body.dark-mode .comentario-form textarea::placeholder {
     color: #64748b !important;
 }
 
-/* Botão de Enviar do Formulário */
+body.dark-mode .comentario-form textarea::-webkit-scrollbar-thumb {
+    background: #0cc0df !important;
+}
+
 body.dark-mode .comentario-form button {
     background-color: #00bf63 !important;
     color: #ffffff !important;
@@ -544,12 +492,6 @@ body.dark-mode .comentario-form button:active {
     box-shadow: 0px 1px 0px #008f4a !important;
 }
 
-/* Scrollbar do Textarea no modo escuro */
-body.dark-mode .comentario-form textarea::-webkit-scrollbar-thumb {
-    background: #0cc0df !important;
-}
-
-/* Botões de Rota/Navegação (Sair e Revisar Respostas) */
 body.dark-mode .rotas-buttons .btn-sair-flutuante {
     background-color: #e74c3c !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
@@ -574,6 +516,9 @@ body.dark-mode .rotas-buttons .btn-revisar:focus {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6) !important;
 }
 
+/* =========================================
+   PÁGINA DE CONFIGURAÇÕES
+   ========================================= */
 body.dark-mode .cards-section,
 body.dark-mode #card-opcoes {
     background-color: #1a1a1a;
@@ -621,10 +566,58 @@ body.dark-mode .modal-cropper-content {
 body.dark-mode .modal-cropper-content h3 {
     color: #ffffff;
 }
+
 body.dark-mode .materia-selecionada-badge {
     background-color: #2a2a2a;
     color: #ffffff;
     border-color: #000000;
+}
+
+/* =========================================
+   MODAIS GLOBAIS E BANNER DE COOKIES
+   ========================================= */
+body.dark-mode #cookieBanner {
+    background: #1595C4 !important;
+    color: #ffffff !important;
+    border: 2px solid #0b506b !important;
+    box-shadow: 8px 8px 0px #0b506b !important;
+}
+
+body.dark-mode .cookie-text h3,
+body.dark-mode .cookie-text p,
+body.dark-mode .politica a {
+    color: #ffffff !important;
+}
+
+body.dark-mode .modal-content {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+body.dark-mode .modal-header {
+    background-color: #1e293b !important;
+}
+
+body.dark-mode .modal-body {
+    background-color: #0f172a !important;
+}
+
+body.dark-mode .modal-content-confirm,
+.modal-content-confirm.dark-mode {
+    background: #1e293b !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode .modal-content-confirm .modal-titulo,
+.modal-content-confirm.dark-mode .modal-titulo {
+    background: #0f172a !important;
+    color: #f8fafc !important;
+    border-color: #475569 !important;
+}
+
+body.dark-mode .btn-voltar, 
+body.dark-mode .btn-entrar {
+    border-color: #000 !important;
 }
 
 body.dark-mode .modal-card-global {
@@ -636,154 +629,4 @@ body.dark-mode .modal-card-global {
 body.dark-mode .modal-titulo-global,
 body.dark-mode .modal-mensagem-global {
     color: #ffffff;
-}
-
-body.dark-mode .perfil-dropdown {
-    background-color: #1e293b;
-    color: #f8fafc;
-}
-
-body.dark-mode .perfil-dropdown p {
-    color: #e2e8f0;
-}
-
-body.dark-mode .perfil-dropdown p strong {
-    color: #ffffff;
-}
-
-/* =========================================
-   MODO ESCURO - HEADER (NAVBAR)
-========================================= */
-body.dark-mode .navbar-home {
-    background-color: #1a1a1a !important; /* Fundo cinza escuro */
-    border-bottom: 1px solid #333; /* Linha sutil para separar do conteúdo */
-}
-
-/* Cor dos links do menu no topo */
-body.dark-mode .nav-links-home a,
-body.dark-mode .nav-links-home .perfil-link span {
-    color: #e0e0e0 !important; 
-}
-
-/* Efeito ao passar o mouse nos links do topo */
-body.dark-mode .nav-links-home a:hover {
-    color: #ffffff !important;
-    background-color: #333; /* Fundo levemente mais claro no hover, se houver */
-}
-
-/* Ícone do usuário e menu hambúrguer mobile */
-body.dark-mode .profile-icon,
-body.dark-mode .hamburger-mobile {
-    color: #ffffff !important;
-}
-
-/* =========================================
-   MODO ESCURO - SIDEBAR (MENU LATERAL)
-========================================= */
-body.dark-mode .sidebar {
-    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
-                url('../img/background-index-transparente.png') no-repeat center center;
-    border-right: 1px solid #333;
-}
-
-body.dark-mode .menu-trigger {
-    color: #ffffff !important;
-}
-
-/* Links das matérias na sidebar */
-body.dark-mode .sidebar nav a {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .sidebar nav a:hover {
-    background-color: #333 !important;
-    color: #ffffff !important;
-}
-
-/* CARDS*/
-.card-materia {
-    border: none;
-}
-
-/* =========================================
-   MODO ESCURO - MENU MOBILE (SE HOUVER)
-========================================= */
-body.dark-mode .mobile-menu,
-body.dark-mode .mobile-menu-scroll {
-    background-color: #1a1a1a !important;
-}
-
-body.dark-mode .nav-links-mobile a,
-body.dark-mode .mobile-menu-close {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .nav-links-mobile a:hover {
-    background-color: #333 !important;
-}
-
-/* =========================================
-   MODO ESCURO - MENU MOBILE (SE HOUVER)
-========================================= */
-body.dark-mode .mobile-menu,
-body.dark-mode .mobile-menu-scroll {
-    background-color: #1a1a1a !important;
-}
-
-body.dark-mode .nav-links-mobile a,
-body.dark-mode .mobile-menu-close {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .nav-links-mobile a:hover {
-    background-color: #333 !important;
-}
-
-/* =========================================
-   MODO ESCURO - HEADER (NAVBAR)
-========================================= */
-body.dark-mode .navbar-home {
-    background-color: #1a1a1a !important; /* Fundo cinza escuro */
-    border-bottom: 1px solid #333; /* Linha sutil para separar do conteúdo */
-}
-
-/* Cor dos links do menu no topo */
-body.dark-mode .nav-links-home a,
-body.dark-mode .nav-links-home .perfil-link span {
-    color: #e0e0e0 !important; 
-}
-
-/* Efeito ao passar o mouse nos links do topo */
-body.dark-mode .nav-links-home a:hover {
-    color: #ffffff !important;
-    background-color: #333; /* Fundo levemente mais claro no hover, se houver */
-}
-
-/* Ícone do usuário e menu hambúrguer mobile */
-body.dark-mode .profile-icon,
-body.dark-mode .hamburger-mobile {
-    color: #ffffff !important;
-}
-
-/* =========================================
-   MODO ESCURO - SIDEBAR (MENU LATERAL)
-========================================= */
-body.dark-mode .sidebar {
-    background: linear-gradient(to bottom, #1a1a1acc, #1a1a1acc), 
-                url('../img/background-index-transparente.png') no-repeat center center;
-    border-right: 1px solid #333;
-}
-
-body.dark-mode .menu-trigger {
-    color: #ffffff !important;
-}
-
-/* Links das matérias na sidebar */
-body.dark-mode .sidebar nav a {
-    color: #e0e0e0 !important;
-}
-
-body.dark-mode .sidebar nav a:hover {
-    background-color: #333 !important;
-    color: #ffffff !important;
 }

@@ -1,4 +1,6 @@
-/* --- FONTES --- */
+/* ==================================================================
+   1. FONTES E CONFIGURAÇÕES GERAIS
+   ================================================================== */
 @font-face {
     font-family: 'gliker';
     src: url('../fonts/gliker/gliker-regular.woff2') format('woff2');
@@ -15,7 +17,6 @@
     font-display: swap;
 }
 
-/* --- GERAL --- */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -32,7 +33,9 @@ body {
     font-family: 'Open_Sans', sans-serif; 
 }
 
-/* --- BARRA DE NAVEGAÇÃO --- */
+/* ==================================================================
+   2. BARRA DE NAVEGAÇÃO SUPERIOR (DESKTOP)
+   ================================================================== */
 .navbar {
     display: flex;
     height: 80px;
@@ -101,7 +104,6 @@ body {
     text-transform: uppercase;
 }
 
-/* Cores de Fundo dos Itens */
 .item-sobre { 
     background-color: #00bf63; 
 }
@@ -118,7 +120,6 @@ body {
     background-color: #ff5757; 
 }
 
-/* EFEITO DE ESTENDER PARA BAIXO NO HOVER */
 .nav-links li:not(.item-acessar):hover {
     height: 110px; 
     box-shadow: 0 10px 20px rgba(0,0,0,0.15);
@@ -130,7 +131,9 @@ body {
     color: white;
 }
 
-/* --- BOTÃO ACESSAR (ESTILO 3D PRESSIONÁVEL) --- */
+/* ==================================================================
+   3. BOTÃO ACESSAR (ESTILO 3D PRESSIONÁVEL)
+   ================================================================== */
 .item-acessar {
     display: flex;
     align-items: center;
@@ -170,7 +173,9 @@ body {
     transition: all 0.1s; 
 }
 
-/* --- MENU MOBILE --- */
+/* ==================================================================
+   4. MENU MOBILE
+   ================================================================== */
 .hamburger {
     display: none;
     font-size: 1.875rem;
@@ -252,7 +257,9 @@ body {
     background-color: #ff5757; 
 }
 
-/* --- HERO --- */
+/* ==================================================================
+   5. HERO (BANNER PRINCIPAL NO TOPO)
+   ================================================================== */
 .hero {
     display: flex;
     flex-direction: column;
@@ -278,7 +285,6 @@ body {
     display: inline-flex;
 }
 
-/* ANIMAÇÃO INDIVIDUAL DAS LETRAS DO TÍTULO PRINCIPAL (Efeito Onda / Bounce) */
 .letras-lumine span {
     display: inline-block;
     transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), filter 0.3s;
@@ -288,7 +294,6 @@ body {
     animation: waveBounce 0.6s ease-in-out infinite alternate;
 }
 
-/* Delays para criar o efeito contínuo de onda ao passar o mouse */
 .letras-lumine :nth-child(1) { animation-delay: 0.0s; }
 .letras-lumine :nth-child(2) { animation-delay: 0.1s; }
 .letras-lumine :nth-child(3) { animation-delay: 0.2s; }
@@ -314,7 +319,9 @@ body {
     font-weight: bold; 
 }
 
-/* --- SEÇÕES --- */
+/* ==================================================================
+   6. SEÇÕES DE APRESENTAÇÃO E VÍDEOS
+   ================================================================== */
 .secao-apresentacao1, 
 .secao-apresentacao3, 
 .secao-apresentacao4 {
@@ -388,7 +395,9 @@ body {
     object-fit: contain; 
 }
 
-/* --- SLIDER (Ajustado para Sobrepor) --- */
+/* ==================================================================
+   7. SLIDER DE PREVIEW DE QUIZZES
+   ================================================================== */
 .secao-apresentacao2 {
     width: 100%;
     padding: 60px 0;
@@ -495,7 +504,9 @@ body {
     }
 }
 
-/* --- FOOTER --- */
+/* ==================================================================
+   8. FOOTER E SCROLLBAR CUSTOMIZADA
+   ================================================================== */
 footer {
     width: 100%;
     background-color: #e3f0fe;
@@ -558,9 +569,23 @@ footer {
     width: 20px; 
 }
 
-/* --- SISTEMA DE ANIMAÇÕES DE ENTRADA (Surgir) --- */
+::-webkit-scrollbar {
+    width: 10px; 
+}
 
-/* 1. Animação simples do Topo (Navbar) */
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
+    border-radius: 10px;
+    border: 3px solid #fff; 
+}
+
+/* ==================================================================
+   9. SISTEMA DE ANIMAÇÕES DE ENTRADA
+   ================================================================== */
 @keyframes slideDownNav {
     from { 
         transform: translateY(-100%); 
@@ -570,7 +595,6 @@ footer {
     }
 }
 
-/* 2. Fade In Inicial (Usado no Hero principal) */
 .animation-fade-in {
     opacity: 0;
     animation: fadeInEffect 1s ease-out forwards;
@@ -587,7 +611,6 @@ footer {
     }
 }
 
-/* 3. Subida Leve (Usada nos textos do Hero) */
 .animation-slide-up {
     opacity: 0;
     transform: translateY(30px);
@@ -601,7 +624,6 @@ footer {
     }
 }
 
-/* 4. Efeito Onda/Bounce no Título Principal ao dar Hover */
 @keyframes waveBounce {
     0% { 
         transform: translateY(0); 
@@ -613,20 +635,20 @@ footer {
     }
 }
 
-/* 5. Efeito Scroll Reveal (Surgir ao arrastar a tela para baixo) */
 .animation-scroll-trigger {
     opacity: 0;
     transform: translateY(60px);
     transition: opacity 0.8s cubic-bezier(0.215, 0.610, 0.355, 1), transform 0.8s cubic-bezier(0.215, 0.610, 0.355, 1);
 }
 
-/* Ativado automaticamente via JavaScript incluído no HTML */
 .animation-scroll-trigger.visible {
     opacity: 1;
     transform: translateY(0);
 }
 
-/* --- RESPONSIVIDADE --- */
+/* ==================================================================
+   10. RESPONSIVIDADE
+   ================================================================== */
 @media screen and (min-width: 1025px) {
     .secao-apresentacao3 { 
         flex-direction: row-reverse; 
@@ -690,19 +712,4 @@ footer {
         justify-content: flex-start;
         min-width: 140px;        
     }
-}
-
-/* --- CUSTOMIZAÇÃO DA SCROLLBAR (LUMINE STYLE) --- */
-::-webkit-scrollbar {
-    width: 10px; 
-}
-
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
-    border-radius: 10px;
-    border: 3px solid #fff; 
 }

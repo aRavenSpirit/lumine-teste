@@ -1,175 +1,6 @@
-.container-comentarios {
-    width: 100%;
-    max-width: 800px;
-    background: #ffffff;
-    border-radius: 20px;
-    padding: 30px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e3f0fe;
-    margin: 0 auto;
-}
-
-.container-comentarios h2 {
-    color: #1595C4; 
-    font-size: clamp(1.5rem, 3vw, 2rem);
-    margin-bottom: 25px;
-    text-align: center;
-    font-weight: 700;
-}
-
-.card-respostas {
-    background-color: #f8fbff; 
-    border-radius: 15px;
-    padding: 20px;
-    max-height: 450px;
-    overflow-y: auto;
-    margin-bottom: 30px;
-    border: 1px solid #d1def2;
-}
-
-.comentario {
-    background: #ffffff;
-    padding: 15px 20px;
-    border-radius: 12px;
-    margin-bottom: 15px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
-    border-left: 5px solid #00bf63; 
-    transition: transform 0.2s ease;
-}
-
-.comentario:last-child {
-    margin-bottom: 0;
-}
-
-.comentario:hover {
-    transform: translateX(5px);
-}
-
-.comentario-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 12px;
-}
-
-.comentario-avatar {
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
-    object-fit: cover;
-    border: 2px solid #e3f0fe;
-    background-color: #ddd;
-}
-
-.comentario-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.comentario-info h3 {
-    margin: 0;
-    font-size: 0.95rem;
-    font-weight: 700;
-    color: #1a1a1a;
-}
-
-.comentario-data {
-    font-size: 0.78rem;
-    color: #888;
-    font-weight: 600;
-}
-
-.comentario-texto {
-    margin: 0;
-    padding-left: 57px;
-    font-size: 0.95rem;
-    color: #444;
-    line-height: 1.5;
-    word-break: break-word;
-}
-
-.comentario-form form {
-    display: flex;
-    flex-direction: row; 
-    align-items: center; 
-    background-color: #f8fbff;
-    border: 2px solid #d1def2;
-    border-radius: 50px; 
-    padding: 4px 6px 4px 25px;
-    min-height: 56px;
-    height: 56px; 
-    overflow: hidden; 
-    
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
-
-.comentario-form form:focus-within {
-    border-color: #0cc0df; 
-    box-shadow: 0 0 0 4px rgba(12, 192, 223, 0.15);
-    background-color: #ffffff;
-}
-
-.comentario-form textarea {
-    flex: 1;
-    height: 36px; 
-    max-height: 36px;
-    overflow-y: auto; 
-    padding: 6px 0;
-    border: none;
-    background: transparent;
-    font-family: inherit;
-    font-size: 1rem;
-    color: #333;
-    
-    resize: none; 
-    outline: none;
-    line-height: 1.5;
-    display: block;
-}
-
-.comentario-form button {
-    background-color: #00bf63; 
-    color: #ffffff;
-    font-weight: 700;
-    font-size: 0.95rem;
-    text-transform: uppercase;
-    border: none;
-    padding: 11px 28px;
-    border-radius: 50px;
-    cursor: pointer;
-    box-shadow: 0px 4px 0px #008f4a;
-    transition: all 0.2s ease;
-    white-space: nowrap;
-    
-    margin-left: 3px; 
-    flex-shrink: 0; 
-}
-
-.comentario-form button:hover {
-    transform: translateY(-1px);
-    background-color: #02d16d;
-    box-shadow: 0px 5px 0px #008f4a;
-}
-
-.comentario-form button:active {
-    transform: translateY(3px);
-    box-shadow: 0px 1px 0px #008f4a;
-}
-
-.comentario-form textarea::-webkit-scrollbar {
-    width: 4px; 
-}
-
-.comentario-form textarea::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.comentario-form textarea::-webkit-scrollbar-thumb {
-    background: #0cc0df; 
-    border-radius: 10px;
-}
-
+/* =========================================
+   BOTÕES DE NAVEGAÇÃO SUPERIOR (ROTAS)
+   ========================================= */
 .rotas-buttons {
     position: relative;
     display: flex;
@@ -242,7 +73,7 @@
 
 .rotas-buttons .btn-revisar {
     position: relative;
-    width: 210px; /* Já fica aberto por padrão */
+    width: 210px;
     height: 46px;
     background-color: #3498db;
     color: #ffffff;
@@ -290,11 +121,194 @@
     box-shadow: 0 6px 15px rgba(41, 128, 185, 0.4);
 }
 
-.modal-overlay{
+/* =========================================
+   CONTAINER PRINCIPAL DE COMENTÁRIOS
+   ========================================= */
+.container-comentarios {
+    width: 100%;
+    max-width: 800px;
+    background: #ffffff;
+    border-radius: 20px;
+    padding: 30px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e3f0fe;
+    margin: 0 auto;
+}
+
+.container-comentarios h2 {
+    color: #1595C4; 
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    margin-bottom: 25px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* =========================================
+   LISTA E CARDS DE COMENTÁRIOS
+   ========================================= */
+.card-respostas {
+    background-color: #f8fbff; 
+    border-radius: 15px;
+    padding: 20px;
+    max-height: 450px;
+    overflow-y: auto;
+    margin-bottom: 30px;
+    border: 1px solid #d1def2;
+}
+
+.comentario {
+    background: #ffffff;
+    padding: 15px 20px;
+    border-radius: 12px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+    border-left: 5px solid #00bf63; 
+    transition: transform 0.2s ease;
+}
+
+.comentario:last-child {
+    margin-bottom: 0;
+}
+
+.comentario:hover {
+    transform: translateX(5px);
+}
+
+.comentario-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.comentario-avatar {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #e3f0fe;
+    background-color: #ddd;
+}
+
+.comentario-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.comentario-info h3 {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #1a1a1a;
+}
+
+.comentario-data {
+    font-size: 0.78rem;
+    color: #888;
+    font-weight: 600;
+}
+
+.comentario-texto {
+    margin: 0;
+    padding-left: 57px;
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+/* =========================================
+   FORMULÁRIO DE NOVO COMENTÁRIO (RODAPÉ)
+   ========================================= */
+.comentario-form form {
+    display: flex;
+    flex-direction: row; 
+    align-items: center; 
+    background-color: #f8fbff;
+    border: 2px solid #d1def2;
+    border-radius: 50px; 
+    padding: 4px 6px 4px 25px;
+    min-height: 56px;
+    height: 56px; 
+    overflow: hidden; 
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.comentario-form form:focus-within {
+    border-color: #0cc0df; 
+    box-shadow: 0 0 0 4px rgba(12, 192, 223, 0.15);
+    background-color: #ffffff;
+}
+
+.comentario-form textarea {
+    flex: 1;
+    height: 36px; 
+    max-height: 36px;
+    overflow-y: auto; 
+    padding: 6px 0;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 1rem;
+    color: #333;
+    resize: none; 
+    outline: none;
+    line-height: 1.5;
+    display: block;
+}
+
+.comentario-form textarea::-webkit-scrollbar {
+    width: 4px; 
+}
+
+.comentario-form textarea::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.comentario-form textarea::-webkit-scrollbar-thumb {
+    background: #0cc0df; 
+    border-radius: 10px;
+}
+
+.comentario-form button {
+    background-color: #00bf63; 
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    border: none;
+    padding: 11px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    box-shadow: 0px 4px 0px #008f4a;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    margin-left: 3px; 
+    flex-shrink: 0; 
+}
+
+.comentario-form button:hover {
+    transform: translateY(-1px);
+    background-color: #02d16d;
+    box-shadow: 0px 5px 0px #008f4a;
+}
+
+.comentario-form button:active {
+    transform: translateY(3px);
+    box-shadow: 0px 1px 0px #008f4a;
+}
+
+/* =========================================
+   OVERLAY DE MODAL
+   ========================================= */
+.modal-overlay {
     display: none;
 }
 
-/* RESPONSIVIDADE */
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
 @media screen and (max-width: 900px) {
     .rotas-buttons {
         top: auto;

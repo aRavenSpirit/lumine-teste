@@ -1,4 +1,6 @@
-/* --- FONTES --- */
+/* ==================================================================
+   1. FONTES, RESET E BASE
+   ================================================================== */
 @font-face {
     font-family: 'gliker';
     src: url('../fonts/gliker/gliker-regular.woff2') format('woff2');
@@ -15,7 +17,6 @@
     font-display: swap;
 }
 
-/* --- RESET E BASE --- */
 * {
     margin: 0;
     padding: 0;
@@ -31,8 +32,13 @@ body {
     color: #333;
 }
 
+body.no-scroll {
+    overflow: hidden;
+    height: 100vh;
+}
+
 /* ==================================================================
-   1. BASE DA SIDEBAR DESKTOP
+   2. BASE DA SIDEBAR DESKTOP
    ================================================================== */
 .sidebar {
     position: fixed;
@@ -60,7 +66,7 @@ body {
 }
 
 /* ==================================================================
-   2. CUSTOMIZAÇÃO DA SCROLLBAR
+   3. CUSTOMIZAÇÃO DA SCROLLBAR DA SIDEBAR
    ================================================================== */
 .sidebar.open::-webkit-scrollbar {
     width: 10px;
@@ -89,7 +95,7 @@ body {
 }
 
 /* ==================================================================
-   3. CONTAINER HEADER
+   4. HEADER E COMPONENTES INTERNOS DA SIDEBAR
    ================================================================== */
 .sidebar-header {
     width: 100%;
@@ -105,9 +111,6 @@ body {
     padding-top: 40px; 
 }
 
-/* ==================================================================
-   4. COMPONENTES INTERNOS DO HEADER
-   ================================================================== */
 .logo-container {
     height: 60px;
     display: flex;
@@ -208,14 +211,8 @@ body {
     transform: scale(1.05);
 }
 
-@media (max-width: 900px) {
-    .sidebar .btn-sair-flutuante {
-        display: none !important;
-    }
-}
-
 /* ==================================================================
-   6. MENU DE NAVEGAÇÃO
+   6. MENU DE NAVEGAÇÃO DA SIDEBAR
    ================================================================== */
 .sidebar nav {
     margin-top: 30px;
@@ -249,7 +246,9 @@ body {
     padding-left: 35px;
 }
 
-/* --- CONTEÚDO PRINCIPAL --- */
+/* ==================================================================
+   7. CONTAINER PRINCIPAL E NAVBAR SUPERIOR
+   ================================================================== */
 .main-container {
     margin-left: 80px;
     width: calc(100% - 80px);
@@ -263,7 +262,6 @@ body {
     width: calc(100% - 250px);
 }
 
-/* NAVBAR SUPERIOR */
 .navbar-home {
     height: 80px;
     background-color: rgb(227, 240, 254);
@@ -351,7 +349,9 @@ body {
     margin-left: 12px;
 }
 
-/* --- DROPDOWN DE PERFIL --- */
+/* ==================================================================
+   8. DROPDOWN DE PERFIL (CANTO SUPERIOR DIREITO)
+   ================================================================== */
 .item-perfil,
 .mobile-profile-right {
     position: relative;
@@ -520,7 +520,140 @@ body {
     transform: scale(1.1);
 }
 
-/* --- SEÇÃO DE BOAS-VINDAS --- */
+/* ==================================================================
+   9. MENU MOBILE (GAVETA LATERAL)
+   ================================================================== */
+.mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    z-index: 5000;
+    background: linear-gradient(to bottom, rgb(227, 240, 254, 1), rgba(21, 149, 196, 0.8)), 
+                url('../img/background-index.jpg') no-repeat center center;
+    background-size: cover;
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.mobile-menu.active {
+    left: 0;
+}
+
+.mobile-menu-scroll {
+    flex: 1;
+    padding: 90px 30px 40px 30px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+}
+
+.mobile-menu-scroll::-webkit-scrollbar {
+    width: 5px;
+}
+
+.mobile-menu-scroll::-webkit-scrollbar-thumb {
+    background: #fff;
+    border-radius: 10px;
+}
+
+.mobile-menu-close {
+    position: absolute;
+    top: 25px;
+    right: 25px;
+    width: 45px;
+    height: 45px;
+    background: rgb(21, 149, 196, 0.2);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.875rem;
+    color: #1595C4;
+    cursor: pointer;
+    z-index: 5001;
+    transition: all 0.3s ease;
+    border: 1px solid rgb(21, 149, 196, 1);
+}
+
+.mobile-menu-close:active {
+    transform: scale(0.9);
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.nav-links-mobile { 
+    list-style: none; 
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.nav-links-mobile li { 
+    margin-bottom: 12px; 
+}
+
+.nav-links-mobile a { 
+    text-decoration: none; 
+    color: rgb(21, 149, 196); 
+    font-size: 1.625rem;
+    font-weight: 800;
+    font-family: 'gliker', sans-serif;
+    display: block; 
+    padding: 12px 20px;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+    border: 1px solid transparent;
+}
+
+.nav-links-mobile a:hover,
+.nav-links-mobile a:active {
+    background: #1595C4;
+    color: #fff;
+    transform: translateX(10px);
+    box-shadow: 0 10px 20px rgba(21, 149, 196, 0.4);
+}
+
+.mobile-menu hr {
+    width: 100%;
+    border: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    margin: 25px 0;
+}
+
+#menuMateriasMobile {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+#menuMateriasMobile a {
+    display: block;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    transition: all 0.3s ease;
+}
+
+#menuMateriasMobile a:hover,
+#menuMateriasMobile a:active {
+    background: rgba(255, 255, 255, 0.15);
+    padding-left: 30px;
+    border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* ==================================================================
+   10. CONTEÚDO CENTRAL, BOAS-VINDAS E GRID DE MATÉRIAS
+   ================================================================== */
 main { 
     padding: 60px 5%; 
     flex-grow: 1; 
@@ -552,7 +685,6 @@ main {
     letter-spacing: 4px;
 }
 
-/* --- GRID DE MATÉRIAS --- */
 .group-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -606,7 +738,7 @@ main {
 }
 
 /* ==================================================================
-   MODAL E ESTILIZAÇÃO COMPACTA DOS QUIZZES (2 COLUNAS)
+   11. MODAL E ESTILIZAÇÃO COMPACTA DOS QUIZZES (2 COLUNAS)
    ================================================================== */
 .modal { 
     display: none; 
@@ -688,7 +820,6 @@ main {
     background-color: #f8fafc;
 }
 
-/* Mensagens de estado */
 .loading-quiz-msg, 
 .no-quiz-msg {
     text-align: center;
@@ -698,7 +829,6 @@ main {
     font-weight: 600;
 }
 
-/* --- GRID DE QUIZZES (IGUALA A ALTURA DOS CARDS NA MESMA LINHA) --- */
 .quizzes-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -864,7 +994,9 @@ main {
     transform: scale(1.1);
 }
 
-/* --- MODAL CONFIRMAÇÃO --- */
+/* ==================================================================
+   12. MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ
+   ================================================================== */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -965,7 +1097,118 @@ main {
     box-shadow: 0 2px 0 #000;
 }
 
-/* --- FOOTER --- */
+/* ==================================================================
+   13. ESTILOS DAS MODAIS GLOBAIS
+   ================================================================== */
+.modal-overlay-global {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999999 !important;
+    isolation: isolate;
+}
+
+.modal-card-global {
+    background: #ffffff;
+    width: 90%;
+    max-width: 440px;
+    padding: 25px;
+    border-radius: 20px;
+    border: 3px solid #000000;
+    box-shadow: 4px 6px 0px #000000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 15px;
+    animation: popupModal 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.modal-icon-wrapper {
+    font-size: 3rem;
+}
+
+.icon-sucesso { 
+    color: #00bf63; 
+}
+
+.icon-perigo { 
+    color: #ff5c5c; 
+}
+
+.modal-titulo-global {
+    font-family: 'gliker', sans-serif;
+    font-size: 1.4rem;
+    color: #000000;
+    margin: 0;
+    letter-spacing: 0.5px;
+}
+
+.modal-mensagem-global {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #444444;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.modal-botoes-global {
+    display: flex;
+    gap: 12px;
+    width: 100%;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-global-ok, 
+.btn-global-cancelar, 
+.btn-global-confirmar {
+    padding: 10px 24px;
+    border-radius: 18px;
+    border: 2px solid #000000;
+    font-weight: 800;
+    font-size: 0.95rem;
+    cursor: pointer;
+    box-shadow: 2px 3px 0px #000000;
+    transition: transform 0.1s;
+    text-transform: uppercase;
+}
+
+.btn-global-ok { 
+    background-color: #00bf63; 
+    color: #ffffff; 
+    width: 100%; 
+}
+
+.btn-global-cancelar { 
+    background-color: #e0e0e0; 
+    color: #000000; 
+    flex: 1; 
+}
+
+.btn-global-confirmar { 
+    background-color: #ff5c5c; 
+    color: #ffffff; 
+    flex: 1; 
+}
+
+.btn-global-ok:active, 
+.btn-global-cancelar:active, 
+.btn-global-confirmar:active {
+    transform: translate(2px, 2px);
+    box-shadow: 0px 0px 0px #000000;
+}
+
+/* ==================================================================
+   14. FOOTER E SCROLLBAR GLOBAL
+   ================================================================== */
 footer {
     width: 100%;
     background-color: #e3f0fe;
@@ -1010,142 +1253,23 @@ footer {
     width: 20px; 
 }
 
-/* CLASSE PARA BLOQUEAR O SCROLL DO FUNDO */
-body.no-scroll {
-    overflow: hidden;
-    height: 100vh;
+::-webkit-scrollbar {
+    width: 10px;
 }
 
-/* --- MENU MOBILE --- */
-.mobile-menu {
-    position: fixed;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    z-index: 5000;
-    background: linear-gradient(to bottom, rgb(227, 240, 254, 1), rgba(21, 149, 196, 0.8)), 
-                url('../img/background-index.jpg') no-repeat center center;
-    background-size: cover;
-    backdrop-filter: blur(15px);
-    -webkit-backdrop-filter: blur(15px);
-    transition: left 0.5s cubic-bezier(0.77, 0, 0.175, 1);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+::-webkit-scrollbar-track {
+    background: transparent; 
 }
 
-.mobile-menu.active {
-    left: 0;
-}
-
-.mobile-menu-scroll {
-    flex: 1;
-    padding: 90px 30px 40px 30px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
-}
-
-.mobile-menu-scroll::-webkit-scrollbar {
-    width: 5px;
-}
-
-.mobile-menu-scroll::-webkit-scrollbar-thumb {
-    background: #fff;
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
     border-radius: 10px;
+    border: 3px solid #fff; 
 }
 
-.mobile-menu-close {
-    position: absolute;
-    top: 25px;
-    right: 25px;
-    width: 45px;
-    height: 45px;
-    background: rgb(21, 149, 196, 0.2);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.875rem;
-    color: #1595C4;
-    cursor: pointer;
-    z-index: 5001;
-    transition: all 0.3s ease;
-    border: 1px solid rgb(21, 149, 196, 1);
-}
-
-.mobile-menu-close:active {
-    transform: scale(0.9);
-    background: rgba(255, 255, 255, 0.2);
-}
-
-.nav-links-mobile { 
-    list-style: none; 
-    width: 100%;
-    margin-bottom: 20px;
-}
-
-.nav-links-mobile li { 
-    margin-bottom: 12px; 
-}
-
-.nav-links-mobile a { 
-    text-decoration: none; 
-    color: rgb(21, 149, 196); 
-    font-size: 1.625rem;
-    font-weight: 800;
-    font-family: 'gliker', sans-serif;
-    display: block; 
-    padding: 12px 20px;
-    border-radius: 15px;
-    transition: all 0.3s ease;
-    border: 1px solid transparent;
-}
-
-.nav-links-mobile a:hover,
-.nav-links-mobile a:active {
-    background: #1595C4;
-    color: #fff;
-    transform: translateX(10px);
-    box-shadow: 0 10px 20px rgba(21, 149, 196, 0.4);
-}
-
-.mobile-menu hr {
-    width: 100%;
-    border: 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
-    margin: 25px 0;
-}
-
-#menuMateriasMobile {
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-#menuMateriasMobile a {
-    display: block;
-    padding: 16px 20px;
-    text-decoration: none;
-    color: #fff;
-    font-size: 1.125rem;
-    font-weight: 600;
-    background: rgba(255, 255, 255, 0.05);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    transition: all 0.3s ease;
-}
-
-#menuMateriasMobile a:hover,
-#menuMateriasMobile a:active {
-    background: rgba(255, 255, 255, 0.15);
-    padding-left: 30px;
-    border-color: rgba(255, 255, 255, 0.4);
-}
-
-/* --- ANIMAÇÕES --- */
+/* ==================================================================
+   15. ANIMAÇÕES
+   ================================================================== */
 @keyframes fadeInDown {
     from { 
         opacity: 0; 
@@ -1157,11 +1281,27 @@ body.no-scroll {
     }
 }
 
-/* --- RESPONSIVIDADE --- */
+@keyframes popupModal {
+    from { 
+        transform: scale(0.8); 
+        opacity: 0; 
+    }
+    to { 
+        transform: scale(1); 
+        opacity: 1; 
+    }
+}
+
+/* ==================================================================
+   16. RESPONSIVIDADE
+   ================================================================== */
 @media (max-width: 900px) {
     .sidebar { 
         display: none; 
     } 
+    .sidebar .btn-sair-flutuante {
+        display: none !important;
+    }
     .main-container { 
         margin-left: 0; 
         width: 100%; 
@@ -1272,7 +1412,6 @@ body.no-scroll {
     }
 }
 
-/* RESPONSIVIDADE ESPECÍFICA DO MODAL DE QUIZZES */
 @media (max-width: 680px) {
     .quizzes-grid {
         grid-template-columns: 1fr;
@@ -1298,139 +1437,4 @@ body.no-scroll {
         padding-left: 16px;
         padding-right: 16px;
     }
-}
-
-/* --- SCROLLBAR --- */
-::-webkit-scrollbar {
-    width: 10px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent; 
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(to bottom, #1595C4, #0cc0df); 
-    border-radius: 10px;
-    border: 3px solid #fff; 
-}
-
-/* ==========================================================
-   ESTILOS DAS MODAIS GLOBAIS
-   ========================================================== */
-.modal-overlay-global {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(4px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 999999 !important;
-    isolation: isolate;
-}
-
-.modal-card-global {
-    background: #ffffff;
-    width: 90%;
-    max-width: 440px;
-    padding: 25px;
-    border-radius: 20px;
-    border: 3px solid #000000;
-    box-shadow: 4px 6px 0px #000000;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 15px;
-    animation: popupModal 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-@keyframes popupModal {
-    from { 
-        transform: scale(0.8); 
-        opacity: 0; 
-    }
-    to { 
-        transform: scale(1); 
-        opacity: 1; 
-    }
-}
-
-.modal-icon-wrapper {
-    font-size: 3rem;
-}
-
-.icon-sucesso { 
-    color: #00bf63; 
-}
-
-.icon-perigo { 
-    color: #ff5c5c; 
-}
-
-.modal-titulo-global {
-    font-family: 'gliker', sans-serif;
-    font-size: 1.4rem;
-    color: #000000;
-    margin: 0;
-    letter-spacing: 0.5px;
-}
-
-.modal-mensagem-global {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: #444444;
-    margin: 0;
-    line-height: 1.4;
-}
-
-.modal-botoes-global {
-    display: flex;
-    gap: 12px;
-    width: 100%;
-    justify-content: center;
-    margin-top: 10px;
-}
-
-.btn-global-ok, 
-.btn-global-cancelar, 
-.btn-global-confirmar {
-    padding: 10px 24px;
-    border-radius: 18px;
-    border: 2px solid #000000;
-    font-weight: 800;
-    font-size: 0.95rem;
-    cursor: pointer;
-    box-shadow: 2px 3px 0px #000000;
-    transition: transform 0.1s;
-    text-transform: uppercase;
-}
-
-.btn-global-ok { 
-    background-color: #00bf63; 
-    color: #ffffff; 
-    width: 100%; 
-}
-
-.btn-global-cancelar { 
-    background-color: #e0e0e0; 
-    color: #000000; 
-    flex: 1; 
-}
-
-.btn-global-confirmar { 
-    background-color: #ff5c5c; 
-    color: #ffffff; 
-    flex: 1; 
-}
-
-.btn-global-ok:active, 
-.btn-global-cancelar:active, 
-.btn-global-confirmar:active {
-    transform: translate(2px, 2px);
-    box-shadow: 0px 0px 0px #000000;
 }

@@ -1,3 +1,4 @@
+/* --- IMPORTAÇÃO DE FONTES --- */
 @font-face {
     font-family: 'gliker';
     src: url('fonts/gliker/gliker-regular.woff2') format('woff2'),
@@ -18,6 +19,7 @@
     font-display: swap;
 }
 
+/* --- CLASSES UTILITÁRIAS DE TIPOGRAFIA --- */
 .gliker {
     font-family: 'gliker';
     font-size: 50px;

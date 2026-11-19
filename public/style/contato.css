@@ -1,7 +1,13 @@
+/* =========================================
+   ESTILOS BASE DA PÁGINA
+   ========================================= */
 body {
     padding-top: 100px;
 }
 
+/* =========================================
+   LOGOTIPO (HEADER)
+   ========================================= */
 .logo-section {
     display: flex;
     align-items: center;
@@ -29,6 +35,9 @@ body {
     transform: scale(1.05);
 }
 
+/* =========================================
+   CONTAINER PRINCIPAL E CARD DE CONTATO
+   ========================================= */
 .main-container {
     display: flex;
     justify-content: center;
@@ -69,6 +78,9 @@ body {
     );
 }
 
+/* =========================================
+   CABEÇALHO E DESCRIÇÃO DO CARD
+   ========================================= */
 .contato-title {
     font-family: 'gliker', sans-serif;
     color: #f2545b;
@@ -109,6 +121,9 @@ body {
     border-bottom: 2px dashed #edf2f7;
 }
 
+/* =========================================
+   ALERTAS DE FEEDBACK
+   ========================================= */
 .alerta {
     padding: 16px 20px;
     border-radius: 16px;
@@ -136,6 +151,9 @@ body {
     border-bottom-color: #f2545b;
 }
 
+/* =========================================
+   FORMULÁRIO DE CONTATO
+   ========================================= */
 .contato-form {
     display: flex;
     flex-direction: column;
@@ -227,8 +245,9 @@ body {
     }
 }
 
-/* RESPONSIVIDADE */
-
+/* =========================================
+   RESPONSIVIDADE
+   ========================================= */
 @media (max-width: 580px) {
     .main-container {
         padding: 25px 15px 60px;

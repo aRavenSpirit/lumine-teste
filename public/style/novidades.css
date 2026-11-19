@@ -1,3 +1,4 @@
+/* --- CABEÇALHO E BARRA DE BUSCA --- */
 .welcome-text {
     width: 100%;
     padding: 0 15px;
@@ -57,7 +58,7 @@
     padding: 0 15px;
 }
 
-/* Estilização dos Cards e Correção do Nome Saindo para Fora */
+/* --- CARDS DE QUIZZES / NOVIDADES --- */
 .card-materia {
     position: relative;
     overflow: hidden;
@@ -110,7 +111,6 @@
     margin-top: 8px;
 }
 
-/* Cores das dificuldades */
 .dif-facil { 
     background-color: #2ecc71; 
 }
@@ -137,9 +137,7 @@
     word-break: break-word;
 }
 
-/* =========================================
-   MENSAGENS DE ESTADO E AVISOS (RECOMENDADOS / NOVIDADES)
-   ========================================= */
+/* --- MENSAGENS DE ESTADO E AVISOS --- */
 .msg-lista-vazia {
     grid-column: 1 / -1;
     text-align: center;
@@ -165,13 +163,7 @@
     cursor: pointer;
 }
 
-footer {
-    margin-top: 50px;
-}
-
-/* =========================================
-   CONTROLE DA MODAL DE CONFIRMAÇÃO
-   ========================================= */
+/* --- MODAL DE CONFIRMAÇÃO --- */
 .modal-overlay {
     display: none;
 }
@@ -180,9 +172,12 @@ footer {
     display: flex;
 }
 
-/* =========================================
-   RESPONSIVIDADE MOBILE (TABLETS E CELULARES)
-   ========================================= */
+/* --- RODAPÉ (FOOTER) --- */
+footer {
+    margin-top: 50px;
+}
+
+/* --- RESPONSIVIDADE --- */
 @media (max-width: 768px) {
     .welcome-text h1 {
         font-size: 1.8rem;
