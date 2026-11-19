@@ -136,6 +136,8 @@
 
 <script>
 let urlDestinoQuiz = "";
+window.materiaAtualId = null;
+window.materiaAtualNome = null;
 
 // Transforma o array do PHP em um objeto JavaScript utilizável
 const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
@@ -159,7 +161,21 @@ if (typeof aplicarTamanhoFonteGlobal === "function") {
 window.onload = () => {
     carregarUsuario(); // Função do header.js (carrega foto e dropdown do perfil)
     carregarSaudacaoHome(); // Carrega o nome na mensagem de boas-vindas da Home
-    carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais com cores personalizadas
+
+    // Verifica se já existe uma matéria selecionada na URL (ex: ao atualizar a página)
+    const params = new URLSearchParams(window.location.search);
+    const materiaIdUrl = params.get('materia_id');
+    const materiaNomeUrl = params.get('materia_nome');
+
+    if (materiaIdUrl && materiaNomeUrl) {
+        window.materiaAtualId = materiaIdUrl;
+        window.materiaAtualNome = materiaNomeUrl;
+        carregarMenuSidebar(); // Atualiza apenas os menus da sidebar sem sobrescrever os cards
+        carregarConteudos(materiaIdUrl, materiaNomeUrl); // Carrega os conteúdos da matéria selecionada
+    } else {
+        carregarMenuSidebar(); // Carrega a sidebar e os cards iniciais com cores personalizadas
+    }
+
     inicializarPerfilMobile(); // Ativa o clique na foto de perfil no modo mobile
     inicializarLogoMobile(); // Ativa o clique na logo central da Lumine no modo mobile para ir para a Home
 };
@@ -302,7 +318,7 @@ function carregarSaudacaoHome() {
 
 // ==========================================================
 // SOBRESCREVE carregarMenuSidebar PARA APLICAR AS CORES DO BANCO NOS CARDS DA HOME
-// (Usa obterCorTextoLegivel diretamente do header.js)
+// E PRESERVAR A MATÉRIA SELECIONADA AO REDIMENSIONAR A TELA
 // ==========================================================
 function carregarMenuSidebar() {
     fetch(api + "?tipo=materias")
@@ -316,11 +332,12 @@ function carregarMenuSidebar() {
                 let chaveMateria = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
                 let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
                 let corDoTexto = obterCorTextoLegivel(corDoCard);
+                let nomeEscapado = m.nome_materia.replace(/'/g, "\\'");
 
-                menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
+                menuHTML += `<a href="#" onclick="event.preventDefault(); carregarConteudos(${m.id}, '${nomeEscapado}')"><span>${m.nome_materia}</span></a>`;
                 
                 cardsIniciais += `
-                    <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
+                    <div onclick="carregarConteudos(${m.id}, '${nomeEscapado}')" class="card-materia">
                         <div class="card-banner">
                             <img src="img/${nomeLimpo}.webp" onerror="this.src='img/indisponivel.png'">
                         </div>
@@ -329,9 +346,18 @@ function carregarMenuSidebar() {
                         </div>
                     </div>`;
             });
-            if (document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
-            if (document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-            if (document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+
+            if (document.getElementById("menuMaterias")) {
+                document.getElementById("menuMaterias").innerHTML = menuHTML;
+            }
+            if (document.getElementById("menuMateriasMobile")) {
+                document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+            }
+
+            // Só renderiza os cards iniciais das matérias se o usuário NÃO estiver dentro de uma matéria
+            if (!window.materiaAtualId && document.getElementById("cardsConteudos")) {
+                document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+            }
         });
 }
 
@@ -362,6 +388,7 @@ function carregarConteudos(idMateria, nomeMateria) {
             } else {
                 dados.forEach(c => {
                     let imagemCard = "";
+                    let nomeConteudoEscapado = c.nome.replace(/'/g, "\\'");
                     
                     if (c.imagem_conteudo && c.imagem_conteudo.trim() !== "") {
                         imagemCard = c.imagem_conteudo;
@@ -371,7 +398,7 @@ function carregarConteudos(idMateria, nomeMateria) {
                     }
 
                     html += `
-                        <div onclick="abrirModalQuizzes(${c.id}, '${c.nome}')" class="card-materia">
+                        <div onclick="abrirModalQuizzes(${c.id}, '${nomeConteudoEscapado}')" class="card-materia">
                             <div class="card-banner">
                                 <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
                             </div>
