@@ -122,6 +122,7 @@
     </div>
 </div>
 
+<script src="js/header.js"></script>
 <!-- Conexão do script externo responsável pelo controle da sidebar/menu mobile -->
 <script src="js/sidebar_close.js"></script>
 

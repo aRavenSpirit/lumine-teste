@@ -11,7 +11,7 @@
 <body>
 
     <header class="navbar-container">
-        <button class="nav-btn btn-back-top" onclick="window.location.href='admin_dashboard.html'">Voltar</button>
+        <button class="nav-btn btn-back-top" onclick="window.location.href='admin_dashboard.php'">Voltar</button>
         <div class="nav-pill title-pill">CRIAÇÃO DE QUIZ</div>
         <button class="nav-btn btn-danger-top" onclick="window.location.reload()">APAGAR QUIZ</button>
         <button class="nav-btn btn-success-top" onclick="salvarQuiz()">CRIAR QUIZ</button>
@@ -445,7 +445,7 @@
                     mostrarAlerta("Erro: " + d.erro);
                 } else {
                     mostrarAlerta(d.mensagem || "Quiz salvo com sucesso!", "Sucesso", () => {
-                        window.location.href = 'admin_dashboard.html';
+                        window.location.href = 'admin_dashboard.php';
                     });
                 }
             })

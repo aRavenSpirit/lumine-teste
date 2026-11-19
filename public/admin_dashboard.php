@@ -1,3 +1,30 @@
+<?php
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Coloque aqui o(s) e-mail(s) que você escolheu
+$emails_permitidos = ['lumineprojeto@gmail.com', 'lucasgustavo2oliveira@gmail.com', 'adminmaneiro@gmail.com', 'victoriaespsanto@gmail.com'];
+
+if (!isset($_SESSION['usuario_id'])) {
+    header("Location: login.html");
+    exit;
+}
+
+require_once "../config/conexao.php"; // ajuste o caminho se o arquivo estiver em outra pasta
+
+$id = intval($_SESSION['usuario_id']);
+$res = $conn->query("SELECT email FROM usuario WHERE id = $id");
+$user = $res ? $res->fetch_assoc() : null;
+
+if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
+    header("Location: index.php");
+    exit;
+}
+?>
+
+
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
