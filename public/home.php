@@ -336,6 +336,13 @@ function carregarMenuSidebar() {
 }
 
 function carregarConteudos(idMateria, nomeMateria) {
+    window.materiaAtualId = idMateria;
+    window.materiaAtualNome = nomeMateria;
+
+    const urlAtual = new URL(window.location.href);
+    urlAtual.searchParams.set('materia_id', idMateria);
+    urlAtual.searchParams.set('materia_nome', nomeMateria);
+    window.history.replaceState({}, '', urlAtual.toString());
     if (typeof fecharMenuMobile === "function") fecharMenuMobile();
     
     document.querySelector(".subtitle").innerText = `CONTEÚDOS DE: ${nomeMateria.toUpperCase()}`;

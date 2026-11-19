@@ -80,7 +80,7 @@
     
     <?php renderHeader(); ?>
 
-    <main>
+    <main id="mainConteudo">
         <section class="welcome-section">
             <div class="welcome-text">
                 <h1>NOVIDADES</h1>
@@ -108,6 +108,20 @@
     <!-- Importação do script desacoplado de cookies -->
     <script src="js/cookies.js"></script>
 
+</div>
+
+<!-- MODAL DE LISTAGEM DE QUIZZES DE UM CONTEÚDO (AO CLICAR NA SIDEBAR) -->
+<div id="meuModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="tituloModal">Quizzes</h2>
+            <span onclick="fecharModal()" class="modal-close">&times;</span>
+        </div>
+        <hr class="modal-divider">
+        <div class="modal-body">
+            <div id="corpoModal"></div>
+        </div>
+    </div>
 </div>
 
 <!-- MODAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ -->
@@ -156,6 +170,120 @@ if (typeof aplicarTamanhoFonteGlobal === "function") {
 }
 
 let listaQuizzesGlobal = [];
+
+// Carrega os conteúdos da matéria clicada na sidebar nesta própria página
+function carregarConteudos(idMateria, nomeMateria) {
+    if (window.event) window.event.preventDefault();
+    if (typeof fecharMenuMobile === "function") fecharMenuMobile();
+
+    const main = document.getElementById("mainConteudo");
+    main.innerHTML = `
+        <section class="welcome-section">
+            <div class="welcome-text">
+                <p class="subtitle">CONTEÚDOS DE: ${nomeMateria.toUpperCase()}</p>
+            </div>
+        </section>
+        <section class="cards-section">
+            <div class="group-cards" id="cardsConteudos"><p>Carregando conteúdos...</p></div>
+        </section>
+    `;
+
+    let chaveMateria = nomeMateria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+    let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+    let corDoTexto = typeof obterCorTextoLegivel === "function" ? obterCorTextoLegivel(corDoCard) : "#ffffff";
+
+    fetch(api + "?tipo=conteudos&id_materia=" + idMateria)
+        .then(res => res.json())
+        .then(dados => {
+            const container = document.getElementById("cardsConteudos");
+            let html = "";
+            if (!dados || dados.length === 0) {
+                html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
+            } else {
+                dados.forEach(c => {
+                    let imagemCard = (c.imagem_conteudo && c.imagem_conteudo.trim() !== "")
+                        ? c.imagem_conteudo
+                        : `img/conteudos/${c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '')}.webp`;
+
+                    html += `
+                        <div onclick="abrirModalQuizzes(${c.id}, '${c.nome.replace(/'/g, "\\'")}')" class="card-materia">
+                            <div class="card-banner">
+                                <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
+                            </div>
+                            <div class="card-body" style="background-color: ${corDoCard} !important;">
+                                <p style="color: ${corDoTexto} !important;">${c.nome}</p>
+                            </div>
+                        </div>`;
+                });
+            }
+            container.innerHTML = html;
+        });
+}
+
+function abrirModalQuizzes(idConteudo, nomeConteudo) {
+    const modal = document.getElementById('meuModal');
+    const corpo = document.getElementById('corpoModal');
+    document.getElementById('tituloModal').innerText = nomeConteudo;
+    modal.style.display = "block";
+    corpo.innerHTML = "<div class='loading-quiz-msg'>Buscando quizzes...</div>";
+
+    fetch(api + `?tipo=quizzes&id_conteudo=${idConteudo}`)
+        .then(res => res.json())
+        .then(quizzes => {
+            if (quizzes.length === 0) {
+                corpo.innerHTML = "<div class='no-quiz-msg'>Sem quizzes para este conteúdo no momento.</div>";
+            } else {
+                let html = "<div class='quizzes-grid'>";
+                quizzes.forEach(q => {
+                    let siglaMateria = q.nome_materia ? q.nome_materia.substring(0, 3).toUpperCase() : "QUIZ";
+                    let difClasse = "dif-facil";
+                    let difNome = (q.dificuldade || "Fácil").toLowerCase();
+
+                    if (difNome.includes("médio") || difNome.includes("medio") || difNome.includes("intermed")) {
+                        difClasse = "dif-medio";
+                    } else if (difNome.includes("difícil") || difNome.includes("dificil")) {
+                        difClasse = "dif-dificil";
+                    }
+
+                    html += `
+                        <a href="quiz.php?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
+                            <div class="quiz-card">
+                                <div>
+                                    <div class="quiz-card-header">
+                                        <span class="quiz-questoes-badge">
+                                            <i class="fas fa-question-circle"></i> ${q.total_questoes} ${q.total_questoes == 1 ? 'questão' : 'questões'}
+                                        </span>
+                                    </div>
+                                    <h4 class="quiz-title">${q.nome}</h4>
+                                    <p class="quiz-conteudo">
+                                        <i class="fas fa-book-open"></i> ${nomeConteudo}
+                                    </p>
+                                </div>
+                                <div class="quiz-footer">
+                                    <div class="quiz-badges">
+                                        <span class="badge-materia">${siglaMateria}</span>
+                                        <span class="badge-dificuldade ${difClasse}">${q.dificuldade.toUpperCase()}</span>
+                                    </div>
+                                    <div class="btn-play-icon">
+                                        <i class="fas fa-play"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>`;
+                });
+                html += "</div>";
+                corpo.innerHTML = html;
+            }
+        });
+}
+
+function fecharModal() {
+    document.getElementById('meuModal').style.display = "none";
+}
+
+window.addEventListener('click', (event) => {
+    if (event.target == document.getElementById('meuModal')) fecharModal();
+});
 
 window.onload = () => {
     carregarQuizzesRecentes();
@@ -308,7 +436,7 @@ async function carregarQuizzesRecentes() {
         document.getElementById("tituloSecao").innerText = "Quizzes Recentes";
         renderizarCards(listaQuizzesGlobal);
 
-        const menu = materias.map(m => `<a href="home.php"><span>${m.nome_materia}</span></a>`).join("");
+        const menu = materias.map(m => `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia.replace(/'/g, "\\'")}'); return false;"><span>${m.nome_materia}</span></a>`).join("");
         if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menu;
         if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menu;
 

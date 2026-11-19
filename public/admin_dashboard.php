@@ -4,7 +4,7 @@ if (session_status() === PHP_SESSION_NONE) {
 }
 
 // Coloque aqui o(s) e-mail(s) que você escolheu
-$emails_permitidos = ['lumineprojeto@gmail.com', 'lucasgustavo2oliveira@gmail.com', 'adminmaneiro@gmail.com', 'victoriaespsanto@gmail.com'];
+$emails_permitidos = ['lumineprojeto@gmail.com', 'lucasgustavo2oliveira@gmail.com', 'adminmaneiro@gmail.com', 'victoriaespsanto@gmail.com', 'matheuseuzebio39@gmail.com', 'breno.d.gomes6@aluno.senai.br'];
 
 if (!isset($_SESSION['usuario_id'])) {
     header("Location: login.html");

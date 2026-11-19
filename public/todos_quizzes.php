@@ -34,7 +34,7 @@
         "filosofia" => "#7f8c8d",
         "sociologia" => "#16a085",
         "educacao_fisica" => "#c0392b",
-        "literatura" => "#9b59b6"
+        "ciencias_da_natureza" => "#00c882"
     ];
 
     // ==========================================================
@@ -70,8 +70,6 @@
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
-    <script src="./js/update_foto.js"></script>
-    <script src="js/tamanho_fonte.js"></script>
 </head>
 
 <body>
@@ -89,7 +87,6 @@
 
     <?php renderFooter(); ?>
 
-    <!-- Importação do script desacoplado de cookies -->
     <script src="js/cookies.js"></script>
 
 </div>
@@ -108,7 +105,7 @@
     </div>
 </div>
 
-<!-- MODAL GLOBAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ (INICIA OCULTO) -->
+<!-- MODAL GLOBAL DE CONFIRMAÇÃO DE ENTRADA NO QUIZ -->
 <div id="modalConfirmacao" class="modal-overlay" style="display: none;">
     <div class="modal-content-confirm">
         <p class="modal-titulo">Deseja entrar no quiz?</p>
@@ -122,20 +119,19 @@
     </div>
 </div>
 
+<!-- Mesma ordem de importação da home.php -->
 <script src="js/header.js"></script>
-<!-- Conexão do script externo responsável pelo controle da sidebar/menu mobile -->
+<script src="js/tamanho_fonte.js"></script>
 <script src="js/sidebar_close.js"></script>
 
 <script>
-const api = "../config/home.php";
+// NÃO redeclare "const api" aqui, pois já vem de js/header.js
 let urlDestinoQuiz = "";
 
-// Transforma o array do PHP em um objeto JavaScript utilizável
 const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
 const tamanhoFonteBanco = <?php echo json_encode($tamanho_fonte_salvo); ?>;
 const temaEscuroBanco = <?php echo json_encode($tema_escuro_salvo); ?>;
 
-// Aplica a preferência de Tema do Banco de Dados
 if (temaEscuroBanco == 1) {
     localStorage.setItem("theme", "dark");
     document.body.classList.add("dark-mode");
@@ -144,7 +140,6 @@ if (temaEscuroBanco == 1) {
     document.body.classList.remove("dark-mode");
 }
 
-// Aplica a preferência de tamanho de fonte vinda do banco de dados na inicialização
 if (typeof aplicarTamanhoFonteGlobal === "function") {
     aplicarTamanhoFonteGlobal(tamanhoFonteBanco);
 }
@@ -153,86 +148,6 @@ window.onload = () => {
     carregarUsuario();
     carregarMenuSidebar();
 };
-
-// ==========================================================
-// FUNÇÃO PARA CALCULAR O CONTRASTE DA FONTE COM A COR DE FUNDO
-// ==========================================================
-function obterCorTextoLegivel(hexColor) {
-    if (!hexColor) return '#ffffff';
-    
-    // Remove o '#' caso exista
-    let color = hexColor.replace('#', '');
-    
-    // Se a cor estiver em formato 3 dígitos (ex: #fff), converte para 6
-    if (color.length === 3) {
-        color = color.split('').map(c => c + c).join('');
-    }
-    
-    if (color.length !== 6) return '#ffffff';
-
-    const r = parseInt(color.substring(0, 2), 16);
-    const g = parseInt(color.substring(2, 4), 16);
-    const b = parseInt(color.substring(4, 6), 16);
-
-    // Calcula a luminância percebida segundo o padrão ITU-R BT.601
-    const luminancia = (r * 299 + g * 587 + b * 114) / 1000;
-
-    // Se a luminância for menor que 128 (fundo escuro), retorna a fonte branca (#ffffff).
-    // Caso contrário, retorna um tom escuro (#333333) para bom contraste em fundos claros.
-    return luminancia < 128 ? '#ffffff' : '#333333';
-}
-
-function carregarUsuario() {
-    fetch(api + "?tipo=usuario")
-        .then(r => r.json())
-        .then(u => {
-            const linkPerfilHeader = document.querySelector('.item-perfil a');
-            if (linkPerfilHeader && u.foto_perfil) {
-                const iconeRoxo = linkPerfilHeader.querySelector('.profile-icon');
-                if (iconeRoxo) {
-                    iconeRoxo.outerHTML = `<img src="${u.foto_perfil}" class="profile-icon">`;
-                } else {
-                    const imagemHeaderExistente = linkPerfilHeader.querySelector('.profile-icon');
-                    if (imagemHeaderExistente && imagemHeaderExistente.tagName === 'IMG') {
-                        imagemHeaderExistente.src = u.foto_perfil;
-                    }
-                }
-            }
-
-            const itemPerfil = document.querySelector('.item-perfil');
-            
-            if (itemPerfil) {
-                const antigoDropdown = itemPerfil.querySelector('.perfil-dropdown');
-                if (antigoDropdown) antigoDropdown.remove();
-
-                const fotoHtml = u.foto_perfil 
-                    ? `<img src="${u.foto_perfil}" class="avatar-preview" id="avatarImg">`
-                    : `<div class="avatar-preview" id="avatarImg"><i class="fas fa-smile"></i></div>`;
-
-                const dropdown = document.createElement('div');
-                dropdown.className = 'perfil-dropdown';
-                dropdown.innerHTML = `
-                    <div class="avatar-upload-container" onclick="document.getElementById('inputFotoPerfil').click()">
-                        <div id="avatarWrapper">
-                            ${fotoHtml}
-                        </div>     
-                    </div>
-
-                    <h4 style="text-align: center;">Minha Conta</h4>
-                    <hr>
-                    <p><strong>Nome:</strong> ${u.nome || "Não informado"}</p>
-                    <p><strong>E-mail:</strong> ${u.email || "Não informado"}</p>
-                    <p><strong>Nível:</strong> ${u.nome_escolaridade || "Não informado"}</p>
-                    <hr>
-                    <a href="../config/logout.php" class="btn-logout">
-                        <i class="fas fa-sign-out-alt"></i> Sair da Conta
-                    </a>
-                `;
-                
-                itemPerfil.appendChild(dropdown);
-            }
-        });
-}
 
 function carregarMenuSidebar() {
     fetch(api + "?tipo=materias")
@@ -245,12 +160,13 @@ function carregarMenuSidebar() {
                 let nomeLimpo = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '');
                 let chaveMateria = m.nome_materia.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
                 let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
-                let corDoTexto = obterCorTextoLegivel(corDoCard);
+                let corDoTexto = (typeof obterCorTextoLegivel === "function") ? obterCorTextoLegivel(corDoCard) : "#ffffff";
+                let nomeSeguro = m.nome_materia.replace(/'/g, "\\'");
 
-                menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia}')"><span>${m.nome_materia}</span></a>`;
+                menuHTML += `<a href="#" onclick="carregarConteudos(${m.id}, '${nomeSeguro}'); return false;"><span>${m.nome_materia}</span></a>`;
                 
                 cardsIniciais += `
-                    <div onclick="carregarConteudos(${m.id}, '${m.nome_materia}')" class="card-materia">
+                    <div onclick="carregarConteudos(${m.id}, '${nomeSeguro}')" class="card-materia">
                         <div class="card-banner">
                             <img src="img/${nomeLimpo}.webp" onerror="this.src='img/indisponivel.png'">
                         </div>
@@ -259,23 +175,34 @@ function carregarMenuSidebar() {
                         </div>
                     </div>`;
             });
-            if(document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
-            if(document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
-            if(document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
+            if (document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menuHTML;
+            if (document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menuHTML;
+            if (document.getElementById("cardsConteudos")) document.getElementById("cardsConteudos").innerHTML = cardsIniciais;
         });
 }
 
 function carregarConteudos(idMateria, nomeMateria) {
+    window.materiaAtualId = idMateria;
+    window.materiaAtualNome = nomeMateria;
+
+    const urlAtual = new URL(window.location.href);
+    urlAtual.searchParams.set('materia_id', idMateria);
+    urlAtual.searchParams.set('materia_nome', nomeMateria);
+    window.history.replaceState({}, '', urlAtual.toString());
     if (typeof fecharMenuMobile === 'function') fecharMenuMobile();
     
     const container = document.getElementById("cardsConteudos");
     container.innerHTML = "<p>Carregando conteúdos...</p>";
 
+    let chaveMateria = nomeMateria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+    let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+    let corDoTexto = (typeof obterCorTextoLegivel === "function") ? obterCorTextoLegivel(corDoCard) : "#ffffff";
+
     fetch(api + "?tipo=conteudos&id_materia=" + idMateria)
         .then(res => res.json())
         .then(dados => {
             let html = "";
-            if(dados.length === 0) {
+            if (dados.length === 0) {
                 html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
             } else {
                 dados.forEach(c => {
@@ -287,13 +214,15 @@ function carregarConteudos(idMateria, nomeMateria) {
                         imagemCard = `img/conteudos/${nomeConteudoLimpo}.webp`; 
                     }
 
+                    let nomeConteudoSeguro = String(c.nome).replace(/'/g, "\\'").replace(/(\r\n|\n|\r)/gm, " ");
+
                     html += `
-                        <div onclick="abrirModalQuizzes(${c.id}, '${c.nome}')" class="card-materia">
+                        <div onclick="abrirModalQuizzes(${c.id}, '${nomeConteudoSeguro}')" class="card-materia">
                             <div class="card-banner">
                                 <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
                             </div>
-                            <div class="card-body">
-                                <p>${c.nome}</p>
+                            <div class="card-body" style="background-color: ${corDoCard} !important;">
+                                <p style="color: ${corDoTexto} !important;">${c.nome}</p>
                             </div>
                         </div>`;
                 });

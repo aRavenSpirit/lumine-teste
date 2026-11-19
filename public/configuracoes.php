@@ -2,6 +2,38 @@
     require_once("../config/conexao.php");
     include_once("../config/session.php");
     include_once("../config/layout.php");
+
+    // ==========================================================
+    // BUSCA AS CORES PERSONALIZADAS DO USUÁRIO PARA OS CARDS DE MATÉRIA
+    // ==========================================================
+    $id_usuario_logado = intval($_SESSION['usuario_id'] ?? 0);
+    $sql_pref = "SELECT cores_materia FROM configuracoes WHERE id_usuario = $id_usuario_logado";
+    $result_pref = $conn->query($sql_pref);
+
+    $cores_usuario = [
+        "bg_claro" => "#FFFFFF",
+        "bg_escuro" => "#121212",
+        "matematica" => "#3498db",
+        "portugues" => "#e74c3c",
+        "historia" => "#f1c40f",
+        "geografia" => "#2ecc71",
+        "biologia" => "#27ae60",
+        "fisica" => "#8e44ad",
+        "quimica" => "#d35400",
+        "ingles" => "#2980b9",
+        "artes" => "#e67e22",
+        "filosofia" => "#7f8c8d",
+        "sociologia" => "#16a085",
+        "educacao_fisica" => "#c0392b",
+    ];
+
+    if ($result_pref && $result_pref->num_rows > 0) {
+        $row_pref = $result_pref->fetch_assoc();
+        $cores_banco = json_decode($row_pref['cores_materia'], true);
+        if (is_array($cores_banco)) {
+            $cores_usuario = array_merge($cores_usuario, $cores_banco);
+        }
+    }
 ?>
 
 <!DOCTYPE html>
@@ -12,7 +44,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Home - Lumine</title>
     <link rel="stylesheet" href="./style/home.css">
-    <link rel="stylesheet" href="./style/configuracoes.css">
+    <link rel="stylesheet" href="./style/configuracoes.css" id="cssConfiguracoes">
     <link rel="stylesheet" href="./style/dark-mode.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="img/LUMINE-5con.ico" type="image/x-icon">
@@ -30,7 +62,7 @@
 
     <?php renderHeader(); ?>
 
-    <main>
+    <main id="mainConteudo">
         <section class="cards-section">
             <div class="container-principal">
 
@@ -90,6 +122,31 @@
 
 </div>
 
+<!-- Modais para visualização dos quizzes da matéria clicada na sidebar -->
+<div id="meuModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="tituloModal">Quizzes</h2>
+            <span onclick="fecharModal()" class="modal-close">&times;</span>
+        </div>
+        <hr class="modal-divider">
+        <div class="modal-body">
+            <div id="corpoModal"></div>
+        </div>
+    </div>
+</div>
+
+<div id="modalConfirmacao" class="modal-overlay" style="display: none;">
+    <div class="modal-content-confirm">
+        <p class="modal-titulo">Deseja entrar no quiz?</p>
+        <img src="img/luminequestoes.png" alt="logo" class="modal-imagem-centro">
+        <div class="modal-buttons">
+            <button onclick="fecharModalConfirmacao()" class="btn-voltar">Não</button>
+            <button id="btnConfirmarEntrada" class="btn-entrar">Sim</button>
+        </div>
+    </div>
+</div>
+
 <!-- Scripts Globais e de Layout -->
 <script src="js/tamanho_fonte.js"></script>
 <script src="js/dark-mode.js"></script>
@@ -99,11 +156,148 @@
 
 <!-- Script Específico da Página de Configurações -->
 <script>
+    const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
+    let urlDestinoQuiz = "";
     let dadosUsuarioLocal = {};
     let materiaSelecionadaAtual = 'portugues';
     let cropperInstance = null;
     let arquivoSelecionado = null;
     let senhaValidaConfig = true;
+
+    // Carrega os conteúdos da matéria clicada na sidebar nesta própria página (100% idêntico à Home/Novidades)
+    function carregarConteudos(idMateria, nomeMateria) {
+        if (window.event) window.event.preventDefault();
+        if (typeof fecharMenuMobile === "function") fecharMenuMobile();
+
+        // Desativa o CSS exclusivo da tela de configurações para não aplicar borda preta nem fundo azul
+        const cssConfig = document.getElementById("cssConfiguracoes");
+        if (cssConfig) cssConfig.disabled = true;
+
+        const main = document.getElementById("mainConteudo");
+        main.innerHTML = `
+            <section class="welcome-section">
+                <div class="welcome-text">
+                    <p class="subtitle">CONTEÚDOS DE: ${nomeMateria.toUpperCase()}</p>
+                </div>
+            </section>
+            <section class="cards-section">
+                <div class="group-cards" id="cardsConteudos"><p>Carregando conteúdos...</p></div>
+            </section>
+        `;
+
+        let chaveMateria = nomeMateria.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '_');
+        let corDoCard = coresMateriasDoBanco[chaveMateria] || "#3498db";
+        let corDoTexto = typeof obterCorTextoLegivel === "function" ? obterCorTextoLegivel(corDoCard) : "#ffffff";
+
+        fetch(api + "?tipo=conteudos&id_materia=" + idMateria)
+            .then(res => res.json())
+            .then(dados => {
+                const container = document.getElementById("cardsConteudos");
+                let html = "";
+                if (!dados || dados.length === 0) {
+                    html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
+                } else {
+                    dados.forEach(c => {
+                        let imagemCard = (c.imagem_conteudo && c.imagem_conteudo.trim() !== "")
+                            ? c.imagem_conteudo
+                            : `img/conteudos/${c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '')}.webp`;
+
+                        html += `
+                            <div onclick="abrirModalQuizzes(${c.id}, '${c.nome.replace(/'/g, "\\'")}')" class="card-materia">
+                                <div class="card-banner">
+                                    <img src="${imagemCard}" onerror="this.src='img/indisponivel.png'">
+                                </div>
+                                <div class="card-body" style="background-color: ${corDoCard} !important;">
+                                    <p style="color: ${corDoTexto} !important;">${c.nome}</p>
+                                </div>
+                            </div>`;
+                    });
+                }
+                container.innerHTML = html;
+            });
+    }
+
+    function abrirModalQuizzes(idConteudo, nomeConteudo) {
+        const modal = document.getElementById('meuModal');
+        const corpo = document.getElementById('corpoModal');
+        document.getElementById('tituloModal').innerText = nomeConteudo;
+        modal.style.display = "block";
+        corpo.innerHTML = "<div class='loading-quiz-msg'>Buscando quizzes...</div>";
+
+        fetch(api + `?tipo=quizzes&id_conteudo=${idConteudo}`)
+            .then(res => res.json())
+            .then(quizzes => {
+                if (quizzes.length === 0) {
+                    corpo.innerHTML = "<div class='no-quiz-msg'>Sem quizzes para este conteúdo no momento.</div>";
+                } else {
+                    let html = "<div class='quizzes-grid'>";
+                    quizzes.forEach(q => {
+                        let siglaMateria = q.nome_materia ? q.nome_materia.substring(0, 3).toUpperCase() : "QUIZ";
+                        let difClasse = "dif-facil";
+                        let difNome = (q.dificuldade || "Fácil").toLowerCase();
+
+                        if (difNome.includes("médio") || difNome.includes("medio") || difNome.includes("intermed")) {
+                            difClasse = "dif-medio";
+                        } else if (difNome.includes("difícil") || difNome.includes("dificil")) {
+                            difClasse = "dif-dificil";
+                        }
+
+                        html += `
+                            <a href="quiz.php?id=${q.id}" class="quiz-card-link" onclick="prepararEntrada(event, this.href)">
+                                <div class="quiz-card">
+                                    <div>
+                                        <div class="quiz-card-header">
+                                            <span class="quiz-questoes-badge">
+                                                <i class="fas fa-question-circle"></i> ${q.total_questoes} ${q.total_questoes == 1 ? 'questão' : 'questões'}
+                                            </span>
+                                        </div>
+                                        <h4 class="quiz-title">${q.nome}</h4>
+                                        <p class="quiz-conteudo">
+                                            <i class="fas fa-book-open"></i> ${nomeConteudo}
+                                        </p>
+                                    </div>
+                                    <div class="quiz-footer">
+                                        <div class="quiz-badges">
+                                            <span class="badge-materia">${siglaMateria}</span>
+                                            <span class="badge-dificuldade ${difClasse}">${q.dificuldade.toUpperCase()}</span>
+                                        </div>
+                                        <div class="btn-play-icon">
+                                            <i class="fas fa-play"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>`;
+                    });
+                    html += "</div>";
+                    corpo.innerHTML = html;
+                }
+            });
+    }
+
+    function prepararEntrada(event, url) {
+        if (event) event.preventDefault();
+        urlDestinoQuiz = url;
+        document.getElementById('modalConfirmacao').style.display = 'flex';
+    }
+
+    function fecharModalConfirmacao() {
+        document.getElementById('modalConfirmacao').style.display = 'none';
+    }
+
+    const btnConfirmarQuiz = document.getElementById('btnConfirmarEntrada');
+    if (btnConfirmarQuiz) {
+        btnConfirmarQuiz.onclick = () => {
+            if (urlDestinoQuiz) window.location.href = urlDestinoQuiz;
+        };
+    }
+
+    function fecharModal() {
+        document.getElementById('meuModal').style.display = "none";
+    }
+
+    window.addEventListener('click', (event) => {
+        if (event.target == document.getElementById('meuModal')) fecharModal();
+    });
 
     // ==========================================================
     // ATUALIZAÇÃO ICO-HOME (REDIRECIONA PARA HOME.PHP AO CLICAR NO ÍCONE CENTRAL MOBILE)
