@@ -163,6 +163,9 @@
 
 <div class="modal-confirmar-saida" id="modal-confirmar-saida">
     <div class="modal-confirmar-saida-card">
+        <div class="modal-saida-icone">
+            <i class="fas fa-exclamation-triangle"></i>
+        </div>
         <h2>Tem certeza que deseja sair?</h2>
         <p>Se você sair agora, perderá todo o progresso do quiz atual.</p>
         
