@@ -22,34 +22,47 @@
         $stmt_esc->close();
     }
 
-    // Mapeamento de conteúdos por ano/escolaridade (IDs da tabela `conteudo` no luminebd.sql)
+    // Mapeamento de conteúdos por ano/escolaridade (IDs reais da tabela `conteudo` no luminebd.sql)
     $conteudos_por_escolaridade = [
-        // 1 - Ensino médio completo
-        1 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 26, 27, 30, 31, 32, 38, 40, 41],
-        // 2 - 1º ANO (ENSINO FUNDAMENTAL 1): alfabetização/leitura, contagem/adição/subtração/formas, corpo/materiais, identidade/família/escola, artes/ed. física
-        2 => [1, 9, 10, 13, 14, 23, 28, 33, 44, 47, 65, 71, 72, 75, 82],
-        // 3 - 2º ANO (ENSINO FUNDAMENTAL 1): ortografia/pontuação/contos, valor posicional/multiplicação, seres vivos/plantas/materiais, comunidade/bairros/transportes
-        3 => [1, 2, 13, 14, 15, 28, 33, 39, 45, 47, 65, 71, 72, 75, 82],
-        // 4 - 3º ANO (ENSINO FUNDAMENTAL 1): leitura/narrativos, multiplicação/divisão/frações/horas, animais/luz/som/solo/água, municípios/urbano/rural/patrimônio
-        4 => [1, 2, 3, 13, 14, 15, 28, 30, 35, 37, 40, 45, 47, 49, 65, 71, 72, 75, 82],
-        // 5 - 4º ANO (ENSINO FUNDAMENTAL 1): informativos/concordância básica, frações/simetria/áreas, cadeias alimentares/misturas/pontos cardeais, migrações/relevo/hidrografia
-        5 => [2, 3, 4, 9, 13, 18, 19, 28, 29, 33, 35, 37, 39, 46, 47, 49, 65, 71, 72, 75, 82],
-        // 6 - 5º ANO (ENSINO FUNDAMENTAL 1): argumentativos/coesão/classes gramaticais, decimais/porcentagem/volume, corpo humano/ciclo hidrológico/energia, cidadania/urbanização/energia
-        6 => [3, 4, 5, 10, 13, 16, 22, 30, 39, 40, 44, 48, 49, 65, 71, 72, 75, 82],
+        // 1 - Ensino médio completo (Revisão geral do Ensino Médio)
+        1 => [
+            5, 6, 7, 8, 9, 10, 11, 12,
+            13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+            23, 24, 25, 26, 27, 28, 29, 30, 31, 32,
+            33, 34, 35, 36, 37, 38, 39, 40, 41,
+            49, 50, 51, 52, 53, 54, 55, 56,
+            57, 58, 59, 60, 61, 62, 63,
+            64, 65, 66, 67, 68, 69, 70,
+            71, 72, 73, 74, 75, 76, 77,
+            78, 79, 80, 81, 82, 83, 84, 85, 86, 87,
+            88, 89, 90, 91, 92, 93, 94, 95, 96,
+            97, 98, 99, 100, 101, 102, 103, 104,
+            105, 106, 107, 108, 109, 110, 111, 112
+        ],
+        // 2 - 1º ANO (ENSINO FUNDAMENTAL 1) - Sem Física, Química, Biologia, Filosofia e Sociologia
+        2 => [1, 13, 14, 42, 43, 48, 84, 85, 87, 93, 95],
+        // 3 - 2º ANO (ENSINO FUNDAMENTAL 1) - Sem Física, Química, Biologia, Filosofia e Sociologia
+        3 => [1, 2, 13, 14, 15, 43, 44, 48, 84, 85, 86, 87, 93, 94, 95],
+        // 4 - 3º ANO (ENSINO FUNDAMENTAL 1) - Sem Física, Química, Biologia, Filosofia e Sociologia
+        4 => [1, 2, 3, 13, 14, 15, 23, 28, 33, 35, 37, 42, 46, 47, 48, 78, 79, 86, 87, 90, 91, 95, 96],
+        // 5 - 4º ANO (ENSINO FUNDAMENTAL 1) - Sem Física, Química, Biologia, Filosofia e Sociologia
+        5 => [2, 3, 4, 9, 13, 14, 15, 16, 28, 29, 33, 34, 35, 36, 37, 42, 44, 45, 46, 48, 78, 79, 84, 85, 88, 89, 90, 94],
+        // 6 - 5º ANO (ENSINO FUNDAMENTAL 1) - Sem Física, Química, Biologia, Filosofia e Sociologia
+        6 => [3, 4, 5, 9, 10, 13, 16, 17, 18, 19, 28, 29, 30, 34, 39, 40, 42, 43, 45, 46, 47, 48, 78, 82, 83, 87, 88, 89, 92, 94],
         // 7 - 6º ANO (ENSINO FUNDAMENTAL 2)
-        7 => [3, 9, 11, 16, 22, 23, 24, 33, 34, 35, 58, 62],
+        7 => [3, 4, 9, 11, 13, 16, 17, 22, 23, 24, 33, 34, 35, 37, 42, 44, 48, 71, 75, 76],
         // 8 - 7º ANO (ENSINO FUNDAMENTAL 2)
-        8 => [5, 6, 7, 17, 22, 25, 26, 28, 39, 40, 59, 62],
+        8 => [5, 6, 7, 9, 17, 18, 19, 22, 25, 26, 28, 36, 39, 40, 43, 45, 47, 72, 75, 76],
         // 9 - 8º ANO (ENSINO FUNDAMENTAL 2)
-        9 => [5, 6, 7, 9, 12, 18, 19, 22, 26, 27, 29, 34, 38, 59, 62],
+        9 => [5, 6, 7, 9, 11, 12, 18, 19, 20, 22, 26, 27, 29, 34, 38, 39, 41, 43, 46, 47, 72, 73, 74, 76],
         // 10 - 9º ANO (ENSINO FUNDAMENTAL 2)
-        10 => [7, 8, 9, 11, 12, 20, 21, 22, 30, 31, 32, 38, 41, 59, 62],
+        10 => [7, 8, 9, 11, 12, 20, 21, 22, 30, 31, 32, 38, 40, 41, 46, 47, 73, 74, 76, 77],
         // 11 - 1º ANO (ENSINO MÉDIO)
-        11 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 26, 38, 40],
+        11 => [5, 6, 8, 9, 13, 16, 22, 23, 24, 25, 26, 33, 34, 35, 37, 49, 50, 51, 52, 57, 58, 59, 64, 67, 68, 71, 72, 76, 97, 98, 99, 105, 106, 107, 108],
         // 12 - 2º ANO (ENSINO MÉDIO)
-        12 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 27, 30, 41],
+        12 => [9, 10, 11, 12, 18, 19, 20, 21, 26, 27, 28, 29, 36, 39, 40, 53, 54, 55, 60, 61, 62, 68, 69, 70, 73, 74, 76, 77, 100, 102, 103, 109, 110, 111],
         // 13 - 3º ANO (ENSINO MÉDIO)
-        13 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 30, 31, 32, 38, 41]
+        13 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 30, 31, 32, 38, 40, 41, 49, 51, 56, 59, 62, 63, 65, 66, 67, 75, 76, 77, 101, 102, 104, 110, 111, 112]
     ];
 
     $recomendados_banco = [];
@@ -400,7 +413,7 @@ function inicializarLogoMobile() {
 }
 
 // ==========================================================
-// ATUALIZAÇÃO CONFIG-MOBILE (1º CLIQUE ABRE INFORMAÇÕES, 2º ABRE CONFIGURAÇÕES)
+// ATUALIZAÇÃO CONFIG-MOBILE 
 // ==========================================================
 function inicializarPerfilMobile() {
     const mobileProfileContainer = document.querySelector('.mobile-profile-right');
@@ -507,7 +520,7 @@ function carregarMenuSidebarFixo() {
         .catch(e => console.error("Erro na sidebar:", e));
 }
 
-// Filtra os quizzes de acordo com escolaridade_id, conteúdos da BNCC e dificuldade compatível
+// Filtra os quizzes de acordo com escolaridade_id, e conteúdos 
 function filtrarPorEscolaridade(quizzes, escolaridadeId) {
     if (!Array.isArray(quizzes) || !escolaridadeId) return quizzes;
 
@@ -537,15 +550,14 @@ function filtrarPorEscolaridade(quizzes, escolaridadeId) {
         const dif = Number(q.id_dificuldade);
         if (!dif) return true;
 
-        // 2..6: 1º ao 5º ano (Fundamental 1) -> Fácil (1)
         if (escolaridadeId >= 2 && escolaridadeId <= 6) {
             return dif === 1;
         }
-        // 7..10: 6º ao 9º ano (Fundamental 2) -> Fácil (1) e Intermediária (2)
+
         if (escolaridadeId >= 7 && escolaridadeId <= 10) {
             return dif === 1 || dif === 2;
         }
-        // 1, 11..13: Ensino Médio e Médio Completo -> Intermediária (2) e Difícil (3)
+
         if (escolaridadeId === 1 || (escolaridadeId >= 11 && escolaridadeId <= 13)) {
             return dif === 2 || dif === 3;
         }
@@ -566,21 +578,26 @@ async function carregarQuizzesRecomendados() {
             return;
         }
 
-        const url = `${api}?tipo=recomendados&escolaridade_id=${escolaridadeUsuarioLogado}`;
-        const response = await fetch(url);
-        const dados = await response.json();
+        // Prioriza a consulta já filtrada diretamente do banco de dados
+        let baseDados = Array.isArray(recomendadosBanco) ? recomendadosBanco : [];
 
-        if (dados && dados.erro) {
-            document.getElementById("tituloSecao").innerText = "Aviso";
-            document.getElementById("containerCards").innerHTML = `
-                <div class="aviso-escolaridade">
-                    <p>${dados.erro}</p>
-                    ${dados.precisa_escolaridade ? `<button onclick="window.location.href='home.php'" class="btn-escolaridade">Escolher Escolaridade</button>` : ''}
-                </div>`;
-            return;
+        if (baseDados.length === 0) {
+            const url = `${api}?tipo=recomendados&escolaridade_id=${escolaridadeUsuarioLogado}`;
+            const response = await fetch(url);
+            const dados = await response.json();
+
+            if (dados && dados.erro) {
+                document.getElementById("tituloSecao").innerText = "Aviso";
+                document.getElementById("containerCards").innerHTML = `
+                    <div class="aviso-escolaridade">
+                        <p>${dados.erro}</p>
+                        ${dados.precisa_escolaridade ? `<button onclick="window.location.href='home.php'" class="btn-escolaridade">Escolher Escolaridade</button>` : ''}
+                    </div>`;
+                return;
+            }
+            baseDados = Array.isArray(dados) ? dados : [];
         }
 
-        const baseDados = Array.isArray(dados) && dados.length > 0 ? dados : recomendadosBanco;
         listaQuizzesGlobal = filtrarPorEscolaridade(baseDados, escolaridadeUsuarioLogado);
         document.getElementById("tituloSecao").innerText = "Recomendados para o seu Perfil";
         renderizarCards(listaQuizzesGlobal);
