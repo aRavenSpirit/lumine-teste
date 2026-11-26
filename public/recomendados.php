@@ -4,11 +4,108 @@
     include_once("../config/conexao.php");
 
     // ==========================================================
-    // BUSCA AS CORES PERSONALIZADAS DO USUÁRIO PARA OS CARDS DE MATÉRIA
+    // BUSCA AS CORES PERSONALIZADAS E ESCOLARIDADE DO USUÁRIO
     // ==========================================================
     $id_usuario_logado = intval($_SESSION['usuario_id'] ?? 0);
     $sql_pref = "SELECT cores_materia FROM configuracoes WHERE id_usuario = $id_usuario_logado";
     $result_pref = $conn->query($sql_pref);
+
+    $escolaridade_id_usuario = 0;
+    if ($id_usuario_logado > 0) {
+        $stmt_esc = $conn->prepare("SELECT escolaridade_id FROM usuario WHERE id = ?");
+        $stmt_esc->bind_param("i", $id_usuario_logado);
+        $stmt_esc->execute();
+        $res_esc = $stmt_esc->get_result();
+        if ($row_esc = $res_esc->fetch_assoc()) {
+            $escolaridade_id_usuario = intval($row_esc['escolaridade_id'] ?? 0);
+        }
+        $stmt_esc->close();
+    }
+
+    // Mapeamento de conteúdos por ano/escolaridade (IDs da tabela `conteudo` no luminebd.sql)
+    $conteudos_por_escolaridade = [
+        // 1 - Ensino médio completo
+        1 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 26, 27, 30, 31, 32, 38, 40, 41],
+        // 2 - 1º ANO (ENSINO FUNDAMENTAL 1): alfabetização/leitura, contagem/adição/subtração/formas, corpo/materiais, identidade/família/escola, artes/ed. física
+        2 => [1, 9, 10, 13, 14, 23, 28, 33, 44, 47, 65, 71, 72, 75, 82],
+        // 3 - 2º ANO (ENSINO FUNDAMENTAL 1): ortografia/pontuação/contos, valor posicional/multiplicação, seres vivos/plantas/materiais, comunidade/bairros/transportes
+        3 => [1, 2, 13, 14, 15, 28, 33, 39, 45, 47, 65, 71, 72, 75, 82],
+        // 4 - 3º ANO (ENSINO FUNDAMENTAL 1): leitura/narrativos, multiplicação/divisão/frações/horas, animais/luz/som/solo/água, municípios/urbano/rural/patrimônio
+        4 => [1, 2, 3, 13, 14, 15, 28, 30, 35, 37, 40, 45, 47, 49, 65, 71, 72, 75, 82],
+        // 5 - 4º ANO (ENSINO FUNDAMENTAL 1): informativos/concordância básica, frações/simetria/áreas, cadeias alimentares/misturas/pontos cardeais, migrações/relevo/hidrografia
+        5 => [2, 3, 4, 9, 13, 18, 19, 28, 29, 33, 35, 37, 39, 46, 47, 49, 65, 71, 72, 75, 82],
+        // 6 - 5º ANO (ENSINO FUNDAMENTAL 1): argumentativos/coesão/classes gramaticais, decimais/porcentagem/volume, corpo humano/ciclo hidrológico/energia, cidadania/urbanização/energia
+        6 => [3, 4, 5, 10, 13, 16, 22, 30, 39, 40, 44, 48, 49, 65, 71, 72, 75, 82],
+        // 7 - 6º ANO (ENSINO FUNDAMENTAL 2)
+        7 => [3, 9, 11, 16, 22, 23, 24, 33, 34, 35, 58, 62],
+        // 8 - 7º ANO (ENSINO FUNDAMENTAL 2)
+        8 => [5, 6, 7, 17, 22, 25, 26, 28, 39, 40, 59, 62],
+        // 9 - 8º ANO (ENSINO FUNDAMENTAL 2)
+        9 => [5, 6, 7, 9, 12, 18, 19, 22, 26, 27, 29, 34, 38, 59, 62],
+        // 10 - 9º ANO (ENSINO FUNDAMENTAL 2)
+        10 => [7, 8, 9, 11, 12, 20, 21, 22, 30, 31, 32, 38, 41, 59, 62],
+        // 11 - 1º ANO (ENSINO MÉDIO)
+        11 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 26, 38, 40],
+        // 12 - 2º ANO (ENSINO MÉDIO)
+        12 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 27, 30, 41],
+        // 13 - 3º ANO (ENSINO MÉDIO)
+        13 => [5, 6, 8, 9, 10, 13, 20, 21, 22, 30, 31, 32, 38, 41]
+    ];
+
+    $recomendados_banco = [];
+    if ($escolaridade_id_usuario > 0) {
+        $ids_permitidos = $conteudos_por_escolaridade[$escolaridade_id_usuario] ?? [];
+        $placeholders = count($ids_permitidos) > 0
+            ? implode(',', array_fill(0, count($ids_permitidos), '?'))
+            : '0';
+
+        $sql_rec = "
+            SELECT DISTINCT
+                q.id,
+                q.nome,
+                q.id_dificuldade,
+                q.id_conteudo,
+                q.imagem_quiz,
+                c.nome AS conteudo,
+                m.id AS id_materia,
+                m.nome_materia,
+                d.dificuldade
+            FROM quizzes q
+            INNER JOIN conteudo c ON q.id_conteudo = c.id
+            INNER JOIN materia m ON c.id_materia = m.id
+            INNER JOIN conteudo_escolaridade ce ON ce.id_conteudo = c.id
+            LEFT JOIN dificuldade d ON q.id_dificuldade = d.id
+            WHERE ce.id_escolaridade = ?
+              AND c.id IN ($placeholders)
+              AND NOT (? BETWEEN 2 AND 6 AND m.id IN (6, 7, 8, 12, 13))
+              AND (
+                  (? BETWEEN 2 AND 6 AND q.id_dificuldade = 1)
+                  OR (? BETWEEN 7 AND 10 AND q.id_dificuldade IN (1, 2))
+                  OR (? IN (1, 11, 12, 13) AND q.id_dificuldade IN (2, 3))
+              )
+            ORDER BY q.id DESC
+        ";
+
+        $stmt_rec = $conn->prepare($sql_rec);
+        $types = "i" . str_repeat("i", count($ids_permitidos)) . "iiii";
+        $params = array_merge(
+            [$escolaridade_id_usuario],
+            $ids_permitidos,
+            [
+                $escolaridade_id_usuario,
+                $escolaridade_id_usuario,
+                $escolaridade_id_usuario,
+                $escolaridade_id_usuario
+            ]
+        );
+        $stmt_rec->bind_param($types, ...$params);
+        $stmt_rec->execute();
+        $res_rec = $stmt_rec->get_result();
+        while ($row_rec = $res_rec->fetch_assoc()) {
+            $recomendados_banco[] = $row_rec;
+        }
+        $stmt_rec->close();
+    }
 
     $cores_usuario = [
         "bg_claro" => "#FFFFFF",
@@ -124,13 +221,36 @@
 
 <script>
 const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
+const escolaridadeUsuarioLogado = <?php echo intval($escolaridade_id_usuario); ?>;
+const recomendadosBanco = <?php echo json_encode($recomendados_banco); ?>;
+const conteudosPorEscolaridadeBNCC = <?php echo json_encode($conteudos_por_escolaridade); ?>;
+
+// IDs e nomes das matérias que NÃO aparecem do 1º ao 5º ano (escolaridade_id 2 a 6)
+const MATERIAS_RESTRITAS_FUND1_IDS = [6, 7, 8, 12, 13];
+const MATERIAS_RESTRITAS_FUND1_NOMES = ['fisica', 'quimica', 'biologia', 'filosofia', 'sociologia'];
+
 let listaQuizzesGlobal = [];
 let urlDestinoQuiz = "";
+
+function normalizarTexto(texto) {
+    return (texto || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").trim();
+}
+
+function materiaRestritaParaFundamental1(idMateria, nomeMateria) {
+    if (escolaridadeUsuarioLogado < 2 || escolaridadeUsuarioLogado > 6) return false;
+    if (idMateria && MATERIAS_RESTRITAS_FUND1_IDS.includes(Number(idMateria))) return true;
+    const nomeNorm = normalizarTexto(nomeMateria);
+    return MATERIAS_RESTRITAS_FUND1_NOMES.includes(nomeNorm);
+}
 
 // Carrega os conteúdos da matéria clicada na sidebar nesta própria página
 function carregarConteudos(idMateria, nomeMateria) {
     if (window.event) window.event.preventDefault();
     if (typeof fecharMenuMobile === "function") fecharMenuMobile();
+
+    if (materiaRestritaParaFundamental1(idMateria, nomeMateria)) {
+        return;
+    }
 
     const main = document.getElementById("mainConteudo");
     main.innerHTML = `
@@ -153,10 +273,15 @@ function carregarConteudos(idMateria, nomeMateria) {
         .then(dados => {
             const container = document.getElementById("cardsConteudos");
             let html = "";
-            if (!dados || dados.length === 0) {
+            const permitidosAno = conteudosPorEscolaridadeBNCC[escolaridadeUsuarioLogado] || [];
+            const dadosFiltrados = Array.isArray(dados) && permitidosAno.length > 0
+                ? dados.filter(c => permitidosAno.map(Number).includes(Number(c.id)))
+                : dados;
+
+            if (!dadosFiltrados || dadosFiltrados.length === 0) {
                 html = "<p>Nenhum conteúdo disponível para esta matéria.</p>";
             } else {
-                dados.forEach(c => {
+                dadosFiltrados.forEach(c => {
                     let imagemCard = (c.imagem_conteudo && c.imagem_conteudo.trim() !== "")
                         ? c.imagem_conteudo
                         : `img/conteudos/${c.nome.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, '')}.webp`;
@@ -372,19 +497,80 @@ function carregarMenuSidebarFixo() {
     fetch(api + "?tipo=materias")
         .then(r => r.json())
         .then(dados => {
-            const menu = dados.map(m => `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia.replace(/'/g, "\\'")}'); return false;"><span>${m.nome_materia}</span></a>`).join("");
+            const materiasFiltradas = Array.isArray(dados)
+                ? dados.filter(m => !materiaRestritaParaFundamental1(m.id, m.nome_materia))
+                : [];
+            const menu = materiasFiltradas.map(m => `<a href="#" onclick="carregarConteudos(${m.id}, '${m.nome_materia.replace(/'/g, "\\'")}'); return false;"><span>${m.nome_materia}</span></a>`).join("");
             if (document.getElementById("menuMaterias")) document.getElementById("menuMaterias").innerHTML = menu;
             if (document.getElementById("menuMateriasMobile")) document.getElementById("menuMateriasMobile").innerHTML = menu;
         })
         .catch(e => console.error("Erro na sidebar:", e));
 }
 
+// Filtra os quizzes de acordo com escolaridade_id, conteúdos da BNCC e dificuldade compatível
+function filtrarPorEscolaridade(quizzes, escolaridadeId) {
+    if (!Array.isArray(quizzes) || !escolaridadeId) return quizzes;
+
+    const conteudosPermitidos = conteudosPorEscolaridadeBNCC[Number(escolaridadeId)] || [];
+
+    return quizzes.filter(q => {
+        if (materiaRestritaParaFundamental1(q.id_materia, q.nome_materia)) {
+            return false;
+        }
+
+        if (conteudosPermitidos.length > 0 && q.id_conteudo) {
+            if (!conteudosPermitidos.map(Number).includes(Number(q.id_conteudo))) {
+                return false;
+            }
+        }
+
+        if (Array.isArray(q.escolaridades) && q.escolaridades.length > 0) {
+            if (!q.escolaridades.map(Number).includes(Number(escolaridadeId))) {
+                return false;
+            }
+        } else if (q.id_escolaridade !== undefined && q.id_escolaridade !== null) {
+            if (Number(q.id_escolaridade) !== Number(escolaridadeId)) {
+                return false;
+            }
+        }
+
+        const dif = Number(q.id_dificuldade);
+        if (!dif) return true;
+
+        // 2..6: 1º ao 5º ano (Fundamental 1) -> Fácil (1)
+        if (escolaridadeId >= 2 && escolaridadeId <= 6) {
+            return dif === 1;
+        }
+        // 7..10: 6º ao 9º ano (Fundamental 2) -> Fácil (1) e Intermediária (2)
+        if (escolaridadeId >= 7 && escolaridadeId <= 10) {
+            return dif === 1 || dif === 2;
+        }
+        // 1, 11..13: Ensino Médio e Médio Completo -> Intermediária (2) e Difícil (3)
+        if (escolaridadeId === 1 || (escolaridadeId >= 11 && escolaridadeId <= 13)) {
+            return dif === 2 || dif === 3;
+        }
+
+        return true;
+    });
+}
+
 async function carregarQuizzesRecomendados() {
     try {
-        const response = await fetch(api + "?tipo=recomendados");
+        if (!escolaridadeUsuarioLogado) {
+            document.getElementById("tituloSecao").innerText = "Aviso";
+            document.getElementById("containerCards").innerHTML = `
+                <div class="aviso-escolaridade">
+                    <p>Selecione sua escolaridade para receber recomendações personalizadas.</p>
+                    <button onclick="window.location.href='home.php'" class="btn-escolaridade">Escolher Escolaridade</button>
+                </div>`;
+            return;
+        }
+
+        const url = `${api}?tipo=recomendados&escolaridade_id=${escolaridadeUsuarioLogado}`;
+        const response = await fetch(url);
         const dados = await response.json();
 
-        if (dados.erro) {
+        if (dados && dados.erro) {
             document.getElementById("tituloSecao").innerText = "Aviso";
             document.getElementById("containerCards").innerHTML = `
                 <div class="aviso-escolaridade">
@@ -394,12 +580,19 @@ async function carregarQuizzesRecomendados() {
             return;
         }
 
-        listaQuizzesGlobal = dados;
+        const baseDados = Array.isArray(dados) && dados.length > 0 ? dados : recomendadosBanco;
+        listaQuizzesGlobal = filtrarPorEscolaridade(baseDados, escolaridadeUsuarioLogado);
         document.getElementById("tituloSecao").innerText = "Recomendados para o seu Perfil";
         renderizarCards(listaQuizzesGlobal);
 
     } catch (e) {
         console.error("Erro ao buscar recomendações:", e);
+        if (Array.isArray(recomendadosBanco) && recomendadosBanco.length > 0) {
+            listaQuizzesGlobal = filtrarPorEscolaridade(recomendadosBanco, escolaridadeUsuarioLogado);
+            document.getElementById("tituloSecao").innerText = "Recomendados para o seu Perfil";
+            renderizarCards(listaQuizzesGlobal);
+            return;
+        }
         document.getElementById("tituloSecao").innerText = "Erro";
         document.getElementById("containerCards").innerHTML = "<p class='msg-lista-vazia'>Não foi possível carregar as recomendações.</p>";
     }
