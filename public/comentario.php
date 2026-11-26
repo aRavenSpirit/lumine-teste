@@ -88,7 +88,7 @@
 
         <section class="welcome-section">
             <div class="container-comentarios">
-                <h2>Comente sobre nosso site!</h2>
+                <h2>Comente o que achou do Quiz!</h2>
                 <div class="card-respostas">
                     <div class="respostas">
                         <p id="respostas"></p>
