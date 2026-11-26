@@ -3,9 +3,7 @@
     include_once("../config/session.php");
     include_once("../config/layout.php");
 
-   
     $quiz_id = isset($_GET['quiz_id']) ? intval($_GET['quiz_id']) : 0;
-
 
     // ==========================================================
     // BUSCA AS PREFERÊNCIAS DO USUÁRIO LOGADO
@@ -91,7 +89,7 @@
                 <h2>Comente o que achou do Quiz!</h2>
                 <div class="card-respostas">
                     <div class="respostas">
-                        <p id="respostas"></p>
+                        <div id="respostas"></div>
                     </div>
                 </div>
                 <div class="comentario-form">
@@ -144,7 +142,26 @@
 
     // Transforma o array do PHP em um objeto JavaScript utilizável
     const coresMateriasDoBanco = <?php echo json_encode($cores_usuario); ?>;
-    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? $_SESSION['usuario_id'] : 'null'; ?>;
+    const idUsuarioLogado = <?php echo isset($_SESSION['usuario_id']) ? intval($_SESSION['usuario_id']) : 'null'; ?>;
+
+    function obterQuizIdAtual() {
+        const phpQuizId = <?php echo intval($quiz_id); ?>;
+        if (phpQuizId > 0) {
+            return phpQuizId;
+        }
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let quizId = urlParams.get('quiz_id') || urlParams.get('id');
+
+        if (!quizId || quizId === '0') {
+            quizId = localStorage.getItem('ultimo_quiz_id');
+        }
+
+        const parsed = parseInt(quizId, 10);
+        return Number.isNaN(parsed) ? 0 : parsed;
+    }
+
+    const quizIdAtual = obterQuizIdAtual();
 
     // Carrega os conteúdos da matéria clicada na sidebar nesta própria página
     function carregarConteudos(idMateria, nomeMateria) {
@@ -289,10 +306,16 @@
 
     // 1. CARREGAR COMENTÁRIOS (GET)
     function carregarComentarios() {
-        fetch(apiComentario)
+        const respostasContainer = document.getElementById('respostas');
+
+        if (!quizIdAtual) {
+            respostasContainer.innerHTML = '<p>Quiz não identificado para exibir os comentários.</p>';
+            return;
+        }
+
+        fetch(`${apiComentario}?id_quiz=${quizIdAtual}`)
             .then(response => response.json())
             .then(data => {
-                const respostasContainer = document.getElementById('respostas');
                 respostasContainer.innerHTML = ''; 
 
                 if (!Array.isArray(data) || data.length === 0) {
@@ -318,8 +341,19 @@
                     const infoDiv = document.createElement('div');
                     infoDiv.classList.add('comentario-info');
 
+                    const nomePadrao = comentario.nome_usuario || "Usuário Anônimo";
+                    const emailUsuario = comentario.email_usuario || "E-mail não disponível";
+
                     const nomeUsuario = document.createElement('h3');
-                    nomeUsuario.textContent = comentario.nome_usuario || "Usuário Anônimo";
+                    nomeUsuario.textContent = nomePadrao;
+
+                    comentarioDiv.addEventListener('mouseenter', () => {
+                        nomeUsuario.textContent = emailUsuario;
+                    });
+
+                    comentarioDiv.addEventListener('mouseleave', () => {
+                        nomeUsuario.textContent = nomePadrao;
+                    });
 
                     const dataEnvio = document.createElement('span');
                     dataEnvio.classList.add('comentario-data');
@@ -367,6 +401,11 @@
                 return;
             }
 
+            if (!quizIdAtual) {
+                alert('Não foi possível identificar o quiz atual.');
+                return;
+            }
+
             const textarea = form.querySelector('textarea');
             const textoComentario = textarea.value.trim();
 
@@ -374,6 +413,7 @@
 
             const dados = {
                 id_usuario: idUsuarioLogado,
+                id_quiz: quizIdAtual,
                 comentario: textoComentario
             };
 

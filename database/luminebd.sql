@@ -321,7 +321,10 @@ CREATE TABLE recuperacao_senha (
 CREATE TABLE feedbacks_usuarios (
     id int AUTO_INCREMENT primary key,
     id_usuario int,
+    id_quiz int not null,
     foreign key (id_usuario) references usuario (id)
+        ON DELETE CASCADE,
+    foreign key (id_quiz) references quizzes (id)
         ON DELETE CASCADE,
     mensagem text,
     data_envio datetime default current_timestamp
