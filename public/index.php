@@ -1,3 +1,10 @@
+<?php
+    include_once("../config/session_public.php");
+    $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
+    $linkInicio = $estaLogado ? "home.php" : "index.php";
+    include_once("../config/layout.php");
+?>
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -11,29 +18,7 @@
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="logo-section">
-            <img src="./img/LUMINE.png" alt="Lumine Logo" class="logo-img">
-        </div>
-        
-        <ul class="nav-links">
-            <li class="item-sobre"><a href="sobre.php">Sobre nós</a></li>
-            <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
-            <li class="item-quizzes"><a href="home.php">Todos os quizzes</a></li>
-            <li class="item-acessar">
-                <a href="home.php" class="btn-acessar">Acessar</a>
-            </li>
-        </ul>
-
-        <div class="hamburger" onclick="toggleMenu()">☰</div>
-    </nav>
-
-    <div class="mobile-menu" id="mobileMenu">
-        <div class="item-sobre-mob"><a href="sobre.php">Sobre nós</a></div>
-        <div class="item-novidades-mob"><a href="novidades.php">Novidades</a></div>
-        <div class="item-quizzes-mob"><a href="home.php">Todos os quizzes</a></div>
-        <div class="item-acessar-mob"><a href="home.php">Acessar</a></div>
-    </div>
+    <?php renderPublicHeader(); ?>
 
     <main class="hero">
         <div class="hero-content animation-fade-in">

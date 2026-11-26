@@ -1,7 +1,61 @@
 <?php
+    // Função auxiliar para verificar se o usuário logado é ADM
+    function ehUsuarioAdmin() {
+        static $cacheAdmin = null;
+        if ($cacheAdmin !== null) {
+            return $cacheAdmin;
+        }
+
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+        if (!isset($_SESSION['usuario_id']) || intval($_SESSION['usuario_id']) <= 0) {
+            $cacheAdmin = false;
+            return false;
+        }
+
+        $emails_permitidos = [
+            'lumineprojeto@gmail.com',
+            'lucasgustavo2oliveira@gmail.com',
+            'adminmaneiro@gmail.com',
+            'victoriaespsanto@gmail.com',
+            'matheuseuzebio39@gmail.com',
+            'breno.d.gomes6@aluno.senai.br',
+            'bdrbgomes@gmail.com'
+        ];
+
+        require_once __DIR__ . "/../config/conexao.php";
+
+        if (!isset($conn) || !$conn) {
+            $cacheAdmin = false;
+            return false;
+        }
+
+        $id = intval($_SESSION['usuario_id']);
+        $stmt = $conn->prepare("SELECT email FROM usuario WHERE id = ? LIMIT 1");
+        if (!$stmt) {
+            $cacheAdmin = false;
+            return false;
+        }
+
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $user = $res ? $res->fetch_assoc() : null;
+        $stmt->close();
+
+        $cacheAdmin = ($user && in_array(strtolower(trim($user['email'])), $emails_permitidos, true));
+        return $cacheAdmin;
+    }
+
     // Função para o Header das Páginas Institucionais / Públicas
     function renderPublicHeader() {
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
         $estaLogado = isset($_SESSION['usuario_id']) && intval($_SESSION['usuario_id']) > 0;
+        $ehAdmin = $estaLogado && ehUsuarioAdmin();
         $linkInicio = $estaLogado ? "home.php" : "index.php";
 ?>
     <nav class="navbar">
@@ -15,6 +69,9 @@
             <li class="item-sobre"><a href="index.php">Início</a></li>
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
+            <?php if ($ehAdmin): ?>
+                <li class="item-adm"><a href="admin_dashboard.php" class="btn-adm">ADM</a></li>
+            <?php endif; ?>
             <li class="item-acessar">
                 <?php if ($estaLogado): ?>
                     <a href="home.php" class="btn-acessar">HOME</a>
@@ -31,6 +88,9 @@
         <div class="item-sobre-mob"><a href="index.php">Início</a></div>
         <div class="item-novidades-mob"><a href="novidades.php">Novidades</a></div>
         <div class="item-quizzes-mob"><a href="todos_quizzes.php">Todos os quizzes</a></div>
+        <?php if ($ehAdmin): ?>
+            <div class="item-adm-mob"><a href="admin_dashboard.php">ADM</a></div>
+        <?php endif; ?>
         <div class="item-acessar-mob">
             <?php if ($estaLogado): ?>
                 <a href="home.php">Home</a>
@@ -52,7 +112,6 @@
             const menu = document.getElementById("mobileMenu");
             const hamburger = document.querySelector(".hamburger");
             if (menu && hamburger) {
-                // Fecha o menu se a tela passar de 580px ou se o botão hambúrguer sumir no CSS
                 if (window.innerWidth > 580 || window.getComputedStyle(hamburger).display === "none") {
                     menu.classList.remove("active");
                 }
@@ -67,6 +126,7 @@
 
     // Função para o Header do Painel Logado (Home)
     function renderHeader() {
+        $ehAdmin = ehUsuarioAdmin();
 ?>
     <link rel="stylesheet" href="./style/dark-mode.css">
 
@@ -87,6 +147,9 @@
             <li class="item-novidades"><a href="novidades.php">Novidades</a></li>
             <li class="item-novidades"><a href="recomendados.php">Recomendados</a></li>
             <li class="item-quizzes"><a href="todos_quizzes.php">Todos os quizzes</a></li>
+            <?php if ($ehAdmin): ?>
+                <li class="item-adm"><a href="admin_dashboard.php" class="btn-adm">ADM</a></li>
+            <?php endif; ?>
             <li class="item-perfil">
                 <a href="configuracoes.php" class="perfil-link">
                     <span>Perfil</span>
@@ -98,6 +161,9 @@
         </nav>
 
         <div class="mobile-profile-right">
+            <?php if ($ehAdmin): ?>
+                <a href="admin_dashboard.php" class="btn-adm-mobile" title="Painel ADM">ADM</a>
+            <?php endif; ?>
             <a href="configuracoes.php">
                 <div class="profile-icon">
                     <i class="fa-solid fa-user"></i>
