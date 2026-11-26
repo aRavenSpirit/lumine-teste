@@ -23,8 +23,6 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
 }
 ?>
 
-
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -40,7 +38,7 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
 <div class="main-frame">
     <header>
         <div class="brand-adm">ADM</div>
-            <button onclick="location.href='criar_quiz.html'" class="nav-btn ">CRIAR QUIZZES</button>
+        <button onclick="location.href='criar_quiz.html'" class="nav-btn">CRIAR QUIZZES</button>
         <button class="nav-btn btn-lumine-top" onclick="window.location.href='index.php'">LUMINE</button>
     </header>
 
@@ -82,11 +80,15 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
 
 <div id="modal">
     <div class="modal-content">
-        <h2 id="modal-titulo"></h2>
+        <div class="modal-header-topo">
+            <h2 id="modal-titulo"></h2>
+            <button class="btn-fechar-x" onclick="fecharModal()" title="Fechar">&times;</button>
+        </div>
         <div id="status-feedback" class="status-msg"></div>
         <div id="modal-corpo"></div>
-        <br>
-        <button class="btn-fechar" onclick="fecharModal()">Fechar Janela</button>
+        <div class="modal-footer-baixo">
+            <button class="btn-fechar" onclick="fecharModal()">Fechar Janela</button>
+        </div>
     </div>
 </div>
 
@@ -95,7 +97,6 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
     let chart1 = null;
     let chart2 = null;
 
-    // Atualiza a página quando a proporção/tamanho da tela for alterado
     let timerRedimensionamento;
     window.addEventListener('resize', () => {
         clearTimeout(timerRedimensionamento);
@@ -193,35 +194,47 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
         let html = "";
 
         if (tipo === 'usuários') {
-            html = `<table class="admin-table">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Escolaridade</th>
-                        <th>Ações</th>
-                    </tr>
-                </thead>
-                <tbody>`;
+            html = `<div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Nome</th>
+                            <th>Email</th>
+                            <th>Escolaridade</th>
+                            <th style="text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
             dados.forEach(u => {
                 html += `<tr id="row-user-${u.id}">
-                    <td>${u.id}</td>
+                    <td><strong>#${u.id}</strong></td>
                     <td>${u.nome}</td>
                     <td>${u.email}</td>
                     <td>${u.nome_escolaridade || 'Não informado'}</td>
-                    <td><button class="btn-excluir" onclick="confirmarExclusao('usuario', '${u.id}')">Excluir</button></td>
+                    <td style="text-align: center;">
+                        <div class="acoes-grupo">
+                            <button class="btn-excluir" onclick="confirmarExclusao('usuario', '${u.id}')">Excluir</button>
+                        </div>
+                    </td>
                 </tr>`;
             });
-            html += `</tbody></table>`;
+            html += `</tbody></table></div>`;
         } 
-        // SUBSTUIA OU ADICIONE APENAS ESTA CONDICIONAL NO SEU abrirModal(tipo)
         else if (tipo === 'quizzes') {
-            html = `<table class="admin-table">
-                <thead>
-                    <tr><th>Nome</th><th>Matéria</th><th>Conteúdo</th><th>Perguntas</th><th>Dificuldade</th><th>Ações</th></tr>
-                </thead>
-                <tbody>`;
+            html = `<div class="table-responsive">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nome</th>
+                            <th>Matéria</th>
+                            <th>Conteúdo</th>
+                            <th style="text-align: center;">Perguntas</th>
+                            <th style="text-align: center;">Dificuldade</th>
+                            <th style="text-align: center;">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>`;
             dados.forEach(q => {
                 let cl = "";
                 const d = q.nome_dificuldade.toLowerCase();
@@ -229,24 +242,24 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
                 else if (d.includes("inter")) cl = "dif-intermediario";
                 else if (d.includes("dif")) cl = "dif-dificil";
 
-                // Repare nas crases abrindo a linha abaixo e no ${q.id} formatado corretamente
                 html += `<tr id="row-quiz-${q.id}">
-                    <td>${q.nome_quiz}</td><td>${q.nome_materia}</td><td>${q.nome_conteudo}</td>
-                    <td align="center">${q.total_perguntas}</td>
-                    <td align="center"><span class="tag-dificuldade ${cl}">${q.nome_dificuldade}</span></td>
+                    <td><strong>${q.nome_quiz}</strong></td>
+                    <td>${q.nome_materia}</td>
+                    <td>${q.nome_conteudo}</td>
+                    <td style="text-align: center;">${q.total_perguntas}</td>
+                    <td style="text-align: center;"><span class="tag-dificuldade ${cl}">${q.nome_dificuldade}</span></td>
                     <td>
-                        <button class="btn-editar" onclick="location.href='editar_quiz.html?id=${q.id}'">Editar</button>
-                        
-                        <button class="btn-excluir" onclick="confirmarExclusao('quiz', '${q.id}')">Excluir</button>
+                        <div class="acoes-grupo">
+                            <button class="btn-editar" onclick="location.href='editar_quiz.html?id=${q.id}'">Editar</button>
+                            <button class="btn-excluir" onclick="confirmarExclusao('quiz', '${q.id}')">Excluir</button>
+                        </div>
                     </td>
                 </tr>`;
             });
-            html += `</tbody></table>`;
+            html += `</tbody></table></div>`;
         }
         else if (tipo === 'avaliacoes') {
             const dadosCompletos = detalhesModais['avaliacoes'] || [];
-
-            // Extrai matérias únicas das avaliações
             const materiasUnicas = [...new Set(dadosCompletos.map(a => a.nome_materia || 'Geral'))].sort();
             
             let opcoesMateriaHtml = `<option value="todas">-- Todas as Matérias --</option>`;
@@ -255,19 +268,17 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
             });
 
             html = `
-            <div style="margin-bottom: 15px; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
-                <!-- Filtro 1: Matéria -->
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <label for="filtro-materia" style="font-weight: bold;">Matéria:</label>
-                    <select id="filtro-materia" onchange="aoSelecionarMateria()" style="padding: 6px 12px; border-radius: 6px; border: 2px solid #000; font-family: inherit; font-weight: bold; cursor: pointer;">
+            <div class="filtros-avaliacoes-bar">
+                <div class="filtro-item">
+                    <label for="filtro-materia">Matéria:</label>
+                    <select id="filtro-materia" onchange="aoSelecionarMateria()">
                         ${opcoesMateriaHtml}
                     </select>
                 </div>
 
-                <!-- Filtro 2: Conteúdo (Inicia desabilitado se "Todas" estiver selecionado) -->
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <label for="filtro-conteudo" style="font-weight: bold;">Conteúdo:</label>
-                    <select id="filtro-conteudo" onchange="filtrarAvaliacoesEncadeado()" disabled style="padding: 6px 12px; border-radius: 6px; border: 2px solid #000; font-family: inherit; font-weight: bold; cursor: pointer; background-color: #eee;">
+                <div class="filtro-item">
+                    <label for="filtro-conteudo">Conteúdo:</label>
+                    <select id="filtro-conteudo" onchange="filtrarAvaliacoesEncadeado()" disabled>
                         <option value="todos">-- Selecione uma Matéria primeiro --</option>
                     </select>
                 </div>
@@ -284,9 +295,7 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
                                 <th>Nota</th>
                             </tr>
                         </thead>
-                        <tbody id="tbody-avaliacoes">
-                            <!-- Preenchido dinamicamente -->
-                        </tbody>
+                        <tbody id="tbody-avaliacoes"></tbody>
                     </table>
                 </div>
                 <div class="coluna-card-media">
@@ -303,11 +312,10 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
 
             corpo.innerHTML = html;
             document.getElementById('modal').style.display = 'flex';
-
-            // Carrega os dados iniciais sem filtros aplicados
             filtrarAvaliacoesEncadeado();
             return;
         }
+
         corpo.innerHTML = html || "<p>Nenhum registro.</p>";
         document.getElementById('modal').style.display = 'flex';
     }
@@ -315,8 +323,8 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
     function confirmarExclusao(tipo, id) {
         const div = document.getElementById('status-feedback');
         div.innerHTML = `Confirmar exclusão? 
-            <button onclick="executarExclusao('${tipo}', ${id})" style="background:red; color:white; border:2px solid #000; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">Sim</button> 
-            <button onclick="document.getElementById('status-feedback').style.display='none'" style="background:#666; color:white; border:2px solid #000; padding:5px 10px; cursor:pointer; border-radius:4px; font-weight:bold;">Não</button>`;
+            <button onclick="executarExclusao('${tipo}', ${id})" style="background:#ff5252; color:white; border:2px solid #000; padding:4px 12px; cursor:pointer; border-radius:6px; font-weight:bold; margin-left:8px;">Sim</button> 
+            <button onclick="document.getElementById('status-feedback').style.display='none'" style="background:#666; color:white; border:2px solid #000; padding:4px 12px; cursor:pointer; border-radius:6px; font-weight:bold; margin-left:4px;">Não</button>`;
         div.className = "status-msg status-error";
         div.style.display = "block";
     }
@@ -328,17 +336,12 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
             if (r.status) {
                 mostrarFeedback("Removido com sucesso!", "success");
                 
-                // =========================================================================
-                // NOVO: Se o backend disser para deslogar, redireciona para a página principal
-                // =========================================================================
                 if (tipo === 'usuario' && r.deslogar) {
                     setTimeout(() => {
-                        // Altere para 'index.php', 'login.php' ou a página que preferir como sua principal pública
                         window.location.href = 'index.php'; 
-                    }, 1000); // Aguarda 1 segundo para o usuário ver o feedback de sucesso antes de sair
+                    }, 1000);
                     return;
                 }
-                // =========================================================================
 
                 const rowId = `row-${tipo==='usuario'?'user':'quiz'}-${id}`;
                 const row = document.getElementById(rowId);
@@ -357,96 +360,86 @@ if (!$user || !in_array(strtolower($user['email']), $emails_permitidos)) {
         document.getElementById('status-feedback').style.display = 'none';
     }
 
+    function aoSelecionarMateria() {
+        const materiaSel = document.getElementById('filtro-materia').value;
+        const selectConteudo = document.getElementById('filtro-conteudo');
+        const dadosCompletos = detalhesModais['avaliacoes'] || [];
 
-    // Chamada quando a matéria selecionada muda
-function aoSelecionarMateria() {
-    const materiaSel = document.getElementById('filtro-materia').value;
-    const selectConteudo = document.getElementById('filtro-conteudo');
-    const dadosCompletos = detalhesModais['avaliacoes'] || [];
+        if (materiaSel === 'todas') {
+            selectConteudo.disabled = true;
+            selectConteudo.innerHTML = `<option value="todos">-- Selecione uma Matéria primeiro --</option>`;
+        } else {
+            const conteudosDaMateria = [...new Set(
+                dadosCompletos
+                    .filter(a => (a.nome_materia || 'Geral') === materiaSel)
+                    .map(a => a.nome_conteudo || 'Sem Conteúdo')
+            )].sort();
 
-    if (materiaSel === 'todas') {
-        selectConteudo.disabled = true;
-        selectConteudo.style.backgroundColor = '#eee';
-        selectConteudo.innerHTML = `<option value="todos">-- Selecione uma Matéria primeiro --</option>`;
-    } else {
-        // Popula apenas os conteúdos que pertencem à matéria escolhida
-        const conteudosDaMateria = [...new Set(
-            dadosCompletos
-                .filter(a => (a.nome_materia || 'Geral') === materiaSel)
-                .map(a => a.nome_conteudo || 'Sem Conteúdo')
-        )].sort();
+            let htmlConteudo = `<option value="todos">-- Todos os Conteúdos --</option>`;
+            conteudosDaMateria.forEach(c => {
+                htmlConteudo += `<option value="${c}">${c}</option>`;
+            });
 
-        let htmlConteudo = `<option value="todos">-- Todos os Conteúdos --</option>`;
-        conteudosDaMateria.forEach(c => {
-            htmlConteudo += `<option value="${c}">${c}</option>`;
+            selectConteudo.innerHTML = htmlConteudo;
+            selectConteudo.disabled = false;
+        }
+
+        filtrarAvaliacoesEncadeado();
+    }
+
+    function filtrarAvaliacoesEncadeado() {
+        const materiaSel = document.getElementById('filtro-materia') ? document.getElementById('filtro-materia').value : 'todas';
+        const conteudoSel = document.getElementById('filtro-conteudo') ? document.getElementById('filtro-conteudo').value : 'todos';
+        const dadosCompletos = detalhesModais['avaliacoes'] || [];
+
+        const dadosFiltrados = dadosCompletos.filter(a => {
+            const mat = a.nome_materia || 'Geral';
+            const cont = a.nome_conteudo || 'Sem Conteúdo';
+
+            const atendeMateria = (materiaSel === 'todas' || mat === materiaSel);
+            const atendeConteudo = (conteudoSel === 'todos' || cont === conteudoSel);
+
+            return atendeMateria && atendeConteudo;
         });
 
-        selectConteudo.innerHTML = htmlConteudo;
-        selectConteudo.disabled = false;
-        selectConteudo.style.backgroundColor = '#fff';
-    }
+        let soma = 0;
+        dadosFiltrados.forEach(a => soma += parseFloat(a.nota || 0));
+        const media = dadosFiltrados.length > 0 ? (soma / dadosFiltrados.length).toFixed(1) : "0.0";
 
-    // Executa a filtragem atualizada da tabela e cards
-    filtrarAvaliacoesEncadeado();
-}
+        document.getElementById('valor-media-score').innerText = media;
+        document.getElementById('total-avaliacoes-card').innerText = `Baseado em ${dadosFiltrados.length} avaliações`;
 
-// Aplica o filtro encadeado na tabela e recalcula a média do card
-function filtrarAvaliacoesEncadeado() {
-    const materiaSel = document.getElementById('filtro-materia') ? document.getElementById('filtro-materia').value : 'todas';
-    const conteudoSel = document.getElementById('filtro-conteudo') ? document.getElementById('filtro-conteudo').value : 'todos';
-    const dadosCompletos = detalhesModais['avaliacoes'] || [];
-
-    // Aplica o filtro encadeado
-    const dadosFiltrados = dadosCompletos.filter(a => {
-        const mat = a.nome_materia || 'Geral';
-        const cont = a.nome_conteudo || 'Sem Conteúdo';
-
-        const atendeMateria = (materiaSel === 'todas' || mat === materiaSel);
-        const atendeConteudo = (conteudoSel === 'todos' || cont === conteudoSel);
-
-        return atendeMateria && atendeConteudo;
-    });
-
-    // Recalcula média e quantidade total
-    let soma = 0;
-    dadosFiltrados.forEach(a => soma += parseFloat(a.nota || 0));
-    const media = dadosFiltrados.length > 0 ? (soma / dadosFiltrados.length).toFixed(1) : "0.0";
-
-    document.getElementById('valor-media-score').innerText = media;
-    document.getElementById('total-avaliacoes-card').innerText = `Baseado em ${dadosFiltrados.length} avaliações`;
-
-    if (conteudoSel !== 'todos') {
-        document.getElementById('titulo-card-media').innerText = 'Média do Conteúdo';
-    } else if (materiaSel !== 'todas') {
-        document.getElementById('titulo-card-media').innerText = 'Média da Matéria';
-    } else {
-        document.getElementById('titulo-card-media').innerText = 'Média Geral';
-    }
-
-    // Renderiza a tabela
-    let htmlTabela = "";
-    dadosFiltrados.forEach(a => {
-        let estrelasLinha = "";
-        for(let i = 1; i <= 5; i++) {
-            estrelasLinha += i <= a.nota 
-                ? '<i class="fa-solid fa-star" style="color: #f1c40f;"></i>' 
-                : '<i class="fa-regular fa-star" style="color: #ccc;"></i>';
+        if (conteudoSel !== 'todos') {
+            document.getElementById('titulo-card-media').innerText = 'Média do Conteúdo';
+        } else if (materiaSel !== 'todas') {
+            document.getElementById('titulo-card-media').innerText = 'Média da Matéria';
+        } else {
+            document.getElementById('titulo-card-media').innerText = 'Média Geral';
         }
-        
-        const materia = a.nome_materia ? `<strong>${a.nome_materia}</strong>` : '<em style="color:#999;">Geral</em>';
-        const quizNome = a.nome_quiz || 'Quiz Excluído';
-        const conteudoNome = a.nome_conteudo ? `<br><small style="color:#666;">${a.nome_conteudo}</small>` : '';
 
-        htmlTabela += `<tr>
-            <td>${a.nome_usuario || 'Anônimo'}</td>
-            <td>${materia}</td>
-            <td>${quizNome}${conteudoNome}</td>
-            <td><div class="estrelas-celula">${estrelasLinha} <span class="num-nota">(${a.nota})</span></div></td>
-        </tr>`;
-    });
+        let htmlTabela = "";
+        dadosFiltrados.forEach(a => {
+            let estrelasLinha = "";
+            for(let i = 1; i <= 5; i++) {
+                estrelasLinha += i <= a.nota 
+                    ? '<i class="fa-solid fa-star" style="color: #f1c40f;"></i>' 
+                    : '<i class="fa-regular fa-star" style="color: #ccc;"></i>';
+            }
+            
+            const materia = a.nome_materia ? `<strong>${a.nome_materia}</strong>` : '<em style="color:#999;">Geral</em>';
+            const quizNome = a.nome_quiz || 'Quiz Excluído';
+            const conteudoNome = a.nome_conteudo ? `<br><small style="color:#666;">${a.nome_conteudo}</small>` : '';
 
-    document.getElementById('tbody-avaliacoes').innerHTML = htmlTabela || `<tr><td colspan="4" align="center">Nenhuma avaliação encontrada para os filtros selecionados.</td></tr>`;
-}
+            htmlTabela += `<tr>
+                <td>${a.nome_usuario || 'Anônimo'}</td>
+                <td>${materia}</td>
+                <td>${quizNome}${conteudoNome}</td>
+                <td><div class="estrelas-celula">${estrelasLinha} <span class="num-nota">(${a.nota})</span></div></td>
+            </tr>`;
+        });
+
+        document.getElementById('tbody-avaliacoes').innerHTML = htmlTabela || `<tr><td colspan="4" style="text-align: center; padding: 20px;">Nenhuma avaliação encontrada para os filtros selecionados.</td></tr>`;
+    }
     
     carregarDados();
 </script>

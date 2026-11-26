@@ -68,44 +68,44 @@
         <div class="testimonial-slider">
             <div class="testimonial-track">
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/quizFrame.png" alt="Quiz em execução">
+                    <img src="./img/quizFrame.webp" alt="Quiz em execução">
                     <div class="texto-hover"> <strong>Os melhores quizzes!</strong><br>Teste sua mente com desafios matemáticos e de raciocínio rápido!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/comentFrame.png" alt="Aba para comentários do quiz">
+                    <img src="./img/comentFrame.webp" alt="Aba para comentários do quiz">
                     <div class="texto-hover"> <strong>Deixe sua opinião!</strong><br>Na LUMINE, todas as sugestões são bem-vindas. Esperamos a sua!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/feedbackFrame.png" alt="Tela de feedback do quiz">
+                    <img src="./img/feedbackFrame.webp" alt="Tela de feedback do quiz">
                     <div class="texto-hover"> <strong>Resultado do seu aprendizado!</strong><br>Aprenda com seus erros e acertos! Nosso feedback te auxilia para sua autoavaliação.</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/quiz2Frame.png" alt="Quiz em execução">
+                    <img src="./img/quiz2Frame.webp" alt="Quiz em execução">
                     <div class="texto-hover"> <strong>Diversos quizzes interativos!</strong><br>Escolha o quiz de sua preferência, com diversas possibilidades pensadas exclusivamente para você!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/perfilFrame.png" alt="Tela de perfil do usuário">
+                    <img src="./img/perfilFrame.webp" alt="Tela de perfil do usuário">
                     <div class="texto-hover"> <strong>Gerencie seu perfil!</strong><br>Defina suas preferências, altere informações e acompanhe seu progresso!</div>
                 </div>
                 
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/quizFrame.png" alt="Quiz em execução">
+                    <img src="./img/quizFrame.webp" alt="Quiz em execução">
                     <div class="texto-hover"> <strong>Os melhores quizzes!</strong><br>Teste sua mente com desafios matemáticos e de raciocínio rápido!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/comentFrame.png" alt="Aba para comentários do quiz">
+                    <img src="./img/comentFrame.webp" alt="Aba para comentários do quiz">
                     <div class="texto-hover"> <strong>Deixe sua opinião!</strong><br>Na LUMINE, todas as sugestões são bem-vindas. Esperamos a sua!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/feedbackFrame.png" alt="Tela de feedback do quiz">
+                    <img src="./img/feedbackFrame.webp" alt="Tela de feedback do quiz">
                     <div class="texto-hover"> <strong>Resultado do seu aprendizado!</strong><br>Aprenda com seus erros e acertos! Nosso feedback te auxilia para sua autoavaliação.</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/quiz2Frame.png" alt="Quiz em execução">
+                    <img src="./img/quiz2Frame.webp" alt="Quiz em execução">
                     <div class="texto-hover"> <strong>Diversos quizzes interativos!</strong><br>Escolha o quiz de sua preferência, com diversas possibilidades pensadas exclusivamente para você!</div>
                 </div>
                 <div class="testimonial-card quiz-preview">
-                    <img src="./img/perfilFrame.png" alt="Tela de perfil do usuário">
+                    <img src="./img/perfilFrame.webp" alt="Tela de perfil do usuário">
                     <div class="texto-hover"> <strong>Gerencie seu perfil!</strong><br>Defina suas preferências, altere informações e acompanhe seu progresso!</div>
                 </div>
             </div>
